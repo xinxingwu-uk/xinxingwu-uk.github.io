@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>一主题—三声部（HTML 演示）</title>
+<style>
+  :root{
+    --bg:#0b1020; --card:#141b34; --ink:#e7ecff; --soft:#9fb5ff; --accent:#7bd389;
+    --a:#ffd166; --b:#7bd389; --c:#9fb5ff;
+  }
+  *{box-sizing:border-box;font-family: ui-sans-serif, system-ui, "Segoe UI", Roboto, "PingFang SC", "Noto Sans CJK SC", Arial;}
+  body{margin:0;background: radial-gradient(1200px 600px at 50% -10%,#1e2958 0%,#0b1020 60%); color:var(--ink);}
+  .wrap{max-width:980px;margin:32px auto;padding:16px;}
+  .title{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+  .badge{font-size:12px;padding:4px 8px;border-radius:999px;background:#223063;color:#bcd0ff;border:1px solid #2f3c77}
+  .card{background:var(--card);border:1px solid #202a52;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+  .hero{padding:18px 20px;margin-bottom:16px;display:flex;flex-direction:column;gap:10px}
+  .hero h1{margin:0;font-size:22px;letter-spacing:.3px}
+  .hero p{margin:0;color:#c9d6ffb0;font-size:14px;line-height:1.5}
+  .theme-line{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+  .pill{font-size:12px;padding:4px 10px;border-radius:999px;background:#1b2344;border:1px solid #2a3569;color:#cfe0ff}
+  .grid{display:grid;grid-template-columns:130px 1fr;gap:0;border-top:1px solid #223063}
+  .row{display:contents}
+  .label{padding:14px 12px;border-bottom:1px solid #223063;background:#121833;color:#dfe7ff;font-weight:600}
+  .track{position:relative;display:grid;grid-auto-flow:column;grid-auto-columns:minmax(28px,1fr);gap:8px;
+         padding:10px 14px;border-bottom:1px solid #223063;align-items:center}
+  .note{height:18px;border-radius:8px;opacity:.55;filter:saturate(120%)}
+  .note.active{outline:2px solid #fff;opacity:1;box-shadow:0 0 12px rgba(255,255,255,.35)}
+  .legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+  .controls{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+  button, .toggle{background:#1b2448;color:#e9efff;border:1px solid #2b376e;border-radius:12px;padding:10px 14px;
+                  cursor:pointer;font-weight:600}
+  button:hover,.toggle:hover{filter:brightness(1.07)}
+  .toggle[data-on="false"]{opacity:.45}
+  .mini{font-size:12px;color:#c9d6ffb0;margin-top:8px;line-height:1.5}
+  .foot{margin-top:16px;padding:12px 16px;border-left:3px solid #2b376e;background:rgba(18,24,51,.6);border-radius:12px}
+  .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;color:#cfe0ff}
+  /* voice colors */
+  .vA .note{background: linear-gradient(180deg,#ffe08a,#ffcf5a); border:1px solid #e6b955}
+  .vB .note{background: linear-gradient(180deg,#9ce9b1,#6fdc8f); border:1px solid #50c977}
+  .vC .note{background: linear-gradient(180deg,#b8ccff,#9fb5ff); border:1px solid #7da0ff}
+  /* scanning playhead line */
+  .playhead{position:absolute;top:6px;bottom:6px;width:2px;background:linear-gradient(#fff,#cfe0ff);opacity:.9;
+            box-shadow:0 0 8px rgba(255,255,255,.4);transform:translateX(0)}
+  .sr{position:absolute;left:-9999px}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="title">
+      <span class="badge">Trinity Analogy · HTML Demo</span>
+      <span class="badge">One Theme — Three Parts</span>
+    </div>
+
+    <section class="card hero">
+      <h1>一主题—三声部（One Theme, Three Parts）</h1>
+      <p>同一“音乐主题”（比喻“一本质/神性”）在三条可分辨的“声部”（比喻三“位格”：父、子、灵）里
+      <strong>同时</strong>呈现、彼此呼应、相互成全：既有<strong>合一</strong>，也有<strong>区分</strong>，并在统一的总控下<strong>不可分地协作</strong>。</p>
+      <div class="theme-line">
+        <span class="pill">One Theme（旋律主题）</span>
+        <span class="pill">同起同止（Simultaneity）</span>
+        <span class="pill">可分辨的声部特征（Timbre/Pan/Octave）</span>
+        <span class="pill">统一总控（Inseparable Operations）</span>
+      </div>
+
+      <div class="controls">
+        <button id="playBtn" aria-pressed="false">▶︎ 播放</button>
+        <button id="pauseBtn">⏸ 暂停</button>
+        <button id="resetBtn">⟲ 重置</button>
+
+        <span class="sr" id="live" role="status" aria-live="polite"></span>
+
+        <button class="toggle" id="muteA" data-on="true">A 声部（“父”）🔊</button>
+        <button class="toggle" id="muteB" data-on="true">B 声部（“子”）🔊</button>
+        <button class="toggle" id="muteC" data-on="true">C 声部（“灵”）🔊</button>
+      </div>
+
+      <p class="mini">
+        注：这是“<em>类比</em>”与“<em>示范道具</em>”，不是等式。音乐没有位格；三位却是“谁”，能相爱、差派、应许。
+        三声部不是“三分之一”，而是同一主题在不同位上<strong>完全</strong>、同时的呈现；不是三首歌并排，而是一首歌。
+      </p>
+    </section>
+
+    <section class="card">
+      <div class="grid" id="tracks">
+        <div class="row">
+          <div class="label">主题（简谱）</div>
+          <div class="track" id="themeTrack"></div>
+        </div>
+        <div class="row vA">
+          <div class="label">A 声部（“父”）</div>
+          <div class="track" id="trackA"><div class="playhead" aria-hidden="true"></div></div>
+        </div>
+        <div class="row vB">
+          <div class="label">B 声部（“子”）</div>
+          <div class="track" id="trackB"><div class="playhead" aria-hidden="true"></div></div>
+        </div>
+        <div class="row vC">
+          <div class="label">C 声部（“灵”）</div>
+          <div class="track" id="trackC"><div class="playhead" aria-hidden="true"></div></div>
+        </div>
+      </div>
+      <div class="foot">
+        <div class="legend">
+          <span class="pill">区分：A（左声像，低八度，圆滑）、B（中置，轻三角波）、C（右声像，带微颤动）</span>
+          <span class="pill">合一：三者演同一主题（同一音高序列），同起同止</span>
+          <span class="pill">协作：统一时钟驱动；静音不会停止全曲</span>
+        </div>
+        <div class="mini mono">提示：若没有声音，请与浏览器交互后再点“播放”；建议佩戴耳机感受左右声像的区分。</div>
+      </div>
+    </section>
+  </div>
+
+<script>
+/* ========= 基本数据：主题（相对音高） =========
+   这里定义“同一主题”的音级序列（以半音为单位的相对位移）。
+   例：大调动机 [0,2,4,5,7,5,4,2,0]，每个音时值相同。 */
+var THEME_STEPS = [0,2,4,5,7,5,4,2,0,  0,2,4,5,7,5,4,2]; // 16 拍
+var STEP_SEC = 0.5; // 每拍 0.5 秒
+var BASE_FREQ = 261.63; // C4
+
+/* ========= Web Audio 设置 ========= */
+var ctx, masterGain, transport = null, stepIndex = 0, isRunning = false;
+var voiceA = {}, voiceB = {}, voiceC = {};
+var muteA = false, muteB = false, muteC = false;
+
+/* 工具：半音位移到频率（十二平均律） */
+function semitoneToFreq(baseFreq, semitoneOffset){
+  return baseFreq * Math.pow(2, semitoneOffset/12);
+}
+
+/* 创建一个声部（带声像、音色与可选颤音） */
+function createVoice(panValue, octaveShift, type, vibrato){
+  var v = {};
+  v.gain = ctx.createGain(); v.gain.gain.value = 0.18;
+  v.pan = ctx.createStereoPanner(); v.pan.pan.value = panValue;
+  v.vibrato = null; v.vibratoGain = null;
+
+  if(vibrato){
+    v.vibrato = ctx.createOscillator();
+    v.vibrato.frequency.value = vibrato.rate; // Hz
+    v.vibratoGain = ctx.createGain();
+    v.vibratoGain.gain.value = vibrato.depth; // 颤音深度（Hz 转换后映射到 detune）
+  }
+
+  v.playNote = function(freq, t, dur){
+    var osc = ctx.createOscillator();
+    osc.type = type;
+    // 颤音通过 detune（cents）实现：depth(Hz) 近似换算成 cents
+    if(v.vibrato){
+      var vibratoToDetune = ctx.createGain();
+      vibratoToDetune.gain.value = 100; // 适中
+      v.vibrato.connect(vibratoToDetune).connect(osc.detune);
+    }
+    osc.frequency.setValueAtTime(freq * Math.pow(2, octaveShift), t);
+
+    var g = ctx.createGain();
+    // ADSR（极简）：attack 0.01s -> sustain -> release 0.06s
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(1.0, t + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.35, t + Math.max(0.05, dur - 0.08));
+    g.gain.linearRampToValueAtTime(0.0001, t + dur);
+
+    osc.connect(g).connect(v.gain).connect(v.pan).connect(masterGain);
+    osc.start(t);
+    osc.stop(t + dur + 0.02);
+    return osc;
+  };
+  if(v.vibrato){ v.vibrato.start(); }
+  return v;
+}
+
+/* ========= 视觉轨道 ========= */
+function buildTrack(containerId, colorClass){
+  var track = document.getElementById(containerId);
+  track.innerHTML = "";
+  for(var i=0;i<THEME_STEPS.length;i++){
+    var d = document.createElement("div");
+    d.className = "note";
+    track.appendChild(d);
+  }
+  return track;
+}
+var themeTrackEl, trackAEl, trackBEl, trackCEl;
+
+function setActive(trackEl, index){
+  var nodes = trackEl.querySelectorAll(".note");
+  for(var i=0;i<nodes.length;i++){
+    nodes[i].classList.toggle("active", i===index);
+  }
+}
+
+/* 播放头位置（视觉） */
+function updatePlayheads(){
+  var t = stepIndex;
+  var cols = THEME_STEPS.length;
+  function move(line){
+    var ph = line.querySelector(".playhead");
+    if(!ph) return;
+    var notes = line.querySelectorAll(".note");
+    if(notes.length===0) return;
+    var hostRect = line.getBoundingClientRect(), first = notes[0].getBoundingClientRect(), last = notes[notes.length-1].getBoundingClientRect();
+    var x = first.left + (last.right - first.left) * (t/(cols-1));
+    ph.style.transform = "translateX(" + (x - hostRect.left) + "px)";
+  }
+  move(trackAEl); move(trackBEl); move(trackCEl);
+}
+
+/* ========= 统一的节拍器/总控 ========= */
+function schedulerTick(){
+  var now = ctx.currentTime;
+  var startTime = now + 0.05; // 轻微提前调度
+  var stepDur = STEP_SEC;
+
+  var rel = THEME_STEPS[stepIndex];
+  var freq = semitoneToFreq(BASE_FREQ, rel);
+
+  if(!muteA){ voiceA.playNote(freq, startTime, stepDur*0.98); }
+  if(!muteB){ voiceB.playNote(freq, startTime, stepDur*0.98); }
+  if(!muteC){ voiceC.playNote(freq, startTime, stepDur*0.98); }
+
+  setActive(themeTrackEl, stepIndex);
+  setActive(trackAEl, stepIndex);
+  setActive(trackBEl, stepIndex);
+  setActive(trackCEl, stepIndex);
+  updatePlayheads();
+
+  stepIndex = (stepIndex + 1) % THEME_STEPS.length;
+}
+
+/* 开始、暂停、重置 */
+function startTransport(){
+  if(isRunning) return;
+  isRunning = true;
+  document.getElementById("playBtn").setAttribute("aria-pressed","true");
+  transport = setInterval(schedulerTick, STEP_SEC*1000);
+  announce("播放中：统一时钟驱动三声部同时前进。");
+}
+function pauseTransport(){
+  if(!isRunning) return;
+  clearInterval(transport); transport = null; isRunning = false;
+  document.getElementById("playBtn").setAttribute("aria-pressed","false");
+  announce("已暂停。");
+}
+function resetTransport(){
+  pauseTransport();
+  stepIndex = 0;
+  setActive(themeTrackEl, -1);
+  setActive(trackAEl, -1);
+  setActive(trackBEl, -1);
+  setActive(trackCEl, -1);
+  updatePlayheads();
+  announce("已重置到起点。");
+}
+
+/* 无障碍实时提示 */
+function announce(msg){
+  var live = document.getElementById("live");
+  live.textContent = msg;
+}
+
+/* ========= 初始化 ========= */
+function init(){
+  // 画主题与三轨
+  themeTrackEl = buildTrack("themeTrack");
+  trackAEl = buildTrack("trackA");
+  trackBEl = buildTrack("trackB");
+  trackCEl = buildTrack("trackC");
+
+  // 懒加载 AudioContext（需用户手势）
+  if(!ctx){
+    ctx = new (window.AudioContext || window.webkitAudioContext)();
+    masterGain = ctx.createGain();
+    masterGain.gain.value = 0.8;
+    masterGain.connect(ctx.destination);
+
+    // 三声部：不同声像/音区/音色/是否颤音
+    voiceA = createVoice(-0.6, -1, "sine", null);                 // 左、低八度、圆滑
+    voiceB = createVoice( 0.0,  0, "triangle", null);             // 中置、原位、三角波
+    voiceC = createVoice( 0.6, -2, "sine", {rate:5.5, depth:6});  // 右、低两度、轻颤音
+  }
+
+  // 控件
+  document.getElementById("playBtn").onclick = function(){ ctx.resume(); startTransport(); };
+  document.getElementById("pauseBtn").onclick = function(){ pauseTransport(); };
+  document.getElementById("resetBtn").onclick = function(){ resetTransport(); };
+
+  function bindMute(btnId, which){
+    var el = document.getElementById(btnId);
+    el.onclick = function(){
+      var on = el.getAttribute("data-on")==="true";
+      on = !on;
+      el.setAttribute("data-on", on ? "true":"false");
+      if(which==="A"){ muteA = !on; el.textContent = on ? "A 声部（“父”）🔊" : "A 声部（“父”）🔇"; }
+      if(which==="B"){ muteB = !on; el.textContent = on ? "B 声部（“子”）🔊" : "B 声部（“子”）🔇"; }
+      if(which==="C"){ muteC = !on; el.textContent = on ? "C 声部（“灵”）🔊" : "C 声部（“灵”）🔇"; }
+    };
+  }
+  bindMute("muteA","A"); bindMute("muteB","B"); bindMute("muteC","C");
+
+  resetTransport();
+}
+
+window.addEventListener("load", init);
+</script>
+</body>
+</html>
