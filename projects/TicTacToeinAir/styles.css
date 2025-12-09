@@ -1,0 +1,112 @@
+:root {
+  --W: 640px;
+  --H: 480px;
+  --B: 300px;
+  --C: 100px;
+  --G: 2px;
+  --FS: 64px;
+  --BTN-TOP: 410px;
+  --BTN-LEFT: 270px;
+  --BOARD-TOP: 90px;
+  --BOARD-LEFT: 170px;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      #ffffff,
+      #ffffff 2px,
+      #f7f7f7 2px,
+      #f7f7f7 4px
+    );
+}
+
+.container {
+  position: relative;
+  width: var(--W);
+  height: var(--H);
+  transform: translateZ(0);
+}
+
+/* video feed */
+#video {
+  width: var(--W);
+  height: var(--H);
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  transform: scaleX(-1); /* Mirror video */
+}
+
+/* overlay canvas */
+#canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* tic-tac-toe board */
+#game-board {
+  position: absolute;
+  top: var(--BOARD-TOP);
+  left: var(--BOARD-LEFT);
+  width: var(--B);
+  height: var(--B);
+  display: grid;
+  grid-template-columns: repeat(3, var(--C));
+  grid-template-rows: repeat(3, var(--C));
+  z-index: 3;
+  transform: scaleX(-1); /* Mirror board to match video */
+}
+
+/* cells */
+.cell {
+  border: var(--G) solid black;
+  font-size: var(--FS);
+  text-align: center;
+  line-height: var(--C);
+  color: black;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: background-color 0.12s linear, filter 0.12s linear;
+}
+
+.cell:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+  filter: contrast(120%);
+}
+
+/* restart button */
+#restart {
+  position: absolute;
+  top: var(--BTN-TOP);
+  left: var(--BTN-LEFT);
+  padding: 10px 20px;
+  font-size: 16px;
+  z-index: 4;
+  background-color: #fff;
+  border: 2px solid black;
+  cursor: pointer;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+#restart:active {
+  transform: scale(0.97);
+}
