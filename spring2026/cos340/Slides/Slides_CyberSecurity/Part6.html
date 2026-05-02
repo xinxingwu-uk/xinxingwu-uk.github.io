@@ -1,0 +1,4403 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>CSE-400: Cybersecurity</title>
+    <meta name="description" content="A set of slides for a course on Introduction to Cybersecurity">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+	</script>
+
+	<style>
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }
+
+		ftcoly{
+			color: yellow;
+		}
+		
+		ftcolr{
+			color: red;
+		}
+		
+		ftcolg{
+			color: green;
+		}
+		
+		ft{
+			font-size: 18px;
+			padding: 2px;
+			margin: 5px;
+			background-color: #33475b;
+			border-radius: 5px;
+			color: white;
+		}
+
+		ftCode{
+			font-size: 28px;
+		}
+		
+		.blink {
+			animation: blink 1s steps(1, end) infinite;
+			color: blue;
+		}
+
+		@keyframes blink {
+			0% {
+				opacity: 1;
+			}
+			50% {
+				opacity: 0;
+			}
+			100% {
+				opacity: 1;
+			}
+		}
+
+
+		.hover-underline-animation {
+			display: inline-block;
+			position: relative;
+			color: lightblue;
+		}
+
+		.hover-underline-animation:after {
+			content: '';
+			position: absolute;
+			width: 100%;
+			transform: scaleX(0);
+			height: 8px;
+			bottom: 0;
+			left: 0;
+			background-color: yellow;
+			transform-origin: bottom right;
+			transition: transform 1.5s ease-out;
+		}
+
+		.hover-underline-animation:hover:after {
+			transform: scaleX(1);
+			transform-origin: bottom left;
+		}
+		
+		
+		.wrapper.nine {
+			background-color: gray;
+			font-family: 'Arvo', serif;
+		}
+		.rotate span {
+			font-size: 4rem;
+			color: green;
+			display: inline-flex;
+			animation: rotate 1.5s infinite;
+		}
+		@keyframes rotate {
+			0%,
+			75% {
+				transform: rotateY(360deg);
+			}
+		}
+		.nine span:nth-of-type(1) {
+			animation-delay: 0.2s;
+		}
+		.nine span:nth-of-type(2) {
+			animation-delay: 0.4s;
+		}
+		.nine span:nth-of-type(3) {
+			animation-delay: 0.6s;
+		}
+		.nine span:nth-of-type(4) {
+			animation-delay: 0.8s;
+		}
+		.nine span:nth-of-type(5) {
+			animation-delay: 1s;
+		}
+		.nine span:nth-of-type(6) {
+			animation-delay: 1.2s;
+		}
+
+
+
+/* Popup container - can be anything you want */
+.popup {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* The actual popup */
+.popup .popuptext {
+  visibility: hidden;
+  width: 900px;
+  background-color: darkblue;
+  color: yellow;
+  text-align: left;
+  border-radius: 6px;
+  padding: 8px 8px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: -50%;
+  margin-left: -200px;
+}
+
+/* Popup arrow */
+.popup .popuptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+/* Toggle this class - hide and show the popup */
+.popup .show {
+  visibility: visible;
+  -webkit-animation: fadeIn 1s;
+  animation: fadeIn 1s;
+}
+
+/* Add animation (fade in the popup) */
+@-webkit-keyframes fadeIn {
+  from {opacity: 0;} 
+  to {opacity: 1;}
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity:1 ;}
+}
+
+        bodyDp {
+            margin: 0;
+            display: flex;
+            align-items: left;
+            justify-content: left;
+            height: 5vh;
+        }
+
+        .person {
+            position: absolute;
+            width: 50px;
+            height: 60px;
+            background-color: #FF6347; /* Tomato color */
+            border-radius: 50px 50px 0 0;
+            animation: fly 5s linear infinite;
+        }
+
+        .person::before {
+            content: '';
+            position: absolute;
+            top: -30px;
+            left: 10px;
+            width: 30px;
+            height: 30px;
+            background-color: #FFD700; /* Gold color */
+            border-radius: 50%;
+        }
+
+        @keyframes fly {
+            0% {
+                transform: translateX(-100%);
+            }
+            50% {
+                transform: translateX(calc(100vw - 50px)) scaleX(1);
+            }
+            100% {
+                transform: translateX(-100%) scaleX(-1);
+            }
+        }
+		
+		body {
+            margin: 0;
+            overflow: hidden;
+            background-color: black;
+        }
+        .star {
+            position: absolute;
+            font-size: 50px; /* Adjust the size of the stars */
+            color: yellow;
+        }
+
+        @keyframes blink {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0;
+            }
+        }
+		
+		
+		
+        bodyDp {
+            margin: 0;
+            display: flex;
+            align-items: left;
+            justify-content: left;
+            height: 5vh;
+        }
+
+        .dancer {
+            position: relative;
+            width: 50px;
+            height: 100px;
+            background-color: #ffcc00;
+            border-radius: 10px;
+            animation: bodyMove 1.5s infinite;
+        }
+
+        .dancer::before, .dancer::after {
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 40px;
+            background-color: #ff5733;
+            top: 20px;
+            border-radius: 10px;
+            animation: armMove 1.5s infinite;
+        }
+
+        .dancer::before {
+            left: -20px;
+            transform-origin: top right;
+        }
+
+        .dancer::after {
+            right: -20px;
+            transform-origin: top left;
+        }
+
+        .head {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            background-color: #33ff57;
+            border-radius: 50%;
+            transform: translateX(-50%);
+            animation: headMove 1.5s infinite;
+        }
+
+        .eye-left, .eye-right {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: black;
+            border-radius: 50%;
+            top: 5px;
+            animation: eyeMove 1.5s infinite;
+        }
+
+        .eye-left {
+            left: 4px;
+        }
+
+        .eye-right {
+            right: 4px;
+        }
+
+        .mouth {
+            position: absolute;
+            width: 10px;
+            height: 5px;
+            background-color: black;
+            border-radius: 0 0 10px 10px;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: mouthMove 1.5s infinite;
+        }
+
+        .leg-left, .leg-right {
+            position: absolute;
+            width: 15px;
+            height: 50px;
+            background-color: #3357ff;
+            top: 100px;
+            border-radius: 10px;
+            animation: legMove 1.5s infinite;
+        }
+
+        .leg-left {
+            left: 5px;
+            transform-origin: top center;
+        }
+
+        .leg-right {
+            right: 5px;
+            transform-origin: top center;
+        }
+
+        .foot-left, .foot-right {
+            position: absolute;
+            width: 20px;
+            height: 10px;
+            background-color: #f1c40f;
+            border-radius: 50%;
+            top: 150px;
+            animation: footMove 1.5s infinite;
+        }
+
+        .foot-left {
+            left: 5px;
+            transform-origin: top center;
+        }
+
+        .foot-right {
+            right: 5px;
+            transform-origin: top center;
+        }
+
+        @keyframes bodyMove {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            20% {
+                transform: translateY(-50px) rotate(-30deg);
+            }
+            40% {
+                transform: translateY(50px) rotate(30deg);
+            }
+            60% {
+                transform: translateY(-40px) rotate(40deg);
+            }
+            80% {
+                transform: translateY(40px) rotate(-40deg);
+            }
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+        }
+
+        @keyframes armMove {
+            0%, 100% {
+                transform: rotate(0deg);
+            }
+            20% {
+                transform: rotate(80deg);
+            }
+            40% {
+                transform: rotate(-80deg);
+            }
+            60% {
+                transform: rotate(60deg);
+            }
+            80% {
+                transform: rotate(-60deg);
+            }
+        }
+
+        @keyframes headMove {
+            0%, 100% {
+                transform: translateX(-50%) rotate(0deg);
+            }
+            20% {
+                transform: translateX(-50%) rotate(50deg);
+            }
+            40% {
+                transform: translateX(-50%) rotate(-50deg);
+            }
+            60% {
+                transform: translateX(-50%) rotate(40deg);
+            }
+            80% {
+                transform: translateX(-50%) rotate(-40deg);
+            }
+        }
+
+        @keyframes eyeMove {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            25% {
+                transform: translateY(-2px);
+            }
+            50% {
+                transform: translateY(2px);
+            }
+            75% {
+                transform: translateY(-2px);
+            }
+        }
+
+        @keyframes mouthMove {
+            0%, 100% {
+                transform: translateX(-50%) scale(1);
+            }
+            25% {
+                transform: translateX(-50%) scale(1.5);
+            }
+            50% {
+                transform: translateX(-50%) scale(0.5);
+            }
+            75% {
+                transform: translateX(-50%) scale(1.2);
+            }
+        }
+
+        @keyframes legMove {
+            0%, 100% {
+                transform: rotate(0deg);
+            }
+            20% {
+                transform: rotate(50deg);
+            }
+            40% {
+                transform: rotate(-50deg);
+            }
+            60% {
+                transform: rotate(40deg);
+            }
+            80% {
+                transform: rotate(-40deg);
+            }
+        }
+
+        @keyframes footMove {
+            0%, 100% {
+                transform: rotate(0deg);
+            }
+            20% {
+                transform: rotate(35deg);
+            }
+            40% {
+                transform: rotate(-35deg);
+            }
+            60% {
+                transform: rotate(25deg);
+            }
+            80% {
+                transform: rotate(-25deg);
+            }
+        }
+</style>
+
+
+<script>
+// When the user clicks on div, open the popup
+function myFunction1() {
+  var popup1 = document.getElementById("myPopup1");
+  popup1.classList.toggle("show");
+}
+
+function myFunction2() {
+  var popup2 = document.getElementById("myPopup2");
+  popup2.classList.toggle("show");
+}
+
+function myFunction3() {
+  var popup3 = document.getElementById("myPopup3");
+  popup3.classList.toggle("show");
+}
+
+function myFunction4() {
+  var popup4 = document.getElementById("myPopup4");
+  popup4.classList.toggle("show");
+}
+
+function myFunction5() {
+  var popup5 = document.getElementById("myPopup5");
+  popup5.classList.toggle("show");
+}
+
+function myFunction6() {
+  var popup6 = document.getElementById("myPopup6");
+  popup6.classList.toggle("show");
+}
+
+
+function myFunction7() {
+  var popup7 = document.getElementById("myPopup7");
+  popup7.classList.toggle("show");
+}
+
+
+function myFunction8() {
+  var popup8 = document.getElementById("myPopup8");
+  popup8.classList.toggle("show");
+}
+
+
+function myFunction9() {
+  var popup9 = document.getElementById("myPopup9");
+  popup9.classList.toggle("show");
+}
+
+function myFunction10() {
+  var popup10 = document.getElementById("myPopup10");
+  popup10.classList.toggle("show");
+}
+
+function myFunction11() {
+  var popup11 = document.getElementById("myPopup11");
+  popup11.classList.toggle("show");
+}
+
+function myFunction12() {
+  var popup12 = document.getElementById("myPopup12");
+  popup12.classList.toggle("show");
+}
+
+
+function myFunction13() {
+  var popup13 = document.getElementById("myPopup13");
+  popup13.classList.toggle("show");
+}
+
+
+function myFunction14() {
+  var popup14 = document.getElementById("myPopup14");
+  popup14.classList.toggle("show");
+}
+
+
+function myFunction15() {
+  var popup15 = document.getElementById("myPopup15");
+  popup15.classList.toggle("show");
+}
+
+function myFunction16() {
+  var popup16 = document.getElementById("myPopup16");
+  popup16.classList.toggle("show");
+}
+
+function myFunction17() {
+  var popup17 = document.getElementById("myPopup17");
+  popup17.classList.toggle("show");
+}
+
+function myFunction18() {
+  var popup18 = document.getElementById("myPopup18");
+  popup18.classList.toggle("show");
+}
+
+
+function myFunction19() {
+  var popup19 = document.getElementById("myPopup19");
+  popup19.classList.toggle("show");
+}
+
+function myFunction20() {
+  var popup20 = document.getElementById("myPopup20");
+  popup20.classList.toggle("show");
+}
+
+function myFunction21() {
+  var popup21 = document.getElementById("myPopup21");
+  popup21.classList.toggle("show");
+}
+
+function myFunction22() {
+  var popup22 = document.getElementById("myPopup22");
+  popup22.classList.toggle("show");
+}
+
+function myFunction23() {
+  var popup23 = document.getElementById("myPopup23");
+  popup23.classList.toggle("show");
+}
+
+function myFunction24() {
+  var popup24 = document.getElementById("myPopup24");
+  popup24.classList.toggle("show");
+}
+
+
+function myFunction25() {
+  var popup25 = document.getElementById("myPopup25");
+  popup25.classList.toggle("show");
+}
+
+function myFunction26() {
+  var popup26 = document.getElementById("myPopup26");
+  popup26.classList.toggle("show");
+}
+
+function myFunction27() {
+  var popup27 = document.getElementById("myPopup27");
+  popup27.classList.toggle("show");
+}
+
+function myFunction28() {
+  var popup28 = document.getElementById("myPopup28");
+  popup28.classList.toggle("show");
+}
+
+function myFunction29() {
+  var popup29 = document.getElementById("myPopup29");
+  popup29.classList.toggle("show");
+}
+
+function myFunction30() {
+  var popup30 = document.getElementById("myPopup30");
+  popup30.classList.toggle("show");
+}
+
+function myFunction31() {
+  var popup31 = document.getElementById("myPopup31");
+  popup31.classList.toggle("show");
+}
+
+function myFunction32() {
+  var popup32 = document.getElementById("myPopup32");
+  popup32.classList.toggle("show");
+}
+
+function myFunction33() {
+  var popup33 = document.getElementById("myPopup33");
+  popup33.classList.toggle("show");
+}
+
+function myFunction34() {
+  var popup34 = document.getElementById("myPopup34");
+  popup34.classList.toggle("show");
+}
+</script>
+
+  </head>
+
+  <body onload="startTime()">
+    <div class="reveal">
+	  <p><img src="images/midwaylogo.png"  align="left" height="8%" width="10%" style="vertical-align:left;margin:-15px 5px"><img src="images/mueagle.png"  color="white" align="left" height="10%" width="10%" style="vertical-align:center;margin:-2% 45%">
+<div style="color:white;font-size: 20px; vertical-align:left;margin:-1% 0%" align="right" id="realtimeclock"></div></p>
+      <div class="slides">
+
+    <script>
+        const starCount = 2; // Number of stars
+        const body = document.body;
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        function createStar() {
+            let star = document.createElement('div');
+            star.classList.add('star');
+            star.textContent = '🤖';
+
+            // Set random position
+            star.style.left = `${Math.random() * width}px`;
+            star.style.top = `${Math.random() * height}px`;
+
+            // Set random blink animation duration
+            star.style.animation = `blink ${Math.random() * 10 + 3.5}s infinite`;
+
+            body.appendChild(star);
+
+            // Function to randomly reposition the star
+            function randomizePosition() {
+                star.style.left = `${Math.random() * width}px`;
+                star.style.top = `${Math.random() * height}px`;
+            }
+
+            // Reposition the star every 1-3 seconds
+            setInterval(randomizePosition, Math.random() * 10000 + 5000);
+        }
+
+        for (let i = 0; i < starCount; i++) {
+            createStar();
+        }
+    </script>
+
+
+<section data-markdown id="cover"><textarea data-template>
+<p class='titlep'>&nbsp;</p>
+<bodyP>
+    <div class="person"></div>
+</bodyP>
+
+# Cybersecurity and AI
+
+### CSE-400
+
+<p class="blink" style="color:blue;font-size:24px;">xinxing.wu@midway.edu</p>
+</textarea></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section data-markdown><textarea data-template>
+# Introduction
+
+- Explore the fundamentals of machine learning and understand its application in the cybersecurity landscape and learn how to prepare and optimize data for machine learning, extracting valuable features for effective threat detection.
+</textarea></section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section data-markdown><textarea data-template>
+# Key knowledge
+
+- The intersection of AI and cybersecurity is crucial for safeguarding organizations against ever-growing cyber threats. 
+
+	- The knowledge and skills needed to leverage AI techniques for enhancing cybersecurity measures. 
+
+	- Understand the fundamentals of artificial intelligence and its applications in cybersecurity.
+</textarea></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section data-markdown><textarea data-template>
+
+<img src="./images/AI.jfif" alt="drawing" width="500"/>
+
+
+</textarea></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section data-markdown><textarea data-template>
+
+# Contents
+
+[Cybersecurity in the Age of AI](#/AI)<br>
+[Ham or Spam? Detecting Email Cybersecurity Threats with AI](#/Email)<br>
+[Network Anomaly Detection with AI](#/Anomaly)<br>
+[Clone Your Voice](#/Voice)<br>
+[Swap Your Face](#/Face)<br>
+[Static Image Speak](#/Speak)<br>
+[ChatGPT for Hacking - Educational Purposes ONLY](#/ChatGPT)<br>
+[Secret Collusion among Generative AI Agents](#/Collusion)
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="AI" class="center"><textarea data-template>
+# Cybersecurity in the Age of AI
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+## The Future of Cyber Security
+
+- AI as the Future of Cyber Security
+
+	- AI will power the future of cybersecurity<br>
+	<div class="popup" onclick="myFunction23()"><p class="blink" style="font-size:28px;"><spanRED>Examples</spanBYMix></p><span class="popuptext" id="myPopup23" STYLE="font-size:20px">Example 1: Automated Threat Detection and Response: AI-driven solutions like IBM's Watson for Cyber Security analyze vast amounts of data to identify and respond to threats in real-time, significantly reducing the time it takes to detect and mitigate cyber incidents.<br> Example 2: Behavioral Analysis: AI can learn and recognize the normal behavior of users and systems within a network. For instance, Darktrace uses machine learning to detect deviations from normal behavior that could indicate a security breach, such as an employee accessing sensitive data at unusual hours.</span></div> 
+	- Human limitations in handling massive data volumes necessitate AI assistance<br>
+	<div class="popup" onclick="myFunction24()"><p class="blink" style="font-size:28px;"><spanRED>Examples</spanBYMix></p><span class="popuptext" id="myPopup24" STYLE="font-size:25px">Example 1: Big Data Analysis: AI systems can process and analyze massive amounts of security data far more efficiently than humans. For example, Splunk uses AI to sift through logs and identify patterns and anomalies that might signify a security threat, which would be overwhelming for human analysts to handle manually.<br> Example 2: Predictive Analytics: AI can predict potential security threats by analyzing historical data and identifying patterns that precede attacks. Microsoft Defender ATP uses AI to forecast potential vulnerabilities and proactively defend against them, helping organizations stay ahead of cybercriminals.</span></div> 
+	- Majority of cyber attacks originate from email phishing schemes<div class="popup" onclick="myFunction25()"><p class="blink" style="font-size:28px;"><spanRED>Examples</spanBYMix></p><span class="popuptext" id="myPopup25" STYLE="font-size:25px">Example 1: AI-Powered Email Filtering: Tools like Google’s Gmail use AI to filter out phishing emails by recognizing suspicious patterns and behaviors in email content and sender information, blocking millions of malicious emails daily before they reach users' inboxes.<br> Example 2: Phishing Detection and Response: AI can analyze email metadata, content, and user behavior to detect and respond to phishing attempts. For example, Barracuda Sentinel uses AI to identify spear-phishing attacks and provide real-time alerts and automatic remediation, protecting organizations from sophisticated phishing schemes.</span></div> 
+
+
+
+
+## Impact of Cyber Attacks
+- Consequences of Cyber Attacks
+	- Cyber warfare can cripple critical infrastructures like hospitals, water supplies, power grids, and financial systems<div class="popup" onclick="myFunction26()"><p class="blink" style="font-size:28px;"><spanRED> Example</spanBYMix></p><span class="popuptext" id="myPopup26" STYLE="font-size:25px">Healthcare: In 2017, the WannaCry ransomware attack affected healthcare systems worldwide, including the UK's National Health Service (NHS). Hospitals were forced to cancel appointments and surgeries, and patients were turned away as systems were locked by the ransomware.</span></div> 
+	- Ensuring security at machine scale is essential due to the high potential impact of breaches<div class="popup" onclick="myFunction27()"><p class="blink" style="font-size:28px;"><spanRED> Example</spanBYMix></p><span class="popuptext" id="myPopup27" STYLE="font-size:25px"> Financial Systems: The 2016 Bangladesh Bank heist involved cyber criminals using the SWIFT payment system to transfer $81 million from the central bank's account. The attack exploited vulnerabilities in the bank's security systems, underscoring the need for robust defenses in financial institutions.</span></div> 
+
+
+
+
+
+## Defenders vs. Attackers
+
+- Tipping the Scale Towards Defenders
+	- Historically, attackers have had the advantage, needing only to be right once<div class="popup" onclick="myFunction28()"><p class="blink" style="font-size:28px;"><spanRED>Examples</spanBYMix></p><span class="popuptext" id="myPopup28" STYLE="font-size:20px">Example 1: Data Breaches: In the 2014 Sony Pictures hack, attackers breached the company's network and stole sensitive data, including unreleased films and employee information. Despite numerous security measures, the attackers succeeded with a single breach.<br> Example 2: Ransomware Attacks: In 2017, the WannaCry ransomware attack exploited a vulnerability in Microsoft Windows. The attackers needed only to exploit this single vulnerability to infect and lock down systems across 150 countries.</span></div> 
+	- AI and data correlation can shift the advantage to defenders by predicting and preventing attacks<div class="popup" onclick="myFunction29()"><p class="blink" style="font-size:28px;"><spanRED>Examples</spanBYMix></p><span class="popuptext" id="myPopup29" STYLE="font-size:20px">Example 1: Predictive Analytics: Companies like Darktrace use AI to analyze network traffic patterns and identify anomalies that may indicate an attack. For instance, their AI detected unusual data flows in a casino's network, tracing it back to an IoT-enabled fish tank that hackers were using to gain access.<br> Example 2: Automated Threat Detection: Microsoft's Azure Sentinel uses AI to aggregate and analyze security data from multiple sources. It can identify and respond to threats in real time, such as recognizing unusual login patterns that may indicate a compromised account.<br> Example 3: Behavioral Analysis: AI-based security solutions like CrowdStrike's Falcon platform can detect deviations from normal user behavior. For example, if an employee's account starts downloading large amounts of data at odd hours, AI can flag this as suspicious and initiate further investigation or automated responses.
+</span></div> 
+
+
+
+
+## Integrated Security Solutions
+
+- Need for Unified Security Platforms
+	- The current cybersecurity landscape is fragmented with multiple niche solutions<br>
+	<div class="popup" onclick="myFunction30()"><p class="blink" style="font-size:28px;"><spanRED>Example</spanBYMix></p><span class="popuptext" id="myPopup30" STYLE="font-size:25px">Multiple Security Tools: Organizations often use separate tools for antivirus, firewall, intrusion detection, and email security. For instance, a company might use Norton for endpoint protection, Cisco for network security, and Proofpoint for email security. Each tool operates in isolation, making it challenging to get a comprehensive view of the security landscape.</span></div> 
+	- Transitioning to integrated platforms can improve security efficacy by correlating data across various control points (email, web, network, endpoint)<div class="popup" onclick="myFunction31()"><p class="blink" style="font-size:28px;"><spanRED>Example</spanBYMix></p><span class="popuptext" id="myPopup31" STYLE="font-size:25px">Microsoft 365 Defender: This integrated solution combines protection for email (Exchange), endpoints (Windows Defender), and identity (Azure AD). By correlating data across these services, it can detect sophisticated threats such as an email phishing attempt that leads to a malware infection on an endpoint and then attempts to exfiltrate data via a compromised user account.</span></div> 
+
+
+
+
+## AI's Role in Enhancing Security
+
+- AI Assistance and Augmentation
+	- AI helps by correlating data, setting natural language policies, and addressing the talent shortage<div class="popup" onclick="myFunction32()"><p class="blink" style="font-size:28px;"><spanRED>Examples</spanBYMix></p><span class="popuptext" id="myPopup32" STYLE="font-size:20px">Example 1: Data Correlation: AI can analyze and correlate data from various sources to detect anomalies that might indicate a security breach. For instance, AI can correlate login times, IP addresses, and access patterns to identify unusual behavior that could suggest an account has been compromised.<br> Example 2: Natural Language Policies: AI enables the creation of security policies using natural language processing (NLP). For example, security administrators can use plain English to set up rules like "Alert me if any user downloads more than 1GB of data outside of business hours," making policy configuration more accessible and reducing the likelihood of errors.<br> Example 3: Addressing Talent Shortage: AI-powered tools can automate routine security tasks such as log analysis, threat hunting, and incident response. This allows cybersecurity teams to focus on more complex and strategic tasks, helping to mitigate the impact of the ongoing cybersecurity talent shortage.</span></div> 
+	- AI assists, augments, and automates tasks to enhance security measures and improve efficiency<div class="popup" onclick="myFunction33()"><p class="blink" style="font-size:28px;"><spanRED>Examples</spanBYMix></p><span class="popuptext" id="myPopup33" STYLE="font-size:25px">Example 1: Automated Threat Detection: AI can continuously monitor network traffic and user behavior to detect potential threats in real-time. For example, Darktrace uses AI to automatically detect and respond to threats by understanding the normal patterns of network activity and identifying deviations that may indicate a security incident.<br> Example 2: Incident Response Automation: AI can automate responses to certain types of security incidents. For instance, if AI detects a malware infection, it can automatically isolate the affected system, remove the malware, and restore the system to a safe state, reducing the time and effort required from human analysts.<br> Example 3: Enhanced Vulnerability Management: AI can prioritize vulnerabilities based on the potential impact and likelihood of exploitation. For example, Tenable uses AI to analyze and prioritize vulnerabilities across an organization's IT environment, enabling security teams to focus on addressing the most critical issues first.</span></div>
+
+
+
+
+## AI's Role in Enhancing Security
+
+- AI Assistance and Augmentation
+	
+	- AI is integrated across various, such as Cisco, products, enhancing detection and response capabilities<div class="popup" onclick="myFunction34()"><p class="blink" style="font-size:28px;"><spanRED>Example</spanBYMix></p><span class="popuptext" id="myPopup34" STYLE="font-size:25px">Cisco SecureX: This platform uses AI to integrate threat intelligence, security analytics, and automated response across Cisco’s security products. For example, AI can correlate events from Cisco Firepower, Cisco Umbrella, and Cisco AMP for Endpoints to provide a comprehensive threat detection and response capability.</span></div> 
+
+
+
+
+
+## Cybersecurity in the Age of AI
+
+- [The AI Cybersecurity future is here](https://www.youtube.com/watch?v=S3QNDSax2IA&t=3s)
+
+
+</textarea></section>
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="Email" class="center"><textarea data-template>
+# Ham or Spam? Detecting Email Cybersecurity Threats with AI
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+## Introduction
+
+- Most security threats use email as an attack vector. Since the amount of traffic conveyed in this way is particularly large, it is necessary to use automated detection procedures that exploit machine learning (ML) algorithms.
+
+- Different detection strategies ranging from linear classifiers and Bayesian filters to more sophisticated solutions such as decision trees, logistic regression, and natural language processing (NLP)
+
+
+
+
+
+> How to detect spam with Perceptrons
+
+- One of the first concrete and successful applications of AI in the field of cybersecurity was spam detection, and one of the most famous open source tools is <div class="popup" onclick="myFunction9()"><p class="blink" style="font-size:24px;"><spanBYMix>SpamAssassin</spanBYMix></p><span class="popuptext" id="myPopup9" STYLE="font-size:25px">SpamAssassin, from the Apache Foundation, is open-source software that uses advanced testing and analytical tools to find out if an email is spam or not.
+  </span>
+</div>
+
+- The most common and simpler one uses Neural Networks (NNs) in the most basic form; that is, the <div class="popup" onclick="myFunction10()"><p class="blink" style="font-size:24px;"><spanBYMix>Perceptron</spanBYMix></p><span class="popuptext" id="myPopup10" STYLE="font-size:25px">The Perceptron is one of the first successful implementations of a neuron in the field of Artificial Intelligence (AI). Just like a neuron in the human brain, it is characterized by a layered structure, aimed at associating a result in output to certain input levels
+  </span>
+</div>
+
+
+
+
+
+> How to detect spam with Perceptrons
+
+- Mimic the behavior of the human brain. The most basic structure we encounter when we analyze the behavior of the brain, is undoubtedly the neuron.
+
+<img src="./images/paper13.png" alt="drawing" width="600"/>
+
+
+
+
+> How to detect spam with Perceptrons
+
+> When an action potential travels down an axon and reaches the axon terminal, it triggers the release of neurotransmitter from the presynaptic cell. Neurotransmitter molecules cross the synapse and bind to membrane receptors on the postsynaptic cell, conveying an excitatory or inhibitory signal.
+
+
+
+
+
+> How to detect spam with Perceptrons
+
+- The artificial representation of the neuron implemented through the Perceptron model is structured in such a way as to associate a given output value to one or more levels of input data
+
+<img src="./images/paper14.png" alt="drawing" width="600"/>
+
+
+
+
+> How to detect spam with Perceptrons
+
+<img src="./images/paper18.png" alt="drawing" width="1000"/>
+
+
+
+
+> The mechanism that transforms the input data into an output value is implemented by making use of an appropriate weighing of the values of an input, which are synthesized and forwarded to an activation function, which, when exceeding a certain threshold, produces a value of output that is forwarded to the remaining components of the NN.
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+# <p class="hover-underline-animation">It's all about finding the right weight</p>
+
+
+
+
+> How to detect spam with Perceptrons
+
+- One of the differences in the approach between the statistical models and the AI algorithms is that the algorithms implement an optimization strategy based on the iteration. At each iteration, in fact, the algorithm tries to adjust its own estimate of the values, attributing to them a greater or lesser weight depending on the cost function that we must minimize. 
+
+
+
+
+> How to detect spam with Perceptrons
+
+- One of the aims of the algorithm is to identify precisely an optimal weight vector to be applied to the estimated values in order to obtain reliable future predictions on unknown future
+data.
+
+
+
+
+> How to detect spam with Perceptrons
+
+<img src="./images/paper15.gif" alt="drawing" width="800"/>
+
+
+
+
+
+> How to detect spam with Perceptrons
+
+- A spam filter - an example
+
+	- Separating the emails we receive, categorizing them based on the presence or the absence of particular keywords occurring within the text of the emails with a certain frequency.
+
+	- List all the messages we receive in our inbox within a table.
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+# <p class="hover-underline-animation">How to classify our messages as ham or spam?</p>
+
+
+
+
+> How to detect spam with Perceptrons
+
+- Look for the number of occurrences of the suspicious keywords within the text of the email messages. 
+
+
+
+
+> How to detect spam with Perceptrons
+
+- Assign a score to the individual messages identified as spam, based on the number of occurrences of identified keywords.
+
+	- Identify a threshold value that allows us to separate spam messages. 
+
+	- If the calculated score exceeds the threshold value, the email will automatically be classified as spam; otherwise, it will be accepted as a legitimate message, and thus classified as ham.
+
+
+
+
+> How to detect spam with Perceptrons
+
+- Identify a certain number of suspicious keywords that classifies the messages as potential spam emails, assigning to each email a score based on the number of occurrences of identified keywords.
+
+- The first spam detection solution, made use of static rules, using regular expressions to identify predefined patterns of suspicious words in the email text.
+
+
+
+
+> How to detect spam with Perceptrons
+
+- These static rules quickly proved to be ineffective as a result of the ever-new deception strategies implemented by spammers to deceive the anti-spam filters. 
+
+- It was therefore necessary to adopt a dynamic approach, which allowed the spam filter to learn based on the continuous innovations introduced by spammers, also taking advantage of the decisions made by the user in classifying their emails.
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+## <p class="hover-underline-animation">How does an anti-spam algorithm actually behave in the classification of emails?</p>
+
+
+
+
+> How to detect spam with Perceptrons
+
+- Classify the emails based on suspicious keywords. For the sake of
+simplicity, that the list of the most representative suspicious keywords is thus reduced to
+only two words: buy and sex.
+
+	- At this point, we will classify the email messages within a table, showing the number of occurrences of the individual keywords identified within the text of the emails, indicating the messages as spam or ham
+
+
+
+
+> How to detect spam with Perceptrons
+
+- Assign a score to every single email message
+
+<img src="./images/paper16.png" alt="drawing" width="1000"/>
+
+
+
+
+> How to detect spam with Perceptrons
+
+- This score will be calculated using a scoring function that takes into account the number of occurrences of suspicious keywords contained within the text.
+
+- A possible scoring function could be the sum of the occurrences of our two keywords
+
+
+
+
+
+> How to detect spam with Perceptrons
+
+- The scoring function
+
+$$ y= B+S $$
+
+Where $B$ - buy, and $S$ - sex.
+
+
+
+
+> How to detect spam with Perceptrons
+
+- Attribute different weights to the representative variables of the respective keywords, based on the fact <div class="popup" onclick="myFunction11()"><p class="blink" style="font-size:32px;"><spanBYMix>that</spanBYMix></p><span class="popuptext" id="myPopup11" STYLE="font-size:25px">For example, the keyword sex contained within the message is indicative of a greater probability of spam than the word buy.
+  </span>
+</div> 
+
+
+
+
+> How to detect spam with Perceptrons
+
+$$ y= 2B+3S $$
+
+
+
+> How to detect spam with Perceptrons
+
+- The scoring function
+
+<img src="./images/paper17.png" alt="drawing" width="1000"/>
+
+
+
+> How to detect spam with Perceptrons
+
+- Identify a threshold value that effectively separates spam from ham. 
+	- A threshold value between 4 and 5 allows us to properly separate the spam from the ham.
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+## <p class="hover-underline-animation">How can we effectively translate the concepts we have just seen into mathematical formulas that can be used in our algorithms?</p>
+
+
+
+
+> How to detect spam with Perceptrons
+
+- Linear algebra - the equation that represents the function used to determine the score to be associated with every single email message is
+
+$$ y= 2B+3S $$
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+## <p class="hover-underline-animation">This identifies a straight line in the Cartesian plane; therefore, the classifier used by our spam filter to classify emails is called a linear classifier.</p>
+
+
+
+
+> How to detect spam with Perceptrons
+
+- Generalized our linear classifier to an unspecified number of variables
+
+$$y=\sum w_i x_i=w^T x$$
+
+
+
+
+> Identify an appropriate threshold value that correctly splits spam messages from ham messages: if the score associated with a single email message is equal to or higher than the threshold value, the message email will be classified as spam (and we will assign it the value +1); otherwise, it will be classified as ham (to which we will assign the value -1).
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+# <p class="hover-underline-animation">How to formalize it by math</p>
+
+
+
+> How to detect spam with Perceptrons
+
+- $\theta$ represents the threshold value:
+
+	- $w^T x\geqslant \theta\rightarrow f(y)=+1$
+	- $w^T x\leqslant\theta\rightarrow f(y)=-1$
+
+- $x_i$ is by definition prefixed, it is the value of the corresponding weights that helps to determine if the Perceptron has to activate itself or not.
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+## <p class="hover-underline-animation">How are weights updated in practice, thus determining the Perceptron learning process?</p>
+
+
+
+
+- The Perceptron learning process can be synthesized in the following three phases
+
+	- Initializing the weights to a predefined value (usually equal to 0)
+
+	- Calculating the output value, $y_i$, for each corresponding training sample, $x_i$
+
+	- Updating the weights on the basis of the distance between the expected output value (that is, $y$ associated with the original class label of the corresponding input data, $x_i$ ) and the predicted value ($y_i$ estimated by the Perceptron)
+
+
+
+
+
+- The individual weights are updated according to the following formula:
+
+$$w_i=w_i+\Delta w_i$$
+
+$\Delta w_i$ - the deviation between the expected $y$ and the predicted value $y_i$:
+$$\Delta w_i =\lambda(y-y_i)x_i$$
+
+$\lambda\in[0.0,1.0]$ is a constant and represents the learning rate assigned to the Perceptron at the initialization phase.
+
+
+
+
+
+<img src="./images/AIAdd1.gif" alt="drawing" width="1000"/>
+
+
+
+
+<img src="./images/AIAdd2.png" alt="drawing" width="1000"/>
+
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+> The value of the learning rate is crucial for the learning of the Perceptron, and it is therefore necessary to carefully evaluate (even by trial and error) the value to be attributed to the $\lambda$ constant to optimize the results returned from the Perceptron
+
+
+
+
+> How to detect spam with Perceptrons
+
+- Library ```scikit-learn``` [Link](https://scikit-learn.org/stable/)
+
+	- Create a simple spam filter based on the Perceptron
+
+- Dataset [link](https://archive.ics.uci.edu/dataset/228/sms+spam+collection): a total of 4,827 SMS legitimate messages (86.6%) and a total of 747 (13.4%) spam messages.
+
+
+
+
+> How to detect spam with Perceptrons
+
+- Other libraries
+
+	- ```pandas``` [Link](https://pandas.pydata.org/)
+	- ```numpy``` [Link](https://numpy.org/)
+
+
+
+
+
+> How to detect spam with Perceptrons
+
+<img src="./images/paper20.png" alt="drawing" width="800"/>
+
+
+
+
+> How to detect spam with Perceptrons
+
+- Idea: transforming it into numerical values to make it manageable by the Perceptron. Moreover, we have selected only the messages containing the buy and sex keywords (according to our previous description), counting for each message (be it spam or ham) the number of occurrences of the keywords present in the text of the message
+
+- Preprocessed [data](./data/sms_spam_perceptron.csv)
+
+
+
+
+> Loading data
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>0</span>
+                <span>D</span>
+                <span>I</span>
+                <span>N</span>
+                <span>G</span>
+            </h3>
+        </div>
+</div>
+
+```
+import pandas as pd
+import numpy as np
+
+df = pd.read_csv('./sms_spam_perceptron.csv')
+
+y = df.iloc[:, 0].values
+y = np.where(y == 'spam', -1, 1)
+
+X = df.iloc[:,[1,2]].values
+```
+
+Assigned the class labels ham and spam to $y$; assigned to $X$ the values corresponding to the sex and buy
+
+
+
+
+> Divide the input data between training data and test data
+
+<img src="./images/paper21.png" alt="drawing" width="800"/>
+
+
+
+
+> Divide the input data between training data and test data
+
+<img src="./images/paper22.png" alt="drawing" width="500"/>
+
+
+
+
+> Loading data
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>0</span>
+                <span>D</span>
+                <span>I</span>
+                <span>N</span>
+                <span>G</span>
+            </h3>
+        </div>
+</div>
+
+```
+import pandas as pd
+import numpy as np
+
+df = pd.read_csv('./sms_spam_perceptron.csv')
+
+y = df.iloc[:, 0].values
+y = np.where(y == 'spam', -1, 1)
+
+X = df.iloc[:,[1,2]].values
+
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
+
+# print(X_train.shape) (69, 2)
+
+# print(X_test.shape) (30, 2)
+
+# print(X.shape)(99, 2)
+```
+
+
+
+
+> Loading data
+
+- Define our Perceptron by instantiating the Perceptron class of the ```sklearn.linear_model``` package
+
+
+
+
+> Loading data
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>0</span>
+                <span>D</span>
+                <span>I</span>
+                <span>N</span>
+                <span>G</span>
+            </h3>
+        </div>
+</div>
+
+```
+import pandas as pd
+import numpy as np
+
+df = pd.read_csv('./sms_spam_perceptron.csv')
+
+y = df.iloc[:, 0].values
+y = np.where(y == 'spam', -1, 1)
+
+X = df.iloc[:,[1,2]].values
+
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
+
+from sklearn.linear_model import Perceptron
+
+p = Perceptron(max_iter=40, eta0=0.1, random_state=0)
+
+p.fit(X_train, y_train)
+```
+
+
+
+> Divide the input data between training data and test data
+
+- During the initialization phase of the p Perceptron, we assigned a maximum number of iterations equal to ```40``` (with the ```max_iter = 40``` parameter initialization) and a learning rate equal to 0.1 (```eta0 = 0.1```). Finally, we invoked the ```fit()``` method of the Perceptron, training the p object with the training data
+
+
+
+
+> How to detect spam with Perceptrons
+
+- Estimate the values on the test data, invoking the ```predict()``` method of the Perceptron
+
+
+
+
+> How to detect spam with Perceptrons
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>0</span>
+                <span>D</span>
+                <span>I</span>
+                <span>N</span>
+                <span>G</span>
+            </h3>
+        </div>
+</div>
+
+```
+import pandas as pd
+import numpy as np
+
+df = pd.read_csv('./sms_spam_perceptron.csv')
+
+y = df.iloc[:, 0].values
+y = np.where(y == 'spam', -1, 1)
+
+X = df.iloc[:,[1,2]].values
+
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
+
+from sklearn.linear_model import Perceptron
+
+p = Perceptron(max_iter=40, eta0=0.1, random_state=0)
+
+p.fit(X_train, y_train)
+
+y_pred = p.predict(X_test)
+
+# array([ 1,  1, -1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,
+       -1,  1, -1,  1,  1,  1,  1,  1,  1,  1,  1, -1,  1])
+
+```
+
+
+
+
+> How to detect spam with Perceptrons
+
+- As a consequence of <spanGREEN>the training phase on the sample data (which accounts for $70%$ of the original dataset)</spanGREEN>, <spanBYMix>the Perceptron should now be able to correctly estimate the expected values of the test data subset (equal to the remaining $30%$ of the original dataset)</spanBYMix>.
+
+
+
+
+> How to detect spam with Perceptrons
+
+Verify the accuracy of the estimated values returned by the Perceptron using the ```sklearn.metrics``` package of scikit-learn
+
+
+
+
+
+> How to detect spam with Perceptrons
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>0</span>
+                <span>D</span>
+                <span>I</span>
+                <span>N</span>
+                <span>G</span>
+            </h3>
+        </div>
+</div>
+
+```
+import pandas as pd
+import numpy as np
+
+df = pd.read_csv('./sms_spam_perceptron.csv')
+
+y = df.iloc[:, 0].values
+y = np.where(y == 'spam', -1, 1)
+
+X = df.iloc[:,[1,2]].values
+
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
+
+from sklearn.linear_model import Perceptron
+
+p = Perceptron(max_iter=40, eta0=0.1, random_state=0)
+
+p.fit(X_train, y_train)
+
+y_pred = p.predict(X_test)
+
+from sklearn.metrics import accuracy_score
+
+print('Misclassified samples: %d' % (y_test != y_pred).sum())
+print('Accuracy: %.2f' % accuracy_score(y_test, y_pred))
+
+```
+
+
+
+> How to detect spam with Perceptrons
+
+- By comparing the test data (y_test) with the predicted values (y_pred), and summing up the overall number of mismatches, we are now able to evaluate the accuracy of the
+predictions provided by the Perceptron.
+
+
+
+
+> Alchemy
+
+<img src="./images/AIAdd3.jpg" alt="drawing" width="500"/>
+
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+# <p class="hover-underline-animation">Limitations of Perceptrons?</p>
+
+
+
+
+> Being essentially a binary linear classifier, the Perceptron is able to offer accurate results only if the analyzed data can be linearly separable; that is, it is possible to identify a straight line (or a hyperplane, in case of multidimensional data) that completely bisects the data in the Cartesian plane.
+
+
+
+
+> How to detect spam with Perceptrons
+
+<img src="./images/paper23.png" alt="drawing" width="600"/>
+
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+## <p class="hover-underline-animation">The analyzed data was not linearly separable?</p>
+
+
+
+
+> Linear vs Non-linear problems
+
+<img src="./images/paper19.png" alt="drawing" width="800"/>
+
+
+
+
+> How to detect spam with Perceptrons
+
+- The Perceptron learning algorithm would oscillate indefinitely around the data, looking for a possible vector of weights that can linearly separate the data
+
+
+
+
+> How to detect spam with Perceptrons
+
+<img src="./images/paper24.png" alt="drawing" width="600"/>
+
+
+
+
+
+> How to detect spam with Perceptrons
+
+- Therefore, the convergence of the Perceptron is only possible in the presence of linearly separable data, and in the case of a small learning rate. If the classes of data are not linearly separable, it is of great importance to set a maximum number of iterations (corresponding to the ```max_iter``` parameter) in order to prevent the algorithm from oscillating indefinitely in search of an (nonexistent) optimal solution.
+
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+# <p class="hover-underline-animation">Overcome?</p>
+
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+## <p class="hover-underline-animation">A wider margin of data separation between them</p>
+
+
+
+
+
+> Spam detection with support vector machines (SVMs)
+
+- SVMs are supervised algorithms, the identified hyperplane is not limited to the linear model
+
+<img src="./images/paper25.png" alt="drawing" width="750"/>
+
+
+
+
+
+> Spam detection with support vector machines (SVMs)
+
+- The SVM can be considered as an extension of the Perceptron
+
+- In the case of the Perceptron, our goal was to minimize classification errors, in the case of SVM, our goal instead is to maximize the margin, that is, the distance between the hyperplane and
+the training data closest to the hyperplane (<spanRED>the nearest training data is thus known as a support vector</spanRED>)
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+## <p class="hover-underline-animation">Why choose the hyperplane that maximizes the margin in the first place?</p>
+
+
+
+
+> SVM optimization strategy
+
+- Wider margins correspond to fewer classification errors, while with narrower margins we risk incurring the phenomenon known as overfitting 
+
+- We can translate the SVM optimization strategy in mathematical terms
+
+$$y=\sum w_i x_i+\beta\geqslant\mu,$$
+
+where $\beta$ - bias, $\mu$ - margin.
+
+
+
+> SVM optimization strategy
+
+- We add the value of the $\beta$ bias, which allows us to obtain a value greater than or equal to zero
+
+- The value calculated in this way is compared with the margin $\mu$ in order to ensure that the distance between each sample and the separating hyperplane we identified (thus constituting our decision boundary) is greater or at most equal to our margin
+
+
+
+
+> SVM spam filter example
+
+- Spam filter - replace the Perceptron with an SVM
+
+- Preprocessed [data](./data/sms_spam_svm.csv)
+
+	- The total occurrences of the various suspicious keywords were extracted and compared to the total number of harmless words appearing within the messages) is not strictly linearly separable
+
+
+
+> SVM spam filter example
+
+- Load the data with pandas, associating the class labels with the corresponding -1 values (in the case of spam) and 1 (in the case of ham)
+
+
+
+
+> SVM spam filter example
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>0</span>
+                <span>D</span>
+                <span>I</span>
+                <span>N</span>
+                <span>G</span>
+            </h3>
+        </div>
+</div>
+
+```
+import pandas as pd
+import numpy as np
+
+df = pd.read_csv('./sms_spam_svm.csv')
+
+y = df.iloc[:, 0].values
+y = np.where(y == 'spam', -1, 1)
+
+X = df.iloc[:,[1,2]].values
+
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
+
+from sklearn.svm import SVC
+
+svm = SVC(kernel='linear', C=1.0, random_state=0)
+
+svm.fit(X_train, y_train)
+
+y_pred = svm.predict(X_test)
+
+from sklearn.metrics import accuracy_score
+print('Misclassified samples: %d' % (y_test != y_pred).sum())
+print('Accuracy: %.2f' % accuracy_score(y_test, y_pred))
+```
+
+
+
+
+> SVM spam filter example
+
+- Even in the presence of non-linearly separable data, we see how well the SVM algorithm behaves, since the level of accuracy of the predictions accounts to 84%, with the number of incorrect classifications accounting to only 7 cases.
+
+
+
+
+
+> Spam detection with support vector machines (SVMs)
+
+- The versatility of the SVM algorithm allows us to deal with even more complex real-world classification cases, such as in the case of spam messages represented by images, instead of simple text.
+
+
+
+
+> Phishing detection with logistic regression and decision trees
+
+- Regression models are undoubtedly the most used of all learning algorithms. 
+
+- Developed from statistical analysis, regression models have quickly spread in ML and in AI in general.
+
+- The most known and used regression model is linear regression.
+
+
+
+
+> Linear regression models
+
+- The linear regression model is characterized by the fact that the data is represented as sums of features, leading to a straight line in the Cartesian plane.
+
+- In formal terms, linear regression can be described by the following formula:
+
+$$y=wX+\beta$$
+
+
+
+
+> Linear regression models
+
+$$y=wX+\beta$$
+
+- $y$ - the predicted values, which are the result of the linear combination of the single features (represented by the $X$ matrix) to which a weight vector is applied (represented by the w vector), and by the addition of a constant ($\beta$), which represents the default predicted value when all features assume the value of zero (or simply are missing).
+
+
+
+> Linear regression models
+
+- A perceptron is a basic artificial neuron that can only output a binary value (0 or 1) due to its step function activation, while linear regression is a statistical model that predicts a continuous numerical value by finding a linear relationship between input variables.
+
+
+
+> Phishing detection with logistic regression and decision trees
+
+- Using the ```linear_model``` module of ```scikit-learn```, which we will feed with one of the previously used spam message datasets
+- Preprocessed [data](./data/sms_spam_perceptron.csv)
+
+
+
+> Linear regression models
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>0</span>
+                <span>D</span>
+                <span>I</span>
+                <span>N</span>
+                <span>G</span>
+            </h3>
+        </div>
+</div>
+
+```
+import pandas as pd
+import numpy as np
+
+df = pd.read_csv('./sms_spam_perceptron.csv')
+
+y = df.iloc[:, 0].values
+y = np.where(y == 'spam', -1, 1)
+
+X = df.iloc[:,[1,2]].values
+
+from sklearn.linear_model import LinearRegression
+
+linear_regression = LinearRegression()
+linear_regression.fit(X,y)
+print (linear_regression.score(X,y))
+```
+
+
+
+> Linear regression models
+
+- To verify the accuracy of the predictions provided by the linear regression model, we can use the score() method, which gives us the measurement of the coefficient of the $R^2$ determination.
+
+- This coefficient varies between 0 and 1, and measures how much better the predictions returned by the linear model are, when compared to the simple mean.
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+# <p class="hover-underline-animation">Limitations?</p>
+
+
+
+
+> Linear regression models
+
+- The linear regression model can only be used to manage quantitative data, whereas in the case where the predictive analysis used categorical data, we have to resort to the logistic regression model. 
+
+- The major limitation of linear regression is that the model assumes that features are mostly unrelated; that is, they do not influence each other.
+
+<div class="popup" onclick="myFunction12()"><p class="blink" style="font-size:32px;"><spanBYMix>Example</spanBYMix></p><span class="popuptext" id="myPopup12" STYLE="font-size:25px">The possible relationship between variables such as the age and the weight of a person, which are related to each other, as weight varies according to age.
+  </span>
+</div> 
+
+
+
+
+### <p class="hover-underline-animation">When the data being analyzed exhibits complex relationships, the linear regression model leads us to systematically distorted predictions.</p>
+
+
+
+
+
+> Linear regression models
+
+- In case we wanted to use linear regression to classify the samples within two classes (as is the case in spam detection) whose labels are represented by numerical values (for
+example, -1 for spam, and +1 for ham), the linear regression model will try to identify the result that is closest to the target value (that is, linear regression has the purpose of minimizing forecasting errors). 
+
+
+
+> Linear regression models
+
+- The negative side effect of this behavior is that it leads to greater classification errors. With respect to the Perceptron, linear regression does not give us good results in terms of classification accuracy, precisely because linear regression works better with continuous intervals of values, rather than with classes of discrete values (as is the case in classification).
+
+
+
+
+> Logistic regression
+
+- Most useful for the purposes of classification, consists of estimating the probability of the samples belonging to individual classes. This is the strategy adopted by logistic regression (which, in spite of the name, constitutes a classification algorithm, rather than a regression model).
+
+
+
+
+> Logistic regression
+
+- The mathematical formulation of logistic regression
+
+$$P(y=c|x)=\frac{e^z}{1+e^z}$$
+
+where $z=\sum w_i x_i$. P(y=c|x) measures the conditional probability that a given sample falls into the class, given the $x_i$ features
+
+
+
+
+> Logistic regression
+
+- A perceptron is a basic linear classifier that outputs a binary prediction (yes/no) based on a simple threshold function, while logistic regression is a statistical model that predicts the probability of a binary outcome, providing a more nuanced output between 0 and 1 using a sigmoid function; essentially, a perceptron can be seen as a simplified version of logistic regression with a more rigid decision boundary.
+
+
+
+
+
+> Phishing detection
+
+- Use logistic regression to implement a phishing detector
+
+- Like spam detection, phishing detection is nothing more than a sample classification task.
+
+- Dataset [link](https://archive.ics.uci.edu/dataset/327/phishing+websites)
+
+
+
+
+> Phishing detection
+
+- Preprocessed [data](./data/phishing_dataset.csv)
+
+- The dataset has been converted into CSV format starting from the original ```.arff``` format, using the data wrangling technique known as [one-hot encoding](https://en.wikipedia.org/wiki/One-hot), and consists of records containing 30 features that characterize phishing websites.
+
+
+
+
+
+> Logistic regression
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>0</span>
+                <span>D</span>
+                <span>I</span>
+                <span>N</span>
+                <span>G</span>
+            </h3>
+        </div>
+</div>
+
+```
+import pandas as pd
+import numpy as np
+from sklearn import *
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+
+phishing_dataset = np.genfromtxt('./phishing_dataset.csv',
+delimiter=',', dtype=np.int32)
+samples = phishing_dataset[:,:-1]
+targets = phishing_dataset[:, -1]
+
+from sklearn.model_selection import train_test_split
+
+training_samples, testing_samples, training_targets, testing_targets = train_test_split(samples, targets, test_size=0.2, random_state=0)
+log_classifier = LogisticRegression()
+log_classifier.fit(training_samples, training_targets)
+predictions = log_classifier.predict(testing_samples)
+accuracy = 100.0 * accuracy_score(testing_targets, predictions)
+
+print ("Logistic Regression accuracy: " + str(accuracy))
+
+```
+
+
+
+> Advantages of adopting logistic regression
+
+- The model can be trained very efficiently
+- It can be used effectively even in the presence of a large number of features
+- The algorithm has a high degree of scalability, due to the simplicity of its scoring function
+
+
+
+
+> Limitations of adopting logistic regression
+
+- Deriving from the basic assumptions that characterize it, such as the need for the features to be linearly independent (a rule that translates in technical terms as the absence of multicollinearity)
+
+
+
+
+> Limitations of adopting logistic regression
+
+- Requiring more training samples on average than other competing algorithms, as the maximum likelihood criterion adopted in logistic regression is
+known to be less powerful than, say, the least squares method used in linear regression to minimize prediction errors.
+
+
+
+
+> We have to choose which algorithm to use to perform a given task, we must consider the type of features that characterize our data. The features can in fact be made up of quantitative values or qualitative data.
+
+
+
+
+> ML algorithms are obviously more at ease when dealing with quantitative values; however, most of the real cases involve the use of data expressed in a qualitative form (such as
+descriptions, labels, words, and so on) that imply information expressed in non-numerical form.
+
+
+
+
+> We have seen how the translation in numerical form (a practice known as numeric encoding) of qualitative features (such as the spam and ham labels, to which we assigned the numerical values of -1 and +1, respectively) only partially solve the classification problems.
+
+
+
+
+## <p class="hover-underline-animation">How can we instruct a machine to process information presented both in quantitative and qualitative forms?</p>
+
+
+
+
+> Decision trees
+
+- Decision trees use binary trees to analyze and process data, thus succeeding in formulating predictions concerning both values expressed in numerical and categorical form, accepting both numerical values and qualitative information as input data.
+
+
+
+
+> Decision trees - Strategy
+
+- Step1: Dividing the original dataset into two child subsets, after having verified a binary condition, following the first subdivision, we will have two child subsets as a result, in which the binary condition is verified or falsified.
+
+
+
+> Decision trees - Strategy
+
+- Step2: The child subsets will be further subdivided on the basis of further conditions; at each step, the condition that provides the best bipartition of the original subset is
+chosen (for this purpose, appropriate metrics are used to measure the quality of the subdivision).
+
+
+
+
+> Decision trees - Strategy
+
+- Step3: The division proceeds in a recursive manner. It is therefore necessary to define a stopping condition (such as the achievement of a maximum depth).
+
+- Step4: At each iteration, the algorithm generates a tree structure in which the child nodes represent the choices taken at each step, with each leaf contributing to the overall classification of the input data.
+
+
+
+
+> Decision trees - Strategy
+
+- The decision tree for the [Iris dataset](https://scikit-learn.org/dev/auto_examples/datasets/plot_iris_dataset.html)
+
+<img src="./images/paper26.png" alt="drawing" width="550"/>
+
+
+
+
+> Decision trees
+
+- Preprocessed [data](./data/phishing_dataset.csv)
+
+
+
+
+> Decision trees
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>0</span>
+                <span>D</span>
+                <span>I</span>
+                <span>N</span>
+                <span>G</span>
+            </h3>
+        </div>
+</div>
+
+```
+import pandas as pd
+import numpy as np
+from sklearn import *
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+
+phishing_dataset = np.genfromtxt('./phishing_dataset.csv', delimiter=',', dtype=np.int32)
+samples = phishing_dataset[:,:-1]
+targets = phishing_dataset[:, -1]
+
+from sklearn.model_selection import train_test_split
+
+training_samples, testing_samples, training_targets, testing_targets = train_test_split(samples, targets, test_size=0.2, random_state=0)
+
+from sklearn import tree
+tree_classifier = tree.DecisionTreeClassifier()
+tree_classifier.fit(training_samples, training_targets)
+predictions = tree_classifier.predict(testing_samples)
+accuracy = 100.0 * accuracy_score(testing_targets, predictions)
+print ("Decision Tree accuracy: " + str(accuracy))
+```
+
+
+
+> Decision trees
+
+- Decision trees are also very efficient in the elaboration of large datasets. 
+- In fact, the characteristics of the tree data structures allow us to limit the complexity of the algorithm to an order of magnitude equal to $\mathcal{O}(\log n)$.
+
+
+
+> Disadvantages of decision trees
+
+- Overfitting, which is due to the complexity of the tree data structures (it is in fact necessary to proceed in a systematic manner with the pruning of the tree, in order to
+reduce its overall complexity).
+
+
+
+
+> Disadvantages of decision trees
+
+- One of the undesirable consequences of the complexity is the high sensitivity of the algorithm to even the smallest changes in the training dataset, which can lead to sensible
+impacts on the prediction model. Therefore, decision trees are not the best fit for incremental learning.
+
+
+
+> Spam detection with Naive Bayes
+
+- Naive Bayes is the fact that it requires little starting data to begin classifying input data; moreover, the information that progressively adds up contributes to dynamically updating the previous estimates, incrementally improving the forecasting model (unlike, as we saw in the previous paragraph, the algorithm based on decision trees).
+
+
+
+> Spam detection with Naive Bayes
+
+- The spam detection algorithms based on Naive Bayes can exploit the emails already present in the inbox, constantly updating the probability estimations on the base of new email messages that are progressively added to those already existing.
+
+
+
+
+> Spam detection with Naive Bayes
+
+
+- The constant process of updating the probability estimates is based on
+
+$$p(A|E)=\frac{P(A)P(E|A)}{P(E)}$$
+
+- The relationship between the probability of the occurrence of an event, $A$, conditioned to the evidence, $E$.
+
+
+
+
+> Spam detection with Naive Bayes
+
+<img src="./images/AddNaive.png" alt="drawing" width="900"/>
+
+
+
+
+> Spam detection with Naive Bayes
+
+- This relationship depends on the probability of A (prior probability) and the likelihood $P(E|A)$, of evidence, $E$, which determines the probability estimate, $P(A|E)$ (posterior probability).
+
+
+
+
+> Spam detection with Naive Bayes
+
+- An important feature of the Bayes rule probability update is that the probability $P(A|E)$ (the posterior probability), as a result of the updating process, becomes the new prior probability, thus contributing to dynamically updating the existing probability estimates
+
+
+
+
+> Spam detection with Naive Bayes
+
+- One of the basic assumptions of the Bayes rule is that it postulates the independence of events. This assumption is not always realistic.
+- In most cases, it is a reasonable condition that leads to good forecasts, while at the same time simplifying the application of the Bayes rule, especially in the presence of several competing events, thus reducing the calculations to a simple multiplication of the probabilities associated with each event.
+
+
+
+
+> Spam detection with Naive Bayes
+
+- Before seeing Naive Bayes in action, applying the algorithm in spam detection, we need to analyze the text analysis techniques to allow Naive Bayes to dynamically recognize the
+suspect keywords used by spammers (<spanRED>rather than choosing them in a fixed fashion, as we did in the previous examples</spanRED>).
+
+
+
+> Spam detection adopting NLP
+
+- The purpose of NLP is to try to extract sensible information from unstructured data (such as email messages, tweets, and Facebook posts).
+
+
+
+> Spam detection adopting NLP
+
+- The phases that characterize NPL are as follows:
+
+	- <spanGREEN>Step1</spanGREEN> Identification of the words (tokens) constituting the language
+	- <spanGREEN>Step2</spanGREEN> Analysis of the structure of the text
+	- <spanGREEN>Step3</spanGREEN> Identification of the relationships between words (in paragraphs, sentences, and so on)
+	- <spanGREEN>Step4</spanGREEN> Semantic analysis of the text
+
+
+
+
+> Spam detection adopting NLP
+
+Python libraries for NLP is the ```Natural Language Toolkit (NLTK)```, often used for spam detection.
+
+
+
+> Spam detection with Naive Bayes
+
+- Idea: NLTK combined with Naive Bayes to create a spam detector
+
+	- Show the use of a classifier based on Naive Bayes, using ```MultinomialNB``` from the ```sklearn.naive_bayes``` module
+
+	- Divide the original dataset consisting of the spam message archive in CSV format, assigning a percentage equal to 30% to the test data subset, and the remaining 70% to the training data subset.
+
+
+
+
+> Spam detection with Naive Bayes
+
+- Idea: NLTK combined with Naive Bayes to create a spam detector
+
+	- The data will be treated with the bag of words (BoW) technique, which assigns a number to each identified word in the text using ```CountVectorizer``` of ```sklearn```, to which we will pass the ```get_lemmas()``` method, which returns the individual tokens extracted from the text of the messages.
+
+
+
+> Spam detection with Naive Bayes
+
+- Idea: NLTK combined with Naive Bayes to create a spam detector
+
+	- Normalize and weigh the data using TfidfTransformer, which transforms a count matrix to a normalized <div class="popup" onclick="myFunction13()"><p class="blink" style="font-size:32px;"><spanBYMix>tf</spanBYMix></p><span class="popuptext" id="myPopup13" STYLE="font-size:25px">Tf means term frequency, while tf-idf means term-frequency times inverse document frequency. This is a common term weighting scheme in information retrieval that has also found good use in document classification. The goal of using tf-idf instead of the raw frequencies of occurrence of a token in a given document is to scale down the impact of tokens that occur very frequently in a given corpus and that are hence empirically less informative than features that occur in a small fraction of the training corpus.</span></div> or tf-idf representation.
+
+- [Data](./data/sms_spam_no_header.csv)
+
+
+
+
+> Spam detection with Naive Bayes
+
+[Matplotlib](https://matplotlib.org/)
+
+
+<img src="./images/paper27.png" alt="drawing" width="600"/>
+
+
+
+
+> Spam detection with Naive Bayes
+
+[textblob](https://textblob.readthedocs.io/en/dev/)
+
+<img src="./images/paper28.png" alt="drawing" width="600"/>
+
+
+
+
+> Spam detection with Naive Bayes
+
+You need to get file [defs](./sourcefiles/defs.py)
+
+
+
+
+> Spam detection with Naive Bayes
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>0</span>
+                <span>D</span>
+                <span>I</span>
+                <span>N</span>
+                <span>G</span>
+            </h3>
+        </div>
+</div>
+
+```
+import matplotlib.pyplot as plt
+import csv
+from textblob import TextBlob
+import pandas
+import sklearn
+import numpy as np
+import nltk
+from sklearn.feature_extraction.text import CountVectorizer,TfidfTransformer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import classification_report, accuracy_score
+from sklearn.model_selection import train_test_split
+from defs import get_tokens
+from defs import get_lemmas
+
+sms = pandas.read_csv('./sms_spam_no_header.csv', sep=',',names=["type", "text"])
+```
+
+
+
+
+> Spam detection with Naive Bayes
+
+<img src="./images/paper29.png" alt="drawing" width="700"/>
+
+
+
+
+> Spam detection with Naive Bayes
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>0</span>
+                <span>D</span>
+                <span>I</span>
+                <span>N</span>
+                <span>G</span>
+            </h3>
+        </div>
+</div>
+
+```
+import matplotlib.pyplot as plt
+import csv
+from textblob import TextBlob
+import pandas
+import sklearn
+import numpy as np
+import nltk
+from sklearn.feature_extraction.text import CountVectorizer,TfidfTransformer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import classification_report, accuracy_score
+from sklearn.model_selection import train_test_split
+from defs import get_tokens
+from defs import get_lemmas
+
+sms = pandas.read_csv('./sms_spam_no_header.csv', sep=',',names=["type", "text"])
+
+text_train, text_test, type_train, type_test =train_test_split(sms['text'], sms['type'], test_size=0.3)
+
+# bow stands for "Bag of Words"
+bow = CountVectorizer(analyzer=get_lemmas).fit(text_train)
+
+```
+
+
+
+
+> Spam detection with Naive Bayes
+
+Installing NLTK Data: [https://www.nltk.org/data.html](https://www.nltk.org/data.html)
+
+<img src="./images/paper30.png" alt="drawing" width="700"/>
+
+<img src="./images/paper31.png" alt="drawing" width="700"/>
+
+
+
+
+> Spam detection with Naive Bayes
+
+Add the following codes:
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>0</span>
+                <span>D</span>
+                <span>I</span>
+                <span>N</span>
+                <span>G</span>
+            </h3>
+        </div>
+</div>
+
+```
+sms_bow = bow.transform(text_train)
+tfidf = TfidfTransformer().fit(sms_bow)
+
+sms_tfidf = tfidf.transform(sms_bow)
+spam_detector = MultinomialNB().fit(sms_tfidf, type_train)
+```
+
+
+
+
+> Spam detection with Naive Bayes
+
+<img src="./images/paper32.png" alt="drawing" width="700"/>
+
+
+
+
+
+> Spam detection with Naive Bayes
+
+- We can check if spam_detector works well by trying to run a prediction on a random message (in our example, we chose the 26th message from the dataset), and checking that the detector correctly classifies the type of message (spam or ham) by comparing the predicted value with the corresponding type label associated with the messag. <div class="popup" onclick="myFunction14()"><p class="blink" style="font-size:32px;"><spanBYMix>TRY</spanBYMix></p><span class="popuptext" id="myPopup14" STYLE="font-size:25px">msg = sms['text'][25]<br>
+msg_bow = bow.transform([msg])<br>
+msg_tfidf = tfidf.transform(msg_bow)<br>
+print ('predicted:', spam_detector.predict(msg_tfidf)[0])<br>
+print ('expected:', sms.type[25])</span></div> 
+
+
+
+
+> Spam detection with Naive Bayes
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>0</span>
+                <span>D</span>
+                <span>I</span>
+                <span>N</span>
+                <span>G</span>
+            </h3>
+        </div>
+</div>
+
+```
+import matplotlib.pyplot as plt
+import csv
+from textblob import TextBlob
+import pandas
+import sklearn
+import numpy as np
+import nltk
+from sklearn.feature_extraction.text import CountVectorizer,TfidfTransformer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import classification_report, accuracy_score
+from sklearn.model_selection import train_test_split
+from defs import get_tokens
+from defs import get_lemmas
+
+sms = pandas.read_csv('./sms_spam_no_header.csv', sep=',',names=["type", "text"])
+
+text_train, text_test, type_train, type_test =train_test_split(sms['text'], sms['type'], test_size=0.3)
+
+# bow stands for "Bag of Words"
+bow = CountVectorizer(analyzer=get_lemmas).fit(text_train)
+
+sms_bow = bow.transform(text_train)
+tfidf = TfidfTransformer().fit(sms_bow)
+
+sms_tfidf = tfidf.transform(sms_bow)
+spam_detector = MultinomialNB().fit(sms_tfidf, type_train)
+
+msg = sms['text'][25]
+msg_bow = bow.transform([msg])
+msg_tfidf = tfidf.transform(msg_bow)
+print ('predicted:', spam_detector.predict(msg_tfidf)[0])
+print ('expected:', sms.type[25])
+
+```
+
+
+
+
+> Spam detection with Naive Bayes
+
+Once the correct functioning has been verified, we proceed to the prediction on the whole dataset
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>0</span>
+                <span>D</span>
+                <span>I</span>
+                <span>N</span>
+                <span>G</span>
+            </h3>
+        </div>
+</div>
+
+```
+predictions = spam_detector.predict(sms_tfidf)
+print ('accuracy', accuracy_score(sms['type'][:len(predictions)],predictions))
+
+```
+
+<img src="./images/paper33.png" alt="drawing" width="800"/>
+
+
+
+
+> As can be seen in the preceding screenshot, the level of accuracy of Naive Bayes is already quite high (equal to 80%) with the advantage, unlike the other algorithms, that this accuracy can improve further still as the number of messages analyzed increases.
+
+
+
+
+> Summary
+
+- Several supervised learning algorithms have been explained, and we have seen their concrete application in solving common tasks in the field of cybersecurity, such as spam detection and phishing detection.
+
+- [Spam-filtering-An-implementation-using-Python-and-Scikit-learn](https://github.com/Mohsin-Asif/SMS-Spam-filtering-An-implementation-using-Python-and-Scikit-learn)
+
+- [Public Data for Cybersecurity Data Science Projects](https://medium.com/@HunterKempf/public-data-for-cybersecurity-data-science-projects-3af6c0354025)
+
+</textarea></section>
+
+</section>
+
+
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="Anomaly" class="center"><textarea data-template>
+# Network Anomaly Detection with AI
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+## Introduction
+
+- Cyberspace's attack surface grows exponentially, and it is therefore essential to resort to automated tools for the effective detection of network anomalies associated with
+unprecedented cybersecurity threats.
+
+	- Network anomaly detection techniques
+	- How to classify network attacks
+	- Detecting botnet topology
+	- Different ML algorithms for botnet detection
+
+
+
+
+## Introduction
+
+- Anomaly detection has always been a research area of cybersecurity, particularly in the field of network security protection. However, anomaly detection is not limited to identifying and preventing network attacks, but can also be adopted in other areas, such as fraud detection and in the identification of possible compromises of user profiles.
+
+
+
+> Network anomaly detection techniques
+
+- 1.Signature-based detection
+
+	- This gets combined with an alert system to be launched whenever a correspondence with archived signatures is detected in the network traffic. The analogies of signature-based detection systems with various antivirus software are obvious. The knowledge base of the signatures must be constantly updated to detect new types of attacks.
+
+
+
+> Network anomaly detection techniques
+
+- 2.Anomaly detection
+
+	- An attempt is made to identify network traffic behavior that can be defined as normal, in order to detect differences in behavior that deviate from normality as anomalous. This approach makes it possible to detect the new types of attack by analyzing the characteristics of network traffic that could be considered as anomalous.
+
+
+
+
+## <p class="hover-underline-animation">Identify what constitutes abnormal behavior in terms of network traffic</p>
+
+
+
+
+> Network anomaly detection techniques
+
+- In order to detect anomalous traffic: 
+	- The number of connections to and from a specific host
+	- Unusual remote communication ports or unexpected traffic patterns
+	- Unusual traffic peaks occurring at particular times of the day (for example, traffic carrying on during the night)
+	- Communication bandwidth heavily occupied by particular hosts within the network
+
+
+
+
+> Intrusion Detection Systems
+
+- Traditionally, intrusion detection activity has been managed through the introduction of
+specialized devices, known as Intrusion Detection Systems (IDS). These devices were usually divided into the following two categories:
+
+	- Host-based IDS
+	- Network-based IDS
+
+
+
+> Intrusion Detection Systems
+
+- With the introduction of Artificial Intelligence (AI) techniques in the field of cybersecurity, a third type of IDS has also been added to the aforementioned two traditional types: Anomaly-driven IDS
+
+
+
+
+> Host Intrusion Detection Systems
+
+- Detect possible intrusions affecting host machines within an organization, especially the machines that are considered critical.
+- To this end, HIDS monitors some of the system metrics that are supposed to be significant for identifying possible attacks, such as system information associated with the following system metrics:
+	- Number and type of running processes
+	
+
+
+
+> Host Intrusion Detection Systems
+
+- Number, type, and creation of user accounts
+- Kernel modules loading (device drivers included)
+- File and directory activity
+- Task scheduler activity
+- Registry key modification
+- Background processes (daemons and services)
+- Operating system (OS) modules loaded at startup
+- Host network activity
+
+
+
+
+	
+> Host Intrusion Detection Systems
+
+- Typically, the identification of the system metrics to be monitored is strictly dependent on the adopted threat model, and in order to collect the information to be monitored, it is possible to use the tools that come installed with the OS of the host machines, or by installing specialized system monitoring tools.
+
+
+
+
+> Network Intrusion Detection Systems
+
+- Identify possible attack patterns by analyzing network traffic; that is, by processing network packets in transit—both incoming and outgoing—and detecting known attacking patterns in the flow of data. Some of the network attacks typically detected by NIDS are as follows:
+	- Adware (resulting in unsolicited and malicious advertisements (AD) downloads from remote hosts)
+
+
+
+
+> Network Intrusion Detection Systems
+- Identify possible attack patterns by analyzing network traffic; that is, by processing network packets in transit—both incoming and outgoing—and detecting known attacking patterns in the flow of data. Some of the network attacks typically detected by NIDS are as follows:
+	- Spyware (sensitive information transmitted toward remote hosts)
+
+
+
+
+
+> Network Intrusion Detection Systems
+- Identify possible attack patterns by analyzing network traffic; that is, by processing network packets in transit—both incoming and outgoing—and detecting known attacking patterns in the flow of data. Some of the network attacks typically detected by NIDS are as follows:
+	- Advanced Persistent Threats (APTs) (APT-targeted attacks that leverage specific organization flaws or misconfigured services)
+
+
+
+
+
+> Network Intrusion Detection Systems
+- Identify possible attack patterns by analyzing network traffic; that is, by processing network packets in transit—both incoming and outgoing—and detecting known attacking patterns in the flow of data. Some of the network attacks typically detected by NIDS are as follows:
+	- Botnets (a typical Command and Control (C2) attack that leverages organization network resources by transforming hosts into zombie machines, executing remote instructions)
+
+
+
+
+> Network Intrusion Detection Systems
+
+- The implementation of NIDS can leverage network diagnostic tools including sniffers (such as [tcpdump](https://www.tcpdump.org/) and [Wireshark](https://www.wireshark.org/)).
+- NIDS can also deploy integrated software solutions, such as Snort, which represents a valid solution for real-time detection of possible network intrusions.
+
+
+
+
+> These triggers are associated with a given threshold, which is a predetermined value that reliably separates the events among them. Obviously, the problem of how to adequately determine this threshold value arises, and whether this value can be validly used in relation to different contexts. 
+
+
+
+
+> Network anomaly detection techniques
+
+- Adopt a dynamic threshold (rather than relying on a hardcoded value) by systematically recalculating its value over time. These improvements can be obtained by resorting to statistical metrics, calculated on a time series (moving averages), for example, or through the re-elaboration of statistical measurements made on the distribution of the data (for example, adopting position measurements such as the median or the interquartile range (IQR)).
+
+
+
+
+> Anomaly-driven IDS
+
+- In the case of solutions based on supervised learning algorithms, we will have to categorize (label) all the data since, by definition, in supervised learning the classes to which sample data belongs are known in advance.
+- We could decide to resort to unsupervised learning algorithms, not only to let the algorithm identify unknown classes, but also to reduce the computational overhead.
+
+
+
+> The algorithms that exploit the concept of similarity (such as clustering algorithms) are well suited for the implementation of anomaly detection solutions.
+
+- However, it is also necessary in this case to pay particular attention to the type of metrics used to define the concept of similarity that distinguishes the traffic considered as normal from that being considered as anomalous.
+
+
+
+
+> In the implementation of anomaly detection solutions, scoring systems are used for the assessment of traffic: identifying thresholds of values that separate the different types of traffic from each other (normal versus anomalous).
+
+
+
+
+> An anomaly detection system can use—as a scoring metric—the distance existing between the values of the dataset (considered as points of the $n$-dimensional space representing the different features), or evaluate the regularity in the distribution of data, with respect to a distribution considered representative of the phenomenon under investigation.
+
+
+
+
+## <p class="hover-underline-animation">How to collect sufficient and reliable data to perform algorithm analysis and training.</p>
+
+
+
+
+> Network anomaly detection techniques
+
+- Network devices, such as routers or network sensors, using tools such as
+	- tcpdump for data collection
+	- Services logs and system logs
+
+
+
+# <p class="hover-underline-animation">How to classify network attacks</p>
+
+
+
+
+
+> How to classify network attacks
+
+- The most frequent types of network attacks:
+	- Malware-based
+	- Zero-day exploits
+	- Data exfiltration via network sniffing
+	- Saturation of network resources (DoS)
+	- Session hijacking
+	- Connection spoofing
+	- Port scanning
+
+
+
+
+> Anomaly detection strategies
+
+- Concept of anomaly detection refers to a behavior that is different from what was expected; this difference, in technical terms, translates into
+outlier detection.
+
+
+
+
+
+> Anomaly detection strategies
+
+- Analyzing a sequence of events within a time series <div class="popup" onclick="myFunction15()"><p class="blink" style="font-size:32px;"><spanBYMix>Details</spanBYMix></p><span class="popuptext" id="myPopup15" STYLE="font-size:25px">The data is collected at regular intervals, evaluating the changes that occur in the series over time. This is a technique widely used in the analysis of financial markets, but it can be also validly used in the cybersecurity context to detect the frequency of characters (or commands) entered by the user in a remote session. Even the simple unnatural increase in the frequency of data entered per unit of time is indicative of an anomaly that can be traced back to the presence of an automated agent (instead of a human user) in the remote endpoint. </span></div> 
+
+- Using supervised learning algorithms <div class="popup" onclick="myFunction16()"><p class="blink" style="font-size:32px;"><spanBYMix>Details</spanBYMix></p><span class="popuptext" id="myPopup16" STYLE="font-size:25px">This approach makes sense when normal and anomalous behaviors can be reliably distinguished from each other, as in the case of credit card fraud, in which it is possible to detect predefined patterns of suspicious behavior, relying on the fact that future fraud attempts are attributable to a predefined scheme. </span></div> 
+
+- Using unsupervised learning algorithms <div class="popup" onclick="myFunction17()"><p class="blink" style="font-size:32px;"><spanBYMix>Details</spanBYMix></p><span class="popuptext" id="myPopup17" STYLE="font-size:25px">In this case, it is not possible to trace the anomalies back to predefined behaviors, as it is not possible to identify a reliable and representative training dataset for supervised learning. This scenario is the one that most commonly describes the reality of cybersecurity, characterized by new forms of attack or exploits of new vulnerabilities (zero-day attacks). Similarly, it is often difficult to trace all the theoretically possible intrusions back to a single predefined scheme. </span></div> 
+
+
+
+
+> Detecting botnet topology
+
+- One of the most common pitfalls in network anomaly detection has to do with the detection of botnets within the corporate network
+- What is a <div class="popup" onclick="myFunction18()"><p class="blink" style="font-size:32px;"><spanBYMix>botnet</spanBYMix></p><span class="popuptext" id="myPopup18" STYLE="font-size:25px">Botnets are networks of hijacked computer devices used to carry out various scams and cyberattacks. The term “botnet” is formed from the word’s “robot” and “network.” </span></div>?
+
+
+
+
+> Detecting botnet topology
+
+- In the case of botnets, the attacker's intent is to transform the victim host (by installing malware) into an automated agent that fulfills the orders received by the attacker, through a C2 console that is usually managed by a centralized server.
+
+
+
+
+> Detecting botnet topology
+
+- The victim machine thus becomes part of a vast network of compromised machines (the botnet), contributing toward a common goal with its own computational and network resources:
+
+	- Taking part in email spamming campaigns
+	- Performing Distributed Denial of Services (DDoS) toward institutional or
+	- private third-party sites
+
+
+
+
+> Detecting botnet topology
+
+- The victim machine thus becomes part of a vast network of compromised machines (the botnet), contributing toward a common goal with its own computational and network resources:
+
+	- Bitcoin and cryptocurrency mining
+	- Password cracking
+	- Credit card cracking
+	- Data leakages and data breaches
+
+
+
+
+> Detecting botnet topology
+
+- For an organization, dealing with a botnet (even unconsciously) represents a serious risk in terms of legal responsibility toward third parties; it is not just a waste of company resources.
+> This is why it is important to monitor the company network by trying to promptly identify the presence of hosts that might be part of a botnet.
+
+
+
+
+> The botnet kill chain
+
+- In order to promptly identify the possible presence of a botnet, it may be useful to consider its kill chain (the different phases that 
+- Distinguish the following phases:
+	- Malicious software installation
+	- Joining the botnet via C2
+	- Spreading the botnet to other hosts
+
+
+
+
+> Botnet detection
+
+- It is not advisable to exclusively rely on automated tools for network anomaly detection, but it may be more productive to adopt AI algorithms that are able to dynamically learn how to recognize the presence of any anomalies within the network traffic, thus allowing the analyst to perform an in-depth analysis of only really suspicious cases. 
+
+- Different ML algorithms for network anomaly detection - used to identify a botnet.
+
+
+
+
+> Botnet detection
+
+- Idea: The selected features in our example consist of the values of network latency and network throughput. In the threat model, anomalous values associated with these features can be considered as representative of the presence of a botnet.
+
+- [Data](./data/network_logs.csv)
+
+
+
+
+
+> Botnet detection - Load data
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>0</span>
+                <span>D</span>
+                <span>I</span>
+                <span>N</span>
+                <span>G</span>
+            </h3>
+        </div>
+</div>
+
+```
+import numpy as np
+import pandas as pd
+from sklearn.linear_model import *
+from sklearn.tree import *
+from sklearn.naive_bayes import *
+from sklearn.neighbors import *
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
+# Load the data
+dataset = pd.read_csv('./network_logs.csv')
+samples = dataset.iloc[:, [1, 2]].values
+targets = dataset['ANOMALY'].values
+training_samples, testing_samples, training_targets, testing_targets = train_test_split(samples, targets, test_size=0.3, random_state=0)
+```
+
+
+
+
+> Botnet detection - KNN
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>0</span>
+                <span>D</span>
+                <span>I</span>
+                <span>N</span>
+                <span>G</span>
+            </h3>
+        </div>
+</div>
+
+```
+import numpy as np
+import pandas as pd
+from sklearn.linear_model import *
+from sklearn.tree import *
+from sklearn.naive_bayes import *
+from sklearn.neighbors import *
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
+# Load the data
+dataset = pd.read_csv('./network_logs.csv')
+samples = dataset.iloc[:, [1, 2]].values
+targets = dataset['ANOMALY'].values
+training_samples, testing_samples, training_targets, testing_targets = train_test_split(samples, targets, test_size=0.3, random_state=0)
+
+# k-Nearest Neighbors model
+knc = KNeighborsClassifier(n_neighbors=2)
+knc.fit(training_samples,training_targets)
+knc_prediction = knc.predict(testing_samples)
+knc_accuracy = 100.0 * accuracy_score(testing_targets, knc_prediction)
+print ("K-Nearest Neighbours accuracy: " + str(knc_accuracy))
+
+```
+
+
+
+
+> Botnet detection - DT
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>0</span>
+                <span>D</span>
+                <span>I</span>
+                <span>N</span>
+                <span>G</span>
+            </h3>
+        </div>
+</div>
+
+```
+import numpy as np
+import pandas as pd
+from sklearn.linear_model import *
+from sklearn.tree import *
+from sklearn.naive_bayes import *
+from sklearn.neighbors import *
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
+# Load the data
+dataset = pd.read_csv('./network_logs.csv')
+samples = dataset.iloc[:, [1, 2]].values
+targets = dataset['ANOMALY'].values
+training_samples, testing_samples, training_targets, testing_targets = train_test_split(samples, targets, test_size=0.3, random_state=0)
+
+# Decision tree model
+dtc = DecisionTreeClassifier(random_state=0)
+dtc.fit(training_samples,training_targets)
+dtc_prediction = dtc.predict(testing_samples)
+dtc_accuracy = 100.0 * accuracy_score(testing_targets, dtc_prediction)
+print ("Decision Tree accuracy: " + str(dtc_accuracy))
+
+```
+
+
+
+
+> Botnet detection - GNB
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>0</span>
+                <span>D</span>
+                <span>I</span>
+                <span>N</span>
+                <span>G</span>
+            </h3>
+        </div>
+</div>
+
+```
+import numpy as np
+import pandas as pd
+from sklearn.linear_model import *
+from sklearn.tree import *
+from sklearn.naive_bayes import *
+from sklearn.neighbors import *
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
+# Load the data
+dataset = pd.read_csv('./network_logs.csv')
+samples = dataset.iloc[:, [1, 2]].values
+targets = dataset['ANOMALY'].values
+training_samples, testing_samples, training_targets, testing_targets = train_test_split(samples, targets, test_size=0.3, random_state=0)
+
+# Gaussian Naive Bayes model
+gnb = GaussianNB()
+gnb.fit(training_samples,training_targets)
+gnb_prediction = gnb.predict(testing_samples)
+gnb_accuracy = 100.0 * accuracy_score(testing_targets, gnb_prediction)
+print ("Gaussian Naive Bayes accuracy: " + str(gnb_accuracy))
+```
+
+
+
+
+## Summary
+
+- Integrate the automated anomaly detection activities with analysis carried out by human operators, exploiting AI algorithms as filters, in order
+to only select the anomalies that are really worthy of in-depth attention from the analysts
+
+
+
+
+## More interesting topics
+
+<img src="./images/paper12.png" alt="drawing" width="400"/>
+
+[Codes of Hands-On Artificial Intelligence for Cybersecurity](https://github.com/PacktPublishing/Hands-On-Artificial-Intelligence-for-Cybersecurity)
+
+
+</textarea></section>
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="Voice" class="center"><textarea data-template>
+# Clone Your Voice
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## Clone Your Voice
+
+- How do voice passwords work<br>
+<div class="popup" onclick="myFunction19()"><p class="blink" style="font-size:28px;"><spanBYMix>?</spanBYMix></p><span class="popuptext" id="myPopup19" STYLE="font-size:25px">A recording starts the voice biometry process. With that data, you'll use your voice to unlock your access. Most voice authentication systems rely on computer programming.</span></div> 
+
+<img src="./images/paper34.gif" alt="drawing" width="400"/>
+<img src="./images/paper35.png" alt="drawing" width="450"/>
+
+
+- [Is it safe to have your voice to be your password?](https://voicebiometrics.ai/blogs/is-it-safe-to-have-your-voice-to-be-your-password/)
+
+- [Voice Passwords: Definition, Security & How They Work](https://www.okta.com/identity-101/voice-passwords/)
+
+
+
+
+
+## Clone Your Voice
+
+- OpenVoice, a versatile instant voice cloning approach that requires only a short audio clip from the reference speaker to replicate their voice and generate speech in multiple languages. 
+
+<img src="./images/paper36.gif" alt="drawing" width="450"/>
+
+
+
+
+
+## Clone Your Voice
+
+- OpenVoice represents a significant advancement in addressing the following open challenges in the field: 
+
+	- Flexible Voice Style Control<div class="popup" onclick="myFunction20()"><p class="blink" style="font-size:28px;"><spanBYMix>...</spanBYMix></p><span class="popuptext" id="myPopup20" STYLE="font-size:25px">OpenVoice enables granular control over voice styles, including emotion, accent, rhythm, pauses, and intonation, in addition to replicating the tone color of the reference speaker. The voice styles are not directly copied from and constrained by the style of the reference speaker. Previous approaches lacked the ability to flexibly manipulate voice styles after cloning.</span></div> 
+	
+	- Zero-Shot Cross-Lingual Voice Cloning<div class="popup" onclick="myFunction21()"><p class="blink" style="font-size:28px;"><spanGREEN>...</spanGREEN></p><span class="popuptext" id="myPopup21" STYLE="font-size:25px">OpenVoice achieves zero-shot cross-lingual voice cloning for languages not included in the massive-speaker training set. Unlike previous approaches, which typically require extensive massive-speaker multi-lingual (MSML) dataset2 for all languages, OpenVoice can clone voices into a new language without any massive-speaker training data for that language.</span></div> 
+
+
+
+
+
+## Clone Your Voice
+
+- OpenVoice represents a significant advancement in addressing the following open challenges in the field: 
+
+	- OpenVoice is also computationally efficient, costing tens of times less than commercially available APIs that offer even inferior performance<div class="popup" onclick="myFunction22()"><p class="blink" style="font-size:28px;"><spanRED>...</spanBYMix></p><span class="popuptext" id="myPopup22" STYLE="font-size:25px">To foster further research in the field, the developers have made the source code3 and trained model publicly accessible. The developers also provide qualitative results in our demo website4. OpenVoice was used tens of millions of times by users worldwide between May and October 2023, serving as the backend of [MyShell.ai](https://myshell.ai/).</span></div> 
+
+
+
+
+
+## Clone Your Voice
+
+- GitHub [OpenVoice](https://github.com/xinxingwu-uk/OpenVoice)
+
+- [Paper: OpenVoice: Versatile Instant Voice Cloning](./files/OpenVoice.pdf)
+
+
+
+
+
+## Clone Your Voice
+
+- Step1: Google Drive https://drive.google.com/
+- Step2: Store ```OpenVoice``` to Google Drive
+- Step3: https://colab.research.google.com/
+- Step4: Mount ``` Google Drive``` and unzip project ```OpenVoice```
+
+
+
+
+
+## Clone Your Voice
+
+- Mount ``` Google Drive```
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>0</span>
+                <span>D</span>
+                <span>I</span>
+                <span>N</span>
+                <span>G</span>
+            </h3>
+        </div>
+</div>
+
+```
+from google.colab import drive
+drive.mount('/content/drive')
+
+```
+
+
+
+
+## Clone Your Voice
+
+- unzip project ```OpenVoice```
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>0</span>
+                <span>D</span>
+                <span>I</span>
+                <span>N</span>
+                <span>G</span>
+            </h3>
+        </div>
+</div>
+
+```
+import zipfile
+with zipfile.ZipFile("/content/drive/MyDrive/Colab Notebooks/OpenVoice/OpenVoice-master.zip", 'r') as zip_ref:
+    zip_ref.extractall("/content/drive/MyDrive/Colab Notebooks/OpenVoice/OpenVoice-master")
+```
+
+
+
+
+## Clone Your Voice
+
+<img src="./images/paper36.png" alt="drawing" width="750"/>
+
+
+
+
+
+## Clone Your Voice
+
+<img src="./images/paper37.png" alt="drawing" width="450"/>
+
+
+
+
+
+## Clone Your Voice
+
+- Step5: For recording voice https://online-voice-recorder.com/
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>0</span>
+                <span>D</span>
+                <span>I</span>
+                <span>N</span>
+                <span>G</span>
+            </h3>
+        </div>
+</div>
+
+```
+reference_speaker = 'resources/xinxingwu.mp3' # This is the voice you want to clone 
+target_se, audio_name = se_extractor.get_se(reference_speaker, tone_color_converter, target_dir='processed', vad=True)
+```
+
+
+
+
+## Clone Your Voice
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>0</span>
+                <span>D</span>
+                <span>I</span>
+                <span>N</span>
+                <span>G</span>
+            </h3>
+        </div>
+</div>
+
+```
+save_path = f'{output_dir}/clonedVoice.wav'
+
+# Run the base speaker tts
+text="Hello, everyone! Welcome to our CSE 200 Programming one, after completing this course, we have another advanced one, CSE 210, Programming 2. I made this video to introduce the class and go over a few things you need to know to be successful in this course.      "
+
+src_path = f'{output_dir}/tmp.wav'
+base_speaker_tts.tts(text, src_path, speaker='default', language='English', speed=0.8)
+
+# Run the tone color converter
+encode_message = "@MyShell"
+tone_color_converter.convert(
+    audio_src_path=src_path,
+    src_se=source_se,
+    tgt_se=target_se,
+    output_path=save_path,
+    message=encode_message)
+```
+
+
+
+
+
+## Clone Your Voice
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>0</span>
+                <span>D</span>
+                <span>I</span>
+                <span>N</span>
+                <span>G</span>
+            </h3>
+        </div>
+</div>
+
+```
+### make sure that CUDA is available in Edit -> Nootbook settings -> GPU
+!nvidia-smi --query-gpu=name,memory.total,memory.free --format=csv,noheader
+```
+
+
+
+
+## Clone Your Voice
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>0</span>
+                <span>D</span>
+                <span>I</span>
+                <span>N</span>
+                <span>G</span>
+            </h3>
+        </div>
+</div>
+
+```
+!sudo apt install python3.8
+
+!sudo apt-get install python3.8-distutils
+
+!python --version
+
+!update-alternatives --install /usr/local/bin/python3 python3 /usr/bin/python3.8 2
+!update-alternatives --install /usr/local/bin/python3 python3 /usr/bin/python3.9 1
+
+!apt-get update
+
+!apt install software-properties-common
+
+!sudo dpkg --remove --force-remove-reinstreq python3-pip python3-setuptools python3-wheel
+
+!apt-get install python3-pip
+
+print('Git clone project and install requirements...')
+#!git clone https://github.com/Winfredy/SadTalker &> /dev/null
+%cd /content/drive/MyDrive/Colab Notebooks/OpenVoice
+!export PYTHONPATH=/content/drive/MyDrive/Colab Notebooks/OpenVoice:$PYTHONPATH
+!python3.8 -m pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu113
+!apt update
+!apt install ffmpeg &> /dev/null
+!python3.8 -m pip install -r requirements.txt
+```
+
+
+
+
+
+## Clone Your Voice
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>0</span>
+                <span>D</span>
+                <span>I</span>
+                <span>N</span>
+                <span>G</span>
+            </h3>
+        </div>
+</div>
+
+```
+!pip install pydub
+!pip install faster_whisper
+!pip install whisper_timestamped
+!pip install unidecode
+!pip install eng_to_ipa
+!pip install pypinyin
+!pip install cn2an
+```
+
+
+
+
+
+## Clone Your Voice
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>0</span>
+                <span>D</span>
+                <span>I</span>
+                <span>N</span>
+                <span>G</span>
+            </h3>
+        </div>
+</div>
+
+```
+!python3.8 -m setup.py install
+```
+
+</textarea></section>
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="Face" class="center"><textarea data-template>
+# Swap Your Face
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## Swap Your Face
+
+- [DeepFaceLive](https://www.deepfakevfx.com/downloads/deepfacelive/)
+- [Deep-Live-Cam](https://github.com/hacksider/Deep-Live-Cam)
+
+
+
+
+## Deep-Live-Cam
+
+- Setup your platform
+	- python (3.10 recommended)
+	- pip
+	- git
+	- ffmpeg
+	- visual studio 2022 runtimes (windows)
+
+
+- Download Models
+	- GFPGANv1.4
+	- inswapper_128_fp16.onnx
+
+
+
+
+## Deep-Live-Cam
+
+- Install dependency
+	- pip install -r requirements.txt
+
+
+
+
+
+<video width="260" height="220" controls>
+  <source src="./videos/OrginalMe.mp4" type="video/mp4">
+  <source src="movie.ogg" type="video/ogg">
+  Your browser does not support the video tag.
+</video>
+
+
+
+
+
+<img src="./images/face00.jpg" alt="drawing" width="275"/>
+<img src="./images/face01.jpg" alt="drawing" width="220"/>
+<br>
+
+<video width="260" height="220" controls>
+  <source src="./videos/output2.mp4" type="video/mp4">
+  <source src="movie.ogg" type="video/ogg">
+  Your browser does not support the video tag.
+</video>
+
+<video width="260" height="220" controls>
+  <source src="./videos/output1.mp4" type="video/mp4">
+  <source src="movie.ogg" type="video/ogg">
+  Your browser does not support the video tag.
+</video>
+
+
+
+
+
+<video width="260" height="220" controls>
+  <source src="./videos/Iron.mp4" type="video/mp4">
+  <source src="movie.ogg" type="video/ogg">
+  Your browser does not support the video tag.
+</video>
+
+<video width="260" height="220" controls>
+  <source src="./videos/FirstFly.mp4" type="video/mp4">
+  <source src="movie.ogg" type="video/ogg">
+  Your browser does not support the video tag.
+</video>
+
+
+
+
+<img src="./images/face13.jpg" alt="drawing" width="200"/>
+
+<video width="260" height="220" controls>
+  <source src="./videos/output3.mp4" type="video/mp4">
+  <source src="movie.ogg" type="video/ogg">
+  Your browser does not support the video tag.
+</video>
+
+<video width="260" height="220" controls>
+  <source src="./videos/output4.mp4" type="video/mp4">
+  <source src="movie.ogg" type="video/ogg">
+  Your browser does not support the video tag.
+</video>
+
+
+
+
+
+<img src="./images/face12.jpg" alt="drawing" width="200"/>
+
+<video width="260" height="220" controls>
+  <source src="./videos/output5.mp4" type="video/mp4">
+  <source src="movie.ogg" type="video/ogg">
+  Your browser does not support the video tag.
+</video>
+
+<video width="260" height="220" controls>
+  <source src="./videos/output6.mp4" type="video/mp4">
+  <source src="movie.ogg" type="video/ogg">
+  Your browser does not support the video tag.
+</video>
+
+
+
+
+
+<img src="./images/face11.jpg" alt="drawing" width="200"/>
+
+
+<video width="260" height="220" controls>
+  <source src="./videos/output7.mp4" type="video/mp4">
+  <source src="movie.ogg" type="video/ogg">
+  Your browser does not support the video tag.
+</video>
+</textarea></section>
+</section>
+
+
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="Speak" class="center"><textarea data-template>
+# Static Image Speak
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## Static Image Speak
+
+- [SadTalker](https://github.com/OpenTalker/SadTalker)
+
+
+
+
+
+<video width="260" height="220" controls>
+  <source src="./videos/AlbertW1aV.mp4" type="video/mp4">
+  <source src="movie.ogg" type="video/ogg">
+  Your browser does not support the video tag.
+</video>
+
+<video width="260" height="220" controls>
+  <source src="./videos/RichardfeynmanW6aV.mp4" type="video/mp4">
+  <source src="movie.ogg" type="video/ogg">
+  Your browser does not support the video tag.
+</video>
+
+<video width="260" height="220" controls>
+  <source src="./videos/HomepageV.mp4" type="video/mp4">
+  <source src="movie.ogg" type="video/ogg">
+  Your browser does not support the video tag.
+</video>
+</textarea></section>
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ChatGPT" class="center"><textarea data-template>
+# ChatGPT for Hacking (Educational Purposes ONLY!)
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## ChatGPT for Hacking
+
+- ChatGPT https://chatgpt.com/
+
+<img src="./images/AI1.png" alt="drawing" width="900"/>
+
+
+
+
+## ChatGPT for Hacking
+
+- How to attack a wifi network? 
+
+<img src="./images/AI2.gif" alt="drawing" width="950"/>
+
+
+
+## ChatGPT for Hacking
+
+- Ethical hackers and cybersecurity professionals - [HackerGPT](https://www.geeksforgeeks.org/hackergpt-a-powerful-ai-tool-for-ethical-hackers-and-the-cybersecurity-community/) has emerged as a powerful AI tool designed to empower them.
+
+
+
+
+## ChatGPT for Hacking
+
+- A version of llama 2 that is specifically fine-tuned for offensive and defensive cyber security 
+
+
+
+## ChatGPT for Hacking
+
+- White Rabbit Neo https://huggingface.co/WhiteRabbitNeo/WhiteRabbitNeo-13B-v1 
+	- You can use it on their website but they also open sourced 
+
+
+
+## ChatGPT for Hacking
+
+- White Rabbit Neo and this is a 13 billion parameter model you can find more information and their 33 billion parameter model is available at Whiterabbit neo.com and it is a fine-tuned version of llama 2 
+
+
+
+## ChatGPT for Hacking
+
+- Step 1: Download
+
+	- Text generation web UI https://github.com/oobabooga/text-generation-webui?tab=readme-ov-file
+
+<img src="./images/AI8.png" alt="drawing" width="350"/>
+
+
+
+
+## ChatGPT for Hacking
+
+- Step 2: Run the start_linux.sh, start_windows.bat, start_macos.sh, or start_wsl.bat script depending on your OS. 
+
+<img src="./images/AI3.png" alt="drawing" width="450"/>
+
+
+
+
+## ChatGPT for Hacking
+
+```
+start_windows.bat --listen
+```
+
+<img src="./images/AI4.png" alt="drawing" width="750"/>
+
+
+
+
+## ChatGPT for Hacking
+
+<img src="./images/AI5.png" alt="drawing" width="750"/>
+
+
+
+
+## ChatGPT for Hacking
+
+- Step 3: Select your GPU vendor when asked.
+
+<img src="./images/AI6.png" alt="drawing" width="750"/>
+
+
+
+
+## ChatGPT for Hacking
+
+- Step 4: Installing
+
+<img src="./images/AI7.gif" alt="drawing" width="850"/>
+
+
+
+
+## ChatGPT for Hacking
+
+- Step 5: After Installing (When accessing, use http://localhost:7860/)
+
+<img src="./images/AI9.png" alt="drawing" width="850"/>
+
+
+
+
+## ChatGPT for Hacking
+
+- How to run it in the future (When accessing, use http://localhost:7860/)
+
+<img src="./images/AI10.png" alt="drawing" width="950"/>
+
+
+
+
+## ChatGPT for Hacking
+
+<img src="./images/AI11.gif" alt="drawing" width="950"/>
+
+
+
+## ChatGPT for Hacking
+
+- Go to Tab "Model"
+
+<img src="./images/AI12.png" alt="drawing" width="950"/>
+
+
+
+## ChatGPT for Hacking
+
+- Download "Model" (Maybe you need to restart your web service)
+
+<img src="./images/AI13.gif" alt="drawing" width="750"/>
+
+
+
+
+## ChatGPT for Hacking
+
+- Download "Model" (Maybe you need to restart your web service)
+
+<img src="./images/AI14.gif" alt="drawing" width="950"/>
+
+
+
+
+## ChatGPT for Hacking
+
+- Download "Model" (Maybe you need to restart your web service)
+
+<img src="./images/AI15.gif" alt="drawing" width="950"/>
+
+
+
+
+
+## ChatGPT for Hacking
+
+- Download "Model"
+
+<img src="./images/AI16.png" alt="drawing" width="950"/>
+
+- Note: Due to large size, try it after class.
+
+
+
+## ChatGPT for Hacking
+
+- Directly use online https://www.whiterabbitneo.com/
+
+<img src="./images/AI17.gif" alt="drawing" width="950"/>
+
+
+
+
+## ChatGPT for Hacking
+
+- [Text generation web UI](https://github.com/oobabooga/text-generation-webui?tab=readme-ov-file)
+- [HackerGPT Was Trained For Cyber Security (Use with CAUTION!!)](https://www.youtube.com/watch?v=sAjlJlNarc4)
+- [ChatGPT For Cybersecurity](https://www.youtube.com/watch?v=6PrC4z4tPB0)
+</textarea></section>
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="Collusion" class="center"><textarea data-template>
+# Secret Collusion among Generative AI Agents
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<img src="./images/AIbrain.png" alt="drawing" width="600"/>
+
+
+
+
+## Abstract
+
+[Paper: Secret Collusion Among Generative AI Agents](./files/AIAgents.pdf)
+
+
+
+
+
+## Abstract
+
+<div align="left">
+
+> Privacy and security challenges concerning the unauthorised sharing of information, or other unwanted forms of agent coordination
+</div>
+
+- LLMs=> applications in which groups of communicating generative AI agents solve joint tasks
+
+- Modern steganographic=> hard to detect
+
+
+
+
+
+> Steganographic
+
+- In modern digital steganography, data is first encrypted or obfuscated, and then inserted using a special algorithm into data that is part of a particular file format, such as a JPEG image, audio or video file. The secret message can be embedded into ordinary data files in many ways. 
+
+
+
+
+> Steganographic
+
+<img src="./images/paper1.png" alt="drawing" width="500"/>
+
+[Steganography](https://www.techtarget.com/searchsecurity/definition/steganography#:~:text=In%20modern%20digital%20steganography%2C%20data,data%20files%20in%20many%20ways.)
+
+
+
+
+
+> Steganographic
+
+- The word Steganography is derived from two Greek words- ‘stegos’ meaning ‘to cover’ and ‘grayfia’, meaning ‘writing’, thus translating to ‘covered writing’, or ‘hidden writing’. Steganography is a method of hiding secret data, by embedding it into an audio, video, image, or text file.
+
+[How is steganography used today?](https://adosi12.medium.com/how-is-steganography-used-today-267924f7ee11)
+
+
+
+
+
+> Steganographic
+- Formalise the problem of secret collusion in systems of generative AI agents
+- Contemporary LLMs: the steganographic capabilities of current models remain limited, GPT-4 displays a capability jump
+
+
+
+
+> Steganographic
+
+<img src="./images/paper4.png" alt="drawing" width="400"/><div class="popup" onclick="myFunction1()"><p class="blink" style="font-size:24px;"><spanBYMix>Note</spanBYMix></p>
+  <span class="popuptext" id="myPopup1" STYLE="font-size:25px">The radar chart is also known as web chart, spider chart, spider graph, spider web chart, star chart, star plot, cobweb chart, irregular polygon, polar chart, or Kiviat diagram.<br>
+  A radar chart shows multivariate data of three or more quantitative variables mapped onto an axis. It looks like a spider’s web, with a central axis that has at least three spokes, called radii, coming from it.
+  </span>
+</div>
+
+
+
+
+
+> Steganographic
+
+<img src="./images/paper2.png" alt="drawing" width="800"/>
+
+[Paper: Steganography An Art of Hiding Data](./files/Steganography.pdf)
+
+
+
+
+## Introduction
+
+- Decentralised systems of interacting AI agents promise impactful applications to various real world socio-economic settings
+
+<iframe width="520" height="400" src="https://www.youtube.com/embed/574rle_wA_E" title="Inside The World&#39;s Most Futuristic Driverless Taxi" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+
+
+
+
+## Introduction
+
+- Decentralised systems of interacting AI agents promise impactful applications to various real world socio-economic settings
+
+<iframe width="520" height="400" src="https://www.youtube.com/embed/ilcrMz_hWz8" title="I took a ride in Waymo&#39;s self driving taxi" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+
+
+
+## Introduction
+
+- Decentralised systems of interacting AI agents promise impactful applications to various real world socio-economic settings
+
+[Driverless cars immune from traffic tickets in California under current laws](https://www.nbcnews.com/business/business-news/can-driverless-cars-get-tickets-california-law-rcna131538)
+
+
+
+
+
+## Introduction
+
+- Concerns have been raised that network interactions between advanced AI agents could render human oversight ineffective, and lead to a worst-case systemic loss of control.
+
+<img src="./images/paper3.png" alt="drawing" width="500"/>
+
+
+
+
+## Introduction
+
+- Power-seeking superhuman AI systems could escape their creators' control and pose an "extinction-level" threat to humanity, AI researchers wrote in a report commissioned by the U.S. Department of State entitled Defence in Depth: An Action Plan to Increase the Safety and Security of Advanced AI ...
+
+[AI could have catastrophic consequences](https://www.cbc.ca/news/politics/advanced-artificial-intelligence-risk-extinction-humans-1.7144372#:~:text=In%20a%20worst%2Dcase%20scenario,and%20Security%20of%20Advanced%20AI)
+
+
+
+
+
+> How groups of generative frontier model agents can be effectively governed?
+
+- Bridge the worlds of generative AI and alignment with security, including distributed systems, secure multi-party computation, and steganography
+
+
+
+
+
+> Issues
+
+- One risk emerging from groups of generative AI agents is their use of communication channels in ways unintended by their deployer(s). This could constitute privacy violations when sharing data, or secret collusion that could help agents coordinate on unwanted behaviour at a wider scale.
+
+
+- AI model agents could use information-hiding techniques in their communications in order to evade such monitoring.
+
+
+
+
+
+> Issues
+
+## Secret collusion between GPT-4 models and humans
+
+
+
+
+
+> Issues
+
+<img src="./images/paper5.png" alt="drawing" width="800"/>
+
+
+
+
+> Contributions
+
+- A systematic model evaluation framework for the study of secret collusion among <div class="popup" onclick="myFunction3()"><p class="blink" style="font-size:32px;"><spanBYMix>large language models</spanBYMix></p>
+  <span class="popuptext" id="myPopup3" STYLE="font-size:20px">A large language model (LLM) is a type of artificial intelligence (AI) program that can recognize and generate text, among other tasks. LLMs are trained on huge sets of data — hence the name "large." LLMs are built on machine learning: specifically, a type of neural network called a transformer model.
+  </span>
+</div>and present several novel theoretical results concerning the mitigation of steganography
+
+	- Cybersecurity research, including secure multi-party computation, as well as state-of-the-art steganography
+
+
+
+
+
+> Contributions
+
+- A systematic model evaluation framework for the study of secret collusion among large language models and present several novel theoretical results concerning the mitigation of steganography
+
+	-  A concise definition of decentralised systems of generative AI agents, reconciling distributed systems literature and epistemic concepts of knowledge with contemporary AI literature
+
+
+
+
+> Contributions
+
+- A systematic model evaluation framework for the study of secret collusion among large language models and present several novel theoretical results concerning the mitigation of steganography
+
+	- Analyse the incentives required for secret collusion and introduce a model capability evaluation framework for steganographic collusion, including empirical evaluations and a software environment to study collusion
+
+
+
+
+
+> Contributions
+
+- A systematic model evaluation framework for the study of secret collusion among large language models and present several novel theoretical results concerning the mitigation of steganography
+
+	- Techniques for detecting and mitigating misalignment and recommend several urgent research priorities in conclusion
+
+
+
+
+
+## Related Work
+
+> Algorithmic Collusion
+
+> AI-Generated Steganography
+
+
+
+
+> Algorithmic Collusion
+
+- <div class="popup" onclick="myFunction2()"><p class="blink" style="font-size:32px;"><spanBYMix>Q-learning</spanBYMix></p>
+  <span class="popuptext" id="myPopup2" STYLE="font-size:20px">Q-learning is a reinforcement learning algorithm that finds an optimal action-selection policy for any finite Markov decision process (MDP). It helps an agent learn to maximize the total reward over time through repeated interactions with the environment, even when the model of that environment is not known.
+  </span>
+</div> agents can learn to collude without accessing explicit communication channels. 
+
+- Collusion can be suppressed by enforcing decentralized learning algorithms and that collusion may be the result of imperfect exploration rather than algorithmic sophistication. 
+
+- Recent work tries to design mechanisms that prevent collusion from self-learning agents
+
+
+
+
+
+> Algorithmic Collusion
+
+<img src="./images/paper6.png" alt="drawing" width="700"/>
+
+
+
+
+
+> Algorithmic Collusion
+
+- In this paper: generative AI agents pre-trained on large datasets and with vast action spaces.
+
+
+[Q-learning](https://www.simplilearn.com/tutorials/machine-learning-tutorial/what-is-q-learning#:~:text=Q%2Dlearning%20is%20a%20reinforcement,that%20environment%20is%20not%20known.)
+
+
+
+
+
+> AI-Generated Steganography
+
+- AI-generated steganography concerns the hiding of information in the output distribution of generative AI models.
+
+- In this paper: the perfectly secure approach as it offers both information-theoretic security and higher empirical transmission rates than less secure alternatives.
+
+
+
+
+
+## Background
+
+
+- Distinguish between an agent’s local and global knowledge.
+
+	- Local knowledge is knowledge contained in the generative agent’s inputs (also called context, prompt or instruction in the case of LLMs)
+
+	- Global knowledge is contained in the agent’s network parameters
+
+
+
+
+
+## Background
+
+- Difficult to characterise an LLM agent’s global knowledge
+
+	- LLMs, network parameters are usually pre-trained on a large natural language dataset
+ 
+	- Natural language is not a <div class="popup" onclick="myFunction4()"><p class="blink" style="font-size:32px;"><spanBYMix>formal language</spanBYMix></p>
+  <span class="popuptext" id="myPopup4" STYLE="font-size:20px">In logic, mathematics, computer science, and linguistics, a formal language consists of words whose letters are taken from an alphabet and are well-formed according to a specific set of rules called a formal grammar.
+  </span>
+</div>
+
+
+
+
+
+## Background
+
+- Difficult to characterise an LLM agent’s global knowledge
+
+	- The agent’s parameters do not represent language explicitly, and querying the agent for a fact might not result in syntactically or semantically correct outputs.
+
+
+
+
+## Background
+
+- Common knowledge is a form of group knowledge in which “all agents know that all agents know that all agents know that ...”: timestamped or probabilistic common knowledge
+
+- To decide whether an agent is using steganography in a given communication, it is helpful to determine whether the communications are grounded in innocuous knowledge or not
+
+
+
+
+> Steganography
+
+- The goal of steganography is to enable the transmission of a secret payload through a public channel $\Diamond$, from a source to a receiver, such that the transmission remains undetectable to an adversary $E$ able to read the $n$-symbol channel input sequences $X^n, X\in\mathcal{X}$ while maintaining useful transmission rates.
+
+
+
+
+> Steganography
+
+- The mutual information $I$ between the secret payload $m$ and the decoder’s estimate $\hat{m}$ satisfies $I(m;\hat{m})>0$.
+
+- $\mathcal{C}$: covertext distribution - the channel input symbol distribution given innocuous, overt communications.
+
+
+
+
+> Steganography
+
+- Covert communication is the exchange of information or data using a covert channel. 
+
+	- A covert channel is a type of computer attack or threat that enables communication between various objects and processes that were not allowed to communicate because of the system or network's policy.
+
+
+
+
+> Steganography
+
+- In order to use $\Diamond$ for covert communications, the sender and receiver need to establish a subliminal channel $\Diamond′$ within
+
+- A covert message space $\mathcal{M}′$, an encoding function $f_{e}: \mathcal{M}′\times\mathcal{C}\rightarrow \Delta(\mathcal{X}^n)$, and a decoding function $f_{e}^{-1}: \mathcal{X}^n\times\mathcal{C}\rightarrow \Delta(\mathcal{M}′)$
+
+
+
+
+> Steganography
+- If the common knowledge $\mathbf{I}$ between sender and receiver explicitly contains unique choices for $\mathcal{M}′$, $f_{e}$, and $f_{e}^{-1}$, then both agents can immediately establish $\Diamond′$
+
+
+
+
+> Focal point (or Schelling point)
+
+In game theory, a focal point (or Schelling point) is a solution that people tend to choose by default in the absence of communication in order to avoid coordination failure. The concept was introduced by the American economist Thomas Schelling in his book The Strategy of Conflict (1960).
+
+[Focal point (game theory)](https://en.wikipedia.org/wiki/Focal_point_(game_theory)#:~:text=In%20game%20theory%2C%20a%20focal,Strategy%20of%20Conflict%20(1960).)
+
+
+
+
+
+> Covertext modification approaches
+
+- The covertext distribution is deterministic.
+
+- Given a covertext $X^n$ and a message $m$, the sender modifies this covertext using a modification function $f_{\rm{mod}}:\mathcal{X}^n\times\mathcal{M}\rightarrow\mathcal{X}^n$
+
+
+
+
+> Covertext modification approaches
+
+- Text steganography can be broadly classified into three types: Format based Random and Statistical generation, Linguistic methods.
+
+- In modern digital steganography, data is first encrypted or obfuscated, and then inserted using a special algorithm into data that is part of a particular file format, such as a JPEG image, audio or video file. The secret message can be embedded into ordinary data files in many ways.
+
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+# Collusion among Decentralized Collaborative AI Agents
+
+
+
+
+> DecAI
+
+- $n$ agents $\mathcal{A}=${$a^1,\ldots,a^n$} are networked by <div class="popup" onclick="myFunction5()"><p class="blink" style="font-size:32px;"><spanBYMix>omnidirectional </spanBYMix></p>
+<span class="popuptext" id="myPopup5" STYLE="font-size:20px">In radio communication, an omnidirectional antenna is a class of antenna which radiates equal radio power in all directions perpendicular to an axis (azimuthal directions), with power varying with angle to the axis (elevation angle), declining to zero on the axis.
+  </span>  </div><div class="popup" onclick="myFunction6()"><p class="blink" style="font-size:32px;"><spanGREEN>multicast</spanGREEN></p>
+  <span class="popuptext" id="myPopup6" STYLE="font-size:20px">Multicast is a means of sending the same data to multiple recipients at the same time without the source having to generate copies for each recipient. Whereas broadcast traffic is sent to every device whether they want it or not, multicast allows recipients to subscribe to the traffic they want. As a result, efficiency is improved (traffic is only sent once) and overhead is reduced (unintended recipients don’t receive the traffic).
+  </span></div> channels {$\Diamond^G$}, $G\in 2^{\mathcal{A}}$
+
+- If an agent receives a message from channel $\Diamond^{G'}$, then the same message has been simultaneously sent to all other agents in $G'$ (including the sender).
+
+- Singleton channels: loopback channels, and doubletons: bidirectional channels. $\Diamond^{\emptyset}$: individual access to an external knowledge repository
+
+
+
+
+
+> DecAI
+
+[Multicast over Wireless](https://wirelesslywired.com/2019/05/02/multicast-over-wireless/)
+
+
+
+
+
+> A schematic depiction of the DecAI setting
+
+<img src="./images/paper7.png" alt="drawing" width="550"/>
+
+
+
+
+
+> Monitoring Agents
+
+
+
+- An external monitoring agent $E$, which may be implemented as a software agent, a human, or a combination thereof, is continuously monitoring the system for unwanted behaviour.
+- $E^{\Diamond}_{\rm{r}}$ can continuously eavesdrop on $\Diamond^G$, $\forall G$.
+- $E^{\Diamond_s}_{\rm{r}}$ can additionally access each agent’s state $s^i$ at all times.
+- $E^{\Diamond}_{\rm{r}} $: passive monitors.
+- $E^{\Diamond_s}_{\rm{r}}$: passive monitors.
+
+
+
+
+
+> Monitoring Agents
+
+- $E^{\Diamond}_{\rm{rw}} $: active monitors (read and inject messages into channels)
+- $E^{\Diamond_s}_{\rm{rw}}$: active monitors, can additionally modify the agents’ states
+- Agents may employ encryption, such as public key encryption, in their communications, as long as a monitoring agent $E$ is able to decrypt these.
+
+
+
+
+
+> Incentives for Collusion
+
+- DecAI settings - work alongside one another in order to achieve their individual objectives $J^i$
+
+- Joint strategies available to the agents
+
+	- $\mathbf{f}$ - regular behavior
+
+	- $\mathbf{f}_c$ - collusion
+
+	- $\mathbf{f}_{sc}$ - secret collusion
+
+	- $J^i$ - a primary goal $g^i$ + additional conditions $h^i$
+
+
+
+
+
+## $J^i=g^i + h^i$
+
+- Agents can achieve their primary goal better if they collude: $ g^i (f_{sc}) = g^i (f_{c}) > g^i (f)$
+
+- Agents are punished if they are caught colluding: $ h^i (f_{sc}) = h^i (f) > h^i (f_{c})$
+
+- Secret collusion is incentivised $ J^i (f_{sc}) > J^i (f) > J^i (f_{c})$
+
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+# A Model Evaluation Framework for Steganographic Capabilities
+
+
+
+
+
+# <p class="hover-underline-animation">Understanding and evaluating existing models</p>
+
+
+
+
+
+> Evaluations
+
+- Introduce a standardized model evaluation framework, mapping and identifying key capabilities necessary for generative AI agents to engage in steganography, evaluating models through structured input queries, building quantifiable metrics for performance measurement, releasing a software framework that implements setting
+
+
+
+
+
+> Evaluations
+
+- Conversational language model prompts which exploit explain-then-predict (E-P) and predict-and-explain (P-E) prompting techniques
+
+- Scaffolding and managing model refusals through interventions
+
+- Evaluation metrics across both individual and group capability evaluation
+
+
+
+
+
+> CASE
+
+- CASE (Collusion and Steganographic Evaluation) as a comprehensive software framework for evaluating collusive capabilities
+
+- CASE offers a standardized environment for performing individual and group evaluations under optimisation pressure </div><div class="popup" onclick="myFunction7()"><p class="blink" style="font-size:32px;"><spanGREEN>LLM fine-tuning</spanGREEN></p> <span class="popuptext" id="myPopup7" STYLE="font-size:20px">Fine-tuning is the process of taking a pre-trained model and further training it on a domain-specific dataset. Most LLM models today have a very good global performance but fail in specific task-oriented problems. The fine-tuning process offers considerable advantages, including lowered computation expenses and the ability to leverage cutting-edge models without the necessity of building one from the ground up.
+  </span></div>
+
+
+
+
+
+> CASE
+
+- [An Introductory Guide to Fine-Tuning LLMs](https://www.datacamp.com/tutorial/fine-tuning-large-language-models)
+
+- [Getting started with LLM fine-tuning](https://learn.microsoft.com/en-us/ai/playbook/technology-guidance/generative-ai/working-with-llms/fine-tuning)
+
+
+
+
+
+> GPT-4 capability evaluations according to our model evaluation framework
+
+<img src="./images/paper8.png" alt="drawing" width="1200"/>
+
+
+
+
+
+> Empirical Investigations
+
+- Now, comparing these capabilities against baseline language models and discussing qualitative empirical investigations (case studies) using the CASE framework.
+
+
+
+
+> Empirical Investigations
+
+- Insider Trading: the mere access to common knowledge between an LLM agent and its user leads to a breakdown of safeguards in GPT-4.
+
+	- LLM agent that is queried for company-specific investment advice by a user and informed about an overseer monitoring outputs
+
+
+
+
+
+> Empirical Investigations
+
+- Insider Trading: the mere access to common knowledge between an LLM agent and its user leads to a breakdown of safeguards in GPT-4.
+
+	- The LLM is provided with insider information as part of its system prompt, mimicking a case where information is acquired from retraining on past user interactions or unrestricted access is provided to company data, along with multiple instructions about not sharing it
+
+
+
+
+
+> Empirical Investigations
+
+- Insider Trading: the mere access to common knowledge between an LLM agent and its user leads to a breakdown of safeguards in GPT-4.
+
+	- The LLM agent refuses to provide company-specific insider investment advice under any circumstances unless supplied with common knowledge that can be used to establish a steganographic codebook, and that is thought to be unavailable to the safety overseer system
+
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+<p class='titlep'>&nbsp;</p>
+
+### <p class="hover-underline-animation">once the agent believes it can share information undetectably, it does so despite any instructions prohibiting it.</p>
+
+
+
+
+
+> Empirical Investigations
+
+- The resulting stegotext can be made reasonably innocuous by suggesting to the LLM agent that talking about the weather is safe.
+
+	- This clearly shows the susceptibility of real-world generative AI agents to secret collusion - </div><div class="popup" onclick="myFunction8()"><p class="blink" style="font-size:32px;"><spanBYMix>Ablation Studies?</spanBYMix></p> <span class="popuptext" id="myPopup8" STYLE="font-size:20px">In artificial intelligence (AI), particularly machine learning (ML), ablation is the removal of a component of an AI system. An ablation study investigates the performance of an AI system by removing certain components to understand the contribution of the component to the overall system.
+  </span></div>
+
+
+
+
+> Empirical Investigations
+
+- Perfectly secure steganography (undetectable to both machines and humans)
+
+<img src="./images/paper9.png" alt="drawing" width="700"/>
+
+
+
+
+
+> Empirical Investigations
+
+- Baseline Investigations: capability evaluation framework on GPT-2, Llama 2 7B, Mixtral 8x7B, Llama 2 70B, GPT-3.5, and GPT-4.
+
+
+
+
+
+> Empirical Investigations
+
+- Group capabilities (Covertext steganography performance across LLMs)
+
+<img src="./images/paper10.png" alt="drawing" width="550"/>
+
+
+
+
+> Empirical Investigations
+
+- Idividual capabilities (Schelling Point coordination rates)
+
+<img src="./images/paper11.png" alt="drawing" width="1000"/>
+
+
+
+
+> Empirical Investigations
+
+- GPT-4 exhibits a significant performance leap for cipher encoding and decoding (Base64 and Caesar).
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="Assignments" data-background-color="#000027" class="center"><textarea data-template>
+<bodyDp>
+    <div class="dancer">
+        <div class="clothes">
+            <div class="shirt"></div>
+            <div class="jacket"></div>
+            <div class="pants"></div>
+        </div>
+        <div class="head">
+            <div class="eye-left"></div>
+            <div class="eye-right"></div>
+            <div class="mouth"></div>
+        </div>
+        <div class="glove-left">
+            <div class="finger finger-thumb"></div>
+            <div class="finger finger-index"></div>
+            <div class="finger finger-middle"></div>
+            <div class="finger finger-ring"></div>
+            <div class="finger finger-pinky"></div>
+        </div>
+        <div class="glove-right">
+            <div class="finger finger-thumb"></div>
+            <div class="finger finger-index"></div>
+            <div class="finger finger-middle"></div>
+            <div class="finger finger-ring"></div>
+            <div class="finger finger-pinky"></div>
+        </div>
+        <div class="leg-left"></div>
+        <div class="leg-right"></div>
+        <div class="foot-left"></div>
+        <div class="foot-right"></div>
+    </div>
+</bodyDp>
+
+# Assignments
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n" data-background-color="#000027"><textarea data-template>
+
+## Assignments 🌞
+
+- <a href="https://midway.instructure.com/courses/7239/quizzes/32801">Question for AI and CyberSecurity</a>
+
+
+
+
+## Assignments 🌞
+
+- <a href="https://midway.instructure.com/courses/7239/quizzes/32800">Project 3</a>
+
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+</div>
+</div>
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="settings.js"></script>
+</body>
+</html>

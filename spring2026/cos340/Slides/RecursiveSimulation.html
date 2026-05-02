@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Russian Dolls Simulation</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background: radial-gradient(circle at top, #fff7ef 0%, #f8dcc8 45%, #e0b39b 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .scene {
+      width: 100%;
+      max-width: 1100px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+      padding: 24px;
+    }
+
+    .title {
+      text-align: center;
+      color: #5c2c1a;
+      text-shadow: 0 2px 0 rgba(255,255,255,0.55);
+    }
+
+    .title h1 {
+      margin: 0;
+      font-size: clamp(28px, 4vw, 46px);
+      letter-spacing: 1px;
+    }
+
+    .title p {
+      margin: 8px 0 0;
+      font-size: clamp(14px, 2vw, 18px);
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 12px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      background: linear-gradient(135deg, #8f3b2e, #c15d49);
+      color: white;
+      box-shadow: 0 8px 18px rgba(97, 43, 31, 0.25);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(97, 43, 31, 0.32);
+    }
+
+    .stage {
+      position: relative;
+      width: min(90vw, 760px);
+      height: min(72vh, 640px);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 18px;
+    }
+
+    .floor {
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      width: min(92%, 760px);
+      height: 18px;
+      border-radius: 999px;
+      background: rgba(109, 57, 39, 0.22);
+      filter: blur(1px);
+    }
+
+    .doll {
+      --size: 320px;
+      --accent: #b04235;
+      --secondary: #f1d5ab;
+      --face: #f5d6bf;
+      --shift: 0px;
+      position: absolute;
+      bottom: 18px;
+      left: 50%;
+      width: var(--size);
+      height: calc(var(--size) * 1.35);
+      transform: translateX(-50%);
+      transition: transform 0.9s ease, opacity 0.9s ease, filter 0.9s ease;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .doll.opened {
+      filter: drop-shadow(0 18px 18px rgba(0,0,0,0.15));
+    }
+
+    .half {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      overflow: hidden;
+      transition: transform 0.9s ease;
+    }
+
+    .top-half {
+      top: 0;
+      height: 48%;
+    }
+
+    .bottom-half {
+      bottom: 0;
+      height: 52%;
+    }
+
+    .shell {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: calc(var(--size) * 1.35);
+      border-radius: 50% 50% 44% 44% / 38% 38% 62% 62%;
+      background:
+        radial-gradient(circle at 50% 26%, var(--face) 0 14%, transparent 14.5%),
+        radial-gradient(circle at 50% 30%, #1b1b1b 0 1.3%, transparent 1.5%),
+        radial-gradient(circle at 44% 29%, #1b1b1b 0 1.2%, transparent 1.4%),
+        radial-gradient(circle at 56% 29%, #1b1b1b 0 1.2%, transparent 1.4%),
+        radial-gradient(circle at 50% 33%, #d98b8b 0 1.4%, transparent 1.6%),
+        linear-gradient(to bottom,
+          #2e6f97 0 11%,
+          var(--accent) 11% 44%,
+          var(--secondary) 44% 48%,
+          var(--accent) 48% 100%);
+      border: 5px solid rgba(106, 40, 28, 0.72);
+      box-shadow:
+        inset 0 0 0 4px rgba(255,255,255,0.25),
+        inset 0 -14px 22px rgba(0,0,0,0.08);
+    }
+
+    .top-half .shell {
+      top: 0;
+      clip-path: inset(0 0 52% 0);
+    }
+
+    .bottom-half .shell {
+      bottom: 0;
+      clip-path: inset(48% 0 0 0);
+    }
+
+    .flower {
+      position: absolute;
+      width: 14%;
+      aspect-ratio: 1;
+      background:
+        radial-gradient(circle, #ffe8a8 0 24%, transparent 25%),
+        radial-gradient(circle at 50% 10%, #f8f1c3 0 21%, transparent 22%),
+        radial-gradient(circle at 90% 50%, #f8f1c3 0 21%, transparent 22%),
+        radial-gradient(circle at 50% 90%, #f8f1c3 0 21%, transparent 22%),
+        radial-gradient(circle at 10% 50%, #f8f1c3 0 21%, transparent 22%);
+      opacity: 0.85;
+      filter: drop-shadow(0 1px 1px rgba(0,0,0,0.15));
+      pointer-events: none;
+    }
+
+    .f1 { left: 20%; top: 52%; }
+    .f2 { right: 19%; top: 54%; transform: scale(0.9); }
+    .f3 { left: 43%; top: 62%; transform: scale(1.1); }
+
+    .opened > .top-half {
+      transform: translateX(calc(-0.62 * var(--size) + var(--shift))) rotate(-8deg);
+    }
+
+    .opened > .bottom-half {
+      transform: translateX(calc(0.62 * var(--size) + var(--shift))) rotate(8deg);
+    }
+
+    .doll.hidden {
+      opacity: 0;
+      transform: translateX(-50%) scale(0.7);
+      pointer-events: none;
+    }
+
+    .smallest-core {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: #5c2c1a;
+      font-size: clamp(18px, 2vw, 26px);
+      font-weight: bold;
+      text-align: center;
+      pointer-events: none;
+      text-shadow: 0 1px 0 rgba(255,255,255,0.7);
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+
+    .doll[data-level="5"] .smallest-core {
+      opacity: 1;
+    }
+
+    .info {
+      text-align: center;
+      color: #5a3222;
+      background: rgba(255,255,255,0.35);
+      border: 1px solid rgba(255,255,255,0.45);
+      border-radius: 18px;
+      padding: 14px 18px;
+      max-width: 760px;
+      font-size: 15px;
+      line-height: 1.5;
+      box-shadow: 0 10px 22px rgba(75, 38, 26, 0.08);
+      backdrop-filter: blur(6px);
+    }
+
+    @media (max-width: 700px) {
+      .stage {
+        height: 520px;
+      }
+
+      button {
+        font-size: 14px;
+        padding: 10px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="scene">
+    <div class="title">
+      <h1>Russian Dolls Simulation</h1>
+      <p>Open each doll to reveal the smaller one hidden inside.</p>
+    </div>
+
+    <div class="controls">
+      <button id="openNextBtn">Open Next Doll</button>
+      <button id="closeAllBtn">Close All</button>
+      <button id="demoBtn">Auto Demo</button>
+    </div>
+
+    <div class="stage" id="stage">
+      <div class="floor"></div>
+    </div>
+
+    <div class="info" id="infoBox">
+      Click the big doll or use the buttons above. Each opened doll splits into two halves and reveals a smaller doll inside.
+    </div>
+  </div>
+
+  <script>
+    const stage = document.getElementById('stage');
+    const infoBox = document.getElementById('infoBox');
+    const openNextBtn = document.getElementById('openNextBtn');
+    const closeAllBtn = document.getElementById('closeAllBtn');
+    const demoBtn = document.getElementById('demoBtn');
+
+    const dollsData = [
+      { size: 320, accent: '#b04235', secondary: '#f0d39f', shift: 0 },
+      { size: 250, accent: '#8b3f91', secondary: '#f7d7a6', shift: 0 },
+      { size: 190, accent: '#cf6a2d', secondary: '#f6e0b7', shift: 0 },
+      { size: 145, accent: '#2e8b78', secondary: '#efe3bc', shift: 0 },
+      { size: 108, accent: '#b83e6f', secondary: '#f4dcb2', shift: 0 },
+      { size: 78, accent: '#4568b3', secondary: '#fae6c6', shift: 0 }
+    ];
+
+    const dolls = [];
+    let openedCount = 0;
+    let demoRunning = false;
+
+    function createDoll(data, index) {
+      const doll = document.createElement('div');
+      doll.className = 'doll';
+      doll.dataset.level = index;
+      doll.style.setProperty('--size', data.size + 'px');
+      doll.style.setProperty('--accent', data.accent);
+      doll.style.setProperty('--secondary', data.secondary);
+      doll.style.setProperty('--shift', data.shift + 'px');
+      doll.style.zIndex = String(100 - index);
+
+      const top = document.createElement('div');
+      top.className = 'half top-half';
+      const topShell = document.createElement('div');
+      topShell.className = 'shell';
+      top.appendChild(topShell);
+
+      const bottom = document.createElement('div');
+      bottom.className = 'half bottom-half';
+      const bottomShell = document.createElement('div');
+      bottomShell.className = 'shell';
+      bottom.appendChild(bottomShell);
+
+      const f1 = document.createElement('div');
+      f1.className = 'flower f1';
+      const f2 = document.createElement('div');
+      f2.className = 'flower f2';
+      const f3 = document.createElement('div');
+      f3.className = 'flower f3';
+
+      const core = document.createElement('div');
+      core.className = 'smallest-core';
+      core.innerHTML = '✨<br>Smallest Doll';
+
+      doll.appendChild(top);
+      doll.appendChild(bottom);
+      doll.appendChild(f1);
+      doll.appendChild(f2);
+      doll.appendChild(f3);
+      doll.appendChild(core);
+
+      doll.addEventListener('click', function () {
+        if (index === openedCount) {
+          openNextDoll();
+        }
+      });
+
+      return doll;
+    }
+
+    function buildDolls() {
+      dollsData.forEach(function (data, index) {
+        const doll = createDoll(data, index);
+        dolls.push(doll);
+        stage.appendChild(doll);
+      });
+    }
+
+    function updateInfo() {
+      if (openedCount === 0) {
+        infoBox.textContent = 'All dolls are closed. Start by opening the largest doll.';
+      } else if (openedCount < dolls.length) {
+        infoBox.textContent = 'You opened ' + openedCount + ' doll' + (openedCount > 1 ? 's' : '') + '. A smaller doll is now visible inside.';
+      } else {
+        infoBox.textContent = 'All dolls are opened. You reached the smallest doll at the center.';
+      }
+    }
+
+    function openNextDoll() {
+      if (openedCount >= dolls.length) {
+        return;
+      }
+
+      const current = dolls[openedCount];
+      current.classList.add('opened');
+      openedCount += 1;
+      updateInfo();
+    }
+
+    function closeAllDolls() {
+      dolls.forEach(function (doll) {
+        doll.classList.remove('opened');
+      });
+      openedCount = 0;
+      updateInfo();
+    }
+
+    function wait(ms) {
+      return new Promise(function (resolve) {
+        setTimeout(resolve, ms);
+      });
+    }
+
+    async function runDemo() {
+      if (demoRunning) {
+        return;
+      }
+
+      demoRunning = true;
+      demoBtn.disabled = true;
+      openNextBtn.disabled = true;
+      closeAllBtn.disabled = true;
+
+      closeAllDolls();
+      await wait(600);
+
+      for (let i = 0; i < dolls.length; i += 1) {
+        openNextDoll();
+        await wait(950);
+      }
+
+      await wait(1200);
+      closeAllDolls();
+
+      demoRunning = false;
+      demoBtn.disabled = false;
+      openNextBtn.disabled = false;
+      closeAllBtn.disabled = false;
+    }
+
+    openNextBtn.addEventListener('click', openNextDoll);
+    closeAllBtn.addEventListener('click', closeAllDolls);
+    demoBtn.addEventListener('click', runDemo);
+
+    buildDolls();
+    updateInfo();
+  </script>
+</body>
+</html>

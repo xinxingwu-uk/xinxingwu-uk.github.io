@@ -1,0 +1,4264 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>CSE-400: Cybersecurity</title>
+    <meta name="description" content="A set of slides for a course on Introduction to Cybersecurity">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+	</script>
+
+	<style>
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }
+
+		ftcoly{
+			color: yellow;
+		}
+		
+		ftcolr{
+			color: red;
+		}
+		
+		ftcolg{
+			color: green;
+		}
+		
+		ft{
+			font-size: 18px;
+			padding: 2px;
+			margin: 5px;
+			background-color: #33475b;
+			border-radius: 5px;
+			color: white;
+		}
+
+		ftCode{
+			font-size: 28px;
+		}
+		
+		.blink {
+			animation: blink 1s steps(1, end) infinite;
+			color: blue;
+		}
+
+		@keyframes blink {
+			0% {
+				opacity: 1;
+			}
+			50% {
+				opacity: 0;
+			}
+			100% {
+				opacity: 1;
+			}
+		}
+
+
+		.hover-underline-animation {
+			display: inline-block;
+			position: relative;
+			color: lightblue;
+		}
+
+		.hover-underline-animation:after {
+			content: '';
+			position: absolute;
+			width: 100%;
+			transform: scaleX(0);
+			height: 8px;
+			bottom: 0;
+			left: 0;
+			background-color: yellow;
+			transform-origin: bottom right;
+			transition: transform 1.5s ease-out;
+		}
+
+		.hover-underline-animation:hover:after {
+			transform: scaleX(1);
+			transform-origin: bottom left;
+		}
+		
+		
+		.wrapper.nine {
+			background-color: gray;
+			font-family: 'Arvo', serif;
+		}
+		.rotate span {
+			font-size: 4rem;
+			color: green;
+			display: inline-flex;
+			animation: rotate 1.5s infinite;
+		}
+		@keyframes rotate {
+			0%,
+			75% {
+				transform: rotateY(360deg);
+			}
+		}
+		.nine span:nth-of-type(1) {
+			animation-delay: 0.2s;
+		}
+		.nine span:nth-of-type(2) {
+			animation-delay: 0.4s;
+		}
+		.nine span:nth-of-type(3) {
+			animation-delay: 0.6s;
+		}
+		.nine span:nth-of-type(4) {
+			animation-delay: 0.8s;
+		}
+		.nine span:nth-of-type(5) {
+			animation-delay: 1s;
+		}
+		.nine span:nth-of-type(6) {
+			animation-delay: 1.2s;
+		}
+
+
+
+/* Popup container - can be anything you want */
+.popup {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* The actual popup */
+.popup .popuptext {
+  visibility: hidden;
+  width: 900px;
+  background-color: darkblue;
+  color: yellow;
+  text-align: left;
+  border-radius: 6px;
+  padding: 8px 8px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: -50%;
+  margin-left: -200px;
+}
+
+/* Popup arrow */
+.popup .popuptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+/* Toggle this class - hide and show the popup */
+.popup .show {
+  visibility: visible;
+  -webkit-animation: fadeIn 1s;
+  animation: fadeIn 1s;
+}
+
+/* Add animation (fade in the popup) */
+@-webkit-keyframes fadeIn {
+  from {opacity: 0;} 
+  to {opacity: 1;}
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity:1 ;}
+}
+        bodyDp {
+            margin: 0;
+            display: flex;
+            align-items: left;
+            justify-content: left;
+            height: 5vh;
+        }
+
+        .person {
+            position: absolute;
+            width: 50px;
+            height: 60px;
+            background-color: #FF6347; /* Tomato color */
+            border-radius: 50px 50px 0 0;
+            animation: fly 5s linear infinite;
+        }
+
+        .person::before {
+            content: '';
+            position: absolute;
+            top: -30px;
+            left: 10px;
+            width: 30px;
+            height: 30px;
+            background-color: #FFD700; /* Gold color */
+            border-radius: 50%;
+        }
+
+        @keyframes fly {
+            0% {
+                transform: translateX(-100%);
+            }
+            50% {
+                transform: translateX(calc(100vw - 50px)) scaleX(1);
+            }
+            100% {
+                transform: translateX(-100%) scaleX(-1);
+            }
+        }
+		
+		body {
+            margin: 0;
+            overflow: hidden;
+            background-color: black;
+        }
+        .star {
+            position: absolute;
+            font-size: 50px; /* Adjust the size of the stars */
+            color: yellow;
+        }
+
+        @keyframes blink {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0;
+            }
+        }
+		
+		
+        bodyDp {
+            margin: 0;
+            display: flex;
+            align-items: left;
+            justify-content: left;
+            height: 5vh;
+        }
+
+        .dancer {
+            position: relative;
+            width: 60px;
+            height: 140px;
+            background-color: #ffcc00;
+            border-radius: 10px;
+            animation: bodyMove 4s infinite;
+        }
+
+        .dancer::before, .dancer::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 60px;
+            background-color: #ff5733;
+            top: 30px;
+            border-radius: 10px;
+            animation: armMove 4s infinite;
+        }
+
+        .dancer::before {
+            left: -25px;
+            transform-origin: top right;
+        }
+
+        .dancer::after {
+            right: -25px;
+            transform-origin: top left;
+        }
+
+        .head {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            width: 30px;
+            height: 30px;
+            background-color: #33ff57;
+            border-radius: 50%;
+            transform: translateX(-50%);
+            animation: headMove 4s infinite;
+        }
+
+        .eye-left, .eye-right {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: black;
+            border-radius: 50%;
+            top: 10px;
+        }
+
+        .eye-left {
+            left: 7px;
+        }
+
+        .eye-right {
+            right: 7px;
+        }
+
+        .mouth {
+            position: absolute;
+            width: 20px;
+            height: 10px;
+            background-color: black;
+            border-radius: 0 0 10px 10px;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: mouthMove 4s infinite;
+        }
+
+        .leg-left, .leg-right {
+            position: absolute;
+            width: 20px;
+            height: 70px;
+            background-color: #3357ff;
+            top: 100px;
+            border-radius: 10px;
+            animation: legMove 4s infinite;
+        }
+
+        .leg-left {
+            left: 10px;
+            transform-origin: top center;
+        }
+
+        .leg-right {
+            right: 10px;
+            transform-origin: top center;
+        }
+
+        .foot-left, .foot-right {
+            position: absolute;
+            width: 30px;
+            height: 10px;
+            background-color: #f1c40f;
+            border-radius: 50%;
+            top: 170px;
+            animation: footMove 4s infinite;
+        }
+
+        .foot-left {
+            left: 10px;
+            transform-origin: top center;
+        }
+
+        .foot-right {
+            right: 10px;
+            transform-origin: top center;
+        }
+
+        @keyframes bodyMove {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            20% {
+                transform: translateY(-20px) rotate(-10deg);
+            }
+            40% {
+                transform: translateY(20px) rotate(10deg);
+            }
+            60% {
+                transform: translateY(-10px) rotate(-15deg);
+            }
+            80% {
+                transform: translateY(10px) rotate(15deg);
+            }
+        }
+
+        @keyframes armMove {
+            0%, 100% {
+                transform: rotate(0deg);
+            }
+            25% {
+                transform: rotate(90deg);
+            }
+            50% {
+                transform: rotate(-90deg);
+            }
+            75% {
+                transform: rotate(45deg);
+            }
+        }
+
+        @keyframes headMove {
+            0%, 100% {
+                transform: translateX(-50%) rotate(0deg);
+            }
+            25% {
+                transform: translateX(-50%) rotate(20deg);
+            }
+            50% {
+                transform: translateX(-50%) rotate(-20deg);
+            }
+            75% {
+                transform: translateX(-50%) rotate(10deg);
+            }
+        }
+
+        @keyframes mouthMove {
+            0%, 100% {
+                transform: translateX(-50%) scale(1);
+            }
+            25% {
+                transform: translateX(-50%) scale(1.5);
+            }
+            50% {
+                transform: translateX(-50%) scale(0.5);
+            }
+            75% {
+                transform: translateX(-50%) scale(1.2);
+            }
+        }
+
+        @keyframes legMove {
+            0%, 100% {
+                transform: rotate(0deg);
+            }
+            25% {
+                transform: rotate(60deg);
+            }
+            50% {
+                transform: rotate(-60deg);
+            }
+            75% {
+                transform: rotate(80deg);
+            }
+        }
+
+        @keyframes footMove {
+            0%, 100% {
+                transform: rotate(0deg);
+            }
+            25% {
+                transform: rotate(45deg);
+            }
+            50% {
+                transform: rotate(-45deg);
+            }
+            75% {
+                transform: rotate(35deg);
+            }
+        }
+</style>
+
+
+<script>
+// When the user clicks on div, open the popup
+function myFunction1() {
+  var popup1 = document.getElementById("myPopup1");
+  popup1.classList.toggle("show");
+}
+
+function myFunction2() {
+  var popup2 = document.getElementById("myPopup2");
+  popup2.classList.toggle("show");
+}
+
+function myFunction3() {
+  var popup3 = document.getElementById("myPopup3");
+  popup3.classList.toggle("show");
+}
+
+function myFunction4() {
+  var popup4 = document.getElementById("myPopup4");
+  popup4.classList.toggle("show");
+}
+
+function myFunction5() {
+  var popup5 = document.getElementById("myPopup5");
+  popup5.classList.toggle("show");
+}
+
+function myFunction6() {
+  var popup6 = document.getElementById("myPopup6");
+  popup6.classList.toggle("show");
+}
+
+function myFunction7() {
+  var popup7 = document.getElementById("myPopup7");
+  popup7.classList.toggle("show");
+}
+
+function myFunction8() {
+  var popup8 = document.getElementById("myPopup8");
+  popup8.classList.toggle("show");
+}
+
+function myFunction9() {
+  var popup9 = document.getElementById("myPopup9");
+  popup9.classList.toggle("show");
+}
+
+
+function myFunction10() {
+  var popup10 = document.getElementById("myPopup10");
+  popup10.classList.toggle("show");
+}
+
+
+function myFunction11() {
+  var popup11 = document.getElementById("myPopup11");
+  popup11.classList.toggle("show");
+}
+
+function myFunction12() {
+  var popup12 = document.getElementById("myPopup12");
+  popup12.classList.toggle("show");
+}
+
+function myFunction13() {
+  var popup13 = document.getElementById("myPopup13");
+  popup13.classList.toggle("show");
+}
+
+
+function myFunction14() {
+  var popup14 = document.getElementById("myPopup14");
+  popup14.classList.toggle("show");
+}
+
+
+function myFunction15() {
+  var popup15 = document.getElementById("myPopup15");
+  popup15.classList.toggle("show");
+}
+
+
+function myFunction16() {
+  var popup16 = document.getElementById("myPopup16");
+  popup16.classList.toggle("show");
+}
+
+function myFunction17() {
+  var popup17 = document.getElementById("myPopup17");
+  popup17.classList.toggle("show");
+}
+
+function myFunction18() {
+  var popup18 = document.getElementById("myPopup18");
+  popup18.classList.toggle("show");
+}
+
+function myFunction19() {
+  var popup19 = document.getElementById("myPopup19");
+  popup19.classList.toggle("show");
+}
+
+
+function myFunction20() {
+  var popup20 = document.getElementById("myPopup20");
+  popup20.classList.toggle("show");
+}
+
+function myFunction21() {
+  var popup21 = document.getElementById("myPopup21");
+  popup21.classList.toggle("show");
+}
+</script>
+
+  </head>
+
+  <body onload="startTime()">
+    <div class="reveal">
+	  <p><img src="images/midwaylogo.png"  align="left" height="8%" width="10%" style="vertical-align:left;margin:-15px 5px"><img src="images/mueagle.png"  color="white" align="left" height="10%" width="10%" style="vertical-align:center;margin:-2% 45%">
+<div style="color:white;font-size: 20px; vertical-align:left;margin:-1% 0%" align="right" id="realtimeclock"></div></p>
+      <div class="slides">
+
+    <script>
+        const starCount = 2; // Number of stars
+        const body = document.body;
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        function createStar() {
+            let star = document.createElement('div');
+            star.classList.add('star');
+            star.textContent = '🛡️';
+
+            // Set random position
+            star.style.left = `${Math.random() * width}px`;
+            star.style.top = `${Math.random() * height}px`;
+
+            // Set random blink animation duration
+            star.style.animation = `blink ${Math.random() * 10 + 3.5}s infinite`;
+
+            body.appendChild(star);
+
+            // Function to randomly reposition the star
+            function randomizePosition() {
+                star.style.left = `${Math.random() * width}px`;
+                star.style.top = `${Math.random() * height}px`;
+            }
+
+            // Reposition the star every 1-3 seconds
+            setInterval(randomizePosition, Math.random() * 10000 + 5000);
+        }
+
+        for (let i = 0; i < starCount; i++) {
+            createStar();
+        }
+    </script>
+
+
+<section data-markdown id="cover"><textarea data-template>
+<p class='titlep'>&nbsp;</p>
+<bodyP>
+    <div class="person"></div>
+</bodyP>
+
+# Securing Software
+
+### CSE-400
+
+<p class="blink" style="color:blue;font-size:24px;">xinxing.wu@midway.edu</p>
+</textarea></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section data-markdown><textarea data-template>
+# Contents
+
+[Introduction](#/Introduction)<br>
+[Phishing](#/Phishing)<br>
+[Code Injection](#/Injection)<br>
+[DOM-based XSS](#/DOM)<br>
+[Stored Attacks](#/Attacks)<br>
+[SQL Injection](#/SQLInjection)<br>
+[Prepared Statements](#/Statements)<br>
+[Command Injection](#/CommandInjection)<br>
+[Developer Tools](#/Tools)
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section data-markdown><textarea data-template>
+# Contents (Cont.)
+
+[Client-Side Validation](#/Client)<br>
+[Server-Side Validation](#/Server)<br>
+[Cross-Site Request Forgery](#/Forgery)<br>
+[Open Worldwide Application Security](#/Security)<br>
+[Arbitrary Code Execution](#/Execution)<br>
+[Reverse Engineering](#/Engineering)<br>
+[Open-Source and Closed-Source Software](#/Software)<br>
+[App Stores](#/Stores)
+
+</textarea></section>
+
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section data-markdown><textarea data-template>
+# Contents (Cont.)
+
+[Package Managers](#/Managers)<br>
+[Operating Systems](#/Systems)<br>
+[Vulnerability Catalogs](#/Catalogs)<br>
+[Assignments](#/Assignments)
+
+</textarea></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="Introduction" class="center"><textarea data-template>
+# Introduction
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+## Introduction
+
+- [HTML Tutorial](https://www.w3schools.com/html/)
+- [CSS Tutorial](https://www.w3schools.com/css/)
+- [JavaScript Tutorial](https://www.w3schools.com/js/)
+
+
+
+
+## Introduction
+
+- Accounts: threats vs. defense => Keep accounts secure
+
+<img src="./images/account.gif" alt="drawing" width="300"/>
+
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="Phishing" class="center"><textarea data-template>
+# Phishing
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+## Phishing
+
+- Phishing, this attempt by an adversarially to phish or obtain information from you.
+
+<img src="./images/software2.gif" alt="drawing" width="450"/>
+
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+# <p class="hover-underline-animation">How to implement this attack</p>
+
+
+
+ 
+
+## Phishing
+
+- HTML, Hypertext Markup Language
+
+<img src="./images/software1.png" alt="drawing" width="250"/>
+
+
+- The kind of text that a web server would send to a web browser when it wants to display information on your screen ... day's news, your email inbox, or anything else that is web based
+
+
+
+
+
+## Phishing
+
+- HTML - tags
+	- Be symmetric
+- JavaScript
+
+
+
+
+## Phishing
+
+- Browser, that's it for the code to execute.
+
+<p class='titlep'>&nbsp;</p>
+
+### <p class="hover-underline-animation">How might there actually be a threat or an opportunity for an adversarially to phish information from you?</p>
+
+
+
+
+
+## Phishing
+
+- A hyperlink in a web page [HTML Links - Hyperlinks](https://www.w3schools.com/html/html_links.asp)
+
+<p class='titlep'>&nbsp;</p>
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>0</span>
+                <span>D</span>
+                <span>I</span>
+                <span>N</span>
+                <span>G</span>
+            </h3>
+        </div>
+</div>
+
+```
+<a href="https://www.midway.edu/">Midway University</a>
+```
+
+<p class='titlep'>&nbsp;</p>
+
+- Midway University is clicked, go to https://www.midway.edu/
+
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+# <p class="hover-underline-animation">Where is the danger?</p>
+
+
+
+
+
+## Phishing
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>0</span>
+                <span>D</span>
+                <span>I</span>
+                <span>N</span>
+                <span>G</span>
+            </h3>
+        </div>
+</div>
+
+```
+<a href="https://www.uky.edu/">https://www.midway.edu/</a>
+```
+
+
+
+## Phishing
+
+- Copying all of the HTML that implements Midway's website and pastes it into their own fake version of Midway's website
+
+	- It doesn't have to be UK.
+
+	- It might be your bank.
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="Injection" class="center"><textarea data-template>
+# Code Injection
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+## Code Injection
+
+- Code injection is the term used to describe attacks that inject code into an application. That injected code is then interpreted by the application, changing the way a program executes. Code injection attacks typically exploit an application vulnerability that allows the processing of invalid data.
+
+<img src="./images/software3.gif" alt="drawing" width="250"/>
+
+
+
+
+
+## Code Injection
+
+- Example, A common attack on the web in particular, is what's known as cross-site scripting, or XSS 
+- Referring to this potential opportunity for an adversarially to trick one website into executing code that they themselves did not write.
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+# <p class="hover-underline-animation">What form might this actually take?</p>
+
+
+
+
+## Code Injection
+
+- Visit google.com, and suppose that Google isn't aware of this particular attack (suppose that they weren't yet aware that this attack exists.)
+
+- Searches for something like cats, 
+
+<img src="./images/software4.png" alt="drawing" width="650"/>
+
+
+
+
+## Code Injection
+
+- If Google is using your own input, not only to remind you of what you searched for in the search box, but also in the body of the web page, that very simple idea is vulnerable to an attack.
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+# <p class="hover-underline-animation">Why?</p>
+
+
+
+
+## Code Injection
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>O</span>
+                <span>D</span>
+				<span>I</span>
+				<span>N</span>
+				<span>G</span>
+            </h3>
+        </div>
+</div>
+
+
+```
+<p>About 8,830,000,000 results (0.45 seconds) </p>
+```
+
+
+
+
+## Code Injection
+
+- Google is inside of their web page rendering HTML that looks like (Chrome -> F12)
+
+<img src="./images/software5.png" alt="drawing" width="950"/>
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+## <p class="hover-underline-animation">If tricking Google into outputting something that they might not have anticipated...?</p>
+
+
+
+
+
+## Code Injection
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>O</span>
+                <span>D</span>
+				<span>I</span>
+				<span>N</span>
+				<span>G</span>
+            </h3>
+        </div>
+</div>
+
+
+```
+<script>alert('attack')</script>
+```
+
+<img src="./images/software6.png" alt="drawing" width="950"/>
+
+
+
+
+## Code Injection
+
+- Try <script>alert('attack')</script> in [Google](https://www.google.com/) ...
+
+- [https://ieeexplore.ieee.org/search/searchresult.jsp](https://ieeexplore.ieee.org/search/searchresult.jsp)
+
+<img src="./images/software7.png" alt="drawing" width="950"/>
+
+
+
+
+
+## Code Injection
+
+
+- Try ```<script>alert('attack')</script>``` in [https://xss-quiz.int21h.jp/](https://xss-quiz.int21h.jp/)
+
+<img src="./images/software8.gif" alt="drawing" width="550"/>
+
+- [Over 2 million Websites Vulnerable to XSS Exploit (CVE-2023-30777) in WordPress Plugin](https://www.indusface.com/blog/over-2-million-websites-vulnerable-to-xss-exploit-cve-2023-30777-in-wordpress-plugin/)
+
+
+
+
+
+## Code Injection
+
+- The browser doesn't know that that came from me and not Google.
+
+- ... So the browser is just going to read this
+
+
+
+
+## Code Injection
+
+- We could construct a URL that if clicked by a user, ... XSS works by manipulating a vulnerable web site so that it returns malicious JavaScript to users. When the malicious code executes inside a victim's browser, the attacker can fully compromise their interaction with the application.
+
+
+
+## Code Injection
+
+<img src="./images/software9.png" alt="drawing" width="950"/>
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+## <p class="hover-underline-animation">Block JavaScript is a solution?</p>
+
+
+
+
+## summary
+
+- XSS attack injects malicious code into vulnerable web applications. XSS does not target the application directly. Instead, XSS targets the users of a web application.
+
+- An XSS attack by sending a malicious link to a user and enticing the user to click it. If the app or website lacks proper data sanitization, the malicious link executes the attacker's chosen code on the user's system. As a result, the attacker can steal the user's active session cookie.
+
+
+
+
+## summary
+
+- A successful XSS attack can cause reputational damages and loss of customer trust, depending on the scope of the attack. Here are common examples:
+
+	- An XSS attack can employ a Trojan horse program to modify the content on a site, tricking users into providing sensitive information. 
+	- Successful XSS attacks can reveal session cookies, which allow cybercriminals to impersonate real users and use their accounts.
+
+- [Cross-site Scripting (XSS)](https://www.acunetix.com/websitesecurity/cross-site-scripting/#:~:text=In%20a%20Cross%2Dsite%20Scripting,vulnerable%20to%20Cross%2Dsite%20scripting.)
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+## <p class="hover-underline-animation">How do I find XSS vulnerable sites?</p>
+
+
+
+
+## How do I find XSS vulnerable sites?
+
+- Find all filed like search, comment box, username, password, feedback form, contact form...
+
+- One by one try ```<script>alert('hello Anonymous')</script>```<div class="popup" onclick="myFunction1()"><p class="blink" style="font-size:32px;"><spanBYMix>...</spanBYMix></p> <span class="popuptext" id="myPopup1" STYLE="font-size:20px">Try this simple script on every text field and analyze the response or even analyze the response. If the script is run successfully and shows the alert box, the website has the XSS vulnerability; otherwise, try to DOM-BASED XSS ATTACK 90% of the website is a dom-based vulnerable site.</span></div>
+
+
+
+
+## How to prevent XSS attacks
+
+- Effectively preventing XSS vulnerabilities is likely to involve a combination of the following measures:
+
+	- Filter input on <div class="popup" onclick="myFunction2()"><p class="blink" style="font-size:32px;"><spanBYMix>arrival</spanBYMix></p> <span class="popuptext" id="myPopup2" STYLE="font-size:20px">At the point where user input is received, filter as strictly as possible based on what is expected or valid input.</span></div> 
+	- Encode data on <div class="popup" onclick="myFunction3()"><p class="blink" style="font-size:32px;"><spanGREEN>output</spanGREEN></p> <span class="popuptext" id="myPopup3" STYLE="font-size:20px">At the point where user-controllable data is output in HTTP responses, encode the output to prevent it from being interpreted as active content. Depending on the output context, this might require applying combinations of HTML, URL, JavaScript, and CSS encoding.</span></div>
+	- Use appropriate <div class="popup" onclick="myFunction4()"><p class="blink" style="font-size:32px;"><spanRED>response headers</spanRED></p> <span class="popuptext" id="myPopup4" STYLE="font-size:20px">To prevent XSS in HTTP responses that aren't intended to contain any HTML or JavaScript, you can use the Content-Type and X-Content-Type-Options headers to ensure that browsers interpret the responses in the way you intend.</span></div> 
+	- Content Security <div class="popup" onclick="myFunction5()"><p class="blink" style="font-size:32px;"><spanYELLOW>Policy</spanYELLOW></p> <span class="popuptext" id="myPopup5" STYLE="font-size:20px">As a last line of defense, you can use Content Security Policy (CSP) to reduce the severity of any XSS vulnerabilities that still occur.</span></div> 
+
+
+
+
+## How to prevent XSS attacks
+
+- [What is cross-site scripting (XSS)? And how to prevent it?](https://portswigger.net/web-security/cross-site-scripting)
+- [Cross Site Scripting Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)
+- [Python Penetration Testing - XSS Web Attack](https://www.tutorialspoint.com/python_penetration_testing/python_penetration_testing_xss_web_attack.htm)
+- [Cross Injector — A Python Script for Cross-Site Scripting (XSS) Detection](https://anmolksachan.medium.com/cross-injector-a-python-script-for-cross-site-scripting-xss-detection-c8f097941c32)
+
+
+
+
+## Types of XSS
+
+- Stored XSS, reflected XSS, and DOM-based XSS:
+
+	- Stored: malicious script is written into the actual code of web application, affecting both the client and server side.<div class="popup" onclick="myFunction6()"><p class="blink" style="font-size:32px;"><spanBYMix>...</spanBYMix></p> <span class="popuptext" id="myPopup6" STYLE="font-size:20px"> It resides permanently in the code of that server or application until it’s eradicated by admins or an automated security solution. Stored XSS is a consistently severe XSS attack because the malicious code always exists in the application. For example, if a threat actor writes a malicious script on a financial services company’s web server on a page where users input their financial data, the threat actor can steal that data every time someone uses the page. Because the malicious code is written in the web server, it affects each instance of the web application’s use. Users don’t know the code on the financial services web page is malicious because it looks legitimate, and they continue using it until it’s exposed.</span></div>
+	- Reflected: an attacker injects malicious code into a URL parameters, the response from the web server reflects that.<div class="popup" onclick="myFunction7()"><p class="blink" style="font-size:32px;"><spanBYMix>...</spanBYMix></p> <span class="popuptext" id="myPopup7" STYLE="font-size:20px"> It isn’t stored long-term in the back end of the application or server code. The attack is performed within the bounds of the user’s input, like the URL or request parameters. Reflected XSS can be severe if an attacker uses it to steal session cookies or user credentials. An example of reflected XSS would be a threat actor intercepting a software engineer’s request parameters to access a popular engineering application. The threat actor changes the URL subtly, which means the user goes to a vulnerable web page instead of the legitimate one they expected. From there, the threat actor can take multiple actions to compromise the engineer’s work, like stealing the information they input on the page.</span></div>
+	- <div class="popup" onclick="myFunction9()"><p class="blink" style="font-size:32px;"><spanGREEN>DOM</spanGREEN></p> <span class="popuptext" id="myPopup9" STYLE="font-size:20px"> Document object model</span></div>-based: the attacker manipulates the DOM of the user’s browser.<div class="popup" onclick="myFunction8()"><p class="blink" style="font-size:32px;"><spanBYMix>...</spanBYMix></p> <span class="popuptext" id="myPopup8" STYLE="font-size:20px"> The actual code of the web application itself doesn’t change on the server side, but it executes maliciously on the user’s side. DOM-based XSS is particularly hard to detect because the changes occur on the client side within the document object model and may never touch the web server. For example, if an attacker steals pieces of a URL and uses them in a JavaScript function that allows dynamic code execution, that attacker could manipulate the client-side code of a web app. If the attacker chooses to manipulate a customer relationship management (CRM) product’s main page, the actual HTTP response of the page won’t be different, but the client-facing code will be. The threat actor could launch an attack using the URL fragments.</span></div>
+
+
+
+
+## Stored (persistent) XSS
+
+- Malicious input is saved by the app and later served to other users, where it runs in their browsers. The code isn’t in your source files; it’s in user-generated content that the server stores and re-displays.
+
+
+
+
+## Stored (persistent) XSS
+
+- eBay listing XSS (2014–2017). Attackers embedded scripts in product listings, leading to credential-stealing/phishing flows when shoppers viewed the listings. 
+
+<hr>
+
+- Link: https://www.infosecurity-magazine.com/news/ebay-under-fire-after-cross-site/?utm_source=chatgpt.com
+
+
+
+
+## Reflected (non-persistent) XSS
+
+- Malicious input is sent in a request (e.g., a crafted URL) and immediately reflected in the response; it runs only if a victim clicks/visits that link.
+
+
+
+## Reflected (non-persistent) XSS
+
+- PayPal reflected XSS (2010–2013 reports). Public disclosures showed crafted URLs could reflect script in PayPal pages until fixed—illustrative of high-value targets susceptible to reflected XSS.
+
+<hr>
+
+- Link: https://www.forbes.com/sites/firewall/2010/10/06/hackable-bug-found-on-paypal-com/?utm_source=chatgpt.com
+
+
+
+## DOM-based XSS
+
+- The payload is handled entirely in the browser’s DOM (client-side JS reads from location, hash, postMessage, etc., and writes to a dangerous sink like innerHTML), so the server might never see the attack.
+
+
+
+## DOM-based XSS
+
+- TweetDeck XSS (2014). Certain TweetDeck clients executed script contained in tweets; the bug caused pop-ups and auto-retweets until TweetDeck was temporarily disabled and patched. A landmark DOM-side incident.
+
+<hr>
+
+- Link: https://www.theguardian.com/technology/2014/jun/11/twitter-tweetdeck-xss-flaw-users-vulnerable?utm_source=chatgpt.com
+</textarea></section>
+
+</section>
+
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="DOM" class="center"><textarea data-template>
+# DOM-based XSS
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+## DOM-based XSS
+
+- DOM Based XSS (or "type-0 XSS") is an XSS attack wherein the attack payload is executed as a result of modifying the DOM "environment" in the victim’s browser used by the original client side script, so that the client side code runs in an "unexpected" manner.<div class="popup" onclick="myFunction10()"><p class="blink" style="font-size:32px;"><spanGREEN>...</spanGREEN></p> <span class="popuptext" id="myPopup10" STYLE="font-size:20px"> The page itself (the HTTP response that is) does not change, but the client side code contained in the page executes differently due to the malicious modifications that have occurred in the DOM environment.<br>This is in contrast to other XSS attacks (stored or reflected), wherein the attack payload is placed in the response page (due to a server side flaw).</span></div>
+
+- [Research from David Wichers seeking to reclassify DOM XSS more strictly as CLIENT SIDE XSS](https://owasp.org/www-community/Types_of_Cross-Site_Scripting#DOM_Based_XSS_.28AKA_Type-0.29)
+
+
+
+
+
+## DOM-based XSS
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>O</span>
+                <span>D</span>
+				<span>I</span>
+				<span>N</span>
+				<span>G</span>
+            </h3>
+        </div>
+</div>
+
+
+```
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test</title>
+</head>
+
+<body>
+...
+</body>
+
+</html>
+```
+
+
+
+
+## DOM-based XSS
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>O</span>
+                <span>D</span>
+				<span>I</span>
+				<span>N</span>
+				<span>G</span>
+            </h3>
+        </div>
+</div>
+
+
+```
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test</title>
+</head>
+
+<body>
+Select your language:
+
+<select><script>
+
+document.write("<OPTION value=1>"+decodeURIComponent(document.location.href.substring(document.location.href.indexOf("default=")+8))+"</OPTION>");
+
+document.write("<OPTION value=2>English</OPTION>");
+
+</script></select>
+</body>
+
+</html>
+
+```
+
+<div class="popup" onclick="myFunction11()"><p class="blink" style="font-size:32px;"><spanBYMix>Note</spanBYMix></p> <span class="popuptext" id="myPopup11" STYLE="font-size:20px"> Suppose the following code is used to create a form to let the user choose their preferred language. A default language is also provided in the query string, as the parameter "default".</span></div> 
+
+
+
+
+## DOM-based XSS
+
+- Add ```?default=French```
+
+<img src="./images/software10.gif" alt="drawing" width="1200"/>
+
+
+
+
+## DOM-based XSS
+
+- A DOM Based XSS attack against this page can be accomplished by sending the following URL to a victim:
+
+- Add ```?default=<script>alert(document.cookie)</script>```
+
+<img src="./images/software11.gif" alt="drawing" width="1200"/>
+
+
+
+
+
+## DOM-based XSS
+
+- Prepare a web server UwAmp https://www.uwamp.com/en/
+
+<img src="./images/software12.png" alt="drawing" width="300"/>
+
+
+
+
+## DOM-based XSS
+
+- When the victim clicks on this link, the browser sends a request for:
+
+```
+/Test2.html?default=<script>alert(document.cookie)</script>
+```
+
+- to <spanGREEN>http://localhost/TestProject/</spanGREEN>. The server responds with the page containing the above Javascript code. The browser creates a DOM object for the page, in which the document.location object contains the string:
+
+```
+http://localhost/TestProject/Test2.html?default=<script>alert(document.cookie)</script>
+```
+
+
+
+## DOM-based XSS
+
+- The original Javascript code in the page does not expect the default parameter to contain HTML markup, and as such it simply decodes and echoes it into the page (DOM) at runtime. The browser then renders the resulting page and executes the attacker’s script:
+
+```
+alert(document.cookie)
+```
+
+<div class="popup" onclick="myFunction12()"><p class="blink" style="font-size:32px;"><spanBYMix>Note</spanBYMix></p> <span class="popuptext" id="myPopup12" STYLE="font-size:20px"> The HTTP response sent from the server does not contain the attacker’s payload. This payload manifests itself at the client-side script at runtime, when a flawed script accesses the DOM variable document.location and assumes it is not malicious. In addition, most browsers URL encode document.location by default which reduces the impact or possibility of many DOM XSS attacks. In the example above, while the payload was not embedded by the server in the HTTP response, it still arrived at the server as part of an HTTP request, and thus the attack could be detected at the server side.</span></div> 
+
+<br>
+
+- [DOM Based XSS](https://owasp.org/www-community/attacks/DOM_Based_XSS)
+
+
+
+
+
+> document.cookie: This function in JavaScript accesses cookies stored in the client’s browser for the domain of the current webpage. It doesn’t have access to server-side cookies or any cookies stored on the server.
+</textarea></section>
+
+</section>
+
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="Attacks" class="center"><textarea data-template>
+# Stored Attacks
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+## Stored Attacks
+
+- The adversary's input isn't just immediately reflected back from the server to some unsuspecting user as it might be when you're using the URL to contain the code.
+
+- But suppose that a website were vulnerable to actually storing the user's input, even if the user's input includes HTML with some JavaScript inside, well, that would be a stored attack.
+
+
+
+
+## Stored Attacks
+
+- When using Gmail ... suppose that you, if you sent someone an email with that exact same code
+
+<img src="./images/software13.png" alt="drawing" width="700"/>
+
+
+
+
+## Stored Attacks
+
+- You send an email in Gmail, or Outlook, or any other service, that email is going to be stored on a server until it's read and until it's deleted, perhaps, by the user.
+
+- If it's never deleted, it's going to stay stored on the server ... this type of attack assumes that the server might actually be saving in a database or a file somewhere the user's input.
+
+	- Suppose ... Google didn't know about these kinds of cross-site scripting attacks ... just blindly save it into their database.
+
+
+
+
+## Stored Attacks
+
+- If the recipient opens that particular email and Google is literally rendering the script tag with the JavaScript inside, the recipient of that email, when they open their inbox, may very well suffer some kind of an attack.
+
+<img src="./images/software14.png" alt="drawing" width="700"/>
+
+
+
+
+
+## Stored Attacks
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>O</span>
+                <span>D</span>
+				<span>I</span>
+				<span>N</span>
+				<span>G</span>
+            </h3>
+        </div>
+</div>
+
+
+```
+<img src="nonexistent.jpg" onerror="alert('XSS Attack!');">
+```
+
+
+
+
+
+## Stored Attacks
+
+- What we would want to have happen instead is not have Google show us the attack message here.
+
+	- But rather, <spanGREEN>I would like my inbox to show me the code I was sent, but not execute it.</spanGREEN>
+
+<img src="./images/software15.png" alt="drawing" width="700"/>
+
+
+
+
+## Stored Attacks
+
+- How do you go about preventing an attack like this in software?
+
+
+<p class='titlep'>&nbsp;</p>
+
+### <p class="hover-underline-animation">The general answer is character escapes</p>
+
+
+
+
+## Stored Attacks
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>O</span>
+                <span>D</span>
+				<span>I</span>
+				<span>N</span>
+				<span>G</span>
+            </h3>
+        </div>
+</div>
+
+
+```
+<p>About 8,830,000,000 results (0.45 seconds) &lt;script&gt;alert('attack')&lt;/script&gt; </p>
+
+```
+
+- Highlighted in yellow now are only the character escapes.
+
+- You have to type out characters in this particular case.
+
+
+
+
+## Stored Attacks
+
+- ... But browsers are designed to know that when they see ```&lt;```, they should not show on the screen ```&lt;```. They should show a less than sign.
+
+
+
+
+## Stored Attacks
+
+- When browsers see ```&gt;```, they should display not literally that, but a greater than sign.
+
+	- If Google were smart, they would take any user input you and I give them, but they would make sure to escape any potentially dangerous characters with these kinds of escape sequences<div class="popup" onclick="myFunction13()"><p class="blink" style="font-size:32px;"><spanBYMix>...</spanBYMix></p> <span class="popuptext" id="myPopup13" STYLE="font-size:20px"> But notice, we don't have to escape all of the punctuation, like the slash, or the English letters in the tag name, ... We're only escaping a certain list of these characters.</span></div> 
+
+
+
+
+## Stored Attacks
+
+- The ampersand sign ... if we're using ampersand over the place
+
+### <p class="hover-underline-animation">What if the user's input has an ampersand?</p>
+
+- So there actually needs to be a more verbose way, ```&amp;ampamp;``` to represent literally an ampersand.
+
+
+
+
+## Stored Attacks
+
+- HTTP headers - an HTTP header is a line of text that's stored in those virtual envelopes that get sent from browsers to servers and from servers to browsers.
+
+- The [HTTP headers](https://www.geeksforgeeks.org/http-headers/) are used to pass additional information between the clients and the server through the request and response header.
+
+
+
+
+## Stored Attacks
+
+- All the headers are case-insensitive, headers fields are separated by colon, key-value pairs in clear-text string format. The end of the header section denoted by an empty field header.  
+
+<img src="./images/software16.png" alt="drawing" width="700"/>
+
+
+
+
+
+## Stored Attacks
+
+<img src="./images/software22.png" alt="drawing" width="800"/>
+
+
+
+
+## Stored Attacks
+
+<img src="./images/software23.png" alt="drawing" width="1200"/>
+
+
+
+
+## Stored Attacks
+
+- Suppose that example.com's web server is configured to output always in those virtual envelopes an HTTP header that is [Content Security Policy (CSP)](https://en.wikipedia.org/wiki/Content_Security_Policy) is a computer security standard introduced to prevent cross-site scripting (XSS), clickjacking and other code injection attacks resulting from execution of malicious content in the trusted web page context.
+
+
+
+
+## Stored Attacks
+
+- Access-Control-Allow-Methods the value syntax is comma delimited shown below:
+
+	- Access-Control-Allow-Methods: ```<method>, <method>, …```
+
+- Content-Security-Policy is semi-colon separated like shown below:
+
+	- Content-Security-Policy: ```<policy-directive>; <policy-directive>```
+
+
+
+
+
+## Stored Attacks
+
+- The value of that key is script-src then the URL that we want to allow scripts from only.
+
+<img src="./images/software18.png" alt="drawing" width="800"/>
+
+<p class='titlep'>&nbsp;</p>
+
+### <p class="hover-underline-animation">What does this mean?</p>
+
+
+
+
+
+## Stored Attacks
+
+- If you configure a web server with this HTTP header, this will ensure that you can only load JavaScript code from actual files, typically ending in .js that are sent separately from the server to the browser.
+
+- This line of an HTTP header prevents inline scripts.
+
+
+
+
+## Stored Attacks
+
+- If example.com messes up and forgets to use character escapes when rendering user input that came from a URL or came from an email or any other source, this header should at least tell the browser
+
+- If you accidentally see a script tag with some JavaScript inside of it in my web page, don't execute it.
+
+
+
+
+
+## Stored Attacks
+
+- Only allow me to execute JavaScript code that came from a separate file.
+
+- The only type of JavaScript that will now be allowed is if I have a tag that looks like this in my HTML, which is an alternative version of the script tag.
+
+<img src="./images/software19.png" alt="drawing" width="600"/>
+
+
+
+
+## Stored Attacks
+
+- We can only execute JavaScript code if it comes from example.com in a separate file.
+
+- Using an HTML tag like this, it will prohibit that HTTP header any script tags that are inlined in the body of our actual web pages.
+
+<img src="./images/software18.png" alt="drawing" width="850"/>
+<img src="./images/software19.png" alt="drawing" width="400"/>
+
+
+
+
+## Stored Attacks
+
+- CSS, or Cascading Style Sheets, which is generally used to style your page.
+
+- HTTP header would only allow us to conclude CSS in our web page if it uses a tag like this, namely, a link tag with an href value.
+
+
+
+
+## Stored Attacks
+
+- The URL of a CSS file on the particular server, example.com, the relationship of which is to the page called a style sheet.
+
+<img src="./images/software20.png" alt="drawing" width="900"/>
+
+<img src="./images/software21.png" alt="drawing" width="600"/>
+
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+### <p class="hover-underline-animation">Use interchangeably both JavaScript and HTML, how that isn't a security risk for these kind of attacks?</p>
+
+
+
+
+
+## Stored Attacks
+
+- React and other frameworks use a technique called<div class="popup" onclick="myFunction14()"><p class="blink" style="font-size:32px;"><spanBYMix>JSX</spanBYMix></p> <span class="popuptext" id="myPopup14" STYLE="font-size:20px"> JavaScript XML, formally JavaScript Syntax eXtension, is an XML-like extension to the JavaScript language syntax. Initially created by Facebook for use with React, JSX has been adopted by multiple web frameworks</span></div> combines JavaScript with HTML with CSS that are rendered by the browser.
+
+
+
+
+## Stored Attacks
+
+- All of that code comes from .js files, or .css files, ...
+
+- If you just inline it ... it won't execute at all.
+
+- [10 Practical scenarios for XSS attacks](https://pentest-tools.com/blog/xss-attacks-practical-scenarios)
+- [React Tutorial](https://www.w3schools.com/react/default.asp)
+
+
+
+## An example
+
+- HTML for the Login Page (index.html)
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>O</span>
+                <span>D</span>
+				<span>I</span>
+				<span>N</span>
+				<span>G</span>
+            </h3>
+        </div>
+</div>
+
+
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="login-container">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit">Login</button>
+            <p id="error-message" class="error-message"></p>
+        </form>
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
+
+```
+
+
+
+
+## An example
+
+- CSS for Styling (styles.css)
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>O</span>
+                <span>D</span>
+				<span>I</span>
+				<span>N</span>
+				<span>G</span>
+            </h3>
+        </div>
+</div>
+
+
+```
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+    font-family: Arial, sans-serif;
+}
+
+.login-container {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    text-align: center;
+}
+
+.login-container h2 {
+    margin-bottom: 20px;
+}
+
+.login-container label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+.login-container input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.login-container button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.login-container button:hover {
+    background-color: #0056b3;
+}
+
+.error-message {
+    color: red;
+    display: none;
+}
+
+
+```
+
+
+
+## An example
+
+- JavaScript for Form Submission and Validation (scripts.js)
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>O</span>
+                <span>D</span>
+				<span>I</span>
+				<span>N</span>
+				<span>G</span>
+            </h3>
+        </div>
+</div>
+
+
+```
+document.getElementById('loginForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const errorMessage = document.getElementById('error-message');
+    
+    if (username === 'Mobile Computing' && password === 'cse410') {
+        window.location.href = 'example.html';//A html page needs to show up
+    } else {
+        errorMessage.textContent = 'Invalid username or password.';
+        errorMessage.style.display = 'block';
+    }
+});
+
+```
+
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="SQLInjection" class="center"><textarea data-template>
+# SQL Injection
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+## Code injection - SQL Injection
+
+<img src="./images/software25.gif" alt="drawing" width="600"/>
+
+
+
+
+## SQL Injection
+
+- SQL (Structured Query Language) is a language that's typically used with databases
+
+<img src="./images/software24.png" alt="drawing" width="600"/>
+
+
+
+
+## SQL Injection
+
+- When you're using SQL, typically use it in combination with some other language: Python, or PHP, or C#, or Java, ... - construct queries dynamically based on values that humans have typed in
+
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+# <p class="hover-underline-animation">How to inject codes?</p>
+
+
+
+
+
+## SQL Injection
+
+- Typed my username
+
+<img src="./images/software26.png" alt="drawing" width="600"/>
+
+
+
+
+
+## SQL Injection
+
+- The original query...assume that in yellow here, the curly braces with username,
+
+<img src="./images/software27.png" alt="drawing" width="600"/>
+
+
+
+
+
+## SQL Injection
+
+- My username is supposed to be Malan.
+
+- Yellow is what came from a form on the web, an adversary,
+
+
+
+
+## SQL Injection
+
+- After a semicolon is like a new command altogether. So ```DELETE FROM users;``` is like a second command 
+
+<img src="./images/software28.png" alt="drawing" width="500"/>
+
+
+
+
+## SQL Injection
+
+- Type in Malan and hit Enter ... to log in, probably, after typing also a password, maybe a two-factor code or the like.
+
+	- But ```SELECT * FROM users WHERE username='malan'```
+
+- The dangerous part here is that I tricked this server into executing a second command.
+
+- ```DELETE FROM user;``` means delete all of the users from the system.
+
+
+
+
+
+## SQL Injection
+
+- Suppose that the user is prompted at the same time for a username and a password now in this story
+
+<img src="./images/software29.png" alt="drawing" width="900"/>
+
+
+
+
+
+## SQL Injection
+
+- A new line and some white space
+
+<img src="./images/software31.png" alt="drawing" width="400"/>
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+# <p class="hover-underline-animation">What does this mean?</p>
+
+
+
+
+
+## SQL Injection
+
+<img src="./images/software32.png" alt="drawing" width="900"/>
+
+
+- Tricked the database command into including an OR ... it's always true
+
+
+
+
+
+## SQL Injection
+
+- If there's no 'malan' with no password, it's still the same as asking for ```WHERE '1' = '1'```
+
+<img src="./images/software33.png" alt="drawing" width="800"/>
+
+
+
+
+## SQL Injection
+
+- Certainly equal itself
+
+<img src="./images/software34.png" alt="drawing" width="600"/>
+
+
+
+
+## Summary
+
+- SQL injection, also known as SQLI, is a common attack vector that uses malicious SQL code for backend database manipulation to access information that was not intended to be displayed. This information may include any number of items, including sensitive company data, user lists or private customer details.
+
+
+
+
+## Summary
+
+<img src="./images/software30.png" alt="drawing" width="700"/>
+
+
+
+
+## An example
+
+<img src="./images/software36.png" alt="drawing" width="700"/>
+
+
+
+## An example
+
+- Test case 1 (without protection)
+
+<img src="./images/software37.png" alt="drawing" width="700"/>
+
+
+
+
+## An example
+
+- Test case 2 (without protection)(password is the same to user name)
+
+<img src="./images/software38.png" alt="drawing" width="700"/>
+
+
+
+## An example
+
+- Test case 3(without protection)
+
+<img src="./images/software39.png" alt="drawing" width="700"/>
+
+
+
+## An example
+
+- [SQL-Injection-Simulation-Project](https://github.com/mndarren/SQL-Injection-Simulation-Project)
+
+
+
+## A practice 
+
+- SQL Injection https://www.hacksplaining.com/lessons/sql-injection/start
+
+<img src="./images/software35.png" alt="drawing" width="600"/>
+
+- [SQL-Injection-Simulator](https://github.com/davosmith/SQL-Injection-Simulator)
+
+- 1' or '1'='1
+
+
+
+# <p class="hover-underline-animation">What is the solution to SQL injection attack specifically?</p>
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+# <p class="hover-underline-animation">Escaping dangerous characters</p>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="Statements" class="center"><textarea data-template>
+# Prepared Statements
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+## Prepared Statements 🌞
+- You don't have to do it yourself.
+
+- Most databases support what are called prepared statements, which is a fancy way of providing the code for your SQL query.
+- You provide <spanBYMix>placeholders</spanBYMix> for wherever you want user input. But let the database itself replace or interpolate those placeholders with the user's actual input.
+
+
+
+
+## Prepared Statements
+
+- Dangerous, like apostrophes <br>
+
+<img src="./images/software40.png" alt="drawing" width="400"/><br>
+
+<img src="./images/software41.png" alt="drawing" width="300"/>
+
+
+
+
+## Prepared Statements
+
+- Instead of writing a single apostrophe ... escape a single quote or an apostrophe in SQL is very often by putting two of them in a row.
+
+<img src="./images/software42.png" alt="drawing" width="600"/>
+
+
+
+
+## Prepared Statements
+
+- Two single quotes, they don't try to pair them with something to the left or something to the right.
+
+- They just treat it as one special escape sequence
+
+<img src="./images/software43.png" alt="drawing" width="600"/>
+
+<img src="./images/software44.png" alt="drawing" width="600"/>
+
+
+
+## Prepared Statements
+
+- The prepared statement automatically adds a final single quote at the very end.
+
+<img src="./images/software45.png" alt="drawing" width="750"/>
+
+
+
+
+## An example
+
+- If you are using MySQL or PostgreSQL, use %s (even for numbers and other non-string values!) and if you are using SQLite use ?. If you are using ODBC to connect to the DB, regardless of which DB it is, use ?.
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>O</span>
+                <span>D</span>
+				<span>I</span>
+				<span>N</span>
+				<span>G</span>
+            </h3>
+        </div>
+</div>
+
+
+```
+c.execute("SELECT * FROM foo WHERE bar = %s AND baz = %s", (param1, param2))
+```
+
+
+
+
+## An example
+
+- PHP - SELECT
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>O</span>
+                <span>D</span>
+				<span>I</span>
+				<span>N</span>
+				<span>G</span>
+            </h3>
+        </div>
+</div>
+
+
+```
+$stmt = $db->prepare('SELECT * FROM users where name = ? where id = ?');
+
+$stmt->bind_param(‘si’, $name, $id);
+
+$stmt->execute();
+```
+
+- s = string (for $name)
+- i = integer (for $id)
+
+
+
+
+## An example
+
+- PHP - INSERT
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>O</span>
+                <span>D</span>
+				<span>I</span>
+				<span>N</span>
+				<span>G</span>
+            </h3>
+        </div>
+</div>
+
+
+```
+$stmt = $db->prepare("INSERT INTO foo (firstname, lastname, email) VALUES (?, ?, ?)");
+
+$stmt->bind_param("sss", $firstname, $lastname, $email);
+
+$stmt->execute();
+```
+
+
+
+## An example
+
+- In C# the placeholder is not the ? symbol, but @* (where * can be any string you want).
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>O</span>
+                <span>D</span>
+				<span>I</span>
+				<span>N</span>
+				<span>G</span>
+            </h3>
+        </div>
+</div>
+
+
+```
+cmd = new MySqlCommand("SELECT * FROM admin WHERE admin_username=@val1 AND admin_password=PASSWORD(@val2)", MySqlConn.conn);
+
+cmd.Parameters.AddWithValue("@val1", tboxUserName.Text);
+
+cmd.Parameters.AddWithValue("@val2", tboxPassword.Text);
+
+cmd.Prepare();
+```
+
+
+
+
+## An example
+
+- In C# the placeholder is not the ? symbol, but @* (where * can be any string you want).
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>O</span>
+                <span>D</span>
+				<span>I</span>
+				<span>N</span>
+				<span>G</span>
+            </h3>
+        </div>
+</div>
+
+
+```
+string sql = "INSERT INTO foo VALUES(NULL, @number, @text)";
+
+MySqlCommand cmd = new MySqlCommand(sql, conn);
+
+cmd.Parameters.Add("@number", i);
+
+cmd.Parameters.Add("@text", "A string value");
+
+cmd.Prepare();
+
+MySqlDataReader rdr = cmd.ExecuteReader();
+```
+
+
+
+
+## An example
+
+- [Preventing SQL Injection Attacks With Python](https://realpython.com/prevent-python-sql-injection/)
+
+
+
+
+## <p class="hover-underline-animation">Did you use command-line interface?</p>
+
+<img src="./images/software49.gif" alt="drawing" width="550"/>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="CommandInjection" class="center"><textarea data-template>
+# Command Injection
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+## Command Injection
+
+- Command injection - write code that invokes commands on systems, whether it's to copy files, delete files, move files ...
+
+- A lot of programming languages come with functions that has a feature called system, which is literally a feature of some programming languages that allow you in your program to execute a command on the underlying system
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>O</span>
+                <span>D</span>
+				<span>I</span>
+				<span>N</span>
+				<span>G</span>
+            </h3>
+        </div>
+</div>
+
+
+```
+# importing os module 
+import os 
+
+# Command to execute
+# Using Windows OS command
+cmd = 'date'
+
+# Using os.system() method
+os.system(cmd)
+```
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+# <p class="hover-underline-animation">Any problems? </p>
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+> The programmers take user input and you just blindly pass that user's input to the command line, ... to the terminal window ... to the underlying operating system
+
+
+
+
+
+## Command Injection
+
+- Function called eval, which evaluates whatever you pass to it.
+
+- "escaped" potentially dangerous characters.
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>O</span>
+                <span>D</span>
+				<span>I</span>
+				<span>N</span>
+				<span>G</span>
+            </h3>
+        </div>
+</div>
+
+
+```
+passwd = "hello"# Try other password
+evil_code = "' == '' or '"
+if eval("'" + evil_code + "' == passwd"):
+    print("success")
+else:
+    print("fail")
+```
+
+- Try other password, look at the output
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+> You're putting your entire system at risk and any and all software that's installed on or running on the same.
+
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+# <p class="hover-underline-animation">What's the solution here?</p>
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+# <p class="hover-underline-animation">Escaping the user's input. </p>
+
+
+
+
+<br>
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>O</span>
+                <span>D</span>
+				<span>I</span>
+				<span>N</span>
+				<span>G</span><div class="popup" onclick="myFunction15()"><p class="blink" style="font-size:32px;"><spanBYMix>Example</spanBYMix></p> <span class="popuptext" id="myPopup15" STYLE="font-size:12px"> html.escape is used to escape any special characters in the user's input, preventing it from being executed as code. This way, the comparison is done safely. However, note that html.escape is specifically for escaping HTML entities. If the context changes, you might need to use a different escaping or sanitizing method.</span></div>
+		 </div>
+		 </h3>
+</div>
+
+
+```
+import html
+
+passwd = "hello"
+evil_code = "' == '' or '"
+
+# Escape the user's input
+safe_evil_code = html.escape(evil_code)
+
+# Check if the sanitized input matches the password
+if safe_evil_code == passwd:
+    print("success")
+else:
+    print("fail")
+```
+
+-  To prevent the malicious code from executing, you need to escape or sanitize the user's input.
+
+
+
+
+
+<br>
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>O</span>
+                <span>D</span>
+				<span>I</span>
+				<span>N</span>
+				<span>G</span>
+            </h3>
+        </div>
+</div>
+
+
+```
+passwd = "hello"
+evil_code = "' == '' or '"
+
+if evil_code == passwd:
+    print("success")
+else:
+    print("fail")
+```
+
+- This approach avoids the risk of code injection.
+
+- For general string comparisons, without any need for evaluating expressions, simply comparing the strings directly without using eval is the best practice.
+
+
+
+
+
+## Summary
+
+- Command injection is an attack in which the goal is execution of arbitrary commands on the host operating system via a vulnerable application.
+
+<img src="./images/software47.png" alt="drawing" width="550"/>
+
+
+
+
+## Summary
+
+<img src="./images/software48.png" alt="drawing" width="750"/>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="Tools" class="center"><textarea data-template>
+# Developer Tools
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+## Developer Tools
+
+- Any web development ... HTML, the CSS, and the JavaScript that compose some web page either that you yourself have made or that someone else has made
+
+- For instance, HTML using a tag called <spanBYMix>input</spanBYMix>, which would create a checkbox on a website.
+
+<img src="./images/software46.png" alt="drawing" width="750"/>
+
+- Checkbox to give us specifically a checkbox type of input...disabled.
+
+
+
+
+## Developer Tools
+
+- Submit a form ... not agreeing to something, or they're adding something to their shopping cart by using this checkbox
+
+- Could just remove this disabled attribute put in their own copy of your HTML on their computer and effectively enable that checkbox by getting rid of it
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+# <p class="hover-underline-animation">What does this mean?</p>
+
+
+
+
+## Developer Tools
+
+- If they do now check that checkbox, and you didn't want them to be able to, and they submit the checkbox to the server, as by clicking a submit button in a web form, 
+
+> ... you should never trust user's input
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="Client" class="center"><textarea data-template>
+# Client-Side Validation
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+## Client-Side Validation
+- Relying on the client to ensure that the checkbox is disabled, and its value can't be sent to the server.
+
+- Any form of client-side validation in HTML or JavaScript
+
+- My email address is improperly formatted
+
+- Any forms of client-side validation tend to give the user immediate and often very useful visual feedback.
+
+
+
+
+## Client-Side Validation
+
+- Type text, which means that the text box on the field.
+
+- Suppose that you really want them to provide that value.
+
+- Maybe this text box represents the user's name or their email address or their password or something like that.
+
+<img src="./images/software50.png" alt="drawing" width="650"/>
+
+
+
+
+## Client-Side Validation
+
+- Remove the required attribute ... they do not need to submit that value.
+
+<img src="./images/software51.png" alt="drawing" width="400"/>
+
+
+
+
+## Client-Side Validation
+
+- An Example
+
+
+<img src="./images/software52.gif" alt="drawing" width="800"/>
+
+
+
+
+<br>
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>O</span>
+                <span>D</span>
+				<span>I</span>
+				<span>N</span>
+				<span>G</span>
+            </h3>
+        </div>
+</div>
+
+
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beautiful Form with Validation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .form-container {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            animation: fadeIn 1s ease-in;
+        }
+
+        .form-container h1 {
+            margin-bottom: 1rem;
+            color: #333;
+            font-size: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        input[type="text"], input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus {
+            border-color: #007bff;
+            outline: none;
+            animation: pulse 1s infinite;
+        }
+
+        .error {
+            color: #d9534f;
+            font-size: 0.875rem;
+            position: absolute;
+            bottom: -1.5rem;
+            left: 0;
+            width: 100%;
+            display: none;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Sign Up</h1>
+        <form id="signupForm">
+            <div class="form-group">
+                <input type="text" id="name" placeholder="Full Name" required>
+                <div class="error" id="nameError">Name is required</div>
+            </div>
+            <div class="form-group">
+                <input type="email" id="email" placeholder="Email Address" required>
+                <div class="error" id="emailError">Valid email is required</div>
+            </div>
+            <div class="form-group">
+                <input type="password" id="password" placeholder="Password" required>
+                <div class="error" id="passwordError">Password is required</div>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Clear previous errors
+            document.querySelectorAll('.error').forEach(el => el.style.display = 'none');
+
+            let isValid = true;
+
+            // Name validation
+            const name = document.getElementById('name').value.trim();
+            if (name === '') {
+                document.getElementById('nameError').style.display = 'block';
+                isValid = false;
+            }
+
+            // Email validation
+            const email = document.getElementById('email').value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                document.getElementById('emailError').style.display = 'block';
+                isValid = false;
+            }
+
+            // Password validation
+            const password = document.getElementById('password').value.trim();
+            if (password === '') {
+                document.getElementById('passwordError').style.display = 'block';
+                isValid = false;
+            }
+
+            if (isValid) {
+                alert('Form submitted successfully!');
+                // You can handle form submission here
+            }
+        });
+    </script>
+</body>
+</html>
+```
+
+
+
+## Client-Side Validation
+
+- HTML Structure: The form has fields for name, email, and password. Each field has a corresponding error message that is hidden by default.
+
+- CSS Styling: The form container has a white background with a subtle shadow and rounded corners. Fields have a border that changes color and an animation effect when focused. The error messages are styled to appear below the input fields.
+
+
+
+
+## Client-Side Validation
+
+- JavaScript Validation: The form uses JavaScript to perform client-side validation when submitted. Error messages are displayed if the validation fails, and the form is not submitted if there are errors.
+
+
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="Server" class="center"><textarea data-template>
+#  Server-Side Validation
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+## Server-Side Validation
+
+- Missing some value...use server-side validation again.
+
+- The principle today that's important that client-side validation... But it must still be always accompanied by server-side validation
+
+	- so that ... what the user input looks like and if and how it's actually stored into your system.
+
+
+
+
+<br>
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>O</span>
+                <span>D</span>
+				<span>I</span>
+				<span>N</span>
+				<span>G</span>
+            </h3>
+        </div>
+</div>
+
+
+```
+            // Show loading spinner
+            loading.classList.add('active');
+            message.style.display = 'none';
+
+            // Simulate server-side validation
+            await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate a delay for the server response
+
+            loading.classList.remove('active');
+
+            // Example server-side validation logic
+            let responseMessage = '';
+            if (!name || !email || !password) {
+                responseMessage = 'All fields are required.';
+                message.classList.remove('success');
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                responseMessage = 'Invalid email format.';
+                message.classList.remove('success');
+            } else {
+                responseMessage = 'Form submitted successfully!';
+                message.classList.add('success');
+            }
+```
+
+
+
+
+## Server-Side Validation
+
+<img src="./images/software53.gif" alt="drawing" width="800"/>
+
+
+
+
+<br>
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>O</span>
+                <span>M</span>
+				<span>P</span>
+				<span>L</span>
+				<span>E</span>
+				<span>T</span>
+				<span>E</span>
+				<span>D</span>
+				<span> </span>				
+                <span>C</span>
+                <span>O</span>
+                <span>D</span>
+				<span>I</span>
+				<span>N</span>
+				<span>G</span>
+            </h3>
+        </div>
+</div>
+
+
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server-Side Validation with Animation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .form-container {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            position: relative;
+        }
+
+        .form-container h1 {
+            margin-bottom: 1rem;
+            color: #333;
+            font-size: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        input[type="text"], input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.3s ease-in-out;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 10;
+        }
+
+        .loading.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .loading .spinner {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #007bff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .message {
+            margin-top: 1rem;
+            font-size: 1rem;
+            color: #d9534f;
+            display: none;
+        }
+
+        .message.success {
+            color: #5bc0de;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Sign Up</h1>
+        <form id="signupForm">
+            <div class="form-group">
+                <input type="text" id="name" placeholder="Full Name" required>
+            </div>
+            <div class="form-group">
+                <input type="email" id="email" placeholder="Email Address" required>
+            </div>
+            <div class="form-group">
+                <input type="password" id="password" placeholder="Password" required>
+            </div>
+            <button type="submit">Submit</button>
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+            </div>
+            <div class="message" id="message"></div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const loading = document.getElementById('loading');
+            const message = document.getElementById('message');
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            // Show loading spinner
+            loading.classList.add('active');
+            message.style.display = 'none';
+
+            // Simulate server-side validation
+            await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate a delay for the server response
+
+            loading.classList.remove('active');
+
+            // Example server-side validation logic
+            let responseMessage = '';
+            if (!name || !email || !password) {
+                responseMessage = 'All fields are required.';
+                message.classList.remove('success');
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                responseMessage = 'Invalid email format.';
+                message.classList.remove('success');
+            } else {
+                responseMessage = 'Form submitted successfully!';
+                message.classList.add('success');
+            }
+
+            message.textContent = responseMessage;
+            message.style.display = 'block';
+        });
+    </script>
+</body>
+</html>
+
+```
+
+
+
+## Server-Side Validation
+
+- JavaScript: Handles form submission with async to simulate a delay (representing server-side processing).
+Shows the spinner during the "server-side" validation.
+Displays the server response after the simulated delay.
+
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="Forgery" class="center"><textarea data-template>
+# Cross-Site Request Forgery
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+## Cross-Site Request Forgery
+- Cross-Site Request Forgery (CSRF) is an attack that forces authenticated users to submit a request to a Web application against which they are currently authenticated. CSRF attacks exploit the trust a Web application has in an authenticated user.
+- CSRF is an attack that forces an end user to execute unwanted actions on a web application in which they’re currently authenticated. 
+
+
+
+
+## Cross-Site Request Forgery
+
+<img src="./images/software56.png" alt="drawing" width="800"/>
+
+
+
+
+## Cross-Site Request Forgery
+
+- The protocol, this convention by which web browsers and servers communicate - GET method
+
+Notice here is the text "By Now"
+
+
+<img src="./images/software54.png" alt="drawing" width="800"/>
+
+- The href value of which is a URL https://www.amazon.com/dp/B07XLQ2FSK with a unique identifier
+
+
+
+
+
+## Cross-Site Request Forgery
+
+- URL doesn't have to actually lead to an image.
+
+<img src="./images/software55.png" alt="drawing" width="800"/>
+
+- It could actually lead to an Amazon product page ...when you visit a web page, the images automatically load.
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+## <p class="hover-underline-animation">What is the difference between post method and get method?</p>
+
+
+
+
+## Get
+
+- Parameters in URL: Data is appended to the URL as query parameters (e.g., example.com/page?name=value).
+- Visibility: Parameters are visible in the URL, which can be bookmarked or shared.
+- Length Limitation: URLs have length limitations (typically around 2000 characters), which can restrict the amount of data sent.
+- Idempotent: Multiple identical requests should have the same effect as a single request (i.e., no side effects).
+
+
+
+
+<br>
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>O</span>
+                <span>D</span>
+				<span>I</span>
+				<span>N</span>
+				<span>G</span>
+            </h3>
+        </div>
+</div>
+
+```
+<form action="/search" method="GET">
+    <input type="text" name="query" placeholder="Search...">
+    <button type="submit">Search</button>
+</form>
+```
+
+
+
+## Post
+
+- Parameters in Body: Data is sent in the body of the request, not in the URL.
+- Visibility: Parameters are not visible in the URL and are less likely to be bookmarked or cached.
+- Length Limitation: Generally, there is no practical limit to the amount of data sent in a POST request.
+- Non-Idempotent: Multiple identical requests can result in different outcomes (e.g., creating multiple records).
+
+
+
+
+<br>
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>O</span>
+                <span>D</span>
+				<span>I</span>
+				<span>N</span>
+				<span>G</span>
+            </h3>
+        </div>
+</div>
+
+
+```
+<form action="/submit-form" method="POST">
+    <input type="text" name="username" placeholder="Username">
+    <input type="password" name="password" placeholder="Password">
+    <button type="submit">Submit</button>
+</form>
+```
+
+
+
+## Get vs. Post
+
+- GET is ideal for retrieving information and should be used for actions that <spanBYMix>don’t change</spanBYMix> the server’s state.
+- POST is suited for submitting data that <spanRED>changes</spanRED> the server’s state, such as form submissions or creating new records.
+
+
+
+
+## Post
+
+- Implementing their <spanGREEN>Buy Now</spanGREEN> button simply with a simple URL and a simple GET request
+
+- POST method is used by browsers when you want to post your credit card information or your password to a server.
+
+
+
+
+## Post
+
+- An alternative implementation of the Buy Now button on Amazon that's no longer a simple anchor tag with everything that's needed in the URL.
+
+
+<img src="./images/software57.png" alt="drawing" width="800"/>
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+## <p class="hover-underline-animation">Require that a human click an actual button. It's not a URL.</p>
+
+
+
+
+
+## Post
+
+
+- If the adversary can just trick you into visiting their website, and their website contains this HTML and this additional JavaScript, they can immediately submit this form for you to Amazon without you clicking a thing.
+
+<img src="./images/software58.png" alt="drawing" width="800"/>
+
+
+
+
+### <p class="hover-underline-animation">It doesn't matter that you have an actual button that must be clicked. It doesn't have to be a human that clicks that button. browser automatically executing this JavaScript code</p>
+
+
+
+
+## An Example
+
+- CSRF is a type of attack where an attacker tricks a user into making unwanted requests to a web application where they are authenticated. To prevent CSRF attacks, web applications often use tokens that are included in requests to verify that the request came from the intended user. 
+
+- This form is vulnerable to CSRF because it doesn’t use any protection mechanism.
+
+
+
+
+
+<br>
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>O</span>
+                <span>D</span>
+				<span>I</span>
+				<span>N</span>
+				<span>G</span>
+            </h3>
+        </div>
+</div>
+
+
+```
+<?php
+session_start();
+
+// Simulating user authentication
+$_SESSION['user_id'] = 1; // Assume user is logged in
+
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Email</title>
+</head>
+<body>
+    <h1>Update Your Email</h1>
+
+    <form action="update_email.php" method="POST">
+        <label for="email">New Email:</label>
+        <input type="email" id="email" name="email" required>
+        <button type="submit">Update Email</button>
+    </form>
+</body>
+</html>
+
+```
+
+- File: vulnerable_form.php
+
+
+
+
+<br>
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>O</span>
+                <span>D</span>
+				<span>I</span>
+				<span>N</span>
+				<span>G</span>
+            </h3>
+        </div>
+</div>
+
+
+```
+<?php
+session_start();
+
+// Simulating user authentication
+if (!isset($_SESSION['user_id'])) {
+    die("Unauthorized access.");
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
+    $new_email = htmlspecialchars($_POST['email']); // Sanitize email
+    echo "Your email has been updated to: " . $new_email;
+} else {
+    echo "Invalid request.";
+}
+?>
+```
+
+- File: update_email.php
+
+
+
+
+> An attacker could create a malicious page to exploit this vulnerability. This page automatically submits a form to update_email.php, changing the email address of the authenticated user.
+
+
+
+<br>
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>O</span>
+                <span>D</span>
+				<span>I</span>
+				<span>N</span>
+				<span>G</span>
+            </h3>
+        </div>
+</div>
+
+
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malicious Page</title>
+</head>
+<body>
+    <h1>You’ve Won a Prize!</h1>
+    <p>Click the button below to claim your prize.</p>
+
+    <form action="http://example.com/update_email.php" method="POST" style="display:none;">
+        <input type="email" name="email" value="attacker@example.com">
+        <button type="submit">Claim Prize</button>
+    </form>
+    
+    <script>
+        // Automatically submit the form
+        document.forms[0].submit();
+    </script>
+</body>
+</html>
+
+```
+
+- File: malicious_page.html
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+## <p class="hover-underline-animation">Preventing CSRF Attacks - Generate a CSRF Token.</p>
+
+
+
+
+<br>
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>O</span>
+                <span>D</span>
+				<span>I</span>
+				<span>N</span>
+				<span>G</span>
+            </h3>
+        </div>
+</div>
+
+
+```
+<?php
+session_start();
+
+// Generate a CSRF token if one doesn't exist
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
+$csrf_token = $_SESSION['csrf_token'];
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Update Email</title>
+</head>
+<body>
+    <h1>Update Your Email</h1>
+
+    <form action="secure_update_email.php" method="POST">
+        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
+        <label for="email">New Email:</label>
+        <input type="email" id="email" name="email" required>
+        <button type="submit">Update Email</button>
+    </form>
+</body>
+</html>
+
+```
+
+- File: secure_form.php
+
+
+
+
+<br>
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>O</span>
+                <span>D</span>
+				<span>I</span>
+				<span>N</span>
+				<span>G</span>
+            </h3>
+        </div>
+</div>
+
+
+```
+<?php
+session_start();
+
+// Check if the CSRF token from the request matches the one stored in the session
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && $_POST['csrf_token'] === $_SESSION['csrf_token']) {
+    // Simulating user authentication
+    if (!isset($_SESSION['user_id'])) {
+        die("Unauthorized access.");
+    }
+
+    if (isset($_POST['email'])) {
+        $new_email = htmlspecialchars($_POST['email']); // Sanitize email
+        echo "Your email has been updated to: " . $new_email;
+    } else {
+        echo "Invalid request.";
+    }
+} else {
+    echo "Invalid CSRF token!";
+}
+?>
+```
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+## <p class="hover-underline-animation">CSRF Protection: Adds a CSRF token to prevent unauthorized form submissions.</p>
+
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="Security" class="center"><textarea data-template>
+# Open Worldwide Application Security 
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+## Open Worldwide Application Security  🌞
+
+- If you're interested in these kinds of web-centric attacks 
+
+	- Explore the Open Worldwide Application Security Project, which has documentation of, discussion of, recommendations for all of these kinds of web-centric attacks 
+
+
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="Execution" class="center"><textarea data-template>
+# Arbitrary Code Execution
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+## Arbitrary Code Execution
+
+- Coming to software that's running on your own Mac or your PC or your phone,
+
+	- so not web based, but local instead.
+
+
+
+
+## Arbitrary Code Execution
+
+- Arbitrary code execution (ACE) refers to an attacker's ability to run code of their choice on a target machine or process. It allows the attacker to gain unauthorized access or perform actions beyond the intent of the application's creators, potentially leading to data theft, corruption, or system compromise.
+
+
+
+## Arbitrary Code Execution
+
+- Remote code execution, the same attack can happen even if the adversary is somewhere else in the world, perhaps connected to you somehow via the internet.
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+# <p class="hover-underline-animation">How might these attacks be possible?</p>
+
+
+
+
+## Arbitrary Code Execution
+
+- An adversary tricks your own system into executing code that the adversary wrote is through something generally known as a buffer overflow.
+
+- Buffer overflow (buffer overrun) occurs when the amount of data in the buffer exceeds its storage capacity. That extra data overflows into adjacent memory locations and corrupts or overwrites the data in those locations.
+
+
+
+
+## Arbitrary Code Execution
+
+- A buffer overflow attack typically involves violating programming languages and overwriting the bounds of the buffers they exist on. Most buffer overflows are caused by the combination of manipulating memory and mistaken assumptions around the composition or size of data.
+
+
+
+
+
+## Arbitrary Code Execution
+
+- Computers typically use this bottom area  of the computer's memory for a so-called stack. Stacking means literally from bottom on up.
+
+<img src="./images/software59.png" alt="drawing" width="200"/>
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+> When the computer needs memory, it first uses some memory from the very bottom.
+
+> And then if it needs more, it uses more above that. When it needs more, it uses more above that ... Goes bottom up
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+## <p class="hover-underline-animation">Sometimes software doesn't necessarily know in advance or predict correctly in advance how much input</p>
+
+
+
+
+
+## An Example
+
+- String Manipulation with Python
+	- We'll create a Python example that mimics improper data handling, such as a naive approach to processing data that could lead to unintended behavior. This won't be a true buffer overflow but will illustrate potential issues with data handling.
+
+- Creating a Python function that processes strings in a way that might lead to issues if the input is not properly managed.
+
+
+
+
+
+<br>
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>O</span>
+                <span>D</span>
+				<span>I</span>
+				<span>N</span>
+				<span>G</span>
+            </h3>
+        </div>
+</div>
+
+
+```
+def process_data(input_string):
+    # Define a fixed-size buffer (simulated with a list)
+    buffer_size = 10
+    buffer = [''] * buffer_size
+    
+    # Naive approach to filling the buffer
+    for i in range(len(input_string)):
+        buffer[i] = input_string[i]
+    
+    # Print the buffer contents
+    print(''.join(buffer))
+
+# Test the function
+input_string = "This input is too long and will cause issues!"
+process_data(input_string)
+
+```
+
+- File: data_processor.py
+
+
+
+
+## An Example
+
+- Fixed-Size Buffer: We simulate a fixed-size buffer with a list buffer that can hold 10 characters.
+
+- Naive Data Filling: The function attempts to fill the buffer with characters from input_string without checking if the length of input_string exceeds the buffer size. If input_string is longer than the buffer, it will result in an IndexError when i exceeds the buffer size.
+
+
+
+
+## An Example
+
+- Output: The program will crash or behave unexpectedly if the input string is longer than the buffer size.
+
+
+
+
+
+## Improved Version
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>O</span>
+                <span>D</span>
+				<span>I</span>
+				<span>N</span>
+				<span>G</span>
+            </h3>
+        </div>
+</div>
+
+
+```
+def process_data(input_string):
+    # Define a fixed-size buffer
+    buffer_size = 10
+    buffer = [''] * buffer_size
+    
+    # Safely handle input to avoid overflow
+    for i in range(min(len(input_string), buffer_size)):
+        buffer[i] = input_string[i]
+    
+    # Print the buffer contents
+    print(''.join(buffer))
+
+# Test the function
+input_string = "This input is too long and will be truncated!"
+process_data(input_string)
+```
+
+
+
+## Improved Version
+
+- Bounds Checking: The min(len(input_string), buffer_size) ensures that we only process as many characters as the buffer can hold, preventing an IndexError.
+
+- Truncation: If the input string is too long, it will be truncated to fit the buffer, avoiding any overflow issues.
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="Engineering" class="center"><textarea data-template>
+# Reverse Engineering
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+## Reverse Engineering
+
+- Cracking - refers to figuring out someone's password or breaking into software
+
+<img src="./images/software60.gif" alt="drawing" width="500"/>
+
+
+
+## Reverse Engineering
+
+- Reverse engineering refers to the ability for someone to figure out how something was engineered, how it was built.
+
+
+
+## Reverse Engineering
+
+- Most of the software installed on our Macs or PCs or phones is zeros and ones.
+
+<img src="./images/software63.gif" alt="drawing" width="350"/>
+
+
+
+## Reverse Engineering
+
+- But with certain techniques,.... figure out what those zeros and ones represent.
+
+<img src="./images/software66.gif" alt="drawing" width="600"/>
+
+
+
+
+## Reverse Engineering
+
+<img src="./images/software64.png" alt="drawing" width="800"/>
+
+
+
+
+## Reverse Engineering
+
+- Malware analysis uses these same kinds of techniques, trying to figure out what's going on underneath the hood of software as by reverse engineering it, so using trial and error, maybe injecting some code of our own, to figure out exactly what instructions are embedded among all of those zeros and ones.
+
+<img src="./images/software65.gif" alt="drawing" width="150"/>
+
+
+
+
+## Summary 
+
+- Reverse-engineering is the act of dismantling an object to see how it works. It is done primarily to analyze and gain knowledge about the way something works but often is used to duplicate or enhance the object.
+
+<img src="./images/software61.gif" alt="drawing" width="400"/>
+
+
+
+
+## Summary 
+
+- Computer engineers could reverse engineer a computer or its parts to learn how to build one. 
+
+<img src="./images/software62.gif" alt="drawing" width="600"/>
+
+
+
+
+## Summary
+
+- This may be helpful for people who are new to building computers. A computer engineer could also disassemble a computer to replace its parts with newer pieces or run tests on a broken part. Reverse engineering<div class="popup" onclick="myFunction16()"><p class="blink" style="font-size:32px;"><spanBYMix> examples </spanBYMix></p> <span class="popuptext" id="myPopup16" STYLE="font-size:20px"> Understanding the logic and behavior of a compiled program requires disassembling it (binary). Obtaining an application's source code by decompiling it. Studying hardware components or network protocols to learn how they work.</span></div>
+
+
+
+## An example
+
+- Reverse engineering involves analyzing a software system to extract design and implementation information. In Python, reverse engineering can often mean disassembling compiled Python bytecode (e.g., .pyc files) back into readable Python code. 
+
+
+
+
+## An example
+
+- Create a Python script (Example.py) with a function and compile it.
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>O</span>
+                <span>D</span>
+				<span>I</span>
+				<span>N</span>
+				<span>G</span>
+            </h3>
+        </div>
+</div>
+
+
+```
+# Example.py
+def add(a, b):
+    return a + b
+
+if __name__ == "__main__":
+    print(add(2, 3))
+```
+
+
+
+
+## An example
+
+- Use the Python interpreter to compile the script to bytecode. 
+
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>O</span>
+                <span>D</span>
+				<span>I</span>
+				<span>N</span>
+				<span>G</span>
+            </h3>
+        </div>
+</div>
+
+
+```
+python -m py_compile Example.py
+
+```
+
+<img src="./images/software67.png" alt="drawing" width="600"/>
+
+
+
+
+## An example
+
+- Created a __pycache__ directory containing a .pyc file for the compiled script.
+
+<img src="./images/software68.gif" alt="drawing" width="900"/>
+
+
+
+
+## An example
+
+- Open the .pyc file in a hex viewer https://hexed.it/
+
+<img src="./images/software69.gif" alt="drawing" width="900"/>
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+## <p class="hover-underline-animation">What the bytecode might look like in Python's disassembled format?</p>
+
+
+
+
+
+## An example
+
+- One common tool for this purpose is <spanBYMix>uncompyle6</spanBYMix>, which can decompile Python bytecode files back into source code.
+<div class="wrapper nine">
+        <div>
+            <h3 class="rotate">
+                <span>C</span>
+                <span>O</span>
+                <span>D</span>
+				<span>I</span>
+				<span>N</span>
+				<span>G</span>
+            </h3>
+        </div>
+</div>
+
+
+```
+pip install uncompyle6
+```
+
+- Be careful about Python Version
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="Software" class="center"><textarea data-template>
+# Open-Source and Closed-Source Software
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+## Open-Source and Closed-Source Software
+
+-  Open-source software just means that the code that implements that software be it in Python or PHP or Java or C# or C++ or any number of other languages is itself open source.
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+## <p class="hover-underline-animation">Did you use open-source software? Illustrate some.</p>
+
+
+
+## Open-Source and Closed-Source Software
+
+- Open-source software offers a free and flexible option but relies on community collaboration, and self-learning and requires development know-how while closed-source or proprietary software offers dedicated support, users training and a platform that is regularly updated and managed by a company.
+
+
+
+## Open-Source and Closed-Source Software
+
+- If code is open source, even if it's devoid of anything malicious (so many people around the world having eyes on software...), it might still have bugs, mistakes, that human programmers accidentally made, which might  make open-source software, or any software, vulnerable to attack. If one of those smart people is an adversary...find it and don't tell anyone - zero-day attacks.
+
+
+
+
+## Open-Source and Closed-Source Software
+
+- More about Open Source Software: <div class="popup" onclick="myFunction17()"><p class="blink" style="font-size:32px;"><spanBYMix> Advantages </spanBYMix></p> <span class="popuptext" id="myPopup17" STYLE="font-size:20px"> Cost: Open-source software is generally free, which means organizations can use it without any licensing fees.<br>
+Customization: Since the source code is available, developers can modify and customize the software to meet specific requirements. <br>
+Community Support: Open-source software has a large community of users who contribute to documentation, bug fixes, and improvements. <br>
+Security: With open-source software, the community can detect and fix security vulnerabilities quickly. <br>
+Transparency: Since the source code is open, users can see how the software works and what data it collects.</span></div> and <div class="popup" onclick="myFunction18()"><p class="blink" style="font-size:32px;"><spanRED> Disadvantages </spanRED></p> <span class="popuptext" id="myPopup18" STYLE="font-size:20px"> Limited Technical Support: While there is a large community of users who can help troubleshoot issues, there is no guarantee of professional technical support.<br>
+Complexity: Open-source software can be more difficult to set up and configure than closed-source software, especially for users who are not experienced in software development.<br>
+Lack of Features: Open-source software may not have all the features that are available in closed-source software, especially for niche or specialized industries.
+</span></div>
+
+- More about Closed Source Software: <div class="popup" onclick="myFunction19()"><p class="blink" style="font-size:32px;"><spanBYMix> Advantages </spanBYMix></p> <span class="popuptext" id="myPopup19" STYLE="font-size:20px"> Technical Support: Closed source software usually comes with professional technical support, which can be helpful for organizations that need assistance with setup, configuration, or troubleshooting.<br>
+Features: Closed source software typically has more features than open source software, including advanced analytics, reporting, and data visualization tools.<br>
+Security: Closed source software often has built-in security features and can provide better protection against cyber threats.<br>
+Integration: Closed source software is often designed to work seamlessly with other enterprise software, making integration with existing systems easier.</span></div> and <div class="popup" onclick="myFunction20()"><p class="blink" style="font-size:32px;"><spanRED> Disadvantages </spanRED></p> <span class="popuptext" id="myPopup20" STYLE="font-size:20px"> Cost: Closed source software can be expensive, with licensing fees and maintenance costs that can add up over time.<br>
+Vendor Lock-In: Organizations that use closed source software may become dependent on the vendor and find it difficult to switch to another software.<br>
+Limited Customization: Closed source software may not be as customizable as open source software, which can be a disadvantage for organizations with specific requirements.<br>
+Lack of Transparency: Since the source code is not available, users cannot see how the software works or what data it collects, which may raise privacy concerns
+</span></div>
+
+
+
+
+## Open-Source and Closed-Source Software
+
+- An alternative to open-source software - closed-source software (a.k.a., proprietary software).
+
+	- So any software that you might download or buy from companies that it's not open source is typically closed source,... Only the authors
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="Stores" class="center"><textarea data-template>
+# App Stores
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+## App Stores 
+
+<img src="./images/software70.gif" alt="drawing" width="900"/>
+
+
+
+
+## App Stores 
+
+- You could download all of the software
+
+- You use only from an approved app store, be it in the world of iPhones or Android devices, macOS, Windows
+
+- When you install software in your computer ... you should get it only from Microsoft or Google or Apple and not from some random website, and not from some random email
+
+
+
+
+## App Stores 
+
+- Cryptography really is the solution to a lot of the world's current problems when it comes to cybersecurity
+
+	- For instance, when you develop a piece of software, or some company does this for you, and they upload their software to Apple or Google or Microsoft for distribution,
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+# <p class="hover-underline-animation">What are those companies doing?</p>
+
+
+
+
+## App Stores 
+
+- Running your software through some special function or algorithm and getting back a hash - a hash is this fixed length representation of your software.
+
+<img src="./images/software71.png" alt="drawing" width="400"/>
+
+
+
+
+## App Stores
+
+- Apple or Microsoft or Google can use their own private key from their own app store to take that hash as input and produce a digital signature
+
+- When you install that software on Mac and PC, or on phones, the devices can ensure that any software you are installing on devices was digitally signed by that app store, by Google or Microsoft or Apple
+
+
+<img src="./images/software72.png" alt="drawing" width="400"/>
+
+
+
+
+## PDF Digital ID
+
+- Digital IDs are used for certificate security and digital signatures. Digital IDs contain two keys: the public key locks, or encrypts data; the private key unlocks, or decrypts that data. When you sign PDFs, you use the private key to apply your digital signature.
+
+
+
+
+## PDF Digital ID
+
+- A public key is also used to encrypt a message or check the legitimacy of a digital signature. It is accompanied by a corresponding private key, which is known only to its owner. Private keys are used to decrypt messages that were created with the corresponding public key or to create signatures.
+
+- [Manage Digital IDs]()
+- [How to Create a Digital Signature for PDF](https://grad.ncsu.edu/wp-content/uploads/2016/07/forms-digital-signature-instructions.pdf)
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="Managers" class="center"><textarea data-template>
+# Package Managers
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+## Package Managers
+
+- Package managers can let you and me install the software on our own Macs, PCs, phones,
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+# <p class="hover-underline-animation">What kinds of package managers have you used?</p>
+
+
+
+
+
+## Package Managers
+
+- <spanGREEN>pip</spanGREEN> for Python, <spanGREEN>gem</spanGREEN> for Ruby, <spanGREEN>npm</spanGREEN> for Node.js, <spanGREEN>apt</spanGREEN> for Linux.
+
+<img src="./images/software73.gif" alt="drawing" width="550"/>
+
+[giftoa](https://github.com/Teriks/giftoa)
+
+
+
+
+## Package Managers
+
+- These package managers are digitally signing these packages so that you can have your computers verify those signatures before they're actually allowed to be installed.
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="Systems" class="center"><textarea data-template>
+#  Operating Systems
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+##  Operating Systems 🌞
+
+- Modern operating systems are increasingly building in native support for checks
+
+- If you trust these app stores, these package managers, then, by transitivity, you can with higher probability trust the software being distributed 
+
+- But ... version 1 might be perfectly safe, version 2 might be perfectly safe, version 3 might be malicious for some reason.
+
+
+
+
+## Bug bounties
+
+- A bug bounty is a monetary reward given to ethical hackers for successfully discovering and reporting a vulnerability or bug to the application's developer. Bug bounty programs allow companies to leverage the hacker community to improve their systems' security posture over time continuously.
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+# <p class="hover-underline-animation">How to keep track of all of possible threats?</p>
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="Catalogs" class="center"><textarea data-template>
+# Vulnerability Catalogs
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+## Vulnerability Catalogs
+
+- A whole inventory of vulnerabilities that have been detected over the years, Common Vulnerabilities and Exposures, or<div class="popup" onclick="myFunction21()"><p class="blink" style="font-size:32px;"><spanBYMix> CVE</spanBYMix></p> <span class="popuptext" id="myPopup21" STYLE="font-size:20px"> such that a lot of the kinds of attacks we've been talking about today and, more specifically, bugs and flaws in specific software and versions thereof are often assigned a unique identifier, a CVE number that system administrators, companies, and even end users can keep track of to make sure they are always current with the latest threats out there.</span></div>s, https://www.cve.org/
+
+- The mission of the CVE® Program is to identify, define, and catalog publicly disclosed cybersecurity vulnerabilities.
+
+
+
+
+
+## CVSS
+
+- There is also a Common Vulnerability Scoring System, or CVSS, https://www.first.org/cvss/
+it is a standardized way of assigning a score to the severity of a vulnerability.
+
+- You can prioritize things - for instance, given limited resources or time, which of the bugs you should be fixing, which of the software you should be updating, or maybe which of the software you should not be using, at least while it's vulnerable to something that's highly severe.
+
+
+
+
+## EPSS
+
+- There's an Exploit Prediction Scoring System https://www.first.org/epss/ EPSS, which refers to what do people in the real world think the probability is that this particular bug or mistake in software will be exploited is.
+
+
+
+
+## KEV
+
+- There's a Known Exploited Vulnerability catalog, KEV, https://www.cisa.gov/known-exploited-vulnerabilities-catalog which refers to all of these kinds of bugs that are known to have been exploited.
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="Assignments" data-background-color="#000027" class="center"><textarea data-template>
+<bodyDp>
+    <div class="dancer">
+        <div class="head">
+            <div class="eye-left"></div>
+            <div class="eye-right"></div>
+            <div class="mouth"></div>
+        </div>
+        <div class="leg-left"></div>
+        <div class="leg-right"></div>
+        <div class="foot-left"></div>
+        <div class="foot-right"></div>
+    </div>
+</bodyDp>
+
+# Assignments
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n" data-background-color="#000027"><textarea data-template>
+
+## Assignments 🌞
+
+- <a href="https://midway.instructure.com/courses/7239/quizzes/32797">Question for Software Security</a>
+
+
+
+
+## Assignments 🌞
+
+- <a href="https://midway.instructure.com/courses/7239/quizzes/32798">Project 1</a>
+
+- <a href="https://midway.instructure.com/courses/7239/quizzes/32799">Project 2</a>
+</textarea></section>
+
+</section>
+
+
+
+
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+</div>
+</div>
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="settings.js"></script>
+</body>
+</html>

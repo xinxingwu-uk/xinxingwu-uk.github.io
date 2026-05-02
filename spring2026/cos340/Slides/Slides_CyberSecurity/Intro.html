@@ -1,0 +1,804 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>CSE-400: Cybersecurity</title>
+    <meta name="description" content="A set of slides for a course on Introduction to Cybersecurity">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+	<link rel="stylesheet" href="./css/style.css">
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+	</script>
+
+	<style>
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }
+		
+		ftblue{
+			color: blue;
+		}
+		ftred{
+			color: red;
+		}
+		ft{
+			font-size:22px;
+		}
+		
+		ftCode{
+			font-size: 28px;
+		}
+
+		.blink {
+			animation: blink 1s steps(1, end) infinite;
+			color: blue;
+		}
+
+		@keyframes blink {
+			0% {
+				opacity: 1;
+			}
+			50% {
+				opacity: 0;
+			}
+			100% {
+				opacity: 1;
+			}
+		}
+		.hover-underline-animation {
+			display: inline-block;
+			position: relative;
+			color: #0087ca;
+		}
+
+		.hover-underline-animation:after {
+			content: '';
+			position: absolute;
+			width: 100%;
+			transform: scaleX(0);
+			height: 8px;
+			bottom: 0;
+			left: 0;
+			background-color: yellow;
+			transform-origin: bottom right;
+			transition: transform 1.5s ease-out;
+		}
+
+		.hover-underline-animation:hover:after {
+			transform: scaleX(1);
+			transform-origin: bottom left;
+		}
+		.wrapper.nine {
+			background-color: gray;
+			font-family: 'Arvo', serif;
+		}
+		.rotate span {
+			font-size: 4rem;
+			color: green;
+			display: inline-flex;
+			animation: rotate 1.5s infinite;
+		}
+		@keyframes rotate {
+			0%,
+			75% {
+				transform: rotateY(360deg);
+			}
+		}
+		.nine span:nth-of-type(1) {
+			animation-delay: 0.2s;
+		}
+		.nine span:nth-of-type(2) {
+			animation-delay: 0.4s;
+		}
+		.nine span:nth-of-type(3) {
+			animation-delay: 0.6s;
+		}
+		.nine span:nth-of-type(4) {
+			animation-delay: 0.8s;
+		}
+		.nine span:nth-of-type(5) {
+			animation-delay: 1s;
+		}
+		.nine span:nth-of-type(6) {
+			animation-delay: 1.2s;
+		}
+		
+		
+        bodyDp {
+            margin: 0;
+            display: flex;
+            align-items: left;
+            justify-content: left;
+            height: 1vh;
+        }
+
+        .dancer {
+            position: relative;
+            width: 50px;
+            height: 100px;
+            background-color: #ffcc00;
+            border-radius: 10px;
+            animation: dance 2s infinite;
+        }
+
+        .dancer::before, .dancer::after {
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 40px;
+            background-color: #ffcc00;
+            top: 20px;
+            border-radius: 10px;
+            animation: armMove 2s infinite;
+        }
+
+        .dancer::before {
+            left: -20px;
+            transform-origin: top right;
+        }
+
+        .dancer::after {
+            right: -20px;
+            transform-origin: top left;
+        }
+
+        .head {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            background-color: #ffcc00;
+            border-radius: 50%;
+            transform: translateX(-50%);
+            animation: headMove 2s infinite;
+        }
+
+        .leg-left, .leg-right {
+            position: absolute;
+            width: 15px;
+            height: 50px;
+            background-color: #ffcc00;
+            top: 100px;
+            border-radius: 10px;
+            animation: legMove 2s infinite;
+        }
+
+        .leg-left {
+            left: 5px;
+            transform-origin: top center;
+        }
+
+        .leg-right {
+            right: 5px;
+            transform-origin: top center;
+        }
+
+        @keyframes dance {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            25% {
+                transform: translateY(-20px) rotate(-10deg);
+            }
+            50% {
+                transform: translateY(0) rotate(10deg);
+            }
+            75% {
+                transform: translateY(-20px) rotate(10deg);
+            }
+            100% {
+                transform: translateY(0) rotate(-10deg);
+            }
+        }
+
+        @keyframes armMove {
+            0%, 100% {
+                transform: rotate(0deg);
+            }
+            25% {
+                transform: rotate(30deg);
+            }
+            75% {
+                transform: rotate(-30deg);
+            }
+        }
+
+        @keyframes headMove {
+            0%, 100% {
+                transform: translateX(-50%) rotate(0deg);
+            }
+            25% {
+                transform: translateX(-50%) rotate(10deg);
+            }
+            50% {
+                transform: translateX(-50%) rotate(-10deg);
+            }
+            75% {
+                transform: translateX(-50%) rotate(10deg);
+            }
+        }
+
+        @keyframes legMove {
+            0%, 100% {
+                transform: rotate(0deg);
+            }
+            25% {
+                transform: rotate(20deg);
+            }
+            75% {
+                transform: rotate(-20deg);
+            }
+        }
+</style>
+
+  </head>
+
+  <body onload="startTime()">
+    <div class="reveal">
+	  <p><img src="images/midwaylogo.png"  align="left" height="8%" width="10%" style="vertical-align:left;margin:-15px 5px"><img src="images/mueagle.png"  color="white" align="left" height="10%" width="10%" style="vertical-align:center;margin:-2% 45%">
+<div style="color:white;font-size: 20px; vertical-align:left;margin:-1% 0%" align="right" id="realtimeclock"></div></p>
+      <div class="slides">
+
+
+<section data-markdown id="cover"><textarea data-template>
+<p class='titlep'>&nbsp;</p>
+
+# Course Introduction
+
+### Xinxing Wu
+
+<p class="blink" style="color:blue;font-size:24px;">xinxing.wu@midway.edu</p>
+</textarea></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section data-markdown><textarea data-template>
+# Contents
+
+[Course Link](#/link)
+
+[About This Course](#/info)
+
+[Ethics](#/ethics)
+
+[Course Content](#/cont)
+</textarea></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="link" class="center"><textarea data-template>
+# <a href="https://midway.instructure.com/courses/7239">Link</a>
+
+
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="info" class="center"><textarea data-template>
+# About This Course
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+## Course Description 👍
+
+- Cybersecurity is one of the <spanBYMix>most important</spanBYMix> areas of technology management.
+- Being able to <ftred>keep an organization's data secure is a top priority for many technology professionals</ftred>.
+- Explore concepts implementation, operation, analysis and testing of the security of computer technologies.
+- <spanRED>Regular attendance is required</spanRED> for success in this course.
+
+
+
+
+## Course Objectives 🌞
+- Understand the ethical and policy context for cybersecurity in today's society
+- Understand how to better safeguard one's personal computer
+- Understand the basics of advanced topics in cybersecurity including <ftred>encryption, digital forensics, binary exploits, and networks</ftred>
+- Understand the <ftred>modern concept</ftred>s in cybersecurity <ftred>attacks</ftred> and <ftred>prevention</ftred>
+
+
+
+
+## Course Information ✔️
+
+- 16 weeks, M/W/F 12:00 PM - 12:50 PM 
+		
+	<img src="images/qrcode.png"  align="center" height="180" width="140">
+
+
+- Maybe: A little Python, A little PHP, A little Neworking, ...
+
+
+
+
+## Course Information ✔️
+
+- No mandatory textbook
+
+	- Security in Computing, 6th [link](https://www.pearson.com/en-us/subject-catalog/p/security-in-computing/P200000009559/9780137891214)
+	- Hacker techniques, tools, and incident handling, 3rd [link](https://publish.jblearning.com/index.php?mod=jbbrowse&act=book_details&id=1184)
+	- Hands-On Artificial Intelligence for Cybersecurity [link](https://www.oreilly.com/library/view/hands-on-artificial-intelligence/9781789804027/)
+	- Cybersecurity [link](https://mitpress.mit.edu/9780262542548/cybersecurity/) 
+	- Computer Security and the Internet, 2nd [link](https://people.scs.carleton.ca/~paulv/toolsjewels.html)
+
+
+
+
+
+<bodyDp>
+    <div class="dancer">
+        <div class="head"></div>
+        <div class="leg-left"></div>
+        <div class="leg-right"></div>
+    </div>
+</bodyDp>
+
+## Grades
+
+- Grades
+  - 10 pts (Attendance) 
+  - 60 pts (Labs/Exercises) 
+  - 30 pts (Term Projects) 
+  - Other <a href="https://midway.instructure.com/courses/7239/quizzes/32763">extra</a> pts (0-20) 
+- 🌝 I reserve the right to adjust the percentages/pts based on the number of assignments and quizzes, and other factors
+
+</textarea></section>
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="ethics" class="center"><textarea data-template>
+# Ethics
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+## Generative AI
+
+- You may use <spanBYMix>generative AI</spanBYMix>, such as ChatGPT, to help you <spanBYMix>study and understand concepts</spanBYMix>
+- All the *code* you submit must be your own, and <spanRED>cannot</spanRED> come from a generative AI
+  - It turns out that generative AI is not all that useful for most of our assignments
+  
+- For more details, please see <a href="https://midway.instructure.com/courses/7239/pages/ai-tool-usage?module_item_id=602648">📌 AI Tool Usage</a>
+
+
+
+
+ 
+## Computer Ethics
+
+- We must teach how attacks on computer systems are carried out in order to teach defenses against them
+- Information about the attack <spanRED>must not</spanRED> be used to attack any computer system in any way
+- <spanGREEN>Not only on prevention but on detection<spanGREEN>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<section>
+
+<section data-markdown id="cont" class="center"><textarea data-template>
+# Course Content
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+## Content
+- Technical and non-technical
+- Secure your accounts, data, systems, and software; Preserve your own privacy
+- AI can detect patterns and potential adversaries' behavior that we might not even notice ourselves
+- Both high-level and low-level examples of threats and provide you with all you need technically to understand
+- How other threats that the world might <spanBYMix>not</spanBYMix> have even seen yet actually work
+
+
+
+
+
+## Content
+
+- Introdcution (Week 1)
+
+- Account Security (Weeks 1-3)
+
+- Data Security (Weeks 4-6)
+
+- System Security (Weeks 7-9)
+
+- Software Security (Weeks 10-12)
+
+- Preseving Privacy (Weeks 13-14)
+
+- AI and CyberSecurity (Weeks 15-16)
+
+
+
+
+
+## A Test
+	
+<img src="./images/Password.jfif" alt="drawing" width="450"/>
+
+
+
+
+## A Test
+
+<img src="./images/PasswordAns.jfif" alt="drawing" width="450"/>
+
+
+
+
+## A Test
+
+<div class="definition-container">
+  <div class="definition-title">🔐 Crack the 4-Digit Code</div>
+  <div class="definition-shadebox">
+A numeric lock has a 4-digit code (0–9, no repeated digits). Use the clues to find the code.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-shadebox">
+3456 — Exactly two digits are correct and in the right places; the other two are not in the code.
+
+3178 — Two digits are correct and well placed; one digit is correct but in the wrong place; one digit is not in the code.
+
+8743 — Three digits are correct but all in the wrong places; the remaining digit is not in the code.
+
+7380 — Two digits are correct but in the wrong places; the other two are not in the code.
+
+1602 — One digit is correct but in the wrong place; the other three are not in the code.
+
+9254 — One digit is correct but in the wrong place; the other three are not in the code.
+
+0127 — Two digits are correct but in the wrong places; the other two are not in the code.
+</div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Solution</div>
+  <div class="definition-pro-Y-shadebox">
+3 4 7 1 ✅
+   </div>
+</div>
+
+
+
+
+
+## A Test
+
+<div class="definition-container">
+  <div class="definition-title">🔐 Crack the 8-Digit Code Puzzle</div>
+  <div class="definition-shadebox">
+The lock uses 8 unique digits from 0–9 (0–9, no repeated digits). Use the clues to find the code.
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">🔐 Crack the 8-Digit Code Puzzle</div>
+  <div class="definition-shadebox">
+<div id="roundbox">
+
+62503841 — All 8 digits are in the code, but every one is in the wrong place.
+
+16204385 — Five digits are correct and well placed; three are correct but misplaced.
+
+16250348 — Six digits are correct and well placed; two are correct but misplaced.
+
+19763458 — One digit is correct and well placed; five are correct but misplaced; two digits are not in the code.
+
+79012463 — None are in the right place; six are correct but misplaced; two digits are not in the code.
+
+50386124 — One digit is correct and well placed; the other seven are correct but misplaced.
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Solution</div>
+  <div class="definition-pro-Y-shadebox">
+✅ Final Answer: 1 6 2 5 0 3 8 4
+   </div>
+</div>
+
+
+
+
+  
+## Resources 
+- [VirtualBox](https://www.virtualbox.org/)
+- [VirtualBox Images](https://www.osboxes.org/virtualbox-images/)
+- [Wireshark](https://www.wireshark.org/)
+- [Ubuntu18_04_6 of VirtualBox](https://drive.google.com/drive/folders/1pAYj2-KIveDGQJlbMeVHLNNdp2HU0FrB?usp=sharing) or [Kali Linux 2022.1](https://www.kali.org/docs/virtualization/install-virtualbox-guest-vm/)
+- [Python](https://www.w3schools.com/python/)
+- [PHP](https://www.php.net/)
+- [UwAmp Wamp Server](https://www.uwamp.com/en/)
+- [NotePad ++](https://notepad-plus-plus.org/)
+- [OS design and interaction](https://github.com/copy/v86)
+- [ReactOS](https://reactos.org/)
+
+
+
+## Linux
+
+<img src="./images/linux.jfif" alt="drawing" width="500"/>
+
+
+
+
+
+## Linux
+
+<img src="./images/LinuxCommands.jfif" alt="drawing" width="500"/>
+
+
+
+
+## Linux on Windows
+
+- [Windows Subsystem for Linux (WSL)](https://github.com/microsoft/WSL)
+- [How to install Linux on Windows with WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
+
+
+
+
+
+## Linux
+
+<img src="./images/rwx.jfif" alt="drawing" width="650"/>
+
+
+
+
+
+<img src="./images/NoSecrit.jfif" alt="drawing" width="500"/>
+
+
+
+
+
+<img src="./images/VirtualMachine.jfif" alt="drawing" width="550"/>
+
+
+
+
+## Import Ubuntu18_04_6
+
+<img src="./images/Ubuntu1.png" alt="drawing" height="500"/>
+
+
+
+
+
+## Import Ubuntu18_04_6
+
+<img src="./images/Ubuntu2.png" alt="drawing" height="500"/>
+
+
+
+
+
+## Import Ubuntu18_04_6
+
+<img src="./images/Ubuntu3.png" alt="drawing" height="500"/>
+
+
+
+
+
+## Import Ubuntu18_04_6
+
+<img src="./images/Ubuntu4.png" alt="drawing" height="500"/>
+
+
+
+
+
+## Import Ubuntu18_04_6
+
+<img src="./images/Ubuntu5.png" alt="drawing" height="400"/>
+
+[How to Import a VDI File Into VirtualBox](https://www.makeuseof.com/how-to-import-vdi-file-into-virtualbox/)
+
+
+
+
+## Kali Linux 2022.1 (All Tools)
+
+- Kali Linux is a Linux distribution designed for digital forensics and penetration testing. It is maintained and funded by Offensive Security. 
+- The software is based on the Debian Testing branch: most packages Kali uses are imported from the Debian repositories. 
+
+
+
+
+## Kali Linux 2022.1 (All Tools)
+
+- 64-bit
+
+	<img src="./images/kali1.png" alt="drawing" height="400"/>
+
+
+
+
+## Kali Linux 2022.1 (All Tools)
+
+<img src="./images/kali2.png" alt="drawing" height="500"/>
+
+
+
+
+## Kali Linux 2022.1 (All Tools)
+
+<img src="./images/kali3.png" alt="drawing" height="500"/>
+
+
+
+
+## Kali Linux 2022.1 (All Tools)
+
+<img src="./images/kali4.png" alt="drawing" height="500"/>
+
+
+
+
+## Kali Linux 2022.1 (All Tools)
+
+<img src="./images/kali5.png" alt="drawing" height="500"/>
+
+
+
+
+## Kali Linux 2022.1 (All Tools)
+
+<img src="./images/kali6.png" alt="drawing" height="450"/>
+
+Password osboxes.org
+
+
+
+
+
+## Kali Linux 2022.1 (All Tools)
+
+<img src="./images/kali7.png" alt="drawing" height="400"/>
+
+[Kali inside VirtualBox (Guest VM)](https://www.kali.org/docs/virtualization/install-virtualbox-guest-vm/)
+
+
+
+
+
+## VPN vs. No VPN
+
+<img src="./images/VPN.jpg" alt="drawing" width="650"/>
+
+
+
+
+## languages
+
+<img src="./images/languages.png" alt="drawing" width="550"/>
+
+
+
+
+
+## URL
+
+<img src="./images/URL.jfif" alt="drawing" width="650"/>
+
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Assignment</div>
+  <div class="definition-shadebox">
+
+<a href="https://midway.instructure.com/courses/7239/quizzes/32793">Install OSs (Extra points 5)</a>
+
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+</div>
+</div>
+	
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="settings.js"></script>
+</body>
+</html>
