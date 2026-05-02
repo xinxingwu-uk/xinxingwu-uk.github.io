@@ -1,0 +1,2574 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Week 15</title>
+    <meta name="description" content="A set of slides for Machine Learning">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/effectsGreen.css">
+	<!--<link rel="stylesheet" href="./css/style.css">-->
+	<!--<link rel="stylesheet" href="./css/effects.css">-->
+
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+	</script>
+
+	<style>
+	    pre {
+            background-color: black;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+        }
+        code {
+            font-family: "Courier New", monospace;
+            color: #d63384; /* Python-style color */
+        }
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }	
+	</style>
+
+  </head>
+
+  <body onload="startTime()">
+    <div class="reveal" >
+	  <p><img src="images/midwaylogo.png"  align="left" height="6%" width="6%" style="vertical-align:left;margin:-15px 5px"><img src="images/mueagle.png"  color="white" align="left" height="4%" width="4%" style="vertical-align:center;margin:-1% 45%">
+		<div style="color:white;font-size: 20px; vertical-align:left;margin:-1% 0%" align="right" id="realtimeclock"></div></p>
+      <div class="slides">
+
+  <div class="me"></div>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown id="cover"><textarea data-template>
+
+# Design Issues for Online Gaming
+
+<hr>
+
+<br>
+
+Xinxing Wu
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline
+
+[<p class="hover-underline-animation">Foundations</p>](#/ch1)
+
+[<p class="hover-underline-animation">Lab</p>](#/ch2)
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+
+## Goal
+
+<div id="shadebox-neon" class="shadebox neon">
+
+By the end, you should be able to:
+- Explain what makes an online game **different** from local multiplayer
+- Choose a basic **communication model** (client/server vs peer-to-peer) and justify it
+- Design for:
+  - **arriving players**
+  - **disappearing players**
+  - **latency + packet problems**
+  - **collusion + cheating**
+- Describe what makes **persistent worlds** uniquely hard
+- Propose practical solutions for **chat, griefing, and PvP**
+</div>
+
+</textarea></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch1" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Foundations of Online Games</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Definition </div>
+  <div class="definition-com-shadebox">
+
+**Online games = multiplayer distributed games**
+- Players’ machines are connected by a **network**
+- Players are usually on **separate devices/screens**
+- Includes Internet **and** LAN games
+
+**Not included:** games merely downloaded from the Internet but not multiplayer (example: a single-player puzzle game)
+
+**Key idea:** Online gaming is a **technology**, not a genre.
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Example</div>
+  <div class="definition-pro-Y-shadebox">
+
+- Same game concept (e.g., “tag”) can be:
+  - local multiplayer (same room/screen)
+  - online multiplayer (networked)
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Online vs Local Multiplayer</div>
+  <div class="definition-pro-Y-shadebox">
+
+**Local multiplayer:**
+- One machine / one TV screen
+- Often splits the screen, duplicates UI, can’t hide info
+
+**Online multiplayer:**
+- Each player has their own screen
+- Designer can show each player **different info**
+- Supports **many more players**
+
+**Example**
+- Local: couch co-op soccer (2–4 players)
+- Online: 5v5 soccer matchmaking anytime
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Advantage A: Player socializing</div>
+  <div class="definition-pro-Y-shadebox">
+
+Online games enable:
+- text chat
+- voice chat
+- possibly video (in theory)
+
+**Design implication:** you’re not just a game designer — you are a **social architect**.
+
+**Example**
+- A basic co-op dungeon is “okay” offline  
+- Online, friendships + guilds can make the same dungeon feel “alive”
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Advantage B: Human intelligence replaces some AI</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 900px;"></div>
+
+Single-player often needs strong AI opponents.
+Online competitive games can rely on **players** for strategy and tactics.
+
+**Example**
+- Real-time strategy:
+  - Units still need basic AI (pathfinding, targeting)
+  - But **strategy** comes from players
+
+**Design implication:** online can reduce AI scope, but increases social + fairness scope.
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Advantage C: Benefits of networked play</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+Online play solves local-play limits:
+- No shared screen problems
+- Can hide information
+- Can support large numbers (server capacity permitting)
+- Players can find opponents at any time
+
+**Example**
+- A stealth game works better online because you can hide enemy info properly.
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Categories of problems</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+Online games introduce:
+- **Technical issues** (latency, packet loss, security)
+- **Immersion issues** (harder to maintain “in-character” play)
+- **Ongoing operations** (content production + customer service)
+- **Social problems** (griefing, harassment, cheating, fraud)
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Technical issue: communication model</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+Two major models:
+
+### Client/Server
+- Player runs **client**
+- Central **server** runs the game engine/state
+- Server sends updates; clients display + input
+
+### Peer-to-peer (P2P)
+- Players’ computers communicate directly
+- One machine becomes **host**, others are **guests**
+- Needs **host migration** if host leaves
+- Often needs matchmaking service anyway
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Quick decision guide: Client/Server vs P2P</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+**Client/Server is good when:**
+- you need strong anti-cheat
+- you need persistent world state
+- you can afford server cost
+
+**P2P is good when:**
+- small player counts (often 2–4)
+- low budget / no dedicated servers
+- you can tolerate more cheating risk
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Example</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+- 1v1 turn-based card game: P2P could work
+- Large MMO: client/server is almost required
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Technical issue: latency</div>
+  <div class="definition-pro-Y-shadebox">
+
+**Latency = delay in data traveling across the network**
+- Internet prioritizes redundancy over guaranteed speed
+- Faster connection can become an advantage
+
+**Design approaches**
+- Make game **turn-based** (latency less painful)
+- Match opponents by **connection speed**
+- Accept the reality and design gameplay that tolerates delay
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Technical issue: latency (cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+**Simple example**
+- Turn-based chess: 200 ms latency doesn’t matter much
+- Twitch shooter: 200 ms can feel awful and unfair
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Technical issue: dropped / garbled / out-of-order packets</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 1000px;"></div>
+
+Online games must handle:
+- missing packets
+- corrupted data
+- packets arriving out of order
+
+**Common design requirement**
+- Packet **serial numbers** (so you know order + missing items)
+- Request resend when needed (or rely on middleware)
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Example</div>
+  <div class="definition-pro-Y-shadebox">
+
+- Racing: you receive “car finished!” then next packet says “car is 100 yards back”  
+  → you need ordering logic to prevent nonsense.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Immersion issue: suspension of disbelief</div>
+  <div class="definition-pro-Y-shadebox">
+
+In online games, players may:
+- break character
+- talk real-world topics
+- behave inconsistently with the setting
+
+**Design implication**
+- If you want role-play, you need a community culture (and possibly enforcement)
+
+**Example**
+- Role-play server: “stay in character”
+- Normal server: memes + real-life talk everywhere
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Operations issue: continuous content</div>
+  <div class="definition-pro-Y-shadebox">
+
+Retail single-player: “ship the game, move on.”
+Online games: you must keep it fresh via:
+- advertising / micropayments / subscriptions
+- regular updates and new content
+
+**Example**
+- Even a simple farming game can keep interest by adding new items regularly.
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Operations issue: customer service</div>
+  <div class="definition-pro-Y-shadebox">
+
+Online games require more support because players expect:
+- immediate help
+- explanations of UI/content
+- justice/enforcement against misbehavior
+- chat monitoring (especially for kids)
+
+**Design implication:** “support cost” is part of design reality.
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Synchronous gaming</div>
+  <div class="definition-pro-Y-shadebox">
+
+Players must be logged on at the same time.
+Can be:
+- real-time
+- turn-based
+
+But still: players’ actions depend on each other.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Problem 1: arriving players</div>
+  <div class="definition-pro-Y-shadebox">
+
+In many games, late joiners are disadvantaged (like Monopoly).
+
+**Common solutions**
+- Start matches at frequent intervals
+- Provide a **lobby/waiting area**
+- Use **matchmaking** to form groups
+
+**Rule of thumb**
+- If game needs too many players (e.g., > ~8), waiting becomes annoying.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Arriving players: simple examples</div>
+  <div class="definition-pro-Y-shadebox">
+
+**Example A: Bingo**
+- Any number of players
+- Start a new match every 3 minutes
+
+**Example B: Bridge (fixed players)**
+- Need matchmaking to find exactly enough players
+
+**Example C: Poker**
+- Join at the end of the current hand (minimal disadvantage)
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Long-duration games: fairness is harder</div>
+  <div class="definition-pro-Y-shadebox">
+
+In persistent worlds, early players and heavy-time players get advantages.
+
+Design strategies:
+- Remove/soften victory condition (focus on personal progress)
+- Discourage veteran vs newcomer competition (ranking/levels)
+- Make direct competition **consensual** (PvP servers or opt-in PvP)
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Problem 2: disappearing players</div>
+  <div class="definition-pro-Y-shadebox">
+
+Players can:
+- log off anytime
+- disconnect accidentally
+
+Impact depends on game type:
+- Free-for-all racing: not too disruptive
+- Team-based raids: can be devastating
+- Fixed-participant games: may require pause/AI replacement/end match
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Disappearing players: tournament fairness questions</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 1000px;"></div>
+
+If a losing player disconnects to avoid a recorded loss:
+- Should they forfeit?
+- What if the disconnect was accidental?
+
+**Important:** you often can’t perfectly tell intention.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Common policies for disconnections (menu of options)</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 1000px;"></div>
+
+- **Disconnect = forfeit**
+   - Only fair if connections are very reliable
+- **Disconnect penalty less than forfeit**
+   - Reconnect window; escalating penalties
+- **Leader at disconnect wins**
+   - Can be abused (“pull the plug when ahead”)
+- **Record as tie**
+   - Also can be abused, but more neutral
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Common policies for disconnections (cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 900px;"></div>
+
+- **Record as “disconnected game”**
+   - Track patterns; restrict chronic disconnectors
+- **Abandon match entirely**
+   - Fairest for accidents, unfair to leader
+- **Use referees + logs**
+   - Most expensive operationally
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Class activity</div>
+  <div class="definition-pro-Y-shadebox">
+
+Pick one game type and choose a disconnect policy:
+- 3v3 shooter
+- 8-player racing
+- 1v1 chess tournament
+- 4-player co-op dungeon
+
+Explain:
+- why it’s fair
+- how players might abuse it
+- how you’d reduce abuse
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Real-time pros</div>
+  <div class="definition-pro-Y-shadebox">
+
+- more immersive
+- always something to do
+- flexible actions
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Real-time con</div>
+  <div class="definition-pro-Y-shadebox">
+
+- can turn strategy into action (fast clicking wins)
+
+**Example**
+
+- RTS: speed of issuing commands can dominate strategy
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Turn-based online: design requirements</div>
+  <div class="definition-pro-Y-shadebox">
+
+To make turn-based smooth:
+- limit players per match (4–5 is often a good max)
+- set a turn time limit + visible countdown
+- define a default action if time runs out
+- let players do things while waiting (chat, plan, organize)
+
+**Example**
+- Online hearts: 10 seconds per move could be enough.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Simultaneous turns (hybrid idea)</div>
+  <div class="definition-pro-Y-shadebox">
+
+Some turn-based games allow:
+- everyone chooses moves at the same time
+- then system resolves moves together
+
+**Benefit:** less waiting  
+**Cost:** more complexity and “prediction” mistakes possible
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">What is collusion?</div>
+  <div class="definition-pro-Y-shadebox">
+
+**Collusion = opponents secretly cooperating** to break the intended competition.
+
+Why it’s worse online:
+- anonymity
+- no social cost
+- physical separation hides coordination
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Collusion example: trivia game “A/B/C”</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+If players get feedback immediately:
+- 3 players each guess A, B, C quickly
+- 4th waits
+- the one who guessed correctly shouts it out
+- 4th always answers correctly before time runs out
+
+**Design fix**
+- Don’t reveal the correct answer until time expires.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Collusion is hard to eliminate completely</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+Players can collude via:
+- phone calls
+- external chat apps
+- being in the same room on different devices
+
+So you often can’t “block it,” only **reduce its impact**.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Design questions to reduce collusion impact</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+Ask:
+- Do players ever have **secret knowledge** they can share?
+- Can players transfer assets (“pass cards under the table”)?
+- Can someone “take a dive” intentionally to boost another?
+
+**Design principle:** assume some players will try.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Asynchronous gaming</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+Players’ actions are **not synchronized**:
+- not online at the same time
+- don’t wait for others’ turns
+
+Common in:
+- casual games
+- social network games
+- mobile games
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Common gameplay patterns in asynchronous games</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 1000px;"></div>
+
+Often avoid competitive multiplayer (because waiting is bad).
+Common modes:
+- single-player cooperative (help friends with gifts)
+- multiplayer cooperative (parallel contributions)
+- team-based with independent contributions
+
+**Example**
+- You can send a friend a “resource” that helps them progress faster.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Benefits of asynchronous design</div>
+  <div class="definition-pro-Y-shadebox">
+
+- avoids arriving/departing problems
+- collusion is less relevant when cooperation is intended
+- fits mobile lifestyles (play anytime)
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Why security matters more online</div>
+  <div class="definition-pro-Y-shadebox">
+
+Single-player cheating mostly hurts the cheater.
+Online cheating hurts:
+- other players’ fairness
+- your business
+- possibly legal exposure if prizes have value
+
+**Design mindset:** lock doors for the dishonest minority.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Secure telecommunications protocol (design checklist)</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 1000px;"></div>
+
+A secure protocol should include:
+- encryption (hide meaning of data)
+- error-checking + error-correction (detect tampering/corruption)
+- heartbeat mechanism (detect disconnections)
+- serial numbers on packets (order + prevent spurious inserts)
+
+(Implementation is engineering-heavy, but designers should know the requirements.)
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Don’t store sensitive data on the player’s computer</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 1000px;"></div>
+
+- preferences (cosmetics, UI settings)
+- **game state** (position, score, inventory, money)
+
+Category (2) should not be trusted on the client.
+If you must store some client-side:
+- store a server-side **checksum** and verify on return
+
+**Example**
+- If money is stored locally, a cheater edits a file and becomes rich.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Don’t send hidden information to the client</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+If the player “shouldn’t know it,” don’t send it.
+
+**Example: Fog of war**
+- RTS games should not transmit unseen enemy positions
+- Otherwise cheaters can “lift the fog” and gain advantage
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Don’t let clients perform sensitive operations</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+If the client can decide outcomes, a hacked client can lie.
+
+**Simple example**
+- RPG fight computed on client:
+  - hacked client reports “I win every fight”
+Better:
+- server computes fight outcome
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">What is a persistent world?</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+A permanent online environment where:
+- players keep their avatar state across sessions
+- world continues indefinitely
+- often massive player counts
+
+Also historically linked to:
+- text-based MUDs (multiuser dungeons/domains)
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">How persistent worlds differ from ordinary games</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 1000px;"></div>
+
+In many normal games:
+- story has a narrative arc + ending
+- victory condition concludes the experience
+
+Persistent worlds:
+- don’t have a “once-and-for-all” ending
+- may have quests, but the world continues
+- secrets don’t stay secret (players share knowledge)
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Story in persistent worlds</div>
+  <div class="definition-pro-Y-shadebox">
+
+- You can create story-like quests
+- But you can’t rely on a single arc that ends forever
+
+**Emergent narrative**
+- Stories arise from player interactions
+- You can’t force good stories; players must participate well
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">The player’s role is more self-defined</div>
+  <div class="definition-pro-Y-shadebox">
+
+Because there’s no single linear plot:
+- players choose what to do
+- they can socialize, grind, trade, explore, build reputation, etc.
+
+**Design tip**
+If there are too few meaningful activities, players get bored and leave.
+You need:
+- multiple ways to play
+- expansions or sub-games over time
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Expressive play vs reactive play</div>
+  <div class="definition-pro-Y-shadebox">
+
+Single-player often feels like:
+- “designer gives challenge → player responds”
+
+Persistent world often feels like:
+- “player chooses goals → world supports them”
+
+That shift affects everything (content, economy, moderation).
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Where does Second Life fit?</div>
+  <div class="definition-pro-Y-shadebox">
+
+Second Life is:
+- a virtual environment for building + social interaction
+- not a typical MMOG (no built-in quests/combat/leveling)
+- objects + landscape can be modified anytime → constant downloading → lag acceptable because it’s not twitch combat-focused
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Bartle’s four player types (classic model)</div>
+  <div class="definition-pro-Y-shadebox">
+
+Two axes:
+- acting vs interacting
+- world vs other players
+
+Types:
+- **Killers** (act on players)
+- **Socializers** (interact with players)
+- **Achievers** (act on world; progress)
+- **Explorers** (interact with world; discover)
+
+**Design idea:** a “healthy world” often needs a balance (even if exact ratios vary).
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Avatar creation is critical</div>
+  <div class="definition-pro-Y-shadebox">
+
+Creating an avatar is expression.
+Profiles may include:
+- unique name/handle
+- customizable appearance
+- history/experience (levels, quests, achievements)
+- reputation score/symbol
+- autobiography (especially needs moderation if children are present)
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Reputation systems can be abused</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+If reputation can be increased by “virtuous acts”:
+- players can collude (donate back-and-forth)
+
+**Design fixes**
+- rate limits
+- diminishing returns
+- require diverse sources of reputation
+- audit suspicious patterns
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Spore: “massively single-player online”</div>
+  <div class="definition-pro-Y-shadebox">
+
+Interesting hybrid:
+- players don’t directly interact
+- but creations are uploaded and appear in others’ worlds
+- online connectivity enriches content without direct PvP/co-op
+
+**Design takeaway:** “online” doesn’t always mean direct multiplayer.
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">World model = activities + rewards</div>
+  <div class="definition-pro-Y-shadebox">
+
+Raph Koster’s classic models:
+- **Scavenger** (collect & return safely; treasure hunt)
+- **Social** (role-play, social status, expression)
+- **D&D model** (fight NPCs for advancement + quests)
+- **PvP model** (advance by defeating other players; must match skill)
+- **Builder** (construct & modify world; expressive creativity)
+
+Most real worlds mix several.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Simple “world model” examples</div>
+  <div class="definition-pro-Y-shadebox">
+
+- Scavenger: “collect 10 relics and bring them to town”
+- Social: “host events, gain followers, become mayor”
+- D&D: “raid dungeons, level up, get gear”
+- PvP: “ranked arenas, seasonal ladders”
+- Builder: “craft buildings, publish a museum”
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Why death needs a penalty</div>
+  <div class="definition-pro-Y-shadebox">
+
+If death has no cost:
+- combat is not meaningful
+- players act recklessly
+But if penalty is too harsh:
+- players quit
+
+**Balance rule**
+- If death is likely due to bad luck/ignorance → low cost
+- If death requires truly terrible play → higher cost is acceptable
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Common death penalty designs</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+- **Permanent death**
+   - restart from scratch
+   - rarely acceptable in persistent worlds
+
+- **Resurrection with temporary weakness**
+   - reduced attributes for a period
+   - healer revives as limited resource
+
+- **Resurrection with property loss**
+   - lose money/gear/inventory items
+   - allow “vault storage” to prevent total wipe
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">The “mule” problem</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+If you don’t offer safe storage:
+- players create extra characters (“mules”) just to hold items
+
+**Design implication:** plan storage intentionally.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">You can’t control time like single-player</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+Single-player allows:
+- speeding time up/down
+- skipping sleep
+- reloading saves (undo events)
+
+Online multiplayer:
+- time must move at a fixed pace for everyone
+- many actions become “waiting” in real time
+- events are effectively irreversible
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Design warning: boring waiting mechanics</div>
+  <div class="definition-pro-Y-shadebox">
+
+Example: forced waiting to restore magic (“meditation”)
+- players can’t fast-forward
+- designers may add mini-games as a patch
+
+**Design lesson:** if you must distract players from your mechanic, reconsider the mechanic.
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Why economies are harder online</div>
+  <div class="definition-pro-Y-shadebox">
+
+Single-player economy:
+- you can control one player’s behavior tightly
+
+Persistent world economy:
+- thousands of players interact
+- hoarding, speculation, automation, exploitation happen
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Ultima Online economy lesson (classic case)</div>
+  <div class="definition-pro-Y-shadebox">
+
+A closed-loop system:
+- mine ore → craft gear → gear degrades → returns to resource pool
+But designers didn’t anticipate:
+- players hoarding items (resources stop circulating)
+Result:
+- scarcity + inflation
+Fix:
+- move toward an open economy (inject resources periodically)
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Economy design rule: stop “something for nothing”</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 1000px;"></div>
+
+Players must not be able to:
+- convert a resource into **more** than they started with
+Otherwise:
+- they automate the loop
+- infinite money/items appear
+- economy collapses
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">“Secrets” for long-lived persistent worlds </div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+- multiple advancement paths (better than one long grind)
+- easy switching between paths (don’t force restart)
+- milestones should be clear, visible, meaningful
+- avoid the feeling that progression “runs out”
+- create a sense of **ownership** (a barrier to departure)
+  - possessions, jobs, responsibilities, buildings, identity
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Why strangers cause trouble</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+With anonymous strangers, you may see:
+- rudeness
+- harassment / stalking / bullying
+- griefing
+- cheating and fraud
+
+**Business reality:** even “minor” rudeness drives away customers.
+
+**Special concern:** children → safety and monitoring may be a legal/ethical obligation.
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Managing chat (baseline expectation)</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+Most multiplayer games should have chat:
+- private messages
+- team messages
+- local/vicinity messages
+- global broadcast (often limited)
+
+But chat also enables abuse, so you must design controls.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Option 1: limited content chat</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+Restrict messages to fixed phrases.
+- safer for children
+- often too limited for adults
+
+**Example**
+- racing game: “Good luck!”, “Nice race!”, “Oops!”
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Option 2: profanity filters (imperfect)</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+Problems:
+- false positives (legitimate religious discussion)
+- easy to bypass with misspelling
+- doesn’t help voice chat
+
+**Best practice:** use filters only as one layer, not the whole solution.
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Option 3: complaint + warning systems</div>
+  <div class="definition-pro-Y-shadebox">
+
+Provide “Report” button:
+- forwards offending text to moderators/support
+- staff can warn, kick, ban
+
+Automated warning systems can:
+- slow down offenders’ ability to message
+- decay punishments over time (good behavior restores privileges)
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Option 4: blocking / muting</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+Let players ignore others:
+- inexpensive
+- user-controlled
+- can be silent or notify the muted person
+
+Also include:
+- ability to turn off chat completely
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Option 5: moderated chat spaces</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+Most effective, most expensive:
+- a moderator (or customer service agent) with authority
+- risk of abuse if moderator is not impartial
+
+**Design tradeoff:** cost vs safety vs community health.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Core question</div>
+  <div class="definition-pro-Y-shadebox">
+
+Should players be able to kill other players?
+
+Pros:
+- more interesting loot targets
+- richer social experience
+- human intelligence makes fights better than NPC AI
+
+Cons:
+- bullying, victimization of weak by strong
+- drives away large portion of audience if uncontrolled
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Ultima Online lesson</div>
+  <div class="definition-pro-Y-shadebox">
+
+Initial “unrestricted PvP” led to:
+- random violence
+- gangs controlling areas
+- weak players constantly victimized
+
+Eventually:
+- world split into “shards” with different rules
+- many players chose non-PvP shards
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Justice mechanisms (design menu)</div>
+  <div class="definition-pro-Y-shadebox">
+
+- No automated regulation (admins/social justice)
+- Criminal flagging (system marks offenders; others can attack them)
+- Reputation systems (players report; still can be abused)
+- PvP switch (opt-in)
+   - but can break immersion (area-effect spell harms PvP players but not non-PvP nearby)
+- No PvP at all (still can have indirect abuse)
+
+You can also use safe/danger zones, but players may camp borders.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Faction-based PvP</div>
+  <div class="definition-pro-Y-shadebox">
+
+Players join factions (gangs/nations).
+They can attack enemy factions but not their own faction.
+Regions controlled by factions clarify “safe vs unsafe.”
+
+Often reduces random violence vs unrestricted PK.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Bottom line on PvP</div>
+  <div class="definition-pro-Y-shadebox">
+
+You can’t please everyone.
+Decide your target audience and design for them.
+
+Two key reminders:
+- It’s escapist entertainment (people don’t pay to be bullied)
+- People pay to play → you owe them a reasonable experience
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Player expectations</div>
+  <div class="definition-pro-Y-shadebox">
+
+Players often expect:
+- fairness
+- protection from aggression before it happens
+- quick fixes
+- profit from labor
+- their integrity assumed
+
+**Design goal:** manage expectations realistically.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+
+Design difficulty climbs:
+single-player < local multiplayer < online < persistent worlds
+
+Like:
+- cooking for yourself vs hosting a dinner party  
+Online design must account for:
+- who gets along
+- who causes trouble
+- fairness + operations + community
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">If you design an online game…</div>
+  <div class="definition-pro-Y-shadebox">
+
+You must decide:
+- sync vs async
+- client/server vs P2P
+- how to handle latency + packet issues
+- arriving/leaving players policy
+- collusion/cheating exposure points
+- what data is trusted (server vs client)
+- chat + moderation tools
+- PvP rules + justice systems (if persistent world)
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Design practice questions (discussion)</div>
+  <div class="definition-pro-Y-shadebox">
+
+- How will you handle new players arriving mid-game?
+- What happens when a player goes offline—what do others see?
+- How do you keep scoring fair when someone vanishes?
+- Can intentional disconnecting become an advantage? How reduce?
+- In turn-based, how prevent stalling? time limits? simultaneous turns?
+- If you offer chat, how keep it civil? filters? reports? mute? moderation?
+- How will you reduce collusion, knowing players can use phones?
+</div>
+</div>
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch2" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Lab</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Materials</div>
+  <div class="definition-com-shadebox">
+
+<a href="./files/Chapter 17. Design Issues for Online.pdf" target="_blank">Chapter 17. Design Issues for Online</a>
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Question</div>
+  <div class="definition-com-shadebox">
+
+What does the chapter mean by “online games,” and why does it say online game designers are also “social architects”?<button type="button" class="reveal-btn" data-answer="answer-e1">Show Answer</button>
+<div id="answer-e1" class="answer-box">
+<b>Answer:</b> The chapter defines online games as multiplayer distributed games where players’ machines are connected by a network (including LAN play), and it distinguishes these from single-machine local multiplayer and from Internet-distributed games that don’t have multiplayer gameplay. It also emphasizes that online games create social interaction opportunities (chat/voice/etc.), and because players’ experiences are shaped heavily by social behavior, the designer’s job extends beyond mechanics into designing the social environment—hence “social architect.”
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Question</div>
+  <div class="definition-pro-Y-shadebox">
+
+What “arriving players” problem happens in synchronous online games, and what are common solutions (lobby, matchmaking, limiting players)?<button type="button" class="reveal-btn" data-answer="answer-e2">Show Answer</button>
+<div id="answer-e2" class="answer-box">
+<b>Answer:</b> In synchronous games, players can want to join at any time, but letting someone join mid-match can be unfair (the chapter uses Monopoly as an example of late-join disadvantage). A common solution is to start matches frequently and use a lobby for waiting; for fixed-size games, designers often need matchmaking so groups can form and start when enough players arrive. The chapter warns that requiring too many players increases waiting and can alienate them (more than ~8 is risky).
+</div>
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Question</div>
+  <div class="definition-pro-Y-shadebox">
+
+What is the “disappearing players” problem, and why is it more damaging in team-based games?<button type="button" class="reveal-btn" data-answer="answer-e3">Show Answer</button>
+<div id="answer-e3" class="answer-box">
+<b>Answer:</b> Online players can leave at any time (log off, disconnect). In free-for-all designs (e.g., racing), one disappearing player often just vanishes and forfeits, with minimal disruption. But in team-based games, a missing player can create a serious imbalance and disadvantage for their teammates, so the game should try to handle it cleanly and minimize disruption.
+</div>
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Question</div>
+  <div class="definition-pro-Y-shadebox">
+
+How does the chapter compare real-time vs. turn-based online games, and what features does it recommend to make turn-based play smoother?<button type="button" class="reveal-btn" data-answer="answer-e4">Show Answer</button>
+<div id="answer-e4" class="answer-box">
+<b>Answer:</b>The chapter says real-time online games can feel more immersive and keep players active, but in strategy contexts they may drift toward action because speed matters (“who moves pieces fastest” gains advantage). For turn-based play, it recommends features such as: limit player count (so waiting isn’t too long), time limits per turn with visible countdowns, a reasonable default action if time expires, and letting players do harmless activities while waiting (chat, planning, studying the battlefield).
+</div>
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Question</div>
+  <div class="definition-pro-Y-shadebox">
+
+What is collusion in online games, and what design change does the chapter give to reduce it in a trivia-game example?<button type="button" class="reveal-btn" data-answer="answer-e5">Show Answer</button>
+<div id="answer-e5" class="answer-box">
+<b>Answer:</b>Collusion is cheating where players who are supposed to be opponents cooperate in violation of the rules. The chapter describes a multiple-choice online trivia game where colluders can guarantee a win by having some players quickly test answers (A/B/C) and shout the correct one to a partner before time runs out. A simple countermeasure is to delay revealing whether an answer is correct until after the answering timer ends, removing the “early secret knowledge” that colluders exploit. The chapter also notes that some collusion can happen through external channels (phones, chat apps) and can’t be fully prevented—so designers aim to minimize impact rather than assume they can stop it entirely.
+</div>
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Lab</div>
+  <div class="definition-pro-Y-shadebox">
+
+Trivia Sprint Online (TCP, Server-Authoritative)
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Lab</div>
+  <div class="definition-pro-Y-shadebox">
+
+Goal:
+
+- Client/Server model (server is the authority)
+
+- Arriving players → lobby + start rule
+
+- Disappearing players → disconnect policy
+
+- Latency fairness → wide “speed tiers” instead of raw milliseconds
+
+- Collusion defense → no answer reveal until timer ends
+
+- Chat moderation → canned chat (safe baseline)
+
+- Trust boundary → clients never compute score
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Lab</div>
+  <div class="definition-pro-Y-shadebox">
+
+Requirements (deliverables)
+
+Build a 2–4 player online trivia game:
+
+- Lobby: show “waiting for players …”
+
+- 10 rounds: timer per question (e.g., 12 seconds)
+
+- Answer options displayed; player presses 1–4
+
+- Server does scoring
+
+	- +10 for correct
+
+	- +2 bonus if answered in first half of time
+
+	- +1 bonus if answered in second half
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Lab</div>
+  <div class="definition-pro-Y-shadebox">
+
+Requirements (deliverables)
+
+- Collusion defense: server does not reveal correct answer until time expires
+
+- Disconnect policy:
+
+	- If a player disconnects, mark them “DNF” (no more points)
+
+	- Match continues if ≥2 players remain; otherwise end match
+
+- Canned chat: keys F1–F4 send “Good luck / Nice / Oops / GG”
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Lab</div>
+  <div class="definition-pro-Y-shadebox">
+
+Solution (works on localhost/LAN)
+
+Folder layout
+
+```
+TriviaSprint_server/
+  server.cpp
+
+```
+
+<hr>
+
+
+```
+TriviaSprint_client/
+  client.cpp
+
+```
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Lab</div>
+  <div class="definition-pro-Y-shadebox">
+
+Server.cpp (SFML 3.x, single file)
+
+```
+// Server.cpp (SFML 3.x) - TriviaSprint Server, single file, no common.hpp
+
+#include <SFML/Network.hpp>
+#include <SFML/System.hpp>
+
+#include <algorithm>
+#include <chrono>
+#include <cstdint>
+#include <iostream>
+#include <random>
+#include <string>
+#include <vector>
+
+// -------------------- Protocol --------------------
+static const unsigned short TRIVIA_PORT = 45000;
+
+enum MsgType : std::uint8_t
+{
+    MSG_HELLO = 1,        // client -> server: name (string)
+    MSG_LOBBY = 2,        // server -> client: connectedCount(u8), neededToStart(u8)
+    MSG_CHAT = 3,         // both directions: from(string), text(string)
+    MSG_START = 4,        // server -> client: totalRounds(u8), roundTimeSec(u8)
+    MSG_QUESTION = 5,     // server -> client: roundIndex(u8), roundTimeSec(u8), prompt(string), 4 option strings
+    MSG_ANSWER = 6,       // client -> server: roundIndex(u8), chosenDisplayIndex(u8)
+    MSG_ROUND_RESULT = 7, // server -> client: roundIndex(u8), correctDisplayIndex(u8), 
+	//wasCorrect(u8), pointsThis(u16), totalPoints(u16)
+    MSG_MATCH_OVER = 8,   // server -> client: winner(string), yourPoints(u16), leaderboard(string)
+    MSG_DISCONNECT = 9    // server -> client: whoDisconnected(string)
+};
+// ---------------------------------------------------
+
+struct Question
+{
+    std::string prompt;
+    std::string options[4];
+    int correctIndex = 0; // 0..3 (actual index)
+};
+
+struct Player
+{
+    sf::TcpSocket socket;
+    std::string name;
+    bool connected = false;
+
+    bool answeredThisRound = false;
+    int chosenDisplayIndex = -1; // 0..3
+    int displayToActual[4] = {0, 1, 2, 3}; // display index -> actual index
+
+    int points = 0;
+};
+
+static std::uint64_t NowMs()
+{
+    return (std::uint64_t)std::chrono::duration_cast<std::chrono::milliseconds>(
+               std::chrono::steady_clock::now().time_since_epoch())
+        .count();
+}
+
+static std::vector<Question> BuildQuestionBank()
+{
+    std::vector<Question> bank;
+
+    {
+        Question q;
+        q.prompt = "Which is an advantage of online games mentioned in the lecture?";
+        q.options[0] = "Players can socialize";
+        q.options[1] = "No need for networking";
+        q.options[2] = "No cheating is possible";
+        q.options[3] = "All games become single-player";
+        q.correctIndex = 0;
+        bank.push_back(q);
+    }
+    {
+        Question q;
+        q.prompt = "Client/Server means...";
+        q.options[0] = "Players' machines all control the truth equally";
+        q.options[1] = "A central server is the authority for game state";
+        q.options[2] = "No server exists at all";
+        q.options[3] = "Only one player can connect";
+        q.correctIndex = 1;
+        bank.push_back(q);
+    }
+    {
+        Question q;
+        q.prompt = "A common collusion defense in trivia is:";
+        q.options[0] = "Reveal the correct answer immediately";
+        q.options[1] = "Never show any answers";
+        q.options[2] = "Delay revealing the correct answer until time expires";
+        q.options[3] = "Let one player answer for everyone";
+        q.correctIndex = 2;
+        bank.push_back(q);
+    }
+    {
+        Question q;
+        q.prompt = "Latency is best described as:";
+        q.options[0] = "A player being rude in chat";
+        q.options[1] = "Network delay between send and receive";
+        q.options[2] = "A type of cheating tool";
+        q.options[3] = "A permanent ban";
+        q.correctIndex = 1;
+        bank.push_back(q);
+    }
+    {
+        Question q;
+        q.prompt = "If a client stores sensitive game state locally, a risk is:";
+        q.options[0] = "Better anti-cheat";
+        q.options[1] = "Cheaters can edit files to gain advantage";
+        q.options[2] = "Lower server cost only";
+        q.options[3] = "No effect";
+        q.correctIndex = 1;
+        bank.push_back(q);
+    }
+
+    return bank;
+}
+
+static void ShuffleMapping(Player& pl, std::mt19937& rng)
+{
+    int a[4] = {0, 1, 2, 3};
+    std::shuffle(a, a + 4, rng);
+    for (int i = 0; i < 4; i++) pl.displayToActual[i] = a[i];
+}
+
+static int FindCorrectDisplayIndex(const Player& pl, int correctActualIndex)
+{
+    for (int d = 0; d < 4; d++)
+        if (pl.displayToActual[d] == correctActualIndex) return d;
+    return 0;
+}
+
+static int ConnectedCount(const std::vector<Player>& players)
+{
+    int c = 0;
+    for (const auto& p : players) if (p.connected) c++;
+    return c;
+}
+
+static void SendLobbyInfo(std::vector<Player>& players, int neededToStart)
+{
+    int count = ConnectedCount(players);
+
+    for (auto& p : players)
+    {
+        if (!p.connected) continue;
+
+        sf::Packet out;
+        out << (std::uint8_t)MSG_LOBBY
+            << (std::uint8_t)count
+            << (std::uint8_t)neededToStart;
+
+        (void)p.socket.send(out);
+    }
+}
+
+static void BroadcastChat(std::vector<Player>& players, const std::string& from, const std::string& text)
+{
+    for (auto& p : players)
+    {
+        if (!p.connected) continue;
+
+        sf::Packet out;
+        out << (std::uint8_t)MSG_CHAT << from << text;
+
+        (void)p.socket.send(out);
+    }
+}
+
+static void BroadcastDisconnect(std::vector<Player>& players, const std::string& who)
+{
+    for (auto& p : players)
+    {
+        if (!p.connected) continue;
+        sf::Packet out;
+        out << (std::uint8_t)MSG_DISCONNECT << who;
+        (void)p.socket.send(out);
+    }
+}
+
+int main()
+{
+    std::cout << "TriviaSprint Server starting on port " << TRIVIA_PORT << "...\n";
+
+    sf::TcpListener listener;
+    if (listener.listen(TRIVIA_PORT) != sf::Socket::Status::Done)
+    {
+        std::cout << "Failed to listen on port.\n";
+        return 1;
+    }
+    listener.setBlocking(false);
+
+    std::vector<Player> players;
+    const int MAX_PLAYERS = 4;
+    const int MIN_PLAYERS_TO_START = 2;
+
+    const int TOTAL_ROUNDS = 5;
+    const int ROUND_TIME_SEC = 12;
+
+    std::vector<Question> bank = BuildQuestionBank();
+    std::mt19937 rng((unsigned)std::chrono::system_clock::now().time_since_epoch().count());
+
+    bool matchRunning = false;
+    int roundIndex = 0;
+    std::uint64_t roundStartMs = 0;
+
+    Question currentQ;
+    bool questionSent = false;
+
+    while (true)
+    {
+        // Accept new connections only if match is NOT running
+        if ((int)players.size() < MAX_PLAYERS && !matchRunning)
+        {
+            Player p;
+
+            if (listener.accept(p.socket) == sf::Socket::Status::Done)
+            {
+                p.socket.setBlocking(false);
+                players.push_back(std::move(p));
+                std::cout << "New socket accepted. Total sockets = " << players.size() << "\n";
+            }
+        }
+
+        // Receive messages
+        for (std::size_t i = 0; i < players.size(); i++)
+        {
+            sf::Packet in;
+            sf::Socket::Status st = players[i].socket.receive(in);
+
+            if (st == sf::Socket::Status::Done)
+            {
+                std::uint8_t type = 0;
+                in >> type;
+
+                if (type == MSG_HELLO)
+                {
+                    std::string name;
+                    in >> name;
+
+                    players[i].name = name;
+                    players[i].connected = true;
+
+                    std::cout << "Player joined: " << name << "\n";
+                    SendLobbyInfo(players, MIN_PLAYERS_TO_START);
+                    BroadcastChat(players, "SERVER", name + " joined the lobby.");
+                }
+                else if (type == MSG_ANSWER && matchRunning)
+                {
+                    std::uint8_t r = 0, chosen = 0;
+                    in >> r >> chosen;
+
+                    if ((int)r == roundIndex && !players[i].answeredThisRound)
+                    {
+                        players[i].answeredThisRound = true;
+                        players[i].chosenDisplayIndex = (int)chosen;
+                        std::cout << players[i].name << " answered option=" << (int)chosen << "\n";
+                    }
+                }
+                else if (type == MSG_CHAT)
+                {
+                    std::string from, text;
+                    in >> from >> text;
+                    BroadcastChat(players, from, text);
+                }
+            }
+            else if (st == sf::Socket::Status::Disconnected)
+            {
+                if (players[i].connected)
+                {
+                    std::cout << "Disconnected: " << players[i].name << "\n";
+                    std::string who = players[i].name;
+                    players[i].connected = false;
+                    BroadcastDisconnect(players, who);
+                }
+            }
+            // NotReady/Partial/Error -> ignore for this simple project
+        }
+
+        // Start match
+        int connected = ConnectedCount(players);
+        if (!matchRunning && connected >= MIN_PLAYERS_TO_START)
+        {
+            matchRunning = true;
+            roundIndex = 0;
+            questionSent = false;
+
+            std::cout << "Match starting with " << connected << " players.\n";
+
+            for (auto& p : players)
+            {
+                if (!p.connected) continue;
+                p.points = 0;
+
+                sf::Packet out;
+                out << (std::uint8_t)MSG_START
+                    << (std::uint8_t)TOTAL_ROUNDS
+                    << (std::uint8_t)ROUND_TIME_SEC;
+
+                (void)p.socket.send(out);
+            }
+        }
+
+        // Run rounds
+        if (matchRunning)
+        {
+            if (!questionSent)
+            {
+                currentQ = bank[roundIndex % (int)bank.size()];
+                roundStartMs = NowMs();
+
+                for (auto& p : players)
+                {
+                    p.answeredThisRound = false;
+                    p.chosenDisplayIndex = -1;
+
+                    if (!p.connected) continue;
+
+                    ShuffleMapping(p, rng);
+
+                    sf::Packet out;
+                    out << (std::uint8_t)MSG_QUESTION
+                        << (std::uint8_t)roundIndex
+                        << (std::uint8_t)ROUND_TIME_SEC
+                        << currentQ.prompt;
+
+                    for (int d = 0; d < 4; d++)
+                        out << currentQ.options[p.displayToActual[d]];
+
+                    (void)p.socket.send(out);
+                }
+
+                questionSent = true;
+                std::cout << "Round " << (roundIndex + 1) << " question sent.\n";
+            }
+
+            if (NowMs() - roundStartMs >= (std::uint64_t)ROUND_TIME_SEC * 1000ULL)
+            {
+                // Score + results
+                for (auto& p : players)
+                {
+                    if (!p.connected) continue;
+
+                    int correctDisplay = FindCorrectDisplayIndex(p, currentQ.correctIndex);
+
+                    bool correct = false;
+                    if (p.answeredThisRound && p.chosenDisplayIndex >= 0 && p.chosenDisplayIndex < 4)
+                    {
+                        int chosenActual = p.displayToActual[p.chosenDisplayIndex];
+                        correct = (chosenActual == currentQ.correctIndex);
+                    }
+
+                    int pointsThis = correct ? 10 : 0;
+                    p.points += pointsThis;
+
+                    sf::Packet out;
+                    out << (std::uint8_t)MSG_ROUND_RESULT
+                        << (std::uint8_t)roundIndex
+                        << (std::uint8_t)correctDisplay
+                        << (std::uint8_t)(correct ? 1 : 0)
+                        << (std::uint16_t)pointsThis
+                        << (std::uint16_t)p.points;
+
+                    (void)p.socket.send(out);
+                }
+
+                roundIndex++;
+                questionSent = false;
+
+                connected = ConnectedCount(players);
+                if (connected < MIN_PLAYERS_TO_START)
+                {
+                    std::cout << "Too few players remain. Ending match.\n";
+                    matchRunning = false;
+                }
+                else if (roundIndex >= TOTAL_ROUNDS)
+                {
+                    // Winner
+                    int best = -1;
+                    std::string winner = "N/A";
+                    for (auto& p : players)
+                    {
+                        if (!p.connected) continue;
+                        if (p.points > best)
+                        {
+                            best = p.points;
+                            winner = p.name;
+                        }
+                    }
+
+                    // Leaderboard
+                    std::string leaderboard;
+                    for (auto& p : players)
+                        if (p.connected) leaderboard += p.name + ": " + std::to_string(p.points) + "\n";
+
+                    for (auto& p : players)
+                    {
+                        if (!p.connected) continue;
+
+                        sf::Packet out;
+                        out << (std::uint8_t)MSG_MATCH_OVER
+                            << winner
+                            << (std::uint16_t)p.points
+                            << leaderboard;
+
+                        (void)p.socket.send(out);
+                    }
+
+                    std::cout << "Match over. Winner: " << winner << "\n";
+                    matchRunning = false;
+                }
+            }
+        }
+
+        sf::sleep(sf::milliseconds(10));
+    }
+}
+
+```
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Lab</div>
+  <div class="definition-pro-Y-shadebox">
+
+Client.cpp (SFML 3.x, single file)
+
+```
+// Client.cpp (SFML 3.x) - TriviaSprint Client, single file, no common.hpp, NO font file
+// UI uses: window title + shapes (SFML cannot draw text without a font)
+
+#include <SFML/Graphics.hpp>
+#include <SFML/Network.hpp>
+#include <SFML/System.hpp>
+
+#include <algorithm>
+#include <chrono>
+#include <cstdint>
+#include <iostream>
+#include <mutex>
+#include <optional>
+#include <string>
+#include <thread>
+#include <vector>
+
+// -------------------- Protocol --------------------
+static const unsigned short TRIVIA_PORT = 45000;
+
+enum MsgType : std::uint8_t
+{
+    MSG_HELLO = 1,
+    MSG_LOBBY = 2,
+    MSG_CHAT = 3,
+    MSG_START = 4,
+    MSG_QUESTION = 5,
+    MSG_ANSWER = 6,
+    MSG_ROUND_RESULT = 7,
+    MSG_MATCH_OVER = 8,
+    MSG_DISCONNECT = 9
+};
+// --------------------------------------------------
+
+static float clampf(float v, float a, float b)
+{
+    if (v < a) return a;
+    if (v > b) return b;
+    return v;
+}
+
+struct ClientState
+{
+    bool connected = false;
+    bool inLobby = true;
+    bool inMatch = false;
+
+    int lobbyCount = 0;
+    int lobbyNeeded = 2;
+
+    int totalRounds = 0;
+    int roundTimeSec = 0;
+
+    int roundIndex = 0;
+    int secondsLeft = 0;
+
+    std::string question;
+    std::string options[4];
+
+    bool showResult = false;
+    int correctDisplayIndex = 0;
+    bool yourCorrect = false;
+    int pointsThisRound = 0;
+    int totalPoints = 0;
+
+    bool matchOver = false;
+    std::string winner;
+    std::string leaderboard;
+
+    std::vector<std::string> chatLines;
+};
+
+static void PushChatLine(ClientState& st, const std::string& line)
+{
+    st.chatLines.push_back(line);
+    if (st.chatLines.size() > 8) st.chatLines.erase(st.chatLines.begin());
+}
+
+static std::string PromptName()
+{
+    std::string name;
+    std::cout << "Enter your player name: ";
+    std::getline(std::cin, name);
+    if (name.empty()) name = "Player";
+    return name;
+}
+
+static void SendHello(sf::TcpSocket& sock, const std::string& name)
+{
+    sf::Packet out;
+    out << (std::uint8_t)MSG_HELLO << name;
+    (void)sock.send(out);
+}
+
+static void SendAnswer(sf::TcpSocket& sock, int roundIndex, int chosenDisplayIndex)
+{
+    sf::Packet out;
+    out << (std::uint8_t)MSG_ANSWER
+        << (std::uint8_t)roundIndex
+        << (std::uint8_t)chosenDisplayIndex;
+    (void)sock.send(out);
+}
+
+static void SendCannedChat(sf::TcpSocket& sock, const std::string& from, const std::string& text)
+{
+    sf::Packet out;
+    out << (std::uint8_t)MSG_CHAT << from << text;
+    (void)sock.send(out);
+}
+
+static void NetworkPump(sf::TcpSocket* socketPtr, ClientState* statePtr, std::mutex* mtxPtr)
+{
+    sf::TcpSocket& socket = *socketPtr;
+    ClientState& st = *statePtr;
+    std::mutex& mtx = *mtxPtr;
+
+    socket.setBlocking(false);
+
+    while (true)
+    {
+        sf::Packet in;
+        sf::Socket::Status s = socket.receive(in);
+
+        if (s == sf::Socket::Status::Done)
+        {
+            std::uint8_t type = 0;
+            in >> type;
+
+            std::lock_guard<std::mutex> lock(mtx);
+
+            if (type == MSG_LOBBY)
+            {
+                std::uint8_t count = 0, needed = 0;
+                in >> count >> needed;
+                st.inLobby = true;
+                st.lobbyCount = (int)count;
+                st.lobbyNeeded = (int)needed;
+            }
+            else if (type == MSG_START)
+            {
+                std::uint8_t tr = 0, tsec = 0;
+                in >> tr >> tsec;
+
+                st.inMatch = true;
+                st.matchOver = false;
+                st.totalRounds = (int)tr;
+                st.roundTimeSec = (int)tsec;
+                st.totalPoints = 0;
+                st.showResult = false;
+
+                PushChatLine(st, "[SERVER] Match started!");
+            }
+            else if (type == MSG_QUESTION)
+            {
+                std::uint8_t r = 0, tsec = 0;
+                in >> r >> tsec >> st.question;
+
+                st.roundIndex = (int)r;
+                st.roundTimeSec = (int)tsec;
+                st.secondsLeft = (int)tsec;
+                st.showResult = false;
+
+                for (int i = 0; i < 4; i++) in >> st.options[i];
+            }
+            else if (type == MSG_ROUND_RESULT)
+            {
+                std::uint8_t r = 0, correctDisp = 0, yourC = 0;
+                std::uint16_t ptsThis = 0, totalPts = 0;
+                in >> r >> correctDisp >> yourC >> ptsThis >> totalPts;
+
+                st.showResult = true;
+                st.correctDisplayIndex = (int)correctDisp;
+                st.yourCorrect = (yourC != 0);
+                st.pointsThisRound = (int)ptsThis;
+                st.totalPoints = (int)totalPts;
+            }
+            else if (type == MSG_MATCH_OVER)
+            {
+                std::uint16_t yourTotal = 0;
+                in >> st.winner >> yourTotal >> st.leaderboard;
+
+                st.matchOver = true;
+                st.inMatch = false;
+                st.totalPoints = (int)yourTotal;
+            }
+            else if (type == MSG_CHAT)
+            {
+                std::string from, text;
+                in >> from >> text;
+                PushChatLine(st, "[" + from + "] " + text);
+            }
+            else if (type == MSG_DISCONNECT)
+            {
+                std::string who;
+                in >> who;
+                PushChatLine(st, "[SERVER] " + who + " disconnected.");
+            }
+        }
+        else if (s == sf::Socket::Status::Disconnected)
+        {
+            std::lock_guard<std::mutex> lock(mtx);
+            PushChatLine(st, "[SERVER] Disconnected from server.");
+            st.connected = false;
+            break;
+        }
+
+        sf::sleep(sf::milliseconds(10));
+    }
+}
+
+static void UpdateWindowTitle(sf::RenderWindow& window, const ClientState& st, const std::string& name)
+{
+    std::string title = "Trivia Sprint (SFML 3 TCP)";
+
+    if (!st.connected)
+    {
+        title += " | DISCONNECTED";
+    }
+    else if (st.matchOver)
+    {
+        title += " | MATCH OVER | Winner: " + st.winner + " | Your: " + std::to_string(st.totalPoints);
+    }
+    else if (!st.inMatch)
+    {
+        title += " | LOBBY " + std::to_string(st.lobbyCount) + "/" + std::to_string(st.lobbyNeeded) + " | You: " + name;
+    }
+    else
+    {
+        title += " | Round " + std::to_string(st.roundIndex + 1) + "/" + std::to_string(st.totalRounds);
+        title += " | Left " + std::to_string(st.secondsLeft) + "s";
+        title += " | Points " + std::to_string(st.totalPoints);
+        if (st.showResult)
+        {
+            title += " | " + std::string(st.yourCorrect ? "Correct" : "Wrong");
+            title += " | Correct option: " + std::to_string(st.correctDisplayIndex + 1);
+        }
+        title += " | Keys 1-4 answer, F1-F4 chat";
+    }
+
+    window.setTitle(title);
+}
+
+int main()
+{
+    std::string name = PromptName();
+
+    // SFML 3: resolve address (or use sf::IpAddress::LocalHost)
+    sf::IpAddress ip = sf::IpAddress::LocalHost;
+
+    sf::TcpSocket socket;
+    sf::Socket::Status cst = socket.connect(ip, TRIVIA_PORT, sf::seconds(5.f));
+    if (cst != sf::Socket::Status::Done)
+    {
+        std::cout << "Failed to connect to server.\n";
+        return 1;
+    }
+
+    ClientState state;
+    state.connected = true;
+
+    PushChatLine(state, "Answer: press 1/2/3/4");
+    PushChatLine(state, "Chat: F1=Good luck | F2=Nice | F3=Oops | F4=GG");
+
+    SendHello(socket, name);
+
+    std::mutex mtx;
+    std::thread netThread([&]() { NetworkPump(&socket, &state, &mtx); });
+
+    sf::RenderWindow window(sf::VideoMode({900u, 600u}), "Trivia Sprint (SFML 3 TCP)");
+    window.setFramerateLimit(60);
+
+    sf::Clock secondClock;
+
+    while (window.isOpen())
+    {
+        // SFML 3 events: pollEvent() -> optional
+        while (const std::optional<sf::Event> ev = window.pollEvent())
+        {
+            if (ev->is<sf::Event::Closed>())
+                window.close();
+
+            if (const auto* kp = ev->getIf<sf::Event::KeyPressed>())
+            {
+                int chosen = -1;
+
+                if (kp->code == sf::Keyboard::Key::Num1) chosen = 0;
+                if (kp->code == sf::Keyboard::Key::Num2) chosen = 1;
+                if (kp->code == sf::Keyboard::Key::Num3) chosen = 2;
+                if (kp->code == sf::Keyboard::Key::Num4) chosen = 3;
+
+                if (chosen != -1)
+                {
+                    std::lock_guard<std::mutex> lock(mtx);
+                    if (state.inMatch && !state.showResult && state.connected)
+                    {
+                        SendAnswer(socket, state.roundIndex, chosen);
+                        PushChatLine(state, "[YOU] Answered " + std::to_string(chosen + 1));
+                    }
+                }
+
+                if (kp->code == sf::Keyboard::Key::F1) SendCannedChat(socket, name, "Good luck!");
+                if (kp->code == sf::Keyboard::Key::F2) SendCannedChat(socket, name, "Nice!");
+                if (kp->code == sf::Keyboard::Key::F3) SendCannedChat(socket, name, "Oops!");
+                if (kp->code == sf::Keyboard::Key::F4) SendCannedChat(socket, name, "GG!");
+            }
+        }
+
+        // Countdown seconds (client-side display only)
+        if (secondClock.getElapsedTime().asSeconds() >= 1.f)
+        {
+            std::lock_guard<std::mutex> lock(mtx);
+            if (state.inMatch && state.secondsLeft > 0 && !state.showResult)
+                state.secondsLeft--;
+            secondClock.restart();
+        }
+
+        ClientState snapshot;
+        {
+            std::lock_guard<std::mutex> lock(mtx);
+            snapshot = state;
+        }
+
+        UpdateWindowTitle(window, snapshot, name);
+
+        // Draw shapes-only UI
+        window.clear(sf::Color(20, 22, 30));
+
+        sf::RectangleShape top({860.f, 80.f});
+        top.setPosition({20.f, 20.f});
+        top.setFillColor(sf::Color(30, 32, 45));
+        window.draw(top);
+
+        sf::RectangleShape qbox({860.f, 140.f});
+        qbox.setPosition({20.f, 120.f});
+        qbox.setFillColor(sf::Color(26, 28, 40));
+        window.draw(qbox);
+
+        // 4 options as boxes
+        for (int i = 0; i < 4; i++)
+        {
+            sf::RectangleShape opt({860.f, 50.f});
+            opt.setPosition({20.f, 280.f + i * 60.f});
+
+            bool highlightCorrect = snapshot.showResult && (i == snapshot.correctDisplayIndex);
+
+            if (highlightCorrect) opt.setFillColor(sf::Color(40, 90, 55));
+            else opt.setFillColor(sf::Color(35, 37, 52));
+
+            window.draw(opt);
+
+            // fake "text length bar" (since we don't draw real text)
+            float len = 0.f;
+            if (!snapshot.options[i].empty())
+                len = clampf((float)snapshot.options[i].size() * 6.f, 60.f, 780.f);
+
+            sf::RectangleShape fakeText({len, 10.f});
+            fakeText.setPosition({60.f, opt.getPosition().y + 20.f});
+            fakeText.setFillColor(sf::Color(120, 120, 150));
+            window.draw(fakeText);
+        }
+
+        // chat panel as lines
+        sf::RectangleShape chat({860.f, 80.f});
+        chat.setPosition({20.f, 520.f});
+        chat.setFillColor(sf::Color(10, 10, 14));
+        window.draw(chat);
+
+        for (std::size_t i = 0; i < snapshot.chatLines.size(); i++)
+        {
+            sf::RectangleShape line({820.f, 6.f});
+            line.setPosition({40.f, 535.f + (float)i * 8.f});
+            line.setFillColor(sf::Color(90, 90, 110));
+            window.draw(line);
+        }
+
+        window.display();
+    }
+
+    // stop thread (simple: detach; in production you'd signal + join)
+    netThread.detach();
+    return 0;
+}
+
+```
+</div>
+</div>
+
+
+
+<img src="./images/car.gif" alt="image should be here" width="850" height="550">
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+
+Fix in Visual Studio:
+
+In Solution Explorer, make sure Player.cpp is inside the project (not just in the folder).
+
+If it’s missing: Right click project → Add → Existing Item… → select Player.cpp
+
+Then rebuild.
+
+
+<hr>
+
+Hold Space → gameSpeed increases → the road + NPC move faster (it feels like your car speeds up).
+
+Release Space → gameSpeed decreases → you slow down.
+
+</div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+
+<a href="./files/CarRacing.zip">Codes</a>
+
+</div>
+</div>
+
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+</div>
+	
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/settings.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/effects.js"></script>
+<!--<script src="settings.js"></script>-->
+<!--<script src="effects.js"></script>-->
+</body>
+</html>

@@ -1,0 +1,1946 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Week 3</title>
+    <meta name="description" content="A set of slides for Machine Learning">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/effectsGreen.css">
+	<!--<link rel="stylesheet" href="./css/style.css">-->
+	<!--<link rel="stylesheet" href="./css/effects.css">-->
+
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+	</script>
+
+	<style>
+	    pre {
+            background-color: black;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+        }
+        code {
+            font-family: "Courier New", monospace;
+            color: #d63384; /* Python-style color */
+        }
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }	
+	</style>
+
+  </head>
+
+  <body onload="startTime()">
+    <div class="reveal" >
+	  <p><img src="images/midwaylogo.png"  align="left" height="6%" width="6%" style="vertical-align:left;margin:-15px 5px"><img src="images/mueagle.png"  color="white" align="left" height="4%" width="4%" style="vertical-align:center;margin:-1% 45%">
+		<div style="color:white;font-size: 20px; vertical-align:left;margin:-1% 0%" align="right" id="realtimeclock"></div></p>
+      <div class="slides">
+
+  <div class="me"></div>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown id="cover"><textarea data-template>
+
+# Games, Video Games, and How We Design Them
+
+<hr>
+
+<br>
+
+Xinxing Wu
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline
+
+[<p class="hover-underline-animation">Games and Play</p>](#/ch1)
+
+[<p class="hover-underline-animation">What makes video games special?</p>](#/ch2)
+
+[<p class="hover-underline-animation">Designing and Developing (player-centric design)</p>](#/ch3)
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline (Cont.)
+
+[<p class="hover-underline-animation">Design process, prototyping, documents, teamwork</p>](#/ch4)
+
+[<p class="hover-underline-animation">Lab</p>](#/ch5)
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+
+## Goal
+
+<div id="shadebox-neon" class="shadebox neon">
+
+By the end, you can:
+
+- Explain “game” vs “play” vs “video game”
+- Identify core elements: goals, rules, actions, challenges, endings
+- Spot fairness + symmetry (and why they matter)
+- Describe *why* games entertain people (several different reasons)
+</div>
+
+</textarea></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+
+## Goal (cont.)
+
+<div id="shadebox-neon" class="shadebox neon">
+
+By the end, you can:
+- Use player-centric thinking (design for <spanGREEN>the player</spanGREEN>, <spanRED>not</spanRED> yourself)
+- Describe a video game’s structure (modes + menus) with a flowboard
+- Write a “mini” design doc: concept + core mechanics + UI + flow</div>
+
+</textarea></section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch1" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Games and Play</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Warm-up: Is it a game?</div>
+  <div class="definition-com-shadebox">
+<div style="width: 800px;"></div>
+
+Decide “game / not a game” and *why*:
+- Hide-and-seek
+- Playing with LEGO
+- Watching a movie
+- Rock–paper–scissors
+- A jigsaw puzzle
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Hint</div>
+  <div class="definition-pro-Y-shadebox">
+
+Think about rules, goals, decisions, and endings.
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+
+- Game = you have an objective and rules that create a challenge (often with win/lose or success/fail).
+
+- Not a game = mostly open-ended play or entertainment without a clear goal structure.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Game vs. Not Game</div>
+  <div class="definition-pro-Y-shadebox">
+
+Hide-and-seek — Game
+
+- Clear rules (hide, seek, counting, boundaries).
+
+- Clear objective (find / avoid being found).
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+Playing with LEGO — Not a game (usually)
+
+- Often open-ended “free play” with <spanRED>no</spanRED> fixed goal or win condition.
+
+- Can become a game if you add goals/rules (e.g., “build the tallest tower in 2 minutes,” “only use 20 bricks,” competitions).
+</div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Game vs. Not Game</div>
+  <div class="definition-pro-Y-shadebox">
+
+Watching a movie — Not a game
+
+- Mainly passive entertainment.
+
+- <spanRED>No</spanRED> meaningful rules/objective for the viewer (unless you turn it into a challenge like a quiz/bingo, then it becomes a game-like activity).
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+Rock–paper–scissors — Game
+
+- Strict rules and clear outcomes.
+
+- Objective: win the round(s).
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Game vs. Not Game</div>
+  <div class="definition-pro-Y-shadebox">
+
+A jigsaw puzzle — Game (often treated as one)
+
+- Objective: complete the picture.
+
+- Constraints/rules: pieces must interlock correctly; the challenge is solving it.
+
+Usually no opponent, but still has a clear goal and measurable completion.
+
+</div>
+</div>
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+> What are the features of a game
+
+
+<a href="https://xinxingwu-ksu.github.io/projects/3_Dinosaur/index.html" target="_blank">Game example</a>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Play vs. Game</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+- **Play**: free, exploratory, often just for enjoyment
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+- **Game**: *organized play* with structure  
+  usually includes:
+  - a goal (or goals)
+  - rules/constraints
+  - actions/decisions
+  - challenges
+  - an ending (or at least a “stop condition”)
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Pretending + the “magic circle”</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+When we play a game, we *agree* to enter a special space:
+- “In here, these rules matter.”
+- “In here, we pretend this is meaningful.”
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+Examples:
+- Chess: a wooden piece “is” a king
+- Tag: the “it” player “can catch” you
+- Video games: an on-screen avatar “is you”
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">A working definition of a game</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+A **game** is play that:
+- has a **goal**
+- operates under **rules**
+- creates **challenges**
+- gives players **actions** to respond
+- moves toward **outcomes** (win/lose/score/finish)
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Essential element 1: Goals (what you’re trying to achieve)</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 1100px;"></div>
+
+Examples:
+- Tic-tac-toe: make 3 in a row
+- Mario level: reach the flag
+- Puzzle: fill the grid correctly
+- Basketball: score more points
+
+**Design tip:** Goals should be clear in the first minute.
+</div>
+</div>
+
+<a href="https://xinxingwu-ksu.github.io/projects/4_TicTacToe_AI/index.html" target="_blank">Game example</a>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Essential element 2: Rules (what you can/can’t do)</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 1000px;"></div>
+
+Rules create the “interesting limits.”
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+Example (Tag):
+- You may run anywhere inside the playground
+- You may not leave the boundary
+- If you’re touched, you become “it”
+
+**Design tip:** Rules are *not* just restrictions—rules create strategy.
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Essential element 3: Actions (what players can do)</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 1000px;"></div>
+
+If players have no meaningful actions, it’s not much of a game.
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+Examples:
+- Move / jump / shoot / trade / build / choose dialogue
+- “Spend a turn to…” actions in tabletop games
+
+**Design tip:** Every main action should have a reason to exist.
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Essential element 4: Challenges (why it isn’t automatic)</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 1000px;"></div>
+
+Challenges can be:
+- enemies, obstacles, puzzles
+- time pressure
+- resource limits (health, ammo, money)
+- other players
+
+**Design tip:** Great games match challenge level to player skill.
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Essential element 5: Endings + outcomes</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 1000px;"></div>
+
+Many games include:
+- a clear end (match ends)
+- a win/lose state
+- or a score/grade
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+Examples:
+- Chess: checkmate
+- Racing: finish line
+- Endless runner: ends when you crash (but “endless” loop)
+
+</div>
+</div>
+
+<a href="https://xinxingwu-ksu.github.io/projects/3_CarRacing/index.html" target="_blank">Game example</a>
+
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Gameplay (what players actually do)</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 1000px;"></div>
+
+**Gameplay = challenges + actions (in a loop).**
+
+A simple gameplay loop:
+
+- Game shows a situation  
+- Player decides an action  
+- Game responds (success/failure/feedback)  
+- Repeat
+</div>
+</div>
+
+<a href="https://xinxingwu-ksu.github.io/projects/3_Memory/index.html" target="_blank">Game example</a>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Example: Gameplay loop</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+**Flappy Bird**
+- Challenge: gaps between pipes
+- Action: tap (flap)
+- Feedback: you pass / you crash
+- Loop repeats every second
+
+**Why it works:** tiny action + immediate feedback + rising tension.
+
+</div>
+</div>
+
+<a href="https://xinxingwu-ksu.github.io/projects/3_FlappyBird/index.html" target="_blank">Game example</a>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Discussion</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+Pick ONE game you know well and fill this:
+- Goal:
+- Rules:
+- Main actions:
+- Challenges:
+- How it ends:
+
+(Share with a partner.)
+</div>
+</div>
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+<div id="roundbox">
+
+> Fairness, symmetry, and ways to play together
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Fairness</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+A game can be “hard” and still feel fair if:
+- players <spanGREEN>understand</spanGREEN> the rules
+- results <spanGREEN>connect</spanGREEN> to player decisions
+- the game <spanGREEN>doesn’t</spanGREEN> punish randomly without warning
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+Examples:
+- Fair: tough boss with learnable patterns
+- Unfair-feeling: instant death trap with no hint
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Symmetry vs asymmetry</div>
+  <div class="definition-pro-Y-shadebox">
+
+- **Symmetric**: both sides have the same abilities/resources  
+ 
+<div id="roundbox">
+ Example: chess, checkers
+</div> 
+
+- **Asymmetric**: sides differ (roles, powers, information)  
+  
+<div id="roundbox">
+  Example: 1 monster vs 4 survivors, “spy vs guards”
+</div> 
+
+
+**Design tip:** Asymmetry is exciting but harder to balance.
+
+
+<a href="https://xinxingwu-ksu.github.io/projects/3_Fighting/index.html" target="_blank">Link 1</a>
+
+<a href="https://xinxingwu-ksu.github.io/projects/3_StarCraft/index.html" target="_blank">Link 2</a>
+
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Competition and cooperation</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+Common modes:
+- 1v1 (duel)
+- free-for-all
+- teams vs teams
+- co-op vs environment
+- solo
+
+**Design tip:** Mode changes what “fun” means.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Mini-activity: Make a game more fair</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+Take rock–paper–scissors and modify ONE thing:
+- add a new option?
+- change scoring?
+- add a resource (tokens)?
+- best-of series?
+
+Share the change + why it improves fairness/strategy.
+</div>
+</div>
+
+
+
+<iframe src="./files/rock_aper_scissors/index.html" height="600" width="800" title="Iframe Example"></iframe>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Mini-activity: Make a game more fair</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+Modification: Add a Resource (Tokens)
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+Each player starts with 3 tokens. Before revealing their move each round, a player may spend 1 token to “shield” their choice.
+
+- If you lose the round but used a shield → you don’t lose.
+
+- If you win, shield does nothing (token is still spent).
+
+- When you run out of tokens, you play normal RPS.
+</div>
+</div>
+
+
+
+<div style="width: 800px;"></div>
+
+> Why this improves fairness & strategy
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Reduces pure luck</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Classic RPS is:
+
+> simultaneous + symmetric + no memory = high randomness
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+The shield introduces:
+
+- risk management
+
+- timing decisions
+
+- resource scarcity
+
+So outcomes depend less on raw guessing.
+</div>
+</div>
+
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Adds game theory depth</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Now each round has two layers of strategy:
+
+- <spanBYMix>What move</spanBYMix> do I play?
+
+- Is this round <spanBYMix>important enough to spend a token</spanBYMix>?
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+This creates:
+
+- bluffing (“<spanGREEN>He probably won’t shield twice in a row…</spanGREEN>”)
+
+- mind games
+
+- long-term planning
+</div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Prevents snowball unfairness</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+In many games, early losses feel fatal.
+
+Here:
+
+- A weaker player can survive bad luck early.
+
+- But can’t spam shields forever → still balanced.
+</div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">How to play</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Setup
+
+- Both players: 3 tokens.
+
+- Play to 5 wins.
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+Each round
+
+- Both secretly choose:
+
+	- Rock / Paper / Scissors
+
+	- And optionally: use 1 token or not
+
+- Reveal simultaneously.
+</div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">How to play (cont.)</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+- Apply RPS result.
+
+- If someone lost but used token → <spanRED>ignore</spanRED> loss.
+</div>
+</div>
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch2" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">What makes video games special?</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Video games vs non-video games</div>
+  <div class="definition-com-shadebox">
+
+A video game uses a computer to:
+
+- run rules <spanBYMix>reliably</spanBYMix>
+- simulate a world <spanBYMix>quickly</spanBYMix>
+- give <spanBYMix>instant</spanBYMix> feedback (sound/graphics)
+- manage <spanBYMix>hidden</spanBYMix> information (fog of war, AI states)
+- scale <spanBYMix>complexity</spanBYMix> (huge maps, many entities)
+   </div>
+</div>
+
+<a href="https://xinxingwu-ksu.github.io/projects/3_StarCraft/index.html" target="_blank">Link</a>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">The computer can play many roles</div>
+  <div class="definition-com-shadebox">
+<div style="width: 800px;"></div>
+
+Examples:
+- **Referee:** enforces rules (no arguments)
+- **Opponent:** AI enemies
+- **World simulator:** physics, economies, weather
+- **Storyteller:** cutscenes, dialogue, branching
+- **Stage manager:** difficulty pacing, spawning
+   </div>
+</div>
+
+<a href="https://xinxingwu-ksu.github.io/projects/3_StarCraft/index.html" target="_blank">Game example</a>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Example</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+**Chess (tabletop)**
+- players enforce rules
+- setup is manual
+- no built-in animation or sound
+
+**Chess (video game)**
+- legal moves highlighted
+- timers + matchmaking
+- analysis + replays
+- bots for practice
+
+Same core rules, but <spanBYMix>different</spanBYMix> experience.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Games entertain in multiple ways (<spanGREEN>not just “winning”</spanGREEN>)</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 1050px;"></div>
+
+Different players enjoy different “fun types,” such as:
+- emotion (tension, relief, pride)
+- immersion (feeling “inside”)
+- novelty/surprise (new situations)
+- learning/mastery (getting better)
+- creativity (building, experimenting)
+- role-play (being someone else)
+- socializing (friends, teamwork)
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Example: same game, different fun</div>
+  <div class="definition-pro-Y-shadebox">
+
+**Minecraft**
+- creativity: building
+- mastery: surviving / speed-running
+- social: servers with friends
+- exploration: new biomes
+
+**Design lesson:** know which fun you’re designing for.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Serious games (games with goals beyond entertainment)</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 1100px;"></div>
+
+Games can be designed for:
+- 📍 training (skills practice)
+- 📢 education (concept learning)
+- health (rehab, habit change)
+- public policy / awareness
+
+They still need good gameplay, <spanRED>or</spanRED> people won’t engage.
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+
+- Games are structured play: <spanGREEN>goals + rules + actions + challenges + outcomes</spanGREEN>
+- Gameplay is the <spanGREEN>repeating</spanGREEN> decision/feedback loop
+- Fairness + symmetry affect how players *feel*
+- Video games add simulation, feedback, and complexity
+- “Fun” is plural — design for a specific kind of fun
+</div>
+</div>
+
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch3" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Designing and Developing (player-centric design)</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Player-centric design</div>
+  <div class="definition-com-shadebox">
+
+- Design is <spanRED>not</spanRED> “what I like.” ❌
+
+- Design is: “what helps *my intended player* have a great experience.” ✅
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+
+Key habit:
+- mentally step into the player’s shoes ❌
+- test design decisions against that player ✅
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Design rule</div>
+  <div class="definition-pro-Y-shadebox">
+
+The player is not your enemy.
+Your job is to entertain—not to “beat” the player.
+
+- **Bad sign:** you feel proud that players “suffer.” ❌
+
+- **Good sign:** you feel curious about what players learn and feel. ✅
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Concept elements</div>
+  <div class="definition-pro-Y-shadebox">
+
+Before you go deep, decide:
+- target audience
+- genre
+- player role (who are you in the game?)
+- the “dream” / promise (what experience are you selling?)
+
+<spanRED>Once you move forward, don’t keep changing these weekly</spanRED>
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Abstract vs representational games</div>
+  <div class="definition-pro-Y-shadebox">
+
+- **Abstract:** rules-first, minimal fictional world  
+	- Example: Tetris
+
+- **Representational:** world + role-play + expectations  
+	- Example: racing, sports, RPGs
+
+**Design task:** Decide what the player is pretending to be (if anything).
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Determining the player’s role</div>
+  <div class="definition-pro-Y-shadebox">
+
+Examples:
+- athlete, general, dancer, explorer, shop owner, detective
+Sometimes roles shift:
+- sports game: player → coach → manager
+
+**Design tip:** If you can’t explain the role in 1 sentence, simplify.
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Two big components</div>
+  <div class="definition-pro-Y-shadebox">
+
+- **Core mechanics** (the math/rules that run the world)
+- **User interface (UI)** (what the player sees/hears/does)
+
+Everything else (levels, story, art) connects to these.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Core mechanics = the “engine of meaning”</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+Think of it like:
+- numbers + rules + probabilities
+- how the game state changes
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+Examples:
+- health decreases when hit
+- money increases when you sell items
+- jumping follows gravity rules
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Tiny core-mechanics example</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+“Coin Dash”
+- Player speed: 200 px/s
+- Coins: +1 score
+- Timer: 30 seconds
+- Win: score ≥ 20
+
+This is already a playable *model*.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">From model → code</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+Game loop idea:
+- read input
+- update positions
+- check collisions
+- update score/time
+- draw screen
+
+You can build a prototype with placeholder art.
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">The UI is not “just menus”</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+UI is the player’s *experience* of the game via:
+- visuals (HUD, icons, animations)
+- audio (music, feedback sounds)
+- text (instructions, dialogue)
+- controls (keyboard/controller/touch)
+
+**Design tip:** UI can hide or reveal info to shape emotion.
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">UI example (platformer)</div>
+  <div class="definition-pro-Y-shadebox">
+
+What you show changes player behavior:
+- hearts = health (risk)
+- timer = urgency
+- coins = reward
+- mini-map = exploration support
+
+Remove the mini-map → exploration feels harder/more mysterious.
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Interaction model (how the player exists in the world)</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 950px;"></div>
+
+Common beginner-friendly examples:
+- **Avatar-based:** you control one character (Mario)
+- **God-view / indirect:** you command units (RTS)
+- **Multi-entity control:** you control a team (RPG party)
+
+Pick one early because it affects everything (UI, camera, mechanics).
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Camera model (how the world is shown)</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+Common camera styles:
+- side view (platformer)
+- top-down (many RPGs)
+- isometric (strategy/action-RPG)
+- first-person (FPS)
+- third-person (action/adventure)
+
+Camera choice changes what’s easy/hard.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">A video game is always in a “mode”</div>
+  <div class="definition-pro-Y-shadebox">
+
+Two big categories:
+- **Gameplay modes:** player actions affect the game world
+- **Shell menus/screens:** settings, save/load, title, credits, pause menu (often)
+
+This “mode map” is the structure of the game.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Example: racing game modes</div>
+  <div class="definition-pro-Y-shadebox">
+
+Gameplay modes:
+- driving
+- pit stop
+
+Shell:
+- title screen
+- main menu
+- options
+- pause menu
+- results screen
+
+**Design detail:** define when and why the game switches modes.
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Flowboard</div>
+  <div class="definition-pro-Y-shadebox">
+
+A **flowboard** is like:
+- a flowchart (mode transitions)
+- plus storyboard-like screen sketches (what the player sees)
+
+It documents structure clearly for a team.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Flowboard example</div>
+  <div class="definition-pro-Y-shadebox">
+
+```
+[Title Screen]
+     |
+     v
+[Main Menu] ---> [Options]
+     |
+     v
+[Race Gameplay] ---> [Pause Menu]
+     |                   |
+     v                   v
+[Results Screen] <--- [Resume]
+
+```
+
+
+<a href="https://xinxingwu-ksu.github.io/projects/3_CarRacing/index.html" target="_blank">Game example</a>
+
+
+</div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch4" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Design process, prototyping, documents, teamwork</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Iterative reality</div>
+  <div class="definition-com-shadebox">
+
+Big games <spanRED>cannot</spanRED> be <spanRED>fully</spanRED> designed first and coded later.
+Modern design is iterative:
+- prototype
+- test
+- refine
+- repeat
+
+But not everything should change forever.
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">3 major stages of the design process</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+- **Concept stage**: decide what the game *is* (doesn’t change much later)
+- **Elaboration stage**: add details, prototype, playtest, refine
+- **Tuning stage**: feature-lock; balance and polish only
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Concept stage — what you produce</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+Typical outputs:
+- one-sentence pitch
+- target audience + platform
+- core “promise” (dream)
+- basic gameplay loop
+- rough feature list (what’s in / out)
+
+Cut features early, not late.
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Elaboration stage — what you do</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+This is where most designing happens:
+- refine mechanics
+- plan levels
+- prototype and playtest
+- update UI ideas
+- answer team questions
+
+**Key skill:** turn vague ideas into specific decisions.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Tuning stage — what you are allowed to do</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+At tuning:
+- no new features
+- small adjustments only:
+  - difficulty
+  - pacing
+  - numbers (damage, speed, costs)
+  - clarity (UI feedback)
+
+**Design mantra:** polish is often subtractive.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Prototyping (why it matters)</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+Prototype = <spanGREEN>quick test of an idea</spanGREEN>.
+
+- fast
+- cheap
+- focused on learning
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+Good practice:
+
+- test “core fun” before making lots of content
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Prototype warning</div>
+  <div class="definition-pro-Y-shadebox">
+
+- <spanRED>Don’t</spanRED> assume prototype code/art becomes final.
+- Prototype work <spanGREEN>is allowed to be messy</spanGREEN> so you can learn quickly.
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Small sprint thinking</div>
+  <div class="definition-pro-Y-shadebox">
+
+Many teams use short “sprints” (1–4 weeks):
+- build a working version
+- test it
+- adjust plans
+- repeat
+
+Even solo developers can benefit from “small sprint thinking”
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Game idea vs design decision</div>
+  <div class="definition-pro-Y-shadebox">
+
+- Idea: “Dragons protect eggs.”
+
+	- Decision: exact triggers, distances, timing, behaviors.
+
+	- Design documents turn “cool ideas” into buildable instructions.
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">🚩 Why write documents?</div>
+  <div class="definition-pro-Y-shadebox">
+
+Docs help you:
+- record decisions (avoid “we remembered differently”)
+- turn general ideas into specifics
+- communicate to a team
+- support scheduling and milestones
+- persuade funders/stakeholders (if needed)
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Common types of design documents</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+- High concept (2–4 pages pitch)
+- Game treatment (brochure-like expanded pitch)
+- Character design doc
+- World design doc
+- Story / level progression doc
+- UI design doc
+- Flowboard
+- Game script (“bible” for rules + core mechanics)
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">High concept (what it is)</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+Short pitch document:
+- game elevator pitch
+- target audience/platform
+- what makes it special
+- why it will sell / why it matters
+
+**Not** the full build plan.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Game treatment (what it is)</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+A bigger “sell the vision” doc:
+- summary of the experience
+- key features
+- style and tone
+- a bit of production/business detail
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Character + world docs (what they do)</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+- Character doc: appearance + moveset + personality background
+- World doc: map, aesthetics, emotional tone, ambient sounds
+
+These guide art/audio/level work.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">UI design doc</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+For each mode/menu:
+- screen layout sketch
+- camera behavior
+- controls (inputs)
+- audio feedback
+- usability notes
+- on-screen text list
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Game script (“rules bible”)</div>
+  <div class="definition-pro-Y-shadebox">
+
+Explains rules + core mechanics so clearly that:
+- someone could *theoretically* play it as a tabletop version
+
+It should not be “how to code it,” just how it works.
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Typical roles you may interact with</div>
+  <div class="definition-pro-Y-shadebox">
+
+- Producer / PM (schedule, priorities, constraints)
+- Lead programmer (technical feasibility)
+- Artists + animators
+- Audio
+- QA / testers
+- Level designers / writers / UI designers
+
+**Design tip:** communicate early; surprises are expensive.
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">One leadership rule</div>
+  <div class="definition-pro-Y-shadebox">
+
+- Avoid “design by committee.”
+- Someone must have final design authority, or decisions never finish.
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">💥Final recap: what you can do now</div>
+  <div class="definition-pro-Y-shadebox">
+
+You can now:
+- describe a game using goals/rules/actions/challenges/outcomes
+- analyze fairness + symmetry
+- explain video-game advantages (simulation + feedback + complexity)
+- design with player-centric thinking
+- model simple core mechanics with numbers
+- map modes/menus in a flowboard
+- outline the main design stages + documents
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Next: Project briefing (you will do this!)</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+You’ll create:
+- a mini game concept
+- a simple core mechanics model
+- a UI sketch
+- a flowboard showing modes/menus
+- a short playtest plan
+</div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch5" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Lab</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Materials</div>
+  <div class="definition-com-shadebox">
+
+<a href="./files/Chapter 1. Games and Video Games.pdf" target="_blank">Chapter 1. Games and Video Games</a>
+
+<a href="./files/Chapter 2. Designing and Developing.pdf" target="_blank">Chapter 2. Designing and Developing</a>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Project Assignment 1</div>
+  <div class="definition-com-shadebox">
+
+Project Assignment 1 (in-class / guided) — Mini Game Design + Paper Prototype
+
+Goal: Use learnt terminology to design a tiny game that is playable today (paper or very rough digital).
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">What to submit</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+Work in pairs (or solo if needed). Submit a single PDF (2–4 pages) that includes:
+
+- Game overview ( 5–7 sentences)
+
+	- Title + genre (abstract or representational)
+
+	- Intended player (who is it for?)
+
+	- Player’s role (if representational)
+
+	- The “dream/promise” (what experience are you offering?)
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">What to submit (cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+Work in pairs (or solo if needed). Submit a single PDF (2–4 pages) that includes:
+
+- Game definition checklist
+
+	- Goal(s)
+
+	- Rules (5–10 bullet rules)
+
+	- Actions (3–6 main actions)
+
+	- Challenges (2–5)
+
+	- Ending conditions (win/lose/score/time)
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">What to submit (cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+Work in pairs (or solo if needed). Submit a single PDF (2–4 pages) that includes:
+
+- Core mechanics model (numbers!) Provide at least 6 explicit numeric rules. Examples:
+
+	- HP = 3 hearts
+
+	- timer = 60 seconds
+
+	- coin = +1 point
+
+	- enemy speed = 120 px/s
+
+	- trap chance = 20%
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">What to submit (cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+Work in pairs (or solo if needed). Submit a single PDF (2–4 pages) that includes:
+
+- UI sketch (one screen). Hand-drawn is fine. Label:
+
+- what information is shown (score/health/time/etc.)
+
+- what feedback happens (sound/flash/message)
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">What to submit (cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+Work in pairs (or solo if needed). Submit a single PDF (2–4 pages) that includes:
+
+Structure (flowboard). A flowboard (can be ASCII or boxes/arrows) showing:
+
+- title screen → menu → gameplay → results
+
+- any pause/options screens
+
+- when and why mode switches happen
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">What to submit (cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+Playtest plan (short)
+
+- 3 questions you will ask testers
+
+- 2 “success metrics” (e.g., “players understand the goal in <60 seconds”)
+</div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Reference Answer (example solution) + explanations</div>
+  <div class="definition-com-shadebox">
+<div style="width: 950px;"></div>
+
+High concept (example)
+
+- Title: Lantern Dash
+- Type: Representational (light exploration + mild tension)
+- Intended player: casual players who like short challenge rounds
+- Role: you are a night courier delivering lanterns in a foggy village
+- Dream/promise: “Feel clever and brave—deliver fast without getting lost.”
+- Core hook: visibility is limited; you must manage light to navigate.
+
+> Why this matches player-centric design: the experience is built around what the player should feel (brave/clever), not around punishing them randomly.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Reference Answer (example solution) + explanations</div>
+  <div class="definition-com-shadebox">
+<div style="width: 950px;"></div>
+
+Game definition checklist
+
+- Goal: Deliver 5 lanterns before time runs out.
+
+- Rules (10):
+
+	- Round lasts 90 seconds.
+
+	- Map is a simple grid of streets (paper tiles).
+
+	- Player starts in the center with 3 light charges.
+
+	- Moving to an adjacent tile costs 1 step.
+
+	- You can “use lantern” to reveal nearby tiles.
+
+	- Fog hides hazards until revealed.
+   </div>
+</div>
+	
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Reference Answer (example solution) + explanations (cont.)</div>
+  <div class="definition-com-shadebox">
+<div style="width: 1100px;"></div>
+
+- Rules (10):
+
+	- If you step on a hazard, lose 1 HP.
+
+	- HP starts at 3; at 0 you lose.
+
+	- Each delivery gives +1 point (need 5).
+
+	- You may “rest” once per game to regain 1 light charge (costs 5 seconds).
+
+- Actions: move, use lantern, deliver, rest, pause/check map
+
+- Challenges: fog navigation, hazards, time pressure, limited light
+
+- Endings: Win if deliveries ≥ 5 before time ends; lose if time ends or HP = 0.
+   </div>
+</div>
+
+
+
+> Why this is a “game”: it has goals, rules, actions, challenges, and clear endings/outcomes.
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Reference Answer (example solution) + explanations</div>
+  <div class="definition-com-shadebox">
+<div style="width: 1000px;"></div>
+
+Core mechanics model (numbers)
+
+- Time limit: 90 s
+
+- HP: 3
+
+- Light charges: start 3, max 4
+
+- Reveal radius: 1 tile around player
+
+- Hazard density: 6 hazards placed among 25 tiles (24%)
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Reference Answer (example solution) + explanations</div>
+  <div class="definition-com-shadebox">
+<div style="width: 1000px;"></div>
+
+- Rest action: +1 light, costs 5 s
+
+- Delivery count to win: 5
+
+- Movement speed (paper version): 1 tile per move
+
+> Explanation: explicit numbers make the design testable and tunable (you can change hazard density, time limit, or light charges to adjust difficulty without adding new features).
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Reference Answer (example solution) + explanations</div>
+  <div class="definition-com-shadebox">
+<div style="width: 1000px;"></div>
+
+UI sketch (described)
+
+- Top-left: HP (♥♥♥)
+- Top-right: Time (90 → 0)
+- Bottom-left: Light charges (🔆🔆🔆)
+- Center: player icon + visible tiles
+
+- Feedback:
+
+	- On hazard: red X + “Ouch!” + beep
+
+	- On delivery: “Delivered!” + chime
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Reference Answer (example solution) + explanations</div>
+  <div class="definition-com-shadebox">
+<div style="width: 1000px;"></div>
+
+Why UI matters: it shapes emotion (urgency via timer, risk via HP, strategy via light charges).
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Reference Answer (example solution) + explanations</div>
+  <div class="definition-com-shadebox">
+<div style="width: 1000px;"></div>
+
+Flowboard (structure)
+
+```
+[Title Screen]
+|
+v
+[Main Menu] ---> [Options]
+|                   |
+v                   v
+[Gameplay] <--- [Pause Menu]
+|
+v
+[Results Screen] ---> [Main Menu]
+```
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Reference Answer (example solution) + explanations (cont.)</div>
+  <div class="definition-com-shadebox">
+<div style="width: 1100px;"></div>
+
+Mode switches:
+
+- Main Menu → Gameplay: player presses “Start”
+
+- Gameplay → Pause: player presses “P”
+
+- Gameplay → Results: win (deliveries=5) or lose (HP=0 or time=0)
+
+Why this is good structure: it clearly separates shell menus/screens from gameplay and makes transitions explicit.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Reference Answer (example solution) + explanations</div>
+  <div class="definition-com-shadebox">
+<div style="width: 1000px;"></div>
+
+Playtest plan
+
+Ask testers:
+
+- Did you understand your goal within 60 seconds?
+
+- Did hazards feel fair (avoidable) or random (unfair)?
+
+- Was the light resource interesting or annoying?
+
+Success metrics:
+
+- 80% of testers can explain goal + main actions after 1 minute
+
+- Average score: 3–6 deliveries (not always win/lose instantly)
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Reference Answer (example solution) + explanations</div>
+  <div class="definition-com-shadebox">
+<div style="width: 1000px;"></div>
+
+Tuning knobs:
+
+- If too hard: reduce hazards to 4, increase light to 4, increase time to 110
+
+- If too easy: increase hazards to 7, reduce light to 2
+   </div>
+</div>
+
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+</div>
+	
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/settings.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/effects.js"></script>
+<!--<script src="settings.js"></script>-->
+<!--<script src="effects.js"></script>-->
+</body>
+</html>

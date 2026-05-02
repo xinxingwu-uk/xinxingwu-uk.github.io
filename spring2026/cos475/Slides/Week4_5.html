@@ -1,0 +1,2089 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Week 4-5</title>
+    <meta name="description" content="A set of slides for Machine Learning">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/effectsGreen.css">
+	<!--<link rel="stylesheet" href="./css/style.css">-->
+	<!--<link rel="stylesheet" href="./css/effects.css">-->
+
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+	</script>
+
+	<style>
+	    pre {
+            background-color: black;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+        }
+        code {
+            font-family: "Courier New", monospace;
+            color: #d63384; /* Python-style color */
+        }
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }	
+	</style>
+
+  </head>
+
+  <body onload="startTime()">
+    <div class="reveal" >
+	  <p><img src="images/midwaylogo.png"  align="left" height="6%" width="6%" style="vertical-align:left;margin:-15px 5px"><img src="images/mueagle.png"  color="white" align="left" height="4%" width="4%" style="vertical-align:center;margin:-1% 45%">
+		<div style="color:white;font-size: 20px; vertical-align:left;margin:-1% 0%" align="right" id="realtimeclock"></div></p>
+      <div class="slides">
+
+  <div class="me"></div>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown id="cover"><textarea data-template>
+
+# Game Design Foundations: 
+
+> Genres • Players • Platforms
+
+<hr>
+
+<br>
+
+Xinxing Wu
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline
+
+[<p class="hover-underline-animation">Major Game Genres</p>](#/ch1)
+
+[<p class="hover-underline-animation">Understanding Your Player</p>](#/ch2)
+
+[<p class="hover-underline-animation">Understanding Your Machine</p>](#/ch3)
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline (Cont.)
+
+[<p class="hover-underline-animation">Putting it together</p>](#/ch4)
+
+[<p class="hover-underline-animation">Lab</p>](#/ch5)
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+
+## Goal
+
+<div id="shadebox-neon" class="shadebox neon">
+
+- A **genre** (what challenges players face),  
+- A **target player** (what feelings/motivations they seek),  
+- A **platform/machine** (where/how they play).
+</div>
+
+</textarea></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch1" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Basic</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Ground rule</div>
+  <div class="definition-com-shadebox">
+
+**A “good idea” becomes a “good game” only when:**
+- The **genre’s challenges** match
+- The **player’s motivations**
+- On the **machine’s constraints**
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Why genres exist</div>
+  <div class="definition-pro-Y-shadebox">
+
+Genres help developers/sellers/players **describe gameplay** quickly  
+without a long explanation.
+
+But games can be hybrids, and categories evolve over time.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Genre (games) vs genre (movies/books)</div>
+  <div class="definition-pro-Y-shadebox">
+
+In movies/books, “genre” is about **content** (romance, spy, etc.)
+
+In games, “genre” is about **challenges** the player faces,  
+**regardless of setting/content**.
+
+Example:
+A shooter can be Old West, sci-fi, or fantasy — still a shooter.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Definition!</div>
+  <div class="definition-pro-Y-shadebox">
+
+**Genre = category of games characterized by particular kinds of challenge,**  
+
+**regardless of setting/game-world content.**
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Hybrids are common now</div>
+  <div class="definition-pro-Y-shadebox">
+
+Many modern games blend genres:
+- Combine multiple challenge types in one mode
+- Or have multiple modes (each with a different challenge)
+
+Mini-example:
+One mode is strategic planning, another mode is real-time combat.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Subgenres (why they matter)</div>
+  <div class="definition-pro-Y-shadebox">
+
+Genres can be broad, so we use **subgenres** to be more specific.
+
+Example (shooters):
+- arena shooter, tactical shooter, open-world shooter, rail shooter…
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Quick designer tip</div>
+  <div class="definition-pro-Y-shadebox">
+
+When choosing a genre:
+
+- Find games similar to your idea  
+- Read what people say about them  
+- Learn what players **expect** from that genre
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">The “classic” major genres we’ll learn</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+- Shooter
+- Action / Arcade (Platformers, Fighting, etc.)
+- Strategy
+- Role-Playing Games (RPG)
+- Sports
+- Vehicle Simulations
+- Construction & Simulation (CMS)
+- Adventure
+- Puzzle
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Shooter: the core idea</div>
+  <div class="definition-pro-Y-shadebox">
+
+Player takes action **at a distance** using a ranged weapon.  
+**Aiming** is a key skill.
+
+Often: player attention splits between  
+- area around the avatar  
+- targets
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">2D Shooters (top-down or side-view)</div>
+  <div class="definition-pro-Y-shadebox">
+
+Common patterns:
+- Many enemies (sometimes “shoot-’em-ups”)
+- Player fires a lot; ammo often not tracked
+- Weapons usually only damage “valid targets”
+
+**Simple beginner example (lab-sized):**
+“Space Cleanup”  
+- Top-down ship  
+- Asteroids/enemies drift in  
+- Player shoots to clear screen  
+- Score increases per hit
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">3D Shooters (first-person or third-person)</div>
+  <div class="definition-pro-Y-shadebox">
+
+Often more “realistic” feeling:
+- gravity (mostly), sound distance, shadows, collisions, etc.
+
+Perspective:
+- FPS (first-person)  
+- third-person  
+- sometimes both
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">3D Shooters (cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+
+**Simple beginner example (concept only):**
+“Hallway Laser”
+- Player moves through a simple corridor
+- Targets pop up
+- Limited ammo forces careful aiming
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Shooter design checklist</div>
+  <div class="definition-pro-Y-shadebox">
+
+- What is the **targeting skill**? (fast aim? careful aim?)
+- Is ammo limited? If yes, why is that fun?
+- What does the player watch: **avatar safety** + **target**?
+- What’s the basic win condition? (survive? clear wave? boss?)
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Action games (what makes them “action”)</div>
+  <div class="definition-pro-Y-shadebox">
+
+Action games emphasize **physical challenges**:
+- timing, reaction, movement control
+
+They may include:
+- puzzles, races, conflict among small number of characters
+Often include simple collecting (economic-lite)
+Usually few strategic/conceptual challenges
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Arcade games</div>
+  <div class="definition-pro-Y-shadebox">
+
+Arcade games were built around a coin model:
+- often “unwinnable”  
+- get harder until you lose  
+- pay more to continue
+
+Arcade pacing = fast + escalating difficulty.
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Platform Games</div>
+  <div class="definition-pro-Y-shadebox">
+
+Key features:
+- avatar moves through vertically exaggerated world
+- lots of jumping between platforms
+- unrealistic physics common (midair direction change)
+- hazards: pits, spikes, enemies
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Platform Games (cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+
+**Example:**
+
+“Jump School”
+- 10 platforms + 3 hazards  
+- reach the flag  
+- collect 5 coins for bonus
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Fighting Games</div>
+  <div class="definition-pro-Y-shadebox">
+
+Focus: **reaction time + timing**
+- hand-to-hand combat (often exaggerated)
+- can be 1v1 arena or “brawler” vs many
+
+**Simple beginner example:**
+
+“Two-Button Duel”
+- Button A = punch
+- Button B = block
+- If punch hits, -1 HP
+- First to 0 loses
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Action design checklist</div>
+  <div class="definition-pro-Y-shadebox">
+
+- What exact physical skill is tested? (timing? precision? rhythm?)
+- Is the physics “realistic” or “cartoony”? Choose on purpose.
+- How does difficulty rise? (faster hazards? tougher enemies?)
+</div>
+</div>
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Strategy games: what they test</div>
+  <div class="definition-pro-Y-shadebox">
+
+They challenge the player to win through **planning**:
+- strategic, tactical, sometimes logistical challenges
+Often add:
+- economic + exploration to add variety
+
+Usually: conflict with opponents (often war games)
+Turn-based or real-time.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Two common subgenres</div>
+  <div class="definition-pro-Y-shadebox">
+
+- **Turn-based strategy** (pure strategy often here)
+- **Real-time strategy (RTS)**
+
+**Simple beginner example:**
+“Grid Capture”
+- 5x5 grid
+- Each turn place 1 unit
+- Units capture adjacent tiles
+- Most tiles after 10 turns wins
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Strategy design</div>
+  <div class="definition-pro-Y-shadebox">
+
+- What is the player planning? (resources? positioning? timing?)
+- Is information complete or uncertain?
+- Turn-based or real-time, and why?
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">RPGs: the big promise</div>
+  <div class="definition-pro-Y-shadebox">
+
+RPGs let players:
+- interact with world in many ways  
+- play a richer role  
+- experience **character growth** (becoming powerful over time)
+
+Key elements:
+- quest/story + character growth path
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">RPGs: the big promise (cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+
+Common challenges:
+- tactical/logistical/exploration  
+- economic (loot, trading)  
+Sometimes puzzles/conceptual
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">RPG example</div>
+  <div class="definition-pro-Y-shadebox">
+
+“Potion Path”
+- Player chooses 1 of 3 skills (heal, shield, fire)
+- Battles are simple turn choices
+- Winning gives XP
+- XP upgrades skill (Level 1→2→3)
+
+
+RPG fun often comes from **earning power** + **choosing growth**.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">RPG design</div>
+  <div class="definition-pro-Y-shadebox">
+
+- What changes as the character grows? (stats? abilities? gear?)
+- How does the game teach growth without overwhelming beginners?
+- How much story do you want (light framing vs heavy narrative)?
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Sports: special challenge for designers</div>
+  <div class="definition-pro-Y-shadebox">
+
+Players already know the sport.
+They compare your game to real life.
+
+Some sports games:
+- realistic simulation
+Others:
+- simplified/exaggerated for fun
+
+Many include:
+- match play + management (teams/careers)
+</div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Sports example</div>
+  <div class="definition-com-shadebox">
+
+“Penalty Kick Mini”
+- Aim with arrow keys
+- Press shoot to kick
+- Keeper randomly guesses direction
+- Best of 5 shots
+
+Sports games need clear rules + familiar feedback quickly.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Vehicle sims: what they deliver</div>
+  <div class="definition-com-shadebox">
+
+Core feeling: **driving/flying movement**
+Real vehicle sims aim for verisimilitude (seems close to reality)
+
+Subgenres:
+- flight sims (civilian/military)
+- driving sims (organized vs imaginary racing)
+Sometimes vehicle combat.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Vehicle example</div>
+  <div class="definition-com-shadebox">
+
+“Two-Lane Racer”
+- car can switch left/right lane
+- obstacles appear
+- survive as long as possible
+- speed increases gradually
+
+> Even very simple movement + speed can feel like “driving”.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">CMS (construction & management sims)</div>
+  <div class="definition-com-shadebox">
+
+Player builds things within **economic constraints**.
+These games are about **processes**, not defeating enemies.
+
+Often:
+- free-form build mode
+- scenario/management mode
+Two tool sets:
+- build tools + manage tools
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">CMS (cont.)</div>
+  <div class="definition-com-shadebox">
+
+Challenges:
+- economic + conceptual primarily
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">CMS example</div>
+  <div class="definition-com-shadebox">
+
+“Tiny Park Builder”
+- Place 5 attractions
+- Budget = 100 coins
+- Each attraction costs coins, adds happiness
+- Goal: reach happiness 70 without overspending
+
+> CMS fun = understanding a process + improving outcomes.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Adventure: interactive story</div>
+  <div class="definition-com-shadebox">
+
+Adventure games are:
+- interactive story about a protagonist
+- dramatic growth more than numeric leveling
+
+Common gameplay:
+- exploration + puzzles
+
+Sometimes conceptual challenges
+
+Rarely physical challenges.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Adventure example</div>
+  <div class="definition-com-shadebox">
+
+“Locked Library”
+- 3 rooms
+- Find items + combine clues
+- Use keycode to open final door
+- Minimal combat, if any
+
+Adventure design is about world + story + puzzle logic coherence.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Puzzle games: primary activity is puzzle solving</div>
+  <div class="definition-com-shadebox">
+
+Puzzle games usually:
+- series of related challenges (variations on a theme)
+
+Puzzle types include:
+- pattern recognition
+- logical deduction
+- understanding a process
+
+Some physics puzzles are trial-and-error.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Puzzle example</div>
+  <div class="definition-com-shadebox">
+
+“Three-in-a-Row Lite”
+- match 3 symbols
+- clear 10 matches to win
+- introduce one new symbol every level
+
+
+Puzzle difficulty often comes from **rules + constraints**, not story.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Note</div>
+  <div class="definition-com-shadebox">
+
+- Shooter: **aim + threats at distance**
+- Action: **timing + movement skill**
+- Strategy: **planning to beat opponents**
+- RPG: **story/quests + character growth**
+- Sports: **simulate or stylize known sport**
+- Vehicle sim: **feel of controlling movement**
+- CMS: **build/manage processes under constraints**
+- Adventure: **interactive story + exploration + puzzles**
+- Puzzle: **logic/pattern/process challenges**
+   </div>
+</div>
+
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch2" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Varaibles</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Player-centric approach</div>
+  <div class="definition-com-shadebox">
+
+You must understand the player:
+- not just as a consumer audience
+- but as an individual with an emotional connection to your game
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">VandenBerghe’s “Five Domains of Play”</div>
+  <div class="definition-com-shadebox">
+
+Based on a psychology model (Big Five / OCEAN):
+- Openness
+- Conscientiousness
+- Extraversion
+- Agreeableness
+- Neuroticism
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">VandenBerghe’s “Five Domains of Play” (cont.)</div>
+  <div class="definition-com-shadebox">
+
+He proposes 5 play domains players seek:
+
+- Novelty
+- Challenge
+- Stimulation
+- Harmony
+- Threat
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Domain 1: Novelty</div>
+  <div class="definition-com-shadebox">
+
+Novelty = variety + unexpected elements  
+Opposite: familiarity/comforting sameness
+
+**Simple example:**
+- High novelty: roguelike with random levels
+- Low novelty: same daily puzzle format
+
+Designer question:
+Do you want players to feel “surprised” or “comfortable”?
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Domain 2: Challenge</div>
+  <div class="definition-com-shadebox">
+
+High-challenge players like difficulty + precision to win  
+Often want mastery and completion.
+
+Low-challenge players prefer sandbox/fooling around.
+
+**Simple example:**
+- High: tight platformer with hard jumps
+- Low: creative sandbox building without failure pressure
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Domain 3: Stimulation</div>
+  <div class="definition-com-shadebox">
+
+High stimulation: party games, social engagement  
+Low stimulation: solo play, quiet exploration
+
+**Simple example:**
+- High: local couch co-op party mini-games
+- Low: calm single-player puzzle exploration
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Domain 4: Harmony</div>
+  <div class="definition-com-shadebox">
+
+Here “harmony” = cooperative/social harmony (agreeableness)
+Opposite = conflict-heavy competition
+
+**Example:**
+- Harmony: co-op building together
+- Conflict: ranked 1v1 ladder fighting game
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Domain 5: Threat</div>
+  <div class="definition-com-shadebox">
+
+Threat = danger/fright/unpleasant emotions  
+Interesting twist: people with higher tendency toward negative emotion
+may seek threat (e.g., survival horror fans).
+
+**Example:**
+- Threat-high: survival horror “limited flashlight” tension
+- Threat-low: cozy farming game
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Important: these are continuums</div>
+  <div class="definition-com-shadebox">
+
+Not on/off switches:
+- You can have “medium challenge”
+- Players’ moods change
+- Good design chooses a *deliberate mix*
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">A 6th factor: Storytelling attitudes</div>
+  <div class="definition-com-shadebox">
+
+Some players dislike story interruptions:
+- want rules mastery (strategic/tactical immersion)
+
+Others play mainly for story:
+- characters matter, plot matters
+
+Most players:
+- like some story *if it supports gameplay and doesn’t slow them down*
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Note</div>
+  <div class="definition-com-shadebox">
+
+When you choose story level, decide:
+- No story (pure system)
+- Light framing story (context)
+- Story-heavy (plot + characters)
+
+Then make sure it **fits the genre expectations**.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Men and women: avoid stereotypes</div>
+  <div class="definition-com-shadebox">
+
+Women are a large portion of gamers.
+Don’t assume “women don’t play games.”
+
+Rule: Design an intrinsically interesting game, and avoid content that discourages a group.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Gender inclusiveness: common “turnoffs”</div>
+  <div class="definition-com-shadebox">
+
+- Hypersexualized female characters
+- Repetitive monotonous play
+- No meaningful goal (only high score)
+- Solitary play (some players prefer social)
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Gender inclusiveness: common “turnoffs” (cont.)</div>
+  <div class="definition-com-shadebox">
+
+Beginner-friendly fix:
+- offer meaningful goals
+- vary gameplay
+- avoid exclusionary character portrayal
+- add optional social features when possible
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Generalities </div>
+  <div class="definition-com-shadebox">
+
+These are tendencies, not laws.
+
+Examples mentioned:
+- Some women prefer knowing expectations before proceeding → add tutorials
+- Risk attitudes may differ → avoid harsh punishment
+- Social interest can be higher → consider cooperative/social features
+- Puzzle popularity → provide elegant solutions
+- Avatar customization can matter a lot
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Avatar design: a practical tip</div>
+  <div class="definition-com-shadebox">
+
+If possible:
+- allow choice of male/female avatar
+- allow customization (clothes/accessories)
+- ensure dialogue fits the chosen avatar
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Common age bands</div>
+  <div class="definition-com-shadebox">
+
+- 3–6 preschool/kindergarten
+- 5–8 early elementary
+- 7–12 upper elementary (tweens)
+- 13+ teens
+- late teens to mid-20s (still developing)
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Designing for children: key constraints</div>
+  <div class="definition-com-shadebox">
+
+- Hand-eye coordination varies by age
+- Logic development peaks around 6–7 for certain reasoning
+- Systematic thinking develops ~12–14
+- Kids prefer frequent feedback, shorter chains of steps
+- UI should be simple/focused
+- Keep language age-appropriate
+- Expect experimentation (clicking everything)
+- Reading ability varies → consider voiceover for key info
+- Parents influence what is “appropriate content”
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Features that drive kids away</div>
+  <div class="definition-com-shadebox">
+
+- “Kids love anything sweet” (false)
+- “Give them what’s good for them” (propaganda/medicine)
+- “Any fluff will amuse them” (kids want meaningful content)
+- “Always play it safe” (too bland)
+- “All kids are created equal” (no single kids market)
+- “Explain everything” (kids prefer trial-and-error)
+- “Wholesome characters only” (wholesome can be boring)
+
+- Kids like real emotion, real stakes, and discovery—without lectures.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Dedication is a continuum</div>
+  <div class="definition-com-shadebox">
+
+Old model: “hardcore vs casual”  
+
+Better model: a spectrum (dedication varies)
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Dedication is a continuum (cont.)</div>
+  <div class="definition-com-shadebox">
+
+Measures/traits listed include:
+- tech savvy, latest gear, willingness to pay
+- preference for depth/complexity
+- long sessions vs short sessions
+- tolerance of frustration
+- hunger for gaming info
+- competition mindset
+- desire to mod/extend games
+
+Pick where your game sits on the dedication spectrum.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Why binary thinking is dangerous</div>
+  <div class="definition-com-shadebox">
+
+You might assume:
+“If group A likes it, group B won’t.”
+
+But distributions overlap:
+A “minority audience” can still be a big number.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Inclusiveness vs universality</div>
+  <div class="definition-com-shadebox">
+
+You cannot appeal to everyone by mixing unrelated features
+(“kung fu + chess + Monopoly” = messy, no harmony)
+
+Instead:
+- make a coherent game for your target
+- avoid **exclusionary material** that repels people unnecessarily
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Design rule</div>
+  <div class="definition-com-shadebox">
+
+**Strive for inclusiveness, not universality.**  
+Avoid exclusionary material in your game.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Practice</div>
+  <div class="definition-com-shadebox">
+
+Pick one domain mix for a game:
+- Novelty: high/med/low
+- Challenge: high/med/low
+- Stimulation: high/med/low
+- Harmony: high/med/low
+- Threat: high/med/low
+- Story: none/light/heavy
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Practice</div>
+  <div class="definition-com-shadebox">
+
+Now write a 1-sentence “player promise”:
+
+> “This game will make you feel ____ by ____.”
+   </div>
+</div>
+
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch3" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Understanding Your Machine</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Why “machine choice” matters</div>
+  <div class="definition-com-shadebox">
+
+A game concept is incomplete without:
+- which machine(s) it runs on
+
+Machines differ in:
+- input/output devices
+- performance (CPU/RAM/storage)
+- physical setup (couch vs desk vs public transit)
+- distribution channels + business models
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Three broad machine categories</div>
+  <div class="definition-com-shadebox">
+
+- Home game consoles  
+- Personal computers  
+- Portable devices  
+
+Plus: other specialized devices (arcades, airplanes, theme parks, etc.)
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Typical use (console)</div>
+  <div class="definition-com-shadebox">
+
+- Usually living room/bedroom
+- Player sits/stands ~3–10 feet from TV
+- Can’t read fine print easily
+→ UI must be bold, simple, readable
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Typical use (console)</div>
+  <div class="definition-com-shadebox">
+
+Great for:
+- local multiplayer (same screen)
+- party games, sports, dance, turn-taking
+
+Less good for:
+- secret information (everyone sees screen)
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Input devices (console)</div>
+  <div class="definition-com-shadebox">
+
+- Standard controller (consistent across machines)
+- Many specialized controllers exist (wheels, guitars, etc.)
+- Motion controllers can lower learning barrier
+
+> Console design often assumes **controller-first UX**.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Business considerations (console)</div>
+  <div class="definition-com-shadebox">
+
+- Often powerful graphics, but constraints exist
+- Closed platform:
+  - need manufacturer license/approval
+  - submission/testing requirements
+  - dev kits can be expensive
+  - NDAs may limit sharing technical details
+
+Consoles are great markets but higher barriers to entry.
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Typical use (PC)</div>
+  <div class="definition-pro-Y-shadebox">
+
+- Usually on a desk
+- One person
+- Player close to screen (12–18 inches)
+- High-resolution display → subtle details possible
+- Mouse precision → complex UI possible
+- Keyboard → many commands + easy text chat
+
+PC not great for:
+- multiple people sharing one machine at once
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Business considerations (PC)</div>
+  <div class="definition-pro-Y-shadebox">
+
+Big advantage:
+- open platform; anyone can develop
+
+Big headache:
+- many hardware configurations
+- compatibility issues (less painful now, but still real)
+
+Two categories:
+- stand-alone installed games
+- browser-based games
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Stand-alone vs browser</div>
+  <div class="definition-pro-Y-shadebox">
+
+Stand-alone:
+- can use more machine power
+- can be visually spectacular
+
+Browser-based:
+- more portable across OS
+- often limited, many 2D casual games
+- good for beginners building small games
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Typical use (portable)</div>
+  <div class="definition-pro-Y-shadebox">
+
+- carried around, used by one person
+- often used in public
+- small screens vary widely
+- interruptions are common
+- sound must be optional/off easily
+- battery life matters
+
+Portable games should support short sessions + instant resume.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Input and constraints (portable)</div>
+  <div class="definition-pro-Y-shadebox">
+
+- fewer buttons; touch is common
+- device is held in hands (fatigue, fragility)
+- some devices include GPS → AR possibilities
+- screen size and resolution vary a lot
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Business & distribution (portable)</div>
+  <div class="definition-pro-Y-shadebox">
+
+- wide variety of pricing models (cheap, subscription, free-to-play with IAP)
+- store policies can constrain content
+- some ecosystems allow side-loading (but marketing suffers)
+
+Portable is easiest to ship to many users, but competition is huge.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Other devices</div>
+  <div class="definition-pro-Y-shadebox">
+
+Examples:
+- arcade machines
+- airline seat games
+- video gambling machines (regulated)
+- theme park ride simulators
+
+The more specialized the device, the more you must study its audience + constraints.
+
+</div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch4" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Data Types</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">The 3-way fit</div>
+  <div class="definition-com-shadebox">
+
+A strong concept aligns:
+- **Genre** (dominant challenge)
+- **Player** (motivations + story attitude + dedication)
+- **Machine** (controls + screen + session length + distribution)
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Example: same idea, different platforms</div>
+  <div class="definition-pro-Y-shadebox">
+
+Game idea: “Quick puzzle about matching colors”
+
+- On console: big readable UI, couch co-op mode
+- On PC: precise mouse drag, more complex tools
+- On mobile: 1-minute levels, easy pause/resume, silent mode
+
+Same concept, different execution.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Practice</div>
+  <div class="definition-pro-Y-shadebox">
+
+Design a tiny concept in pairs:
+- Choose 1 genre (or hybrid)
+- Choose 2 domains to emphasize (e.g., novelty+challenge)
+- Choose 1 machine
+- Write:
+  - core loop (what player repeats)
+  - control scheme (inputs)
+  - why this machine fits
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Summary </div>
+  <div class="definition-pro-Y-shadebox">
+
+- Explain what “genre” means in games (challenge-based)
+- Name major genres and their core challenges
+- Describe player motivations using domains of play
+- Avoid binary thinking; aim for inclusiveness
+- Explain how consoles vs PCs vs portable devices change design
+- Create a coherent concept by aligning all three
+
+</div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch5" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Lab</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Materials</div>
+  <div class="definition-com-shadebox">
+
+<a href="./files/Chapter 3. The Major Genres.pdf" target="_blank">Chapter 3. The Major Genres</a>
+
+<a href="./files/Chapter 4. Understanding Your Player.pdf" target="_blank">Chapter 4. Understanding Your Player</a>
+
+<a href="./files/Chapter 5. Understanding Your Machine.pdf" target="_blank">Chapter 5. Understanding Your Machine</a>
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Lab</div>
+  <div class="definition-com-shadebox">
+
+Project Assignment (Beginner Project): “Space Cleanup” (SFML 2D Shooter Microgame)
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Lab</div>
+  <div class="definition-pro-Y-shadebox">
+
+Build a small, playable 2D shooter using SFML. Your job is to make a game concept that fits:
+
+- Genre (challenge-based): Shooter (aiming + threats at distance) with light Action/Arcade pacing
+
+- Player (Five Domains): pick a target mix (Novelty / Challenge / Stimulation / Harmony / Threat)
+
+- Machine: PC (Windows), keyboard input, close screen distance, typical desk play
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Lab</div>
+  <div class="definition-pro-Y-shadebox">
+
+Required Features (Minimum)
+
+A. Machine & UI constraints (PC)
+
+- Window: 1280×720 (or 1024×768)
+
+- UI text is readable (score/lives)
+
+- Keyboard controls (PC-appropriate)
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Lab</div>
+  <div class="definition-pro-Y-shadebox">
+
+Required Features (Minimum)
+
+B. Core loop (repeat every few seconds)
+
+- Move the player
+
+- Shoot
+
+- Enemies spawn
+
+- Hits increase score
+
+- Getting hit reduces lives
+
+- Game ends at 0 lives
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Lab</div>
+  <div class="definition-pro-Y-shadebox">
+
+Required Features (Minimum)
+
+C. Shooter Genre Requirements
+
+- Player fires bullets (ranged)
+
+- Enemies move toward/through the play area
+
+- Collision detection (bullet-enemy, player-enemy)
+
+D. Game states
+
+- Menu → Playing → Game Over
+
+- Press Enter to start, R to restart
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Lab</div>
+  <div class="definition-pro-Y-shadebox">
+
+E. Inclusiveness (one decision)
+
+- Write 2–3 sentences describing one design choice you made to avoid exclusionary material (e.g., readable UI, no gendered stereotypes, no harsh punishment, etc.)
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Lab</div>
+  <div class="definition-pro-Y-shadebox">
+
+Deliverables
+
+- A one-page “Three-Way Fit” mini-doc (genre + player + machine)
+
+- Source code (SFML) + brief README (how to run)
+
+- A short reflection (5–8 sentences): “How my mechanics support my target player domains”
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Lab</div>
+  <div class="definition-pro-Y-shadebox">
+
+Suggested Scope:
+
+- Use SFML shapes (circles/rectangles) instead of images
+
+- Keep rules simple (no complex physics)
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Reference Answer</div>
+  <div class="definition-pro-Y-shadebox">
+
+A. Reference “Three-Way Fit” Mini-Doc (Example)
+
+Title: Space Cleanup
+
+Primary Genre: Shooter (dominant challenge: aiming at distance)
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Reference Answer</div>
+  <div class="definition-pro-Y-shadebox">
+
+Hybrid note: Action/Arcade pacing (fast rounds, escalating spawn rate)
+
+Core Challenge:
+
+- Physical/timing: move + aim under pressure
+
+- Tactical micro-decisions: shoot now vs reposition
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Reference Answer</div>
+  <div class="definition-pro-Y-shadebox">
+
+A. Reference “Three-Way Fit” Mini-Doc (Example)
+
+Target Player Domains (Five Domains)
+
+- Novelty: Medium (random spawn positions add variety)
+
+- Challenge: Medium (difficulty rises slowly via spawn rate)
+
+- Stimulation: Low–Medium (single-player; excitement comes from action)
+
+- Harmony: Medium (non-toxic theme; “cleanup” framing)
+
+- Threat: Low–Medium (pressure exists, but not horror)
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Reference Answer</div>
+  <div class="definition-pro-Y-shadebox">
+Story Attitude: Light framing only (no cutscenes)
+Gamer Dedication Target: Low–Medium (short sessions, easy restart)
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Reference Answer</div>
+  <div class="definition-pro-Y-shadebox">
+
+A. Reference “Three-Way Fit” Mini-Doc (Example)
+
+Machine (PC)
+
+- Keyboard input fits desk play
+
+- Close screen distance allows small HUD elements, but still readable
+
+- Session length: 1–3 minutes per run (works well on PC breaks)
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Reference Answer</div>
+  <div class="definition-pro-Y-shadebox">
+
+Inclusiveness Decision
+
+- No sexualized or stereotyped characters; neutral shapes
+
+- Clear font size and simple color contrast for readability
+
+- Mistakes aren’t punished harshly (restart is instant)
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Reference Answer</div>
+  <div class="definition-pro-Y-shadebox">
+
+B. Reference Implementation Notes
+
+- Game loop: Poll events → update → collision checks → draw
+
+- Delta time: Use sf::Clock so movement speed is consistent on different PCs
+
+- Entities: Player, bullets, enemies stored in vectors
+
+- Collision: simple circle/rectangle overlap checks
+
+- Difficulty: spawn interval decreases slightly over time (arcade escalation)
+</div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Reference Answer
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+// SFML 3.x - Space Cleanup (Beginner Shooter)
+// NOTE: SFML has NO default font. We load a Windows-installed font by absolute path.
+
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+
+#include <algorithm>
+#include <cmath>
+#include <ctime>
+#include <sstream>
+#include <string>
+#include <vector>
+
+float length(sf::Vector2f v) {
+    return std::sqrt(v.x * v.x + v.y * v.y);
+}
+
+sf::Vector2f normalize(sf::Vector2f v) {
+    float len = length(v);
+    if (len == 0.0f) return { 0.0f, 0.0f };
+    return { v.x / len, v.y / len };
+}
+
+bool circlesIntersect(sf::Vector2f a, float ra, sf::Vector2f b, float rb) {
+    sf::Vector2f d = a - b;
+    float dist2 = d.x * d.x + d.y * d.y;
+    float r = ra + rb;
+    return dist2 <= (r * r);
+}
+
+enum class GameState { Menu, Playing, GameOver };
+
+struct Bullet {
+    sf::CircleShape shape;
+    sf::Vector2f velocity;
+};
+
+struct Enemy {
+    sf::CircleShape shape;
+    sf::Vector2f velocity;
+};
+
+int main() {
+    const unsigned int W = 1280;
+    const unsigned int H = 720;
+
+    sf::RenderWindow window(sf::VideoMode({ W, H }), "Space Cleanup (SFML 3 Beginner Shooter)");
+    window.setFramerateLimit(60);
+
+    // ---------------------------
+    // Font (SFML 3: openFromFile)
+    // No SFML default font exists, so we load from Windows Fonts folder.
+    // ---------------------------
+    sf::Font font;
+
+    bool fontOk = font.openFromFile("C:/Windows/Fonts/arial.ttf");
+    if (!fontOk) {
+        // fallback: Segoe UI (very common on Windows)
+        fontOk = font.openFromFile("C:/Windows/Fonts/segoeui.ttf");
+    }
+
+    if (!fontOk) {
+        window.setTitle("Could not load a system font. Press Esc to quit.");
+    }
+
+    // Text objects (SFML 3: must be constructed with a Font)
+    sf::Text titleText(font);
+    sf::Text helpText(font);
+    sf::Text hudText(font);
+    sf::Text gameOverText(font);
+
+    if (fontOk) {
+        titleText.setCharacterSize(54);
+        titleText.setString("SPACE CLEANUP");
+        titleText.setPosition({ 420.f, 180.f });
+
+        helpText.setCharacterSize(24);
+        helpText.setString(
+            "Genre: Shooter (aim + threats at distance)\n"
+            "Controls: WASD move, Space shoot\n"
+            "Enter: Start   R: Restart\n"
+        );
+        helpText.setPosition({ 380.f, 280.f });
+
+        hudText.setCharacterSize(24);
+        hudText.setPosition({ 20.f, 20.f });
+
+        gameOverText.setCharacterSize(48);
+        gameOverText.setString("GAME OVER\nPress R to restart");
+        gameOverText.setPosition({ 420.f, 260.f });
+    }
+
+    // Player
+    const float playerRadius = 22.0f;
+    sf::CircleShape player(playerRadius);
+    player.setOrigin({ playerRadius, playerRadius });
+    player.setPosition({ W / 2.0f, H - 80.0f });
+    player.setFillColor(sf::Color::Cyan);
+
+    float playerSpeed = 320.0f;
+
+    std::vector<Bullet> bullets;
+    std::vector<Enemy> enemies;
+    float bulletSpeed = 520.0f;
+
+    GameState state = GameState::Menu;
+    int score = 0;
+    int lives = 3;
+
+    sf::Clock clock;
+    float shootCooldown = 0.0f;
+    float shootDelay = 0.18f;
+
+    float spawnTimer = 0.0f;
+    float spawnDelay = 0.90f;
+    float timeAlive = 0.0f;
+
+    std::srand(static_cast<unsigned>(std::time(nullptr)));
+
+    auto resetGame = [&]() {
+        score = 0;
+        lives = 3;
+        bullets.clear();
+        enemies.clear();
+        player.setPosition({ W / 2.0f, H - 80.0f });
+
+        shootCooldown = 0.0f;
+        spawnTimer = 0.0f;
+        spawnDelay = 0.90f;
+        timeAlive = 0.0f;
+
+        state = GameState::Playing;
+        };
+
+    while (window.isOpen()) {
+        float dt = clock.restart().asSeconds();
+        if (dt > 0.05f) dt = 0.05f;
+
+        while (auto ev = window.pollEvent()) {
+            if (ev->is<sf::Event::Closed>()) window.close();
+
+            if (const auto* key = ev->getIf<sf::Event::KeyPressed>()) {
+                if (key->code == sf::Keyboard::Key::Escape) window.close();
+
+                if (fontOk) {
+                    if (state == GameState::Menu) {
+                        if (key->code == sf::Keyboard::Key::Enter) resetGame();
+                    }
+                    else if (state == GameState::GameOver) {
+                        if (key->code == sf::Keyboard::Key::R) resetGame();
+                    }
+                    else if (state == GameState::Playing) {
+                        if (key->code == sf::Keyboard::Key::R) resetGame();
+                    }
+                }
+            }
+        }
+
+        // If no font available, keep window open (blank) so it doesn't "flash then close".
+        if (!fontOk) {
+            window.clear(sf::Color(10, 10, 20));
+            window.display();
+            continue;
+        }
+
+        if (state == GameState::Playing) {
+            timeAlive += dt;
+
+            spawnDelay = 0.90f - (timeAlive * 0.01f);
+            if (spawnDelay < 0.35f) spawnDelay = 0.35f;
+
+            sf::Vector2f moveDir{ 0.f, 0.f };
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) moveDir.y -= 1.f;
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) moveDir.y += 1.f;
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) moveDir.x -= 1.f;
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) moveDir.x += 1.f;
+
+            sf::Vector2f move = normalize(moveDir) * playerSpeed * dt;
+            player.move(move);
+
+            sf::Vector2f p = player.getPosition();
+            if (p.x < playerRadius) p.x = playerRadius;
+            if (p.x > W - playerRadius) p.x = W - playerRadius;
+            if (p.y < playerRadius) p.y = playerRadius;
+            if (p.y > H - playerRadius) p.y = H - playerRadius;
+            player.setPosition(p);
+
+            shootCooldown -= dt;
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space) && shootCooldown <= 0.0f) {
+                Bullet b;
+                b.shape = sf::CircleShape(6.0f);
+                b.shape.setOrigin({ 6.0f, 6.0f });
+                b.shape.setFillColor(sf::Color::Yellow);
+                b.shape.setPosition({ player.getPosition().x, player.getPosition().y - 30.0f });
+                b.velocity = { 0.0f, -bulletSpeed };
+                bullets.push_back(b);
+                shootCooldown = shootDelay;
+            }
+
+            for (auto& b : bullets) b.shape.move(b.velocity * dt);
+
+            bullets.erase(
+                std::remove_if(bullets.begin(), bullets.end(),
+                    [&](Bullet& b) { return b.shape.getPosition().y < -20.0f; }),
+                bullets.end()
+            );
+
+            spawnTimer += dt;
+            if (spawnTimer >= spawnDelay) {
+                spawnTimer = 0.0f;
+
+                Enemy e;
+                float r = 18.0f + static_cast<float>(std::rand() % 18);
+                e.shape = sf::CircleShape(r);
+                e.shape.setOrigin({ r, r });
+                e.shape.setFillColor(sf::Color(255, 90, 90));
+
+                float x = 40.0f + static_cast<float>(std::rand() % (W - 80));
+                e.shape.setPosition({ x, -40.0f });
+
+                float speed = 120.0f + static_cast<float>(std::rand() % 120);
+                e.velocity = { 0.0f, speed };
+                enemies.push_back(e);
+            }
+
+            for (auto& e : enemies) e.shape.move(e.velocity * dt);
+
+            for (size_t bi = 0; bi < bullets.size(); bi++) {
+                bool bulletRemoved = false;
+                sf::Vector2f bp = bullets[bi].shape.getPosition();
+
+                for (size_t ei = 0; ei < enemies.size(); ei++) {
+                    sf::Vector2f ep = enemies[ei].shape.getPosition();
+                    float br = bullets[bi].shape.getRadius();
+                    float er = enemies[ei].shape.getRadius();
+
+                    if (circlesIntersect(bp, br, ep, er)) {
+                        score += 10;
+                        enemies.erase(enemies.begin() + ei);
+                        bullets.erase(bullets.begin() + bi);
+                        bulletRemoved = true;
+                        break;
+                    }
+                }
+                if (bulletRemoved) bi--;
+            }
+
+            for (size_t ei = 0; ei < enemies.size(); ei++) {
+                sf::Vector2f ep = enemies[ei].shape.getPosition();
+                float er = enemies[ei].shape.getRadius();
+
+                if (ep.y > H + 60.0f) {
+                    lives -= 1;
+                    enemies.erase(enemies.begin() + ei);
+                    ei--;
+                    continue;
+                }
+
+                sf::Vector2f pp = player.getPosition();
+                float pr = player.getRadius();
+                if (circlesIntersect(pp, pr, ep, er)) {
+                    lives -= 1;
+                    enemies.erase(enemies.begin() + ei);
+                    ei--;
+                    player.setPosition({ W / 2.0f, H - 80.0f });
+                    if (lives <= 0) state = GameState::GameOver;
+                }
+            }
+
+            if (lives <= 0) state = GameState::GameOver;
+
+            std::stringstream ss;
+            ss << "Score: " << score << "    Lives: " << lives;
+            hudText.setString(ss.str());
+        }
+
+        window.clear(sf::Color(10, 10, 20));
+
+        if (state == GameState::Menu) {
+            window.draw(titleText);
+            window.draw(helpText);
+        }
+        else if (state == GameState::Playing) {
+            window.draw(player);
+            for (auto& b : bullets) window.draw(b.shape);
+            for (auto& e : enemies) window.draw(e.shape);
+            window.draw(hudText);
+        }
+        else if (state == GameState::GameOver) {
+            window.draw(gameOverText);
+
+            sf::Text finalScore(font);
+            finalScore.setCharacterSize(28);
+            finalScore.setString("Final Score: " + std::to_string(score));
+            finalScore.setPosition({ 520.f, 390.f });
+            window.draw(finalScore);
+        }
+
+        window.display();
+    }
+
+    return 0;
+}
+
+```
+
+</div>
+
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+</div>
+	
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/settings.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/effects.js"></script>
+<!--<script src="settings.js"></script>-->
+<!--<script src="effects.js"></script>-->
+</body>
+</html>

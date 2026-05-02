@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Syllabus of COS 340</title>
+  <link rel="stylesheet" href="styles.css" />
+  
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/syllabus/styles.css">
+	<!--<link rel="stylesheet" href="styles.css" />-->
+	
+	<style>
+		.wiggle{display:inline-block;text-decoration:none;}
+		.wiggle{animation:wiggle 1.6s ease-in-out infinite}
+		@keyframes wiggle{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+		
+		
+		del {
+  text-decoration: line-through;
+  background-color: #ffbbbb;
+  color: #555555;
+}
+</style>
+	
+</head>
+
+<body data-theme="liquidglass">
+  <img id="printWatermark" class="print-watermark" alt="" aria-hidden="true" />
+
+  <div class="page">
+    <header class="hero">
+      <div class="hero-top">
+        <div class="brand">
+          <div class="brand-line brand-uni"><h2>Kentucky State University</h2></div>
+          <div class="brand-line">College of Business, Engineering and Technology </div>
+          <div class="brand-line">School of Mathematics and Computer Science</div>
+        </div>
+
+        <div class="right-top">
+          <div class="doc-mark">
+            <span class="pill">SYLLABUS</span>
+            <span class="pill pill-soft">Spring 2026</span>
+          </div>
+
+          <div class="theme-bar no-print" aria-label="Theme selector">
+            <span class="theme-label">Theme</span>
+            <select id="themeSelect" class="theme-select">
+              <option value="aurora">Aurora</option>
+              <option value="classic">Classic Paper</option>
+              <option value="dark">Midnight Dark</option>
+              <option value="liquidglass" selected>Liquid Glass (Mint)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="course-block">
+        <div class="course-meta">
+          <div class="kicker">Course:</div>
+          <div class="course-code">COS 340</div>
+        </div>
+		
+        <div class="course-meta">
+          <div class="kicker">Course Title:</div>
+          <div class="course-code">Data Structures and Algorithm Analysis <span class="credits">(3 credit hours)</div>
+        </div>
+      </div>
+
+	  <hr style="border:0; border-top:2px solid #a7f3d0;">
+
+      <div class="info-grid">
+        <section class="card">
+          <h2 class="card-title">Instructor</h2>
+          <dl class="dl">
+            <div class="row">
+              <dt>Professor</dt>
+              <dd>Xinxing Wu</dd>
+            </div>
+            <div class="row">
+              <dt>Office</dt>
+              <dd>Hathaway Hall 307</dd>
+            </div>
+            <div class="row">
+              <dt>Office Phone</dt>
+              <dd>502-597-6721</dd>
+            </div>
+            <div class="row">
+              <dt>Email</dt>
+              <dd><a href="mailto:xinxing.wu@kysu.edu">xinxing.wu@kysu.edu</a>(Best way to reach out)</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="card">
+          <h2 class="card-title">Course Details</h2>
+          <dl class="dl">
+            <div class="row">
+              <dt>Semester</dt>
+              <dd>Spring 2026</dd>
+            </div>
+            <div class="row">
+              <dt>Class Time</dt>
+              <dd>9:30AM – 10:45 AM (TR)</dd>
+            </div>
+            <div class="row">
+              <dt>Classroom</dt>
+              <dd>Hathaway Hall 320</dd>
+            </div>
+            <div class="row">
+              <dt>Office Hours</dt>
+              <dd> <a class="wiggle" href="https://xinxingwu-ksu.github.io/schedule/wu.html" target="_blank">Posted on Office Door</a>
+ <span class="muted">or by Appointment</span></dd>
+            </div>
+          </dl>
+        </section>
+      </div>
+
+      <nav class="toc toc-hidden no-print" aria-label="Syllabus sections">
+        <a href="#catalog">University Catalogue Description</a>
+        <a href="#objectives">Course Objectives</a>
+        <a href="#outcomes">Learning Outcomes</a>
+        <a href="#texts">Required Texts</a>
+        <a href="#schedule">Part 3: Topic Outline / Schedule</a>
+        <a href="#ack">Student Acknowledgement Form</a>
+      </nav>
+    </header>
+
+    <main class="content">
+      <section class="section reveal" id="catalog">
+        <h2>University Catalogue Description</h2>
+        <p>A more advanced study of the complex discrete data structures explored in COS 310. Algorithms manipulating these structures are implemented in C++; using Object Oriented Programming techniques.</p>
+      </section>
+
+      <section class="section reveal" id="objectives">
+        <h2>Course Objectives</h2>
+        <p>This course introduces students to object–oriented design and problem solving. This class is designed to give you essential programming tools and knowledge. You will learn how to model data in a computer, how to specify and use standard Abstract Data Types, and how to implement such ADTs with standard data structures. Course subjects include data structures, dynamic data and pointers, links, and recursion. There is an introduction to sorting, searching, and the complexity of algorithms. Algorithms manipulating these structures are implemented in C++. An understanding of the fundamentals of C++ programming from COS 108 and COS 109 is critical. The material presented in Data Structures requires this previous knowledge and we will not review this material.</p>
+      </section>
+
+      <section class="section reveal" id="outcomes">
+        <h2>Learning Outcomes</h2>
+
+        <h3 class="subhead">The following list are the program outcomes as defined for computer science programs by ABET: </h3>
+        <ol class="alpha">
+          <li><span>Analyze a complex computing problem and apply principles of computing and other relevant disciplines to identify solutions.</span></li>
+          <li><span>Design, implement, and evaluate a computing-based solution to meet a given set of computing requirements in the context of the program’s discipline.</span></li>
+          <li><span>Communicate effectively in a variety of professional contexts.  </span></li>
+          <li><span>Recognize professional responsibilities and make informed judgments in computing practice based on legal and ethical principles.</span></li>
+          <li><span>Function effectively as a member or leader of a team engaged in activities appropriate to the program’s discipline.</span></li>
+          <li><span>Apply computer science theory and software development fundamentals to produce computing-based solutions.</span></li>
+        </ol>
+
+        <div class="note">
+          <div class="note-title">Competency Levels</div>
+		  <h3 class="subhead">The following list are the student learning outcomes for this course and how they are mapped to the overall program outcomes mentioned above, along with their level of competency. The competency levels are:  </h3>
+          <div class="note-body">
+            <span class="tag">I</span> Introduced
+            <span class="tag">R</span> Reinforced
+            <span class="tag">M</span> Mastered
+          </div>
+        </div>
+
+        <h3 class="subhead">Upon completion of this course, students will be able to:</h3>
+        <ul class="bullets">
+          <li><span>Students will develop program code that implements specific programming techniques to manipulate strings and arrays.<span class="tag">R</span>(1,2,6)</span></li>
+          <li><span>Students will write code to study the Big O notation and complexity classes. <span class="tag">R</span>(1,2)</span></li>
+          <li><span>Students will evaluate program algorithms and determine the complexity class that they fall in <span class="tag">R</span>(1,2,6)</span></li>
+          <li><span>Students will develop an intermediate programming project that utilizes stack, queue, tree and graph data structures. <span class="tag">R</span>(1,2,6)</span></li>
+   
+        </ul>
+
+		<!--
+        <p class="callout">
+          <strong>Note:</strong> <span> The instructor reserves the right to make changes. </span>
+        </p>
+		-->
+      </section>
+	  
+      <section class="section reveal" id=" Thoro10">
+        <h2>Course Thoro10</h2>
+		<ol class="alpha">
+			<li style="color:#8a8f98;opacity:0.75;">Communicate Effectively.</li>
+			<li> ✅ Think critically to solve problems and create new ideas and solutions.</li>
+			<li style="color:#8a8f98;opacity:0.75;">Apply quantitative reasoning skills to analyze and solve numerical problems.</li>
+			<li style="color:#8a8f98;opacity:0.75;">Interact effectively with people from different backgrounds.</li>
+			<li style="color:#8a8f98;opacity:0.75;">Adapt to changing circumstances while leading and supporting others.</li>
+			<li style="color:#8a8f98;opacity:0.75;">Perform professionally.</li>
+			<li style="color:#8a8f98;opacity:0.75;">Engage in civic life to improve society.</li>
+			<li style="color:#8a8f98;opacity:0.75;">Collaborate and work in teams.</li>
+			<li style="color:#8a8f98;opacity:0.75;">Apply academic knowledge, skills, and abilities.</li>
+			<li style="color:#8a8f98;opacity:0.75;">Use information for decision making.</li>
+		</ol>
+		
+		<hr>
+		 <span style="background:#1e5bff;color:#fff;padding:2px 6px;border-radius:6px;">Hallmark Assignment</span> - <span style="background:darkgreen;color:#fff;padding:2px 6px;border-radius:6px;">Final Project</span>: Practical “real-world” application Demo and Presentation
+		 
+		 <ul class="alpha">
+		    <li>CPE Essential Skills #2 will be assessed using the <b>AACU VALUE Rubric: Problem Solving (Thoro 10)</b> Rubric.</li>
+			<li>Thoro10 Essential Skills: 2. Think critically to solve problems and create new ideas and solutions.<ul><li>Through the final project demonstration and presentation, students will demonstrate both critical and creative thinking. They will evaluate assumptions, analyze information, and draw sound conclusions, while also integrating ideas in original ways to develop innovative solutions to real-world problems.</li></ul></li>
+			<li><b>Hallmark assignment</b> in Canvas: <a href="https://kysu.instructure.com/courses/7041/assignments/147223" target="_blank" style="color:blue;"><b>Link</b></a></li>
+		 </ul>
+      </section>
+
+      <section class="section reveal" id="texts">
+        <h2>Required Texts</h2>
+
+        <div class="two-col">
+          <div class="mini-card">
+            <h3 class="mini-title">Required</h3>
+            <div>C++ Plus Data Structures, 6th Edition <br />Nell Dale, Tim Richards, and Chip Weems <br/>ISBN-13: 978-1-28-408918-9 </div>
+          </div>
+
+          <div class="mini-card">
+            <h3 class="mini-title">Supplemental Materials</h3>
+			<div>Data Structures and Algorithm Analysis in C++ , 4th Edition<br />Mark Allen Weiss <br/>ISBN-13: 978-0-13-284737-7 </div>
+		  </div>
+		  
+		</div>
+		
+		<p>Other resource: <a href="https://www.cs.usfca.edu/~galles/visualization/Algorithms.html" target="_blank">Data Structure and Algorithms Visualizations</a> </p>
+      </section>
+	  
+      <section class="section reveal print-break" id="schedule">
+        <h2>Course Calendar/Schedule</h2>
+        <p class="muted small"><span>The course schedule is tentative and may be adjusted based on practical class needs. 😀 The instructor reserves the right to make changes or impose additional requirements as necessary.</span></p>
+
+        <div class="table-wrap" role="region" aria-label="Course schedule table" tabindex="0">
+          <table class="tbl">
+            <thead>
+              <tr><th style="width:140px;">Week</th><th>Topic</th><th>Chapter/Resource (Only FYI)</th><th>Activity</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>1</td><td><a class="wiggle" href="Slides/Intro.html" target="_blank">(a) Course Introduction;</a> <a class="wiggle" href="Slides/Week1.html" target="_blank"> (b) Software Engineering Principles</a></td><td>Chapter 1</td><td><b><mark style="background:#E5E7EB; color:#000; padding:0 6px; border-radius:4px; font-style: normal;">Syllabus Acknowledgement and Introduce yourself</mark></b>; <b><mark style="background:yellow; color:#000; padding:0 6px; border-radius:4px; font-style: normal;"><a class="wiggle" href="https://kysu.instructure.com/courses/7041/quizzes/15315" target="_blank">Exercise 1</a></mark></b></td></tr>
+              <tr><td>2</td><td><a class="wiggle" href="Slides/Week2.html" target="_blank">Data Design and Implementation</a></td><td>Chapter 2</td><td><b><mark style="background:yellow; color:#000; padding:0 6px; border-radius:4px; font-style: normal;"><a class="wiggle" href="https://kysu.instructure.com/courses/7041/quizzes/15316" target="_blank">Exercise 2</a></mark></b></td></tr>
+              <tr><td>3</td><td><a class="wiggle" href="Slides/Week4.html" target="_blank"><a class="wiggle" href="Slides/Week3.html" target="_blank">ADT Unsorted List</a></a></td><td>Chapter 3</td><td><b><mark style="background:#a7f3d0; color:#000; padding:0 6px; border-radius:4px; font-style: normal;"><a class="wiggle" href="https://kysu.instructure.com/courses/7041/assignments/148932" target="_blank">Lab 1</a></mark></b>
+</td></tr>
+              <tr><td>4</td><td><a class="wiggle" href="Slides/Week4.html" target="_blank"><a class="wiggle" href="Slides/Week4.html" target="_blank">ADT Sorted List</a></a></td><td>Chapter 4</td><td><b><mark style="background:#a7f3d0; color:#000; padding:0 6px; border-radius:4px; font-style: normal;"><a class="wiggle" href="https://kysu.instructure.com/courses/7041/assignments/148933" target="_blank">Lab 2</a></mark></b>
+</td></tr>
+			  <tr><td>5</td><td><a class="wiggle" href="Slides/Week5_6.html" target="_blank">Stacks</a></td><td>Chapter 5</td><td><b><mark style="background:#a7f3d0; color:#000; padding:0 6px; border-radius:4px; font-style: normal;"><a class="wiggle" href="https://kysu.instructure.com/courses/7041/assignments/148934" target="_blank">Lab 3</a></mark></b>
+</td></tr>
+              <tr><td>6</td><td><a class="wiggle" href="Slides/Week5_6.html" target="_blank">Queues</a></td><td>Chapter 5</td><td><b><mark style="background:#a7f3d0; color:#000; padding:0 6px; border-radius:4px; font-style: normal;"><a class="wiggle" href="https://kysu.instructure.com/courses/7041/assignments/148935" target="_blank">Lab 4</a></mark></b>
+</td></tr>
+			  <tr><td>7</td><td><a class="wiggle" href="Slides/Week7.html" target="_blank">Lists Plus</a></td><td>Chapter 6</td><td><b><mark style="background:yellow; color:#000; padding:0 6px; border-radius:4px; font-style: normal;"<a class="wiggle" href="https://kysu.instructure.com/courses/7041/quizzes/15317" target="_blank">Exercise 3</a></mark></b></td></tr>
+              <tr><td>8</td><td><a class="wiggle" href="Slides/Week8.html" target="_blank">Review</a></td><td>Outline of Midterm Exam</td><td><b><mark style="background:#FED7AA; color:#000; padding:0 6px; border-radius:4px; font-style: normal;">🎯💪<a class="wiggle" href="https://kysu.instructure.com/courses/7041/quizzes/15261" target="_blank">Midterm Exam</a></mark></b></td></tr>
+              <tr><td>9</td><td>Spring break</td><td> </td><td><span style="font-style:normal;font-weight:700;background:linear-gradient(90deg,#fde047,#a7f3d0);color:#111;padding:6px 12px;border-radius:999px;display:inline-block;box-shadow:0 2px 8px rgba(0,0,0,0.12);">🎉🏖️ Spring Break 🌴☀️</span></td></tr>
+			  <tr><td>10</td><td><a class="wiggle" href="Slides/Week10.html" target="_blank">Recursion</a></td><td>Chapter 7</td><td><b><mark style="background:#a7f3d0; color:#000; padding:0 6px; border-radius:4px; font-style: normal;"><a class="wiggle" href="https://kysu.instructure.com/courses/7041/assignments/149097" target="_blank">Lab 5</a></mark></b>
+</td></tr>
+              <tr><td>11</td><td><a class="wiggle" href="Slides/Week11.html" target="_blank">Trees</a></td><td>Chapter 8</td><td><b><mark style="background:#a7f3d0; color:#000; padding:0 6px; border-radius:4px; font-style: normal;"><a class="wiggle" href="https://kysu.instructure.com/courses/7041/assignments/149099" target="_blank">Lab 6</a></mark></b>
+</td></tr>
+			  <tr><td>12</td><td><a class="wiggle" href="Slides/Week12.html" target="_blank">Heaps</a></td><td>Chapter 9</td><td><b><mark style="background:#a7f3d0; color:#000; padding:0 6px; border-radius:4px; font-style: normal;"><a class="wiggle" href="https://kysu.instructure.com/courses/7041/assignments/149103" target="_blank">Lab 7</a></mark></b>
+</td></tr>
+              <tr><td>13</td><td><a class="wiggle" href="Slides/Week13.html" target="_blank">Hashing</a></td><td>Chapter 11</td><td><b><mark style="background:#a7f3d0; color:#000; padding:0 6px; border-radius:4px; font-style: normal;"><del>Lab 8</del></mark></b>
+ </td></tr>
+			  <tr><td>14</td><td><a class="wiggle" href="Slides/Week14.html" target="_blank">Sorting</a></td><td>Chapter 12</td><td><b><mark style="background:#a7f3d0; color:#000; padding:0 6px; border-radius:4px; font-style: normal;"><a class="wiggle" href="https://kysu.instructure.com/courses/7041/assignments/149112" target="_blank">Lab 9</a></mark></b>
+ </td></tr>
+              <tr><td>15</td><td><a class="wiggle" href="Slides/Week15.html" target="_blank">Graphs</a></td><td>Chapter 13</td><td><b><mark style="background:yellow; color:#000; padding:0 6px; border-radius:4px; font-style: normal;"><a class="wiggle" href="https://kysu.instructure.com/courses/7041/quizzes/15318" target="_blank">Exercise 4</a></mark></b>，<b><mark style="background:#a7f3d0; color:#000; padding:0 6px; border-radius:4px; font-style: normal;"><del>Lab 10</del></mark></b>
+ </td></tr>
+              <tr><td>16</td><td><span style="background:darkgreen;color:#fff;padding:2px 6px;border-radius:6px;"><a class="wiggle" href="Slides/Week16.html" target="_blank">Final Project</a></span> (<span style="background:#1e5bff;color:#fff;padding:2px 6px;border-radius:6px;">Hallmark Assignment </span>) Presentation + demo</td><td></td><td><b><mark style="background:#FBCFE8; color:#000; padding:0 6px; border-radius:4px; font-style: normal;">Slides, Presentation</mark></b> </td></tr>
+              <tr><td>17</td><td><a class="wiggle" href="https://kysu.instructure.com/courses/7041/quizzes/15314" target="_blank">Final Exam</a></td><td>Outline of Final Exam</td><td><b><mark style="background:#FED7AA; color:#000; padding:0 6px; border-radius:4px; font-style: normal;">🎯💪Final Exam</mark></b></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+
+        <p class="muted small"><b>Note:</b> Artificial Intelligence (AI) Tool Usage - If you use any AI tool at any point in your work, you must clearly and fully disclose its use in your assignment, report, project submission, or any other deliverable. Your disclosure must be specific and detailed, including 📢
+		<ul class="muted small">
+		<li>Where AI was used (e.g., summarizing readings, generating ideas, code assistance, debugging, data analysis, data visualization, outlining, editing). </li>
+		
+		<li>What tool(s) were used (tool name and, when available, version/model, plus platform/app). </li>
+		
+		<li>Why you chose to use the tool (e.g., brainstorming, translation, grammar checking, accelerating coding, improving clarity).</li>
+		
+		<li>How you used the output (e.g., modified/edited, cited/quoted, directly included, used only as a reference, used to compare against your own work). </li>
+				
+		<li>Other details as needed. 😊 The instructor reserves the right to impose additional disclosure requirements as necessary.</li>
+		</ul>
+		<span class="muted small">🚨Important: Failure to disclose AI use—or presenting AI-generated work as entirely your own without clear clarification—may be considered a violation of academic integrity. </span> </p>
+
+        <h3 class="subhead" style="margin-top:14px;">Evaluation Procedures</h3>
+        <div class="table-wrap" role="region" aria-label="Evaluation procedures table" tabindex="0">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>Course Item</th>
+                <th style="width:120px;">Total Points</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Syllabus Acknowledgement</td><td>5</td></tr>
+			  <tr><td>Attendance</td><td>10</td></tr>
+              <tr><td>Exercise</td><td>10</td></tr>
+			  <tr><td>Lab</td><td>30</td></tr>
+              <tr><td>Team work (Discussions)</td><td>12</td></tr>
+              <tr><td>Final Presentation</td><td>8</td></tr>
+              <tr><td>Midterm Exam</td><td>10</td></tr>
+			  <tr><td>Final Exam</td><td>15</td></tr>
+            </tbody>
+            <tfoot>
+              <tr><td colspan="1"><strong>Total of points</strong></td><td><strong>100</strong></td></tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <h3 class="subhead" style="margin-top:14px;">Grading Scale</h3>
+		 <p class="muted small"><span>This grading scale outlines how final grades are determined based on the total points earned in the course. Each letter grade corresponds to a specific range of percentages or points.</span></p>
+        <div class="table-wrap" role="region" aria-label="Grading scale table" tabindex="0">
+          <table class="tbl">
+            <thead>
+              <tr><th style="width:90px;">Grade</th><th>Points</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>A</strong></td><td>&ge; 90</td></tr>
+              <tr><td><strong>B</strong></td><td>80 – 89</td></tr>
+              <tr><td><strong>C</strong></td><td>70 – 79</td></tr>
+              <tr><td><strong>D</strong></td><td>60 – 69</td></tr>
+              <tr><td><strong>F</strong></td><td>below 60</td></tr>
+            </tbody> 
+          </table>
+        </div>
+      </section>
+	  
+      <section class="section reveal" id="catalog">
+	    <h1>Course Specific Requirements, Expectations, Policies </h1>
+	    <h2>Class Attendance</h2>
+		
+		<p>Students are expected to attend the entire period of each class throughout the semester. The university attendance policy is described in the 2022-2023 Kentucky State University Handbook (https://tinyurl.com/2022-2023student). Students with service-related absences (military, on or off campus representation of the University, jury-duty) and excused absences (documented illness, documented illness or death of immediate family, court appearances, or university sponsored events/trips) should file documentation with the Dean of Student Leadership, Conduct, and Health in the Office of Student Engagement and Campus Life, housed in the Hill Student Center, Office 334. </p>
+
+		<p style="color: red;"><b>Unexcused absences</b>: To help maintain a smooth learning environment, students who arrive more than five (5) minutes late to start of class AND OR leaving class early will be marked as ‘Absent’. Each three (3) unexcused absences will be a drop in a letter grade for the course. If you have any form of note or excuse IT must be submitted to Student Services for review and dispersion! No exceptions!</p>
+		<hr style="border:0; border-top:2px dashed #a7f3d0;">
+
+		<!--
+		<h2>Class Participation</h2>
+		
+		<p>You participate in class by attending and being present by contributing to the class discussions and activities. You lose participation points as follows: 
+		
+		    <ul>
+			<li> Absences: If a course meets 1 time a week, you can have 1 unexcused absence during the semester, then each additional absence can result in a final letter grade drop. If a course meets 2 times a week, you can have 2 unexcused absences during the semester, then each additional absence can result in a final letter grade drop. If a course meets 3 times a week, you can have 3 unexcused absences during the semester, then each additional absence can result in a final letter grade drop. </li>
+			<li> Tardiness: You can be late two times during a semester, then additional tardiness may result in a final grade letter drop.</li>  
+			<li> Inappropriate behavior, including texting or sleeping during class may result in an unexcused absence. </li>  
+			</ul></p>
+		
+		<hr style="border:0; border-top:2px dashed #a7f3d0;">
+		-->
+		
+		<h2>Cell Phone Policy</h2>
+		
+		<p>To create a focused and respectful learning environment, all cell phones, PDAs, beepers, and similar electronic devices must be turned off and put away during class. Texting is not permitted at any time during class. Failure to follow this policy will result in an <b>unexcused absence</b> for that day.</p>
+		
+		<p>Headphones, earbuds, and music-playing devices may not be worn or used during class. During exams, no cell phones may be on desks or visible at any time; the presence of a cell phone during a test will result in a zero for that exam. </p>
+		
+
+		<hr style="border:0; border-top:2px dashed #a7f3d0;">
+
+		
+		<h2>Assignments</h2>
+		
+		<p>Classwork and homework may be assigned and may serve as the basis for in-class discussions. To support meaningful learning, students are expected to come to class prepared and engaged, with the goal of developing a thorough understanding of the course material. A due date will be provided on Canvas or announced in class for each weekly homework assignment. All assignments are due by the end of the day on the posted due date. Please pay close attention to assignment and exam deadlines. In general, deadlines will not be extended, and late submissions are not accepted. </p>
+		
+		<p> Generally, assignments are required to be submitted to Canvas. Do not use KSU email to email/submit your work.</p>
+		
+		<hr style="border:0; border-top:2px dashed #a7f3d0;">
+
+		<h2>Excused Absences</h2>
+		
+		<p>For any excused absence, all make-up assignments must be completed within one week.</p>
+		 
+		<hr style="border:0; border-top:2px dashed #a7f3d0;">
+		
+		<h2>Student Responsibilities</h2>
+		
+		<p>If you need to miss a class, please remember that you are responsible for keeping up with course expectations. This includes finding out what assignments were given, noting any announced due dates, and reviewing the material covered during your absence.</p>
+		
+		<hr style="border:0; border-top:2px dashed #a7f3d0;"> 
+		<h2>Use of Instructional Technology</h2>
+		
+		<p>Kentucky State University supports instructional uses of technology in the classroom for classroom-based purposes at the instructor’s discretion and direction. (See the student handbook at https://tinyurl.com/2022-2023student) </p>
+
+		<hr style="border:0; border-top:2px dashed #a7f3d0;">
+
+		
+		<h2>Canvas</h2>
+		
+		<p>Course Syllabus will be posted on the course Canvas site (https://kysu.instructure.com/).</p>
+		
+		<p><b>The materials provided on Canvas are intended for educational use only. Please do not share, upload, or distribute these materials on the internet or to others outside this course.</b></p>
+		
+		<hr style="border:0; border-top:2px dashed #a7f3d0;">
+		
+		<p>For other tutorials over other KSU software systems (e.g. SafeAssign, Upswing, etc.), visit the Kentucky State University Distance Education Online Resource (https://tinyurl.com/KSUonlineresources).</p>
+
+		<hr style="border:0; border-top:2px dashed #a7f3d0;">
+
+		
+		<h2>Additional Resources</h2>
+		
+		<p><ul>
+			<li><b>Paul G Blazer Library</b>: KSU Library main page (https://www.kysu.edu/academics/library/) </li>
+			<li><b>The Thorobred Learning Center (TLC)</b>: The Thorobred Learning Center (https://tinyurl.com/KSUTLC) is an  academic support unit designed to facilitate student success, retention, and graduation. The Center provides comprehensive learning assistance to meet the academic demands of all students along all points of their academic careers. The TLC Center is located on the 4th floor of the Julian M. Carroll ASB building, Suite 406 and can be reached by emailing tlc@kysu.edu or calling 502-597-5599.</li>
+			<li>Students can stay current on activities and services provided by the TLC Center by visiting the TLC Instagram account (https://www.instagram.com/kysu_tlc/), as well.  </li>
+
+		</ul></p>
+		
+		
+		<hr style="border:0; border-top:2px dashed #a7f3d0;">
+
+		
+		<h2>Academic Honesty</h2>
+		
+		<p>All students must conduct their studies at KSU honestly, ethically and in accordance with accepted standards of academic conduct. See the Academic Conduct section of the 2022-2023 KSU Student Handbook (tinyurl.com/2022-2023student) (pp. 19-21). Cheating and plagiarism will result in a score of zero on that particular test or assignment and thus lowering of grade in the course.
+		
+		<ul>
+			<li><b>Cheating</b>: Cheating is defined as the fraudulent or deceptive taking, giving, or presenting of any information or material with the intent of aiding oneself or another on any academic work which is considered in any way in the determination of a course grade. Cheating includes but is not limited to copying a hand-in assignment, looking on another person’s exam during a test, signing in for someone else, inappropriate use of technology during an exam (like having a cell phone on during a test), and the un-permitted use of “cheat sheets” or using internet sites. 
+			
+			<p> Copying and pasting from the internet is considered cheating as you are using the intellectual property of someone else and turning it in as you own work. In addition, <b>the use of AI to complete assignments and or submissions will not be tolerated, except for special circumstances explicitly stated earlier, any use of AI tools must be fully disclosed.</b></p>
+			
+			<p><b>Cheating may result in an F in the class.</b> It may also result in expulsion from the university. </p>
+			
+			<p>In addition, </p>
+			
+				<ul>
+				<li>Documentation of cheating will be provided by the instructor to the school chair, college dean, and registrar for implementing into student record. It will be up to the instructor if a second attempt is made possible for completing that exam, assignment or activity.</li>
+			
+				<li>Bathroom breaks will not be allowed during exams/tests. Any student leaving the classroom or lab during an exam/test. The exam/test will be turned in with no additional time or retake.</li>
+		
+				<li>No cell phones, ear buds, earmuffs, large coats, head coverings, caps or hats will be allowed during exams/tests.</li>
+
+				<li>Not following these stipulations, you may be asked to leave the classroom or lab.</li>
+				</li>
+				</ul>
+			
+			<li><b>Plagiarism</b>: Plagiarism is the intentional or unintentional act of submitting the work of another as one’s own. It includes the submission of the complete or partial work, or of the words, ideas, or format of another, published or unpublished, without appropriate reference and source credit. It includes employing or permitting another person to produce, alter, or revise material which the student submits as his or her own. If the student has any uncertainty regarding plagiarism in the submission of any material to his or her instructor, he or she should discuss the matter with the instructor prior to submission of the material.   </li>
+			
+			<li><b>Forgery</b>: Forgery is falsely recording the signature of an advisor, instructor, or any university official on any official University academic document. </li>
+			
+		</ul>
+		
+		</p>
+		
+		<hr style="border:0; border-top:2px dashed #a7f3d0;">
+
+		
+		<h2>Notice to Students with Disabilities</h2>
+		
+		<p>The mission of the Testing and Disability Services is to facilitate equal access to KSU’s campus, programs, activities, and services, in accordance with federal and state regulations and University policies. We support this mission by applying eligibility guidelines and coordinating the delivery of appropriate accommodations so that students with disabilities can pursue their educational goals. Additionally, we promote greater disability awareness campus wide. The University also provides reasonable accommodations to students and campus visitors with disabilities through Testing and Disability Services in Hathaway Hall room 107. Students with disabilities are invited to contact Dr. Phillip Clay in the DRC at 502-597-6041 for information on eligibility, required documentation, and available services. Additional information concerning the DRC and accommodations can be found by visiting the Kentucky State University Office of Accessibility and Disability Services (https://www.kysu.edu/academics/disability-svcs/index.php). </p>
+		
+		
+		<hr style="border:0; border-top:2px dashed #a7f3d0;">
+
+		
+		<h2>Statement on Veterans Affairs</h2>
+		
+		<p>Kentucky State University’s Veterans Affairs Coordinator provides information regarding educational benefits from the Department of Veterans Affairs (DVA), assists in applying for GI Bill© benefits, certifies enrollment to the Veterans Affairs (VA) for payment each semester, and assists in resolving payment problems. For more information about educational benefits programs for Veterans, contact the Department of Veterans Affairs (https://benefits.va.gov/gibill/) at 1-888-442-4551 and visit Kentucky State University’s Veteran and Military Student Affairs (https://www.kysu.edu/academics/vet-and-mil-affairs/index.php) online.</p>
+		
+		<hr style="border:0; border-top:2px dashed #a7f3d0;">
+
+		
+		<h2>Mission Statement </h2>
+		
+		<p>The Objectives and Learning Outcomes of this course directly support the Mission of Kentucky State University (https://www.kysu.edu/about-ksu/mission-vision-core-values.php). </p> 
+		
+		<p>Kentucky State University is a public, comprehensive, historically black land-grant university committed to advancing the Commonwealth of Kentucky, enhancing society, and impacting individuals by providing quality teaching with a foundation in liberal studies, scholarly research, and public service to enable productive lives within the diverse global economy. </p>
+		
+		<hr style="border:0; border-top:2px dashed #a7f3d0;">
+		
+		<p><strong>Based on practical class needs, 😄 the instructor reserves the right to make changes or impose additional requirements as necessary.</strong></p>
+		
+      </section>
+
+      <section class="section reveal break-before" id="ack">
+        <div class="urgent">
+          <strong>🚨👉</strong>
+          <span>Syllabus Acknowledgement Form is to be completed and submitted the FIRST week of this course. NO Exceptions. Any student NOT submitting this form the FIRST week is applicable to be dropped from this course.</span>
+        </div>
+
+        <h2 class="center">Student Acknowledgement of Receipt of Course Information</h2>
+
+        <p>
+          My signature below indicates that I have received a course syllabus for the following course, <span style="font:800 16px/1.1 system-ui; padding:.18em .45em; border-radius:.55em; color:#111; background:linear-gradient(90deg,#ff2d55,#ffcc00,#34c759,#00c7ff,#a855f7,#ff2d55); background-size:300% 100%; box-shadow:0 0 0 2px rgba(255,255,255,.35) inset, 0 10px 25px rgba(0,0,0,.22); animation:popGlow 1.3s ease-in-out infinite, popSweep 2.2s linear infinite;">COS 340</span><style>@keyframes popSweep{0%{background-position:0% 50%}100%{background-position:100% 50%}}@keyframes popGlow{0%,100%{transform:translateY(0) scale(1); filter:saturate(1.2) brightness(1.05)}50%{transform:translateY(-2px) scale(1.06); filter:saturate(1.8) brightness(1.25)}}</style> and have been notified of the Policies Governing Student Conduct described in the Kentucky State University Student Handbook (https://tinyurl.com/2022-2023student) and Miscellaneous Policies in the University Catalogue (https://www.kysu.edu/academics/registrar/select-a-catalog.php). 
+        </p>
+
+        <p>
+          I agree to read these documents, and I agree to sign and deliver this copy of the “Student Acknowledgment” form within two (2) weeks of the start of the semester. I understand that the policies contained within these documents apply directly to me and to all students in the class. I agree to abide by these policies and recognize that not abiding by these policies could result in dismissal from this class and/or affect my standing as a student at KSU as described in the Policies Governing Student Conduct in Student Handbook and Miscellaneous Policies in the University Catalogue. 
+        </p>
+
+        <form class="form" action="#" method="post">
+          <div class="form-row">
+            <label for="studentName">Name (please print):</label>
+            <input id="studentName" name="studentName" type="text" />
+          </div>
+
+          <div class="form-row">
+            <label for="studentId">CWID / Student ID:</label>
+            <input id="studentId" name="studentId" type="text" />
+          </div>
+
+          <div class="form-row">
+            <label for="date">Date:</label>
+            <input id="date" name="date" type="date" />
+          </div>
+
+          <h3 class="subhead">Contact information (please print clearly):</h3>
+
+          <div class="form-row">
+            <label for="address">Local Address:</label>
+            <input id="address" name="address" type="text" />
+          </div>
+
+          <div class="form-row">
+            <label for="phone">Local Phone:</label>
+            <input id="phone" name="phone" type="tel" />
+          </div>
+
+          <div class="form-row">
+            <label for="email">E-Mail:</label>
+            <input id="email" name="email" type="email" />
+          </div>
+
+          <h3 class="subhead">Handwritten Signature</h3>
+
+          <div class="sig-pad">
+            <div class="sig-header">
+              <div class="sig-title">Sign in the box below</div>
+              <div class="sig-actions no-print">
+                <button type="button" class="btn-lite" id="sigClearBtn">Clear</button>
+              </div>
+            </div>
+
+            <div class="sig-box">
+              <canvas id="sigCanvas" class="sig-canvas" aria-label="Signature canvas"></canvas>
+              <img id="sigPrintImage" class="sig-print print-only" alt="Signature (printed)" />
+            </div>
+          </div>
+
+          <div class="actions no-print">
+            <button type="button" class="btn" id="printBtn">Print / Save as PDF</button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="muted small">
+        <span>Please do not hesitate to reach out xinxing.wu@kysu.edu if you have any questions.</span>
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/syllabus/script.js"></script>
+  <!--<script src="script.js"></script>-->
+</body>
+</html>

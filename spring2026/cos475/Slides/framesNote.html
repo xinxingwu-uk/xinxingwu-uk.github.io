@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notes: Dino Sprite Animation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f8f8;
+      color: #222;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1000px;
+      margin: 30px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.08);
+    }
+
+    h1, h2, h3 {
+      color: #2c3e50;
+    }
+
+    .section {
+      margin-bottom: 30px;
+    }
+
+    .code {
+      background: #f4f4f4;
+      border-left: 5px solid #4caf50;
+      padding: 15px;
+      overflow-x: auto;
+      font-family: Consolas, monospace;
+      white-space: pre-wrap;
+    }
+
+    .note {
+      background: #fff8dc;
+      border-left: 5px solid #f0ad4e;
+      padding: 12px;
+      margin: 15px 0;
+      border-radius: 6px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background: #f0f0f0;
+    }
+
+    .visual {
+      font-family: Consolas, monospace;
+      background: #eef6ff;
+      padding: 15px;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin-top: 10px;
+    }
+
+    .highlight {
+      color: #d63384;
+      font-weight: bold;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    .footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #ddd;
+      color: #555;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Notes: Dino Sprite Animation in CSS</h1>
+
+    <div class="section">
+      <h2>1. Original CSS</h2>
+      <div class="code">
+.dino-corriendo {
+    animation: animarDino 0.25s steps(2) infinite;
+}
+
+@keyframes animarDino {
+    from {
+        background-position-x: -84px;
+    }
+    to {
+        background-position-x: -252px;
+    }
+}
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>2. What does this code do?</h2>
+      <p>
+        This code makes the dinosaur look like it is running by changing which part of a
+        larger background image is shown.
+      </p>
+      <p>
+        The dinosaur image is a <span class="highlight">sprite sheet</span>, which means
+        several animation frames are stored inside one single image.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>3. What is a sprite sheet?</h2>
+      <p>
+        A sprite sheet is one image that contains many small pictures placed side by side.
+        Each small picture is called a <strong>frame</strong>.
+      </p>
+
+      <div class="visual">
+| frame 1 | frame 2 | frame 3 | frame 4 |
+0--------84--------168-------252------336
+      </div>
+
+      <p>
+        In your case:
+      </p>
+      <ul>
+        <li>Each frame is <strong>84px wide</strong></li>
+        <li>The full image width is <strong>336px</strong></li>
+        <li>So there are <strong>4 frames</strong> total</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>4. Why is <code>background-position-x</code> negative?</h2>
+      <p>
+        The dinosaur box is only <strong>84px wide</strong>, so it can show only one frame at a time.
+        The full sprite image is much wider, so CSS moves the large image left or right behind this small box.
+      </p>
+
+      <div class="note">
+        <strong>Important idea:</strong><br>
+        The box does not move.<br>
+        The background image moves inside the box.
+      </div>
+
+      <p>
+        When the value is negative, the background image moves <strong>to the left</strong>.
+        That makes the next frame appear inside the visible box.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>5. Frame positions</h2>
+
+      <table>
+        <tr>
+          <th>background-position-x</th>
+          <th>What happens</th>
+          <th>Visible frame</th>
+        </tr>
+        <tr>
+          <td>0px</td>
+          <td>The image starts at the left edge</td>
+          <td>Frame 1</td>
+        </tr>
+        <tr>
+          <td>-84px</td>
+          <td>The image moves 84px to the left</td>
+          <td>Frame 2</td>
+        </tr>
+        <tr>
+          <td>-168px</td>
+          <td>The image moves 168px to the left</td>
+          <td>Frame 3</td>
+        </tr>
+        <tr>
+          <td>-252px</td>
+          <td>The image moves 252px to the left</td>
+          <td>Frame 4</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>6. Why does moving left show the next frame?</h2>
+      <p>
+        Imagine you have a small window, and behind it there is a long strip of pictures.
+      </p>
+
+      <div class="visual">
+Small visible box:
+|---------84px---------|
+
+Full sprite image:
+| frame 1 | frame 2 | frame 3 | frame 4 |
+      </div>
+
+      <p>
+        If the image is at <code>0px</code>, you see frame 1.
+      </p>
+
+      <div class="visual">
+background-position-x: 0px
+
+Box:   |---------|
+Image: | frame 1 | frame 2 | frame 3 | frame 4 |
+        ^
+        image starts here, so box shows frame 1
+      </div>
+
+      <p>
+        If the image moves left by 84px, frame 1 goes out of view, and frame 2 moves into the box.
+      </p>
+
+      <div class="visual">
+background-position-x: -84px
+
+Box:   |---------|
+Image:         | frame 1 | frame 2 | frame 3 | frame 4 |
+               ^
+               image shifted left, so box now shows frame 2
+      </div>
+
+      <p>
+        So the values are negative because we want to shift the full image to the left.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>7. Why not positive values?</h2>
+      <p>
+        Positive values move the background image to the <strong>right</strong>.
+        That usually shows the wrong part or creates empty space.
+      </p>
+      <p>
+        Since the sprite frames are arranged from left to right, to see later frames we move the full image left,
+        so we use negative values.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>8. What does this animation mean?</h2>
+      <div class="code">
+animation: animarDino 0.25s steps(2) infinite;
+      </div>
+
+      <ul>
+        <li><strong>animarDino</strong> → the name of the animation</li>
+        <li><strong>0.25s</strong> → the animation lasts 0.25 seconds</li>
+        <li><strong>steps(2)</strong> → changes happen in jumps, not smoothly</li>
+        <li><strong>infinite</strong> → it repeats forever</li>
+      </ul>
+
+      <div class="note">
+        For sprite animation, <code>steps()</code> is useful because we want to jump from one frame to another,
+        not slide smoothly.
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>9. Why does the animation start at -84px instead of 0px?</h2>
+      <p>
+        Usually <code>0px</code> is used for the dinosaur's standing frame.
+        The running animation may use only the next frames, so it starts at <code>-84px</code>.
+      </p>
+
+      <p>
+        That means:
+      </p>
+      <ul>
+        <li><code>0px</code> → standing frame</li>
+        <li><code>-84px</code>, <code>-168px</code>, <code>-252px</code> → running frames</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>10. Simple summary</h2>
+      <ul>
+        <li>The dinosaur image contains several frames in one long image.</li>
+        <li>The visible box is only 84px wide.</li>
+        <li>Negative <code>background-position-x</code> moves the full image left.</li>
+        <li>Moving left reveals the next frame.</li>
+        <li>That is why frame 2, 3, and 4 use negative values.</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>11. Short memory trick</h2>
+      <div class="note">
+        <strong>Negative x = move background left = show a later frame</strong>
+      </div>
+    </div>
+
+    <div class="footer">
+      Xinxing Wu
+    </div>
+  </div>
+</body>
+</html>

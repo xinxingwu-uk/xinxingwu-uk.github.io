@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Midterm Exam</title>
+    <meta name="description" content="A set of slides for Machine Learning">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/effectsGreen.css">
+	<!--<link rel="stylesheet" href="./css/style.css">-->
+	<!--<link rel="stylesheet" href="./css/effects.css">-->
+	
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+	</script>
+
+	<style>
+	    pre {
+            background-color: black;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+        }
+        code {
+            font-family: "Courier New", monospace;
+            color: #d63384; /* Python-style color */
+        }
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }	
+	</style>
+
+  </head>
+
+  <body onload="startTime()">
+    <div class="reveal" >
+	  <p><img src="images/midwaylogo.png"  align="left" height="6%" width="6%" style="vertical-align:left;margin:-15px 5px"><img src="images/mueagle.png"  color="white" align="left" height="4%" width="4%" style="vertical-align:center;margin:-1% 45%">
+		<div style="color:white;font-size: 20px; vertical-align:left;margin:-1% 0%" align="right" id="realtimeclock"></div></p>
+      <div class="slides">
+
+  <div class="me">Xinxing Wu</div>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown id="cover"><textarea data-template>
+<p class='titlep'>&nbsp;</p>
+
+# Outline of Midterm Exam
+
+<hr>
+
+<br>
+
+Xinxing Wu
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline
+
+[<p class="hover-underline-animation">Exam Structure</p>](#/ch1)
+
+[<p class="hover-underline-animation">Outline</p>](#/ch2)
+
+[<p class="hover-underline-animation">Midterm Exam Example</p>](#/ch3)
+
+</textarea></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch1" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Exam Structure</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Exam Structure</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+Week 1-7:
+
+- Part A: 10 True/False
+
+- Part B: 10 Fill-in-the-Blank
+
+- Part C: 5 Descriptive questions
+</div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch2" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Outline</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div id="rainbow-type"> Outline </div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Games are structured, player-centric systems—not just stories or graphics</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">A game is best understood as organized play with clear goals, rules, actions, challenges, and outcomes. Good game design starts from the player’s experience, focusing first on what the player does (player verbs), rather than story, art, or technology. Fairness, clarity, feedback, and meaningful decision-making are essential for engagement.</p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Genre, player, and platform must align for a game to work</h2><hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Game genres are defined by the types of challenges players face, not by story content. A strong game idea succeeds only when the chosen genre fits the target player’s motivations and the platform’s constraints (PC, console, mobile). Modern games often blend genres, but each challenge type must still be intentional and understandable.
+  </p>
+</div>
+</div>
+
+
+
+<div id="rainbow-type"> Outline (Cont.) </div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">A strong game concept connects mechanics, world, and monetization</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">A game concept is more than an idea—it is a communicable product vision. It includes a high concept statement, core mechanics, player role, progression, world description, platform choice, and monetization model. Monetization (premium, subscription, episodic, freemium) directly influences design decisions and player behavior, and must be considered early.
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Tools and technology should support learning and design clarity</h2><hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">For beginner and student projects, higher-level tools like SFML are ideal because they allow designers to focus on core game loops (input → update → render), mechanics, and player experience without excessive setup. Lower-level tools (SDL, OpenGL) offer more control but increase complexity. In education, clarity, iteration speed, and design understanding matter more than raw performance.
+  </p>
+</div>
+</div>
+
+
+</textarea></section>
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch3" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Midterm Exam Example</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+
+<p class='titlep'>&nbsp;</p>
+<p class='titlep'>&nbsp;</p>
+
+## 10 True/False
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">True/False</div>
+  <div class="definition-com-shadebox">
+
+A game can be described as “structured play” that includes goals, rules, actions, challenges, and outcomes. <button type="button" class="reveal-btn" data-answer="answer-q1">Show Answer</button>
+<div id="answer-q1" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+In video games, the computer can act as a referee that enforces rules so players don’t argue about legality. <button type="button" class="reveal-btn" data-answer="answer-q2">Show Answer</button>
+<div id="answer-q2" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+In games, “genre” mainly means story content (romance, spy, fantasy), just like movies/books. <button type="button" class="reveal-btn" data-answer="answer-q3">Show Answer</button>
+<div id="answer-q3" class="answer-box">
+<b>Answer:</b>False. In games, genre is mainly about the kinds of challenges players face, regardless of setting/content. 
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">True/False</div>
+  <div class="definition-com-shadebox">
+
+Many modern games are hybrids (mixing multiple genre challenge types or modes). <button type="button" class="reveal-btn" data-answer="answer-q4">Show Answer</button>
+<div id="answer-q4" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+“Core mechanics” are basically the game’s numeric rules (how game state changes), like HP decreasing when hit. <button type="button" class="reveal-btn" data-answer="answer-q5">Show Answer</button>
+<div id="answer-q5" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+   </div>
+</div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">True/False</div>
+  <div class="definition-com-shadebox">
+
+Brainstorming should focus on quality first, with early criticism to filter out bad ideas fast. <button type="button" class="reveal-btn" data-answer="answer-q6">Show Answer</button>
+<div id="answer-q6" class="answer-box">
+<b>Answer:</b>False. Brainstorming emphasizes quantity first and withholding criticism.
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+A high concept statement is typically a 2–3 sentence description of what the game is about. <button type="button" class="reveal-btn" data-answer="answer-q7">Show Answer</button>
+<div id="answer-q7" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+At concept stage, it’s recommended to start with story/art/world first, and figure out player actions later. <button type="button" class="reveal-btn" data-answer="answer-q8">Show Answer</button>
+<div id="answer-q8" class="answer-box">
+<b>Answer:</b>False. The rule is: first answer “What is the player going to do?” (define player verbs). 
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">True/False</div>
+  <div class="definition-com-shadebox">
+
+A concept document should include platform/machine, because phone vs PC vs console changes everything. <button type="button" class="reveal-btn" data-answer="answer-q9">Show Answer</button>
+<div id="answer-q9" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+For typical student projects, performance differences between SFML/SDL/OpenGL are usually the deciding factor. <button type="button" class="reveal-btn" data-answer="answer-q10">Show Answer</button>
+<div id="answer-q10" class="answer-box">
+<b>Answer:</b>False. Time-to-build and clarity are often more important for student projects.
+</div>
+
+   </div>
+</div>
+
+
+
+<p class='titlep'>&nbsp;</p>
+<p class='titlep'>&nbsp;</p>
+
+## 10 Fill-in-the-Blank
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Fill-in-the-Blank</div>
+  <div class="definition-com-shadebox">
+
+Video games use a computer to run rules reliably, simulate a world quickly, and give instant ________.<button type="button" class="reveal-btn" data-answer="answer-q11">Show Answer</button>
+<div id="answer-q11" class="answer-box">
+<b>Answer:</b>feedback
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+The computer can play many roles, such as referee, opponent, world simulator, storyteller, and ________.<button type="button" class="reveal-btn" data-answer="answer-q12">Show Answer</button>
+<div id="answer-q12" class="answer-box">
+<b>Answer:</b>stage manager
+</div>
+
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+In games, Genre = category of games characterized by particular kinds of ________, regardless of setting/content. <button type="button" class="reveal-btn" data-answer="answer-q13">Show Answer</button>
+<div id="answer-q13" class="answer-box">
+<b>Answer:</b>challenge
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Fill-in-the-Blank</div>
+  <div class="definition-com-shadebox">
+
+A high concept statement is usually – sentences describing what the game is about.  <button type="button" class="reveal-btn" data-answer="answer-q14">Show Answer</button>
+<div id="answer-q14" class="answer-box">
+<b>Answer:</b>2–3
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+High concept template: In [setting], you [verbs] to [goal], but [challenge/________]. <button type="button" class="reveal-btn" data-answer="answer-q15">Show Answer</button>
+<div id="answer-q15" class="answer-box">
+<b>Answer:</b>twist
+</div>
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Fill-in-the-Blank</div>
+  <div class="definition-com-shadebox">
+
+The most important concept-stage question is: “What is the player going to ________?” <button type="button" class="reveal-btn" data-answer="answer-q16">Show Answer</button>
+<div id="answer-q16" class="answer-box">
+<b>Answer:</b>do
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+Brainstorming principle: focus on ________ (generate many ideas quickly).<button type="button" class="reveal-btn" data-answer="answer-q17">Show Answer</button>
+<div id="answer-q17" class="answer-box">
+<b>Answer:</b>quantity
+</div>
+
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+“Core mechanics” can be thought of as numbers + rules + ________ that change game state. <button type="button" class="reveal-btn" data-answer="answer-q18">Show Answer</button>
+<div id="answer-q18" class="answer-box">
+<b>Answer:</b>probabilities
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Fill-in-the-Blank</div>
+  <div class="definition-com-shadebox">
+
+An interaction model example: ________-based means you control one character (like Mario). <button type="button" class="reveal-btn" data-answer="answer-q19">Show Answer</button>
+<div id="answer-q19" class="answer-box">
+<b>Answer:</b>avatar
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+A concept should include a monetization statement; you should know whether it’s ________ vs freemium early. <button type="button" class="reveal-btn" data-answer="answer-q20">Show Answer</button>
+<div id="answer-q20" class="answer-box">
+<b>Answer:</b>premium
+</div>
+
+   </div>
+</div>
+
+
+
+<p class='titlep'>&nbsp;</p>
+<p class='titlep'>&nbsp;</p>
+
+## 5 Descriptive Questions
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Question</div>
+  <div class="definition-com-shadebox">
+
+Question: Explain (in 3–5 sentences) what makes video games “special” compared to non-video games. <button type="button" class="reveal-btn" data-answer="answer-q21">Show Answer</button>
+<div id="answer-q21" class="answer-box">
+<b>Answer:</b>Video games use computers to enforce rules reliably, simulate worlds quickly, provide instant audiovisual feedback, manage hidden information (like fog of war), and scale complexity (big maps, many entities). The computer can also take on roles such as referee, opponent AI, storyteller, and stage manager for pacing.
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Question</div>
+  <div class="definition-com-shadebox">
+
+Define “game genre” in the game-design sense, and explain how it differs from movie/book genre. <button type="button" class="reveal-btn" data-answer="answer-q22">Show Answer</button>
+<div id="answer-q22" class="answer-box">
+<b>Answer:</b>In games, a genre is defined by the type of challenge the player engages with, regardless of the story setting or world content. In movies/books, genre is more about content themes (romance, spy, etc.), while in games it’s about what players do and what challenges they face.
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Question</div>
+  <div class="definition-com-shadebox">
+
+What are “core mechanics,” and give one tiny example of a core-mechanics model. <button type="button" class="reveal-btn" data-answer="answer-q23">Show Answer</button>
+<div id="answer-q23" class="answer-box">
+<b>Answer:</b>Core mechanics are the game’s underlying “engine of meaning”: the numeric rules/probabilities that describe how the game state changes (e.g., health decreases when hit). A tiny model example is: player speed 200 px/s, coins give +1 score, timer 30 seconds, win if score ≥ 20.
+</div>
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Question</div>
+  <div class="definition-com-shadebox">
+
+What is a “high concept statement,” and what key pieces should it communicate? <button type="button" class="reveal-btn" data-answer="answer-q24">Show Answer</button>
+<div id="answer-q24" class="answer-box">
+<b>Answer:</b>A high concept statement is a short (often 2–3 sentence) description of what the game is about. A good template includes the fantasy + core activity + unique twist, plus setting, the player’s verbs, the goal, and the main challenge/twist.
+</div>
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Question</div>
+  <div class="definition-com-shadebox">
+
+List the four brainstorming principles and explain why “withhold criticism” matters during idea generation. <button type="button" class="reveal-btn" data-answer="answer-q25">Show Answer</button>
+<div id="answer-q25" class="answer-box">
+<b>Answer:</b>The four principles are: focus on quantity, withhold criticism, welcome unusual ideas, and combine & improve ideas. Withholding criticism matters because early judgment reduces idea output and makes people self-censor; brainstorming is meant to produce many options first, then evaluate later
+</div>
+
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+</div>
+	
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/settings.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/effects.js"></script>
+<!--<script src="settings.js"></script>-->
+<!--<script src="effects.js"></script>-->
+</body>
+</html>
