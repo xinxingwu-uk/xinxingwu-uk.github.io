@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Permutation and Combination</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: white;
+      color: #111;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 30px 20px 50px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .intro {
+      text-align: center;
+      font-size: 18px;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+
+    .intro strong {
+      color: #000;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 25px;
+    }
+
+    .card {
+      border: 1px solid #ddd;
+      border-radius: 18px;
+      padding: 20px;
+      background: #fafafa;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      text-align: center;
+    }
+
+    .desc {
+      text-align: center;
+      font-size: 16px;
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    .bag-area {
+      text-align: center;
+      margin: 20px 0;
+      position: relative;
+      min-height: 260px;
+    }
+
+    .bag {
+      width: 160px;
+      height: 180px;
+      background: black;
+      margin: 0 auto;
+      border-radius: 30px;
+      position: relative;
+      box-shadow: inset 0 -8px 14px rgba(255,255,255,0.06);
+    }
+
+    .bag::before {
+      content: "";
+      position: absolute;
+      top: -28px;
+      left: 28px;
+      width: 100px;
+      height: 50px;
+      border: 8px solid black;
+      border-bottom: none;
+      border-radius: 60px 60px 0 0;
+    }
+
+    .bag-text {
+      color: white;
+      font-weight: bold;
+      font-size: 20px;
+      line-height: 180px;
+      letter-spacing: 1px;
+    }
+
+    .bag-balls {
+      margin-top: 18px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      min-height: 55px;
+    }
+
+    .ball {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      font-size: 22px;
+      border: 2px solid rgba(0,0,0,0.12);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+    }
+
+    .a { background: #f7b2b7; }
+    .b { background: #f5d7b2; }
+    .c { background: #f3efad; }
+    .d { background: #b9efbf; }
+    .same { background: #dddddd; }
+
+    .controls {
+      text-align: center;
+      margin: 18px 0;
+    }
+
+    button {
+      padding: 12px 18px;
+      margin: 5px;
+      font-size: 15px;
+      border: none;
+      border-radius: 12px;
+      background: black;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .result-title {
+      font-weight: bold;
+      margin-top: 15px;
+      margin-bottom: 10px;
+      text-align: center;
+      font-size: 18px;
+    }
+
+    .result-box {
+      min-height: 90px;
+      border: 2px dashed #cfcfcf;
+      border-radius: 15px;
+      background: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      padding: 15px;
+      flex-wrap: wrap;
+    }
+
+    .slot {
+      width: 60px;
+      height: 60px;
+      border: 2px dashed #bbb;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .info {
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 12px;
+      background: white;
+      border: 1px solid #e0e0e0;
+      line-height: 1.6;
+      text-align: center;
+      min-height: 90px;
+    }
+
+    .flying {
+      position: absolute;
+      top: 110px;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: flyOut 0.8s ease forwards;
+      z-index: 10;
+    }
+
+    @keyframes flyOut {
+      0% {
+        transform: translateX(-50%) translateY(-20px) scale(0.4);
+        opacity: 0;
+      }
+      40% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(-50%) translateY(100px) scale(1);
+        opacity: 0;
+      }
+    }
+
+    .show-ball {
+      animation: popIn 0.5s ease;
+    }
+
+    @keyframes popIn {
+      0% {
+        transform: scale(0.2);
+        opacity: 0;
+      }
+      70% {
+        transform: scale(1.15);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .big-note {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 18px;
+      line-height: 1.7;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 16px;
+      background: #fcfcfc;
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Permutation and Combination</h1>
+
+    <div class="intro">
+      <strong>Permutation</strong> is related to <strong>different balls</strong>.<br>
+      <strong>Combination</strong> is <strong>not about order</strong>, so the result is treated like the same group.
+    </div>
+
+    <div class="grid">
+      <!-- Permutation -->
+      <div class="card">
+        <h2>Permutation</h2>
+        <div class="desc">
+          Different balls: A, B, C, D<br>
+          <strong>Order matters</strong>
+        </div>
+
+        <div class="bag-area" id="permBagArea">
+          <div class="bag">
+            <div class="bag-text">BAG</div>
+          </div>
+          <div class="bag-balls">
+            <div class="ball a">A</div>
+            <div class="ball b">B</div>
+            <div class="ball c">C</div>
+            <div class="ball d">D</div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button onclick="showPermutation()">Show Permutation</button>
+          <button onclick="resetPermutation()">Reset</button>
+        </div>
+
+        <div class="result-title">Result</div>
+        <div class="result-box" id="permResult">
+          <div class="slot">1st</div>
+          <div class="slot">2nd</div>
+        </div>
+
+        <div class="info" id="permInfo">
+          Click the button to draw 2 different balls.<br>
+          Example: <strong>AB</strong> is different from <strong>BA</strong>.
+        </div>
+      </div>
+
+      <!-- Combination -->
+      <div class="card">
+        <h2>Combination</h2>
+        <div class="desc">
+          We only care about the group<br>
+          <strong>Order does not matter</strong>
+        </div>
+
+        <div class="bag-area" id="combBagArea">
+          <div class="bag">
+            <div class="bag-text">BAG</div>
+          </div>
+          <div class="bag-balls">
+            <div class="ball same"></div>
+            <div class="ball same"></div>
+            <div class="ball same"></div>
+            <div class="ball same"></div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button onclick="showCombination()">Show Combination</button>
+          <button onclick="resetCombination()">Reset</button>
+        </div>
+
+        <div class="result-title">Result</div>
+        <div class="result-box" id="combResult">
+          <div class="slot">group</div>
+        </div>
+
+        <div class="info" id="combInfo">
+          Click the button to select balls as one group.<br>
+          Example: <strong>{A, B}</strong> is the same as <strong>{B, A}</strong>.
+        </div>
+      </div>
+    </div>
+
+    <div class="big-note">
+      <strong>Summary:</strong><br>
+      <strong>Permutation → different balls, order matters.</strong><br>
+      <strong>Combination → order does not matter.</strong>
+    </div>
+  </div>
+
+  <script>
+    function createFlyingBall(parentId, className, label, delay) {
+      setTimeout(function () {
+        var area = document.getElementById(parentId);
+        var ball = document.createElement("div");
+        ball.className = "ball " + className + " flying";
+        ball.textContent = label;
+        area.appendChild(ball);
+
+        setTimeout(function () {
+          ball.remove();
+        }, 850);
+      }, delay);
+    }
+
+    function getRandomTwoDifferent() {
+      var balls = [
+        { label: "A", className: "a" },
+        { label: "B", className: "b" },
+        { label: "C", className: "c" },
+        { label: "D", className: "d" }
+      ];
+
+      var firstIndex = Math.floor(Math.random() * balls.length);
+      var secondIndex = Math.floor(Math.random() * balls.length);
+
+      while (secondIndex === firstIndex) {
+        secondIndex = Math.floor(Math.random() * balls.length);
+      }
+
+      return [balls[firstIndex], balls[secondIndex]];
+    }
+
+    function showPermutation() {
+      resetPermutation();
+
+      var chosen = getRandomTwoDifferent();
+
+      createFlyingBall("permBagArea", chosen[0].className, chosen[0].label, 100);
+      createFlyingBall("permBagArea", chosen[1].className, chosen[1].label, 600);
+
+      setTimeout(function () {
+        var result = document.getElementById("permResult");
+        result.innerHTML = "";
+
+        for (var i = 0; i < chosen.length; i++) {
+          var slot = document.createElement("div");
+          slot.className = "slot show-ball";
+
+          var ball = document.createElement("div");
+          ball.className = "ball " + chosen[i].className;
+          ball.textContent = chosen[i].label;
+
+          slot.appendChild(ball);
+          result.appendChild(slot);
+        }
+
+        document.getElementById("permInfo").innerHTML =
+          "Permutation result: <strong>" +
+          chosen[0].label + chosen[1].label +
+          "</strong><br>Because the balls are different, changing the order gives a different result.";
+      }, 1300);
+    }
+
+    function resetPermutation() {
+      document.getElementById("permResult").innerHTML =
+        '<div class="slot">1st</div><div class="slot">2nd</div>';
+
+      document.getElementById("permInfo").innerHTML =
+        'Click the button to draw 2 different balls.<br>Example: <strong>AB</strong> is different from <strong>BA</strong>.';
+    }
+
+    function showCombination() {
+      resetCombination();
+
+      createFlyingBall("combBagArea", "same", "", 100);
+      createFlyingBall("combBagArea", "same", "", 600);
+
+      setTimeout(function () {
+        var result = document.getElementById("combResult");
+        result.innerHTML = "";
+
+        var ball1 = document.createElement("div");
+        ball1.className = "ball same show-ball";
+
+        var ball2 = document.createElement("div");
+        ball2.className = "ball same show-ball";
+
+        result.appendChild(ball1);
+        result.appendChild(ball2);
+
+        document.getElementById("combInfo").innerHTML =
+          "Combination result: <strong>just one group</strong><br>We do not care about order, so switching positions does not make a new result.";
+      }, 1300);
+    }
+
+    function resetCombination() {
+      document.getElementById("combResult").innerHTML =
+        '<div class="slot">group</div>';
+
+      document.getElementById("combInfo").innerHTML =
+        'Click the button to select balls as one group.<br>Example: <strong>{A, B}</strong> is the same as <strong>{B, A}</strong>.';
+    }
+  </script>
+</body>
+</html>

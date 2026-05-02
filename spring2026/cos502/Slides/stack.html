@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Stack Demo (Push / Pop / Peek)</title>
+  <style>
+    :root{
+      --bg:#f6f8ff;
+      --card:#ffffff;
+      --ink:#0f172a;
+      --muted:#475569;
+      --line:rgba(15, 23, 42, .12);
+      --shadow: 0 18px 60px rgba(2, 6, 23, .12);
+      --radius: 18px;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background:
+        radial-gradient(900px 500px at 10% 0%, rgba(99,102,241,.18), transparent 60%),
+        radial-gradient(900px 500px at 100% 20%, rgba(16,185,129,.16), transparent 55%),
+        radial-gradient(900px 500px at 20% 100%, rgba(236,72,153,.12), transparent 55%),
+        var(--bg);
+      color:var(--ink);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+
+    .wrap{
+      width:min(1100px, 100%);
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:18px;
+    }
+
+    .panel{
+      background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.78));
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      backdrop-filter: blur(8px);
+    }
+
+    .head{
+      padding:18px 18px 12px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .title{
+      margin:0;
+      font-size: 20px;
+      letter-spacing:.2px;
+    }
+    .sub{
+      margin:6px 0 0;
+      color:var(--muted);
+      line-height:1.35;
+      font-size: 14px;
+    }
+
+    .badge{
+      font-size:12px;
+      color:#0b1220;
+      border:1px solid var(--line);
+      padding:8px 10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.65);
+      white-space:nowrap;
+    }
+
+    .content{ padding:18px; }
+
+    /* Controls */
+    .controls{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+      margin-bottom:14px;
+    }
+
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    label{
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    input{
+      width:100%;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      outline:none;
+      font-size:16px;
+      background: rgba(255,255,255,.92);
+    }
+    input:focus{
+      border-color: rgba(99,102,241,.55);
+      box-shadow: 0 0 0 4px rgba(99,102,241,.15);
+    }
+
+    .btnrow{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:10px;
+    }
+
+    button{
+      border:none;
+      cursor:pointer;
+      padding:12px 14px;
+      border-radius:14px;
+      font-weight:600;
+      font-size:14px;
+      letter-spacing:.2px;
+      transition: transform .08s ease, filter .15s ease;
+      user-select:none;
+    }
+    button:active{ transform: translateY(1px) scale(.99); }
+    .b1{ background: linear-gradient(135deg, rgba(99,102,241,1), rgba(59,130,246,1)); color:white; }
+    .b2{ background: linear-gradient(135deg, rgba(16,185,129,1), rgba(34,197,94,1)); color:white; }
+    .b3{ background: linear-gradient(135deg, rgba(244,63,94,1), rgba(239,68,68,1)); color:white; }
+    .b4{ background: rgba(15,23,42,.08); color:#0f172a; border:1px solid var(--line); }
+    button:hover{ filter: brightness(1.03); }
+
+    /* Visualization */
+    .viz{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:12px;
+    }
+
+    .stackBox{
+      border:1px dashed rgba(15,23,42,.25);
+      border-radius: var(--radius);
+      padding:14px;
+      background:
+        linear-gradient(180deg, rgba(99,102,241,.05), rgba(16,185,129,.03));
+      min-height: 420px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .stackLabel{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .tower{
+      height: 360px;
+      border-radius: 16px;
+      border:1px solid rgba(15,23,42,.12);
+      background: rgba(255,255,255,.75);
+      position:relative;
+      padding:12px;
+      display:flex;
+      flex-direction:column-reverse; /* important: bottom is start */
+      gap:10px;
+    }
+
+    .slotHint{
+      position:absolute;
+      inset:auto 12px 12px 12px;
+      color: rgba(71,85,105,.85);
+      font-size:12px;
+      text-align:center;
+      pointer-events:none;
+    }
+
+    .item{
+      border-radius:14px;
+      border:1px solid rgba(15,23,42,.14);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.95), rgba(255,255,255,.75));
+      box-shadow: 0 10px 26px rgba(2,6,23,.08);
+      padding:10px 12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+
+      transform: translateY(10px) scale(.98);
+      opacity:0;
+      animation: in .22s ease forwards;
+    }
+
+    .item .left{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width: 0;
+    }
+
+    .pill{
+      width:30px;
+      height:30px;
+      border-radius:999px;
+      display:grid;
+      place-items:center;
+      font-weight:800;
+      font-size:12px;
+      color:white;
+      background: linear-gradient(135deg, rgba(99,102,241,1), rgba(236,72,153,1));
+      flex: 0 0 auto;
+    }
+
+    .val{
+      font-weight:700;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 360px;
+    }
+
+    .topTag{
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(16,185,129,.35);
+      background: rgba(16,185,129,.10);
+      color: rgba(8, 85, 58, 1);
+      display:none;
+      flex: 0 0 auto;
+    }
+
+    .item.isTop .topTag{ display:inline-flex; }
+
+    @keyframes in{
+      to{ transform: translateY(0) scale(1); opacity:1; }
+    }
+
+    @keyframes out{
+      to{ transform: translateY(-16px) scale(.98); opacity:0; }
+    }
+
+    .status{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.75);
+      border-radius: var(--radius);
+      padding:14px;
+      color: var(--muted);
+      line-height:1.45;
+      font-size:14px;
+      min-height: 86px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      gap:6px;
+    }
+
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-size: 13px;
+      color:#0f172a;
+    }
+
+    .rightCol .content{ padding-top:14px; }
+
+    .mini{
+      border-radius: var(--radius);
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.76);
+      padding:14px;
+    }
+
+    .mini h3{
+      margin:0 0 8px;
+      font-size: 16px;
+    }
+    .mini p{
+      margin:0;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.45;
+    }
+
+    .rule{
+      margin:12px 0;
+      border:none;
+      border-top:1px solid var(--line);
+    }
+
+    .kvs{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+    .kv{
+      border:1px solid var(--line);
+      border-radius: 14px;
+      padding:10px 12px;
+      background: rgba(255,255,255,.7);
+    }
+    .kv .k{ font-size:12px; color:var(--muted); margin-bottom:4px; }
+    .kv .v{ font-weight:800; }
+
+    @media (max-width: 920px){
+      .wrap{ grid-template-columns: 1fr; }
+      .tower{ height: 320px; }
+      .stackBox{ min-height: 380px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <!-- Left: main stack visualization -->
+    <section class="panel">
+      <div class="head">
+        <div>
+          <h1 class="title">Stack Simulation (LIFO)</h1>
+          <p class="sub">
+            A stack is <b>Last In, First Out</b>. You can only add/remove from the <b>top</b>.
+          </p>
+        </div>
+        <div class="badge">Operations: Push • Pop • Peek • Clear</div>
+      </div>
+
+      <div class="content">
+        <div class="controls">
+          <div class="field">
+            <label for="value">Value to push</label>
+            <input id="value" type="text" placeholder="e.g., 10 or A or 'hello'" />
+          </div>
+
+          <div class="field">
+            <label for="maxSize">Max size (optional)</label>
+            <input id="maxSize" type="number" min="1" placeholder="e.g., 8" />
+          </div>
+        </div>
+
+        <div class="btnrow">
+          <button class="b1" id="pushBtn">Push</button>
+          <button class="b2" id="popBtn">Pop</button>
+          <button class="b4" id="peekBtn">Peek (Top)</button>
+          <button class="b3" id="clearBtn">Clear</button>
+        </div>
+
+        <div style="height:14px"></div>
+
+        <div class="viz">
+          <div class="stackBox">
+            <div class="stackLabel">
+              <div><b>Top</b> is always the most recent item.</div>
+              <div class="mono" id="summary">size = 0</div>
+            </div>
+
+            <div class="tower" id="tower" aria-label="Stack items">
+              <div class="slotHint" id="hint">Stack is empty. Push something!</div>
+            </div>
+          </div>
+
+          <div class="status" id="status">
+            <div><b>Status:</b> Ready.</div>
+            <div class="mono">Rule: Push adds to top, Pop removes from top.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right: explanation / counters -->
+    <aside class="panel rightCol">
+      <div class="head">
+        <div>
+          <h2 class="title" style="margin:0;">What students should notice</h2>
+          <p class="sub" style="margin-top:6px;">
+            The “Top” label moves as the stack changes.
+          </p>
+        </div>
+        <div class="badge">COS-109</div>
+      </div>
+
+      <div class="content">
+        <div class="mini">
+          <h3>LIFO intuition</h3>
+          <p>
+            Think of a stack of plates: you add a plate on top, and you remove the top plate first.
+          </p>
+          <hr class="rule" />
+          <div class="kvs">
+            <div class="kv">
+              <div class="k">Top item</div>
+              <div class="v mono" id="topOut">—</div>
+            </div>
+            <div class="kv">
+              <div class="k">Size</div>
+              <div class="v mono" id="sizeOut">0</div>
+            </div>
+            <div class="kv">
+              <div class="k">Last action</div>
+              <div class="v mono" id="actionOut">Ready</div>
+            </div>
+            <div class="kv">
+              <div class="k">Max size</div>
+              <div class="v mono" id="maxOut">∞</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:12px"></div>
+
+        <div class="mini">
+          <h3>Operations (simple definitions)</h3>
+          <p><b>Push(x)</b>: put x on the top.</p>
+          <p><b>Pop()</b>: remove and return the top item.</p>
+          <p><b>Peek()</b>: return the top item without removing it.</p>
+          <p><b>Clear()</b>: remove everything.</p>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    // ===== Stack model =====
+    var stack = [];
+    var idCounter = 1;
+
+    // ===== DOM refs =====
+    var tower = document.getElementById("tower");
+    var hint = document.getElementById("hint");
+    var status = document.getElementById("status");
+    var valueInput = document.getElementById("value");
+    var maxSizeInput = document.getElementById("maxSize");
+
+    var summary = document.getElementById("summary");
+    var topOut = document.getElementById("topOut");
+    var sizeOut = document.getElementById("sizeOut");
+    var actionOut = document.getElementById("actionOut");
+    var maxOut = document.getElementById("maxOut");
+
+    var pushBtn = document.getElementById("pushBtn");
+    var popBtn = document.getElementById("popBtn");
+    var peekBtn = document.getElementById("peekBtn");
+    var clearBtn = document.getElementById("clearBtn");
+
+    function getMaxSize(){
+      var raw = (maxSizeInput.value || "").trim();
+      if (raw === "") return Infinity;
+      var n = Number(raw);
+      if (!Number.isFinite(n) || n < 1) return Infinity;
+      return Math.floor(n);
+    }
+
+    function setStatus(htmlLine1, htmlLine2){
+      status.innerHTML =
+        '<div><b>Status:</b> ' + htmlLine1 + '</div>' +
+        '<div class="mono">' + htmlLine2 + '</div>';
+    }
+
+    function render(){
+      tower.innerHTML = "";
+      var maxSize = getMaxSize();
+
+      // show/hide empty hint
+      if (stack.length === 0) {
+        hint.style.display = "block";
+        tower.appendChild(hint);
+      } else {
+        hint.style.display = "none";
+      }
+
+      // render items (bottom to top visually, using column-reverse)
+      for (var i = 0; i < stack.length; i++) {
+        var item = stack[i];
+
+        var el = document.createElement("div");
+        el.className = "item";
+
+        // mark top
+        if (i === stack.length - 1) el.className += " isTop";
+
+        el.innerHTML =
+          '<div class="left">' +
+            '<div class="pill">' + item.id + '</div>' +
+            '<div class="val" title="' + escapeHtml(item.value) + '">' + escapeHtml(item.value) + '</div>' +
+          '</div>' +
+          '<div class="topTag">TOP</div>';
+
+        tower.appendChild(el);
+      }
+
+      // right-side info
+      var topVal = (stack.length ? stack[stack.length - 1].value : "—");
+      topOut.textContent = topVal;
+      sizeOut.textContent = String(stack.length);
+      summary.textContent = "size = " + stack.length + (maxSize === Infinity ? "" : (" / " + maxSize));
+      maxOut.textContent = (maxSize === Infinity ? "∞" : String(maxSize));
+    }
+
+    function escapeHtml(s){
+      return String(s)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#39;");
+    }
+
+    // ===== Actions =====
+    function doPush(){
+      var v = (valueInput.value || "").trim();
+      if (v === "") {
+        setStatus("Please type a value first.", "Example: push(10), push(A), push(hello)");
+        actionOut.textContent = "Push blocked";
+        return;
+      }
+
+      var maxSize = getMaxSize();
+      if (stack.length >= maxSize) {
+        setStatus("Stack overflow (full).", "Cannot push: size = " + stack.length + ", max = " + maxSize);
+        actionOut.textContent = "Overflow";
+        return;
+      }
+
+      stack.push({ id: idCounter++, value: v });
+      valueInput.value = "";
+      setStatus("Pushed <b>" + escapeHtml(v) + "</b> onto the TOP.", "Now top = " + escapeHtml(stack[stack.length - 1].value));
+      actionOut.textContent = "Push(" + v + ")";
+      render();
+    }
+
+    function doPop(){
+      if (stack.length === 0) {
+        setStatus("Stack underflow (empty).", "Cannot pop because size = 0");
+        actionOut.textContent = "Underflow";
+        return;
+      }
+
+      // animate out: remove the top DOM element first
+      var lastChild = tower.lastElementChild;
+      if (lastChild && lastChild.classList && lastChild.classList.contains("item")) {
+        lastChild.style.animation = "out .18s ease forwards";
+      }
+
+      var removed = stack.pop();
+      setStatus("Popped <b>" + escapeHtml(removed.value) + "</b> from the TOP.", "Returned value = " + escapeHtml(removed.value));
+      actionOut.textContent = "Pop() -> " + removed.value;
+
+      // wait briefly so the animation can be seen, then re-render
+      setTimeout(function(){
+        render();
+      }, 160);
+    }
+
+    function doPeek(){
+      if (stack.length === 0) {
+        setStatus("Peek found nothing.", "Stack is empty, so top = null");
+        actionOut.textContent = "Peek -> null";
+        return;
+      }
+      var top = stack[stack.length - 1].value;
+      setStatus("Peek: top is <b>" + escapeHtml(top) + "</b>.", "Peek does NOT remove the item.");
+      actionOut.textContent = "Peek() -> " + top;
+      render();
+    }
+
+    function doClear(){
+      if (stack.length === 0) {
+        setStatus("Nothing to clear.", "Stack already empty.");
+        actionOut.textContent = "Clear (noop)";
+        return;
+      }
+      stack = [];
+      setStatus("Cleared the stack.", "size = 0");
+      actionOut.textContent = "Clear()";
+      render();
+    }
+
+    // ===== Events =====
+    pushBtn.addEventListener("click", doPush);
+    popBtn.addEventListener("click", doPop);
+    peekBtn.addEventListener("click", doPeek);
+    clearBtn.addEventListener("click", doClear);
+
+    valueInput.addEventListener("keydown", function(e){
+      if (e.key === "Enter") doPush();
+    });
+
+    // initial
+    render();
+  </script>
+</body>
+</html>

@@ -1,0 +1,992 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Outline of Final Exam</title>
+    <meta name="description" content="A set of slides for Machine Learning">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/   dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/effectsGreen.css">
+	<!--<link rel="stylesheet" href="./css/style.css">-->
+	<!--<link rel="stylesheet" href="./css/effects.css">-->
+	
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+	</script>
+
+	<style>
+	    pre {
+            background-color: black;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+        }
+        code {
+            font-family: "Courier New", monospace;
+            color: #d63384; /* Python-style color */
+        }
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }	
+	</style>
+
+  </head>
+
+  <body onload="startTime()">
+    <div class="reveal" >
+	  <p><img src="images/midwaylogo.png"  align="left" height="6%" width="6%" style="vertical-align:left;margin:-15px 5px"><img src="images/mueagle.png"  color="white" align="left" height="4%" width="4%" style="vertical-align:center;margin:-1% 45%">
+		<div style="color:white;font-size: 20px; vertical-align:left;margin:-1% 0%" align="right" id="realtimeclock"></div></p>
+      <div class="slides">
+
+  <div class="me">Xinxing Wu</div>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown id="cover"><textarea data-template>
+<p class='titlep'>&nbsp;</p>
+
+# Outline of Final Exam
+
+<hr>
+
+<br>
+
+Xinxing Wu
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline
+
+[<p class="hover-underline-animation">Presentation of Final Project</p>](#/ch0)
+
+[<p class="hover-underline-animation">Exam Structure</p>](#/ch1)
+
+[<p class="hover-underline-animation">Outline</p>](#/ch2)
+
+[<p class="hover-underline-animation">Final Exam Example</p>](#/ch3)
+
+</textarea></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch0" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Presentation of Final Project</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Presentation of Final Project</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Practical “real-world” applications
+
+- FYI, providing two examples: Stack (balanced symbols) and BFS (shortest path in an unweighted graph)
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Example 1</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Use a Stack to validate an expression (balanced symbols)
+
+- Practical problem
+
+	- You’re writing a tiny “syntax checker” (like what a code editor does).
+	- Goal: check whether brackets are well-formed: (), [], {}. Your slides frame this as the Stack application: Balanced Symbols and give the exact rules.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Example 1</div>
+  <div class="definition-pro-Y-shadebox">
+
+Why a stack?
+
+- Because the rule is: every close bracket must match the most recent open bracket
+
+<div id="shadebox-glass" class="shadebox glass">
+
+That “most recent” behavior is exactly LIFO (stack behavior).
+</div>
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Example 1</div>
+  <div class="definition-pro-Y-shadebox">
+
+Algorithm (step-by-step)
+
+- From the slides’ “key idea”: scan left → right, push opens, and when you see a close you must match & pop.
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+1.Create an empty stack st
+
+2.For each character c in the string:
+
+- If c is an opening bracket ( [ { → push it
+
+- Else if c is a closing bracket ) ] }:
+
+	- If stack is empty → underflow → invalid
+	- Otherwise pop the top and check if it matches; if not → invalid
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Example 1</div>
+  <div class="definition-pro-Y-shadebox">
+
+Algorithm (step-by-step)
+
+- From the slides’ “key idea”: scan left → right, push opens, and when you see a close you must match & pop.
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+- Ignore other characters (letters, digits, operators) 
+
+3.At the end, expression is valid only if stack is empty
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Example 1</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Hand trace
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+Test input: {[()]} (the slides show this exact walk-through idea)
+
+We read: { [ ( ) ] }
+
+- { → push { → stack: {
+
+- [ → push [ → stack: { [
+
+- ( → push ( → stack: { [ (
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Example 1</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Hand trace (cont.)
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+Test input: {[()]} (the slides show this exact walk-through idea)
+
+We read: { [ ( ) ] }
+
+- ) → must match ( → pop ( → stack: { [
+
+- ] → must match [ → pop [ → stack: {
+
+- } → must match { → pop { → stack: empty ✅
+
+So it’s well-formed because it ends with an empty stack.
+</div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Implementation
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <stack>
+#include <string>
+using namespace std;
+
+bool IsOpen(char c) {
+    return c == '(' || c == '[' || c == '{';
+}
+
+bool IsClose(char c) {
+    return c == ')' || c == ']' || c == '}';
+}
+
+bool Matches(char open, char close) {
+    return (open == '(' && close == ')') ||
+           (open == '[' && close == ']') ||
+           (open == '{' && close == '}');
+}
+
+bool IsWellFormed(const string& s) {
+    stack<char> st;
+
+    for (char c : s) {
+        if (IsOpen(c)) {
+            st.push(c);
+        } else if (IsClose(c)) {
+            if (st.empty()) return false;   // underflow case
+            char top = st.top();
+            st.pop();
+            if (!Matches(top, c)) return false; // mismatch case
+        }
+        // ignore other characters
+    }
+
+    return st.empty(); // must be empty at end
+}
+
+int main() {
+    cout << IsWellFormed("{[()]}") << "\n"; // 1 (true)
+    cout << IsWellFormed("{[(])}") << "\n"; // 0 (false)
+    cout << IsWellFormed(")()")    << "\n"; // 0 (false)
+    return 0;
+}
+```
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Example 2</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Use BFS to find the shortest path in an unweighted graph
+
+- Practical problem
+
+	- Think of a building map: rooms are nodes, doors are edges.
+	- You want the path with the fewest doors from Start to Target.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Example 2</div>
+  <div class="definition-pro-Y-shadebox">
+
+Review:
+
+- BFS explores “1 step away, then 2 steps away, …”
+- BFS uses a queue (FIFO)
+- In an unweighted graph, BFS gives the shortest number of edges (hops)
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Example 2</div>
+  <div class="definition-pro-Y-shadebox">
+
+Graph we’ll use
+
+- Vertices: 0,1,2,3
+- Edges: 0-1, 0-3, 1-2, 1-3 (unweighted)
+
+Goal: shortest path from 0 to 2.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Example 2</div>
+  <div class="definition-pro-Y-shadebox">
+
+BFS algorithm (step-by-step)
+ 
+<hr style="border: none; border-top: 2px dashed red;">
+
+Review: enqueue start, mark visited, pop from queue, push unvisited neighbors. 
+
+- To get the actual path, your slides say to keep a parent[] array: when you first discover u from v, set parent[u]=v, then walk backward from target.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Example 2</div>
+  <div class="definition-pro-Y-shadebox">
+
+Hand trace
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+Start = 0, Target = 2
+
+Initialize:
+
+- queue = [0]
+
+- visited[0]=true
+
+- parent = [-1, -1, -1, -1]
+</div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Example 2</div>
+  <div class="definition-pro-Y-shadebox">
+
+Step 1:
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+- Dequeue 0
+
+- Neighbors of 0: 1, 3
+
+	- Discover 1: visited[1]=true, parent[1]=0, enqueue 1
+
+	- Discover 3: visited[3]=true, parent[3]=0, enqueue 3
+
+- queue becomes [1, 3]
+
+- parent becomes [-1, 0, -1, 0]
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Example 2</div>
+  <div class="definition-pro-Y-shadebox">
+
+Step 2:
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+- Dequeue 1
+
+- Neighbors of 1: 0, 2, 3
+
+	- 0 already visited → skip
+
+	- Discover 2: visited[2]=true, parent[2]=1, enqueue 2
+
+	- 3 already visited → skip
+
+- queue becomes [3, 2]
+
+- parent becomes [-1, 0, 1, 0]
+
+- Target 2 is now discovered (we can stop early or continue)
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Example 2</div>
+  <div class="definition-pro-Y-shadebox">
+
+Reconstruct path (walk parents backward):
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+- Start at target 2
+
+- parent[2]=1 → then parent[1]=0 → then parent[0]=-1 stop
+
+- Path backward: 2 -> 1 -> 0
+
+- Reverse: 0 -> 1 -> 2
+
+So the shortest path (fewest edges) is 0 → 1 → 2
+
+</div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Implementation
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <vector>
+#include <queue>
+using namespace std;
+
+vector<int> bfsShortestPath(vector<vector<int>> &adj, int start, int target) {
+    int n = adj.size();
+    vector<bool> visited(n, false);
+    vector<int> parent(n, -1);
+    queue<int> q;
+
+    q.push(start);
+    visited[start] = true;
+
+    while (!q.empty()) {
+        int v = q.front();
+        q.pop();
+
+        if (v == target) break; // optional early stop
+
+        for (int u : adj[v]) {
+            if (!visited[u]) {
+                visited[u] = true;
+                parent[u] = v;   // remember how we first reached u
+                q.push(u);
+            }
+        }
+    }
+
+    // Reconstruct path from target back to start using parent[]
+    vector<int> path;
+    if (!visited[target]) return path; // empty => no path
+
+    int cur = target;
+    while (cur != -1) {
+        path.push_back(cur);
+        cur = parent[cur];
+    }
+
+    // reverse (beginner-friendly)
+    for (int i = 0, j = (int)path.size() - 1; i < j; i++, j--) {
+        int tmp = path[i];
+        path[i] = path[j];
+        path[j] = tmp;
+    }
+    return path;
+}
+
+int main() {
+    int n = 4;
+    vector<vector<int>> adj(n);
+
+    // undirected edges
+    adj[0].push_back(1); adj[1].push_back(0);
+    adj[0].push_back(3); adj[3].push_back(0);
+    adj[1].push_back(2); adj[2].push_back(1);
+    adj[1].push_back(3); adj[3].push_back(1);
+
+    vector<int> path = bfsShortestPath(adj, 0, 2);
+
+    if (path.size() == 0) cout << "No path\n";
+    else {
+        cout << "Shortest path: ";
+        for (int v : path) cout << v << " ";
+        cout << "\n";
+    }
+    return 0;
+}
+```
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch1" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Exam Structure</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Exam Structure</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Based on the learning of Week 10-16
+  
+- Part A: 15 True/False
+
+- Part B: 15 Multiple choice
+
+From Labs 5-7 
+
+- Part C: 2 Coding Questions
+</div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch2" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Outline</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div id="rainbow-type"> Outline </div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Recursion basics + tracing</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Base case + progress toward base case; recursion uses the call stack (stack frames).
+  
+  </p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Trees & Binary Search Trees (BST)</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">BST search/insert rule, and the three traversals (pre/in/post). Inorder in a BST outputs keys in sorted order.
+  </p>
+</div>
+</div>
+
+
+
+<div id="rainbow-type"> Outline (Cont.) </div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Priority Queues + Heaps</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Priority queue removes highest priority; heaps use complete-tree shape + array index formulas; operations rely on reheap up/down. 
+  
+  </p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Sorting + Graph search</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Sorting (selection/insertion/merge ideas and costs) + graph traversal (DFS vs BFS) and shortest paths (why BFS works only for unweighted; Dijkstra idea + priority queue).
+  </p>
+</div>
+
+</div>
+</div>
+
+</textarea></section>
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch3" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Final Exam Example</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+
+<p class='titlep'>&nbsp;</p>
+<p class='titlep'>&nbsp;</p>
+
+## 15 True/False (FYI, give 5 examples)
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">True/False</div>
+  <div class="definition-com-shadebox">
+
+Every correct recursive solution needs a base case and progress toward the base case. <button type="button" class="reveal-btn" data-answer="answer-q1">Show Answer</button>
+<div id="answer-q1" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+If a recursive function has no base case, it may cause infinite recursion and stack overflow. <button type="button" class="reveal-btn" data-answer="answer-q2">Show Answer</button>
+<div id="answer-q2" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+In the factorial definition, 0! = 1. <button type="button" class="reveal-btn" data-answer="answer-q3">Show Answer</button>
+<div id="answer-q3" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">True/False</div>
+  <div class="definition-com-shadebox">
+
+A stack frame stores things like parameters, locals, and the return location. <button type="button" class="reveal-btn" data-answer="answer-q4">Show Answer</button>
+<div id="answer-q4" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+In a BST, inorder traversal prints keys in sorted order. <button type="button" class="reveal-btn" data-answer="answer-q5">Show Answer</button>
+<div id="answer-q5" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+   </div>
+</div>
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+<p class='titlep'>&nbsp;</p>
+
+## 15 Multiple choice (FYI, give 5 examples)
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Multiple choice</div>
+  <div class="definition-com-shadebox">
+
+Which two things are MUST-HAVES for recursion?
+
+A. Base case + progress toward base case
+
+B. Global variables + loops
+
+C. Pointers + classes
+
+D. Arrays + sorting <button type="button" class="reveal-btn" data-answer="answer-q16">Show Answer</button>
+<div id="answer-q16" class="answer-box">
+<b>Answer:</b>A
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Multiple choice</div>
+  <div class="definition-com-shadebox">
+
+What does the call stack store for each call?
+
+A. Only the function name
+
+B. Stack frames (params/locals/return info)
+
+C. Only heap memory
+
+D. Only the output value <button type="button" class="reveal-btn" data-answer="answer-q17">Show Answer</button>
+<div id="answer-q17" class="answer-box">
+<b>Answer:</b>B
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Multiple choice</div>
+  <div class="definition-com-shadebox">
+
+Which sorting algorithm “builds a sorted part” and inserts the next element into it?
+
+A. Selection sort
+
+B. Insertion sort
+
+C. Merge sort
+
+D. DFS <button type="button" class="reveal-btn" data-answer="answer-q18">Show Answer</button>
+<div id="answer-q18" class="answer-box">
+<b>Answer:</b>B
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Multiple choice</div>
+  <div class="definition-com-shadebox">
+
+Which is the recursive definition of factorial from the slides?
+
+A. n! = n + (n−1)!
+
+B. n! = n × (n−1)! for n>0, and 0! = 1
+
+C. n! = 2n
+
+D. n! = $n^2$ <button type="button" class="reveal-btn" data-answer="answer-q19">Show Answer</button>
+<div id="answer-q19" class="answer-box">
+<b>Answer:</b>B
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Multiple choice</div>
+  <div class="definition-com-shadebox">
+
+In a max-heap ReheapDown (bubble down), you must swap with:
+
+A. The smaller child
+
+B. The larger child
+
+C. The parent
+
+D. A random child <button type="button" class="reveal-btn" data-answer="answer-q20">Show Answer</button>
+<div id="answer-q20" class="answer-box">
+<b>Answer:</b>B
+</div>
+
+   </div>
+</div>
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+<p class='titlep'>&nbsp;</p>
+
+## 2 Coding Questions (Provide one examples, FYI)
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task 1</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Build an IntBST program (menu-driven). Menu:
+- Insert a number
+- Search for a number
+- Delete a number
+- Print inorder (sorted)
+- Print preorder
+- Print postorder
+- Count nodes
+- Quit
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task 1 (cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+
+Starter requirements:
+
+- Use Node struct + insert, contains, remove
+
+- Start with empty tree (Node* root = nullptr;)
+
+ 
+   </div>
+</div>
+
+
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+using namespace std;
+
+int main() {
+    Node* root = nullptr;
+
+    int choice;
+    while (true) {
+        cout << "\n1 Insert  2 Search  3 Delete  4 Inorder  5 Count  0 Quit\n";
+        cout << "Choice: ";
+        cin >> choice;
+
+        if (choice == 0) break;
+
+        if (choice == 1) {
+            int x; cout << "Insert: "; cin >> x;
+            root = insert(root, x);
+        } else if (choice == 2) {
+            int x; cout << "Search: "; cin >> x;
+            cout << (contains(root, x) ? "Found\n" : "Not found\n");
+        } else if (choice == 3) {
+            int x; cout << "Delete: "; cin >> x;
+            root = remove(root, x);
+        } else if (choice == 4) {
+            inorder(root); cout << "\n";
+        } else if (choice == 5) {
+            cout << "Count = " << getLength(root) << "\n";
+        }
+    }
+    return 0;
+}
+
+
+```
+
+</div>
+
+- For a full program, put the Node struct + functions above main.
+
+
+
+<div class="definition-shakeflash-container">
+  <div class="definition-shakeflash-title">Common bugs</div>
+  <div class="definition-shakeflash-shadebox">
+
+- Forgetting return root; in insert/remove
+
+- Mixing . vs ->
+
+	- pointer uses ->
+
+- Not updating root:
+
+	- must do root = insert(root, x);
+
+- Duplicates handling:
+
+	- decide: ignore, count, or store duplicates on one side
+
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+</div>
+	
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/settings.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/effects.js"></script>
+<!--<script src="settings.js"></script>-->
+<!--<script src="effects.js"></script>-->
+</body>
+</html>

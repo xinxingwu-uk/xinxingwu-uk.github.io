@@ -1,0 +1,1396 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>C++ Review</title>
+    <meta name="description" content="A set of slides for Machine Learning">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/effectsGreen.css">
+	<!--<link rel="stylesheet" href="./css/style.css">-->
+	<!--<link rel="stylesheet" href="./css/effects.css">-->
+	
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+	</script>
+
+	<style>
+	    pre {
+            background-color: black;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+        }
+        code {
+            font-family: "Courier New", monospace;
+            color: #d63384; /* Python-style color */
+        }
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }	
+	</style>
+
+  </head>
+
+  <body onload="startTime()">
+    <div class="reveal" >
+	  <p><img src="images/midwaylogo.png"  align="left" height="6%" width="6%" style="vertical-align:left;margin:-15px 5px"><img src="images/mueagle.png"  color="white" align="left" height="4%" width="4%" style="vertical-align:center;margin:-1% 45%">
+		<div style="color:white;font-size: 20px; vertical-align:left;margin:-1% 0%" align="right" id="realtimeclock"></div></p>
+      <div class="slides">
+
+  <div class="me">Xinxing Wu</div>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown id="cover"><textarea data-template>
+
+<p class='titlep'>&nbsp;</p>
+
+# C++ Review
+
+<hr>
+
+<br>
+
+Xinxing Wu
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline
+
+[<p class="hover-underline-animation">Loops, continue, break</p>](#/ch1)
+
+[<p class="hover-underline-animation">Arrays</p>](#/ch2)
+
+[<p class="hover-underline-animation">Structures</p>](#/ch3)
+
+</textarea></section>
+
+
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline (Cont.)
+
+[<p class="hover-underline-animation">Enums</p>](#/ch4)
+
+[<p class="hover-underline-animation">Pointers</p>](#/ch5)
+
+[<p class="hover-underline-animation">Exception handling</p>](#/ch6)
+
+[<p class="hover-underline-animation">Encapsulation</p>](#/ch7)
+
+</textarea></section>
+
+
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline  (Cont.)
+
+[<p class="hover-underline-animation">Inheritance</p>](#/ch8)
+
+[<p class="hover-underline-animation">Polymorphism</p>](#/ch9)
+
+[<p class="hover-underline-animation">Templates</p>](#/ch10)
+
+[<p class="hover-underline-animation">Files</p>](#/ch11)
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch1" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Loops, continue, break</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Concept intro</div>
+  <div class="definition-pro-Y-shadebox">
+  <div style="width: 800px;"></div>
+A loop repeats code while a condition is true (or for a fixed count).
+
+- for: repeat a known number of times
+
+- while: repeat while condition stays true
+
+- do...while: runs at least once, then checks condition
+Inside loops:
+
+- continue: skip the rest of the current iteration and go to the next one
+
+- break: stop the loop immediately
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Examples</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Taking attendance: go student by student (loop). If someone is absent, you skip and go to the next (continue).
+
+- Shopping checkout: scan items (loop). If you see a “STOP” sign (store closing), you stop scanning (break).
+
+- Cleaning apples: wash each apple (loop). If an apple is rotten, toss it and move on (continue).
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Lab: Positive Sum Until Stop</div>
+  <div class="definition-shadebox">
+  
+Read integers from the user repeatedly:
+
+- If the number is negative, ignore it (continue)
+
+- If the number is 0, stop input (break)
+
+- Otherwise, add it to a sum
+
+At the end, print the sum and how many positives were counted.
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+
+<div  style="font-size: 1.3em; line-height: 0.9;">
+
+```
+#include <iostream>
+
+int main() {
+    int sum = 0;
+    int count = 0;
+
+    while (true) {
+        int x;
+        std::cout << "Enter an integer (0 to stop, negatives ignored): ";
+        std::cin >> x;
+
+        if (x == 0) {
+            break; // stop the loop immediately
+        }
+
+        if (x < 0) {
+            continue; // skip this iteration, go ask again
+        }
+
+        sum += x;
+        count += 1;
+    }
+
+    std::cout << "Count of positive numbers: " << count << "\n";
+    std::cout << "Sum of positive numbers: " << sum << "\n";
+    return 0;
+}
+
+```
+</div>
+</div>
+
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch2" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Arrays</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Concept intro</div>
+  <div class="definition-pro-Y-shadebox">
+  <div style="width: 800px;"></div>
+
+An array is a fixed-size list of elements of the same type stored contiguously in memory.
+
+- Example: int scores[5]; has exactly 5 integers.
+
+- Access elements with an index: scores[0] ... scores[4].
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Examples</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- 7-day weather: store temperatures for Monday–Sunday in one place.
+
+- Seats in a row: seat #0, #1, #2… fixed count.
+
+- Monthly bills: 12 numbers for 12 months.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Lab: Weekly Temperatures</div>
+  <div class="definition-shadebox">
+  
+Store 7 temperatures in an array, then compute:
+
+- average temperature
+
+- highest temperature
+
+- lowest temperature
+   </div>
+</div>
+
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+
+<div  style="font-size: 1.3em; line-height: 0.9;">
+
+```
+#include <iostream>
+
+int main() {
+    const int DAYS = 7;
+    double temps[DAYS];
+
+    for (int i = 0; i < DAYS; i++) {
+        std::cout << "Enter temperature for day " << (i + 1) << ": ";
+        std::cin >> temps[i];
+    }
+
+    double sum = 0.0;
+    double minT = temps[0];
+    double maxT = temps[0];
+
+    for (int i = 0; i < DAYS; i++) {
+        sum += temps[i];
+        if (temps[i] < minT) minT = temps[i];
+        if (temps[i] > maxT) maxT = temps[i];
+    }
+
+    double avg = sum / DAYS;
+
+    std::cout << "Average: " << avg << "\n";
+    std::cout << "Min: " << minT << "\n";
+    std::cout << "Max: " << maxT << "\n";
+    return 0;
+}
+
+```
+</div>
+
+</div>
+
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch3" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Structures</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Concept intro</div>
+  <div class="definition-pro-Y-shadebox">
+  <div style="width: 800px;"></div>
+
+- A structure groups multiple related fields into one type.
+- Example: a Student has name, id, gpa.
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Examples</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Contact card: name + phone + email belong together.
+
+- Product record: product name + price + quantity.
+
+- Car info: brand + year + mileage.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Lab: Simple Student Record</div>
+  <div class="definition-shadebox">
+  
+Create a struct Student { name, id, gpa }, input 3 students, then print the student with the highest GPA.
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+
+<div  style="font-size: 1.3em; line-height: 0.9;">
+
+```
+#include <iostream>
+#include <string>
+
+struct Student {
+    std::string name;
+    int id;
+    double gpa;
+};
+
+int main() {
+    const int N = 3;
+    Student students[N];
+
+    for (int i = 0; i < N; i++) {
+        std::cout << "Student " << (i + 1) << " name: ";
+        std::cin >> students[i].name;
+
+        std::cout << "Student " << (i + 1) << " id: ";
+        std::cin >> students[i].id;
+
+        std::cout << "Student " << (i + 1) << " gpa: ";
+        std::cin >> students[i].gpa;
+    }
+
+    int bestIndex = 0;
+    for (int i = 1; i < N; i++) {
+        if (students[i].gpa > students[bestIndex].gpa) {
+            bestIndex = i;
+        }
+    }
+
+    std::cout << "Highest GPA student:\n";
+    std::cout << "Name: " << students[bestIndex].name << "\n";
+    std::cout << "ID: " << students[bestIndex].id << "\n";
+    std::cout << "GPA: " << students[bestIndex].gpa << "\n";
+    return 0;
+}
+
+```
+
+</div>
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch4" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Enums</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Concept intro</div>
+  <div class="definition-pro-Y-shadebox">
+  <div style="width: 800px;"></div>
+
+An enum is a type with a limited set of named values.
+
+- Good for states, modes, options.
+
+- Prefer enum class in modern C++ (safer, avoids name collisions).
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Examples</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Traffic light: Red / Yellow / Green.
+
+- Game difficulty: Easy / Normal / Hard.
+
+- Order status: Placed / Shipped / Delivered.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Lab: Menu with enum class</div>
+  <div class="definition-shadebox">
+  
+Create an enum class for menu choices: Add, Subtract, Quit. Use a loop to keep running until Quit.
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+
+<div  style="font-size: 1.3em; line-height: 0.9;">
+
+```
+#include <iostream>
+
+enum class Choice {
+    Add = 1,
+    Subtract = 2,
+    Quit = 3
+};
+
+int main() {
+    while (true) {
+        std::cout << "\n1) Add\n2) Subtract\n3) Quit\nChoose: ";
+        int input;
+        std::cin >> input;
+
+        Choice c = static_cast<Choice>(input);
+
+        if (c == Choice::Quit) {
+            std::cout << "Goodbye!\n";
+            break;
+        }
+
+        int a, b;
+        std::cout << "Enter two integers: ";
+        std::cin >> a >> b;
+
+        if (c == Choice::Add) {
+            std::cout << "Result: " << (a + b) << "\n";
+        } else if (c == Choice::Subtract) {
+            std::cout << "Result: " << (a - b) << "\n";
+        } else {
+            std::cout << "Invalid choice.\n";
+        }
+    }
+
+    return 0;
+}
+
+```
+
+</div>
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch5" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Pointers</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Concept intro</div>
+  <div class="definition-pro-Y-shadebox">
+  <div style="width: 800px;"></div>
+
+A pointer stores a memory address (where something lives).
+
+- &x = address of x
+
+- p = &x makes p point to x
+
+- *p dereferences the pointer (access the value at that address)
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Examples</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Home address: the address isn’t the house, but it tells you where the house is.
+
+- Library call number: points you to where the book is stored.
+
+- Remote control: you press buttons here, it affects the TV over there.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Lab: Swap Two Numbers Using Pointers</div>
+  <div class="definition-shadebox">
+  
+Write a function swapInts(int* a, int* b) that swaps two integers.
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+
+<div  style="font-size: 1.3em; line-height: 0.9;">
+
+```
+#include <iostream>
+
+void swapInts(int* a, int* b) {
+    int temp = *a;   // read value at address a
+    *a = *b;         // write value at address a
+    *b = temp;       // write value at address b
+}
+
+int main() {
+    int x = 10;
+    int y = 99;
+
+    std::cout << "Before: x=" << x << " y=" << y << "\n";
+    swapInts(&x, &y); // pass addresses
+    std::cout << "After:  x=" << x << " y=" << y << "\n";
+
+    return 0;
+}
+
+```
+
+</div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch6" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Exception handling</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Concept intro</div>
+  <div class="definition-pro-Y-shadebox">
+  <div style="width: 800px;"></div>
+
+Exceptions handle unusual error situations without crashing immediately.
+
+- Code that might fail goes in try { ... }
+
+- Errors are caught in catch (...) { ... }
+
+- You can throw an exception when you detect an error.
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Examples</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- ATM transaction: if the card is invalid, the system stops the normal flow and shows an error message.
+
+- Delivering a package: if the address is wrong, delivery is rerouted to an exception process.
+
+- Restaurant order: if ingredient is missing, the kitchen notifies and asks for a substitute.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Lab: Safe Division</div>
+  <div class="definition-shadebox">
+  
+Ask for two integers a and b. If b == 0, throw an exception. Catch it and print a friendly message.
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+
+<div  style="font-size: 1.3em; line-height: 0.9;">
+
+```
+#include <iostream>
+#include <stdexcept>
+
+int safeDivide(int a, int b) {
+    if (b == 0) {
+        throw std::runtime_error("Cannot divide by zero.");
+    }
+    return a / b;
+}
+
+int main() {
+    int a, b;
+    std::cout << "Enter a and b (a / b): ";
+    std::cin >> a >> b;
+
+    try {
+        int result = safeDivide(a, b);
+        std::cout << "Result: " << result << "\n";
+    } catch (const std::runtime_error& e) {
+        std::cout << "Error: " << e.what() << "\n";
+    }
+
+    return 0;
+}
+
+```
+
+</div>
+
+</div>
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch7" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Encapsulation</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Concept intro</div>
+  <div class="definition-pro-Y-shadebox">
+  <div style="width: 800px;"></div>
+
+Encapsulation means bundling data + methods together and protecting the data using access modifiers:
+
+- private: hidden from outside code
+
+- public: accessible from outside
+
+This prevents “random code” from corrupting object state.
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Examples</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Bank account: you can’t directly set your balance; you must deposit/withdraw.
+
+- Car dashboard: you use pedals/steering, not directly modifying engine internals.
+
+- Phone settings: you change brightness via controls, not by editing hardware.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Lab: BankAccount Class</div>
+  <div class="definition-shadebox">
+  
+Create a BankAccount with:
+
+- private balance
+
+- public deposit(amount), withdraw(amount), getBalance()
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+
+<div  style="font-size: 1.3em; line-height: 0.9;">
+
+```
+#include <iostream>
+
+class BankAccount {
+private:
+    double balance;
+
+public:
+    BankAccount(double startingBalance) {
+        balance = startingBalance;
+    }
+
+    void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+        }
+    }
+
+    bool withdraw(double amount) {
+        if (amount > 0 && amount <= balance) {
+            balance -= amount;
+            return true;
+        }
+        return false;
+    }
+
+    double getBalance() const {
+        return balance;
+    }
+};
+
+int main() {
+    BankAccount acc(100.0);
+
+    acc.deposit(50.0);
+
+    if (!acc.withdraw(30.0)) {
+        std::cout << "Withdraw failed.\n";
+    }
+
+    std::cout << "Balance: " << acc.getBalance() << "\n";
+    return 0;
+}
+
+```
+
+</div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch8" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Inheritance</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Concept intro</div>
+  <div class="definition-pro-Y-shadebox">
+  <div style="width: 800px;"></div>
+
+Inheritance is an OOP feature where a new class (derived/child) is built from an existing class (base/parent).
+
+- The child class reuses the parent’s data/functions and can add new features or override behavior.
+
+- Purpose: reduce repeated code, model “is-a” relationships.
+
+	- Example: Dog is an Animal, Car is a Vehicle.
+
+<br>
+
+<hr>
+
+<div id="shadebox-glass" class="shadebox glass">
+
+Key words
+
+- class Dog : public Animal { ... };
+
+- public inheritance means: “Dog is an Animal” and keeps public interface accessible.
+
+- virtual is often used when you want overriding + polymorphism.
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Examples</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- School roles
+
+	- Person → Student / Teacher
+
+- Both share name/id (from Person), but Student has major; Teacher has office hours.
+
+- Vehicles
+	- Vehicle → Car / Bike
+
+- All vehicles can “move” and have “speed,” but cars have fuel level and bikes have gear count.
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Examples (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Online accounts
+
+	- Account → AdminAccount / StudentAccount
+
+- All accounts can login/logout, but admin can manage users while student can submit assignments.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Lab: Vehicle Inheritances</div>
+  <div class="definition-shadebox">
+  
+Create a base class Vehicle with:
+
+- protected data: brand
+
+- a constructor that sets brand
+
+- a public function showInfo() that prints the brand
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Lab: Vehicle Inheritances (Cont.)</div>
+  <div class="definition-shadebox">
+
+Create a derived class Car that inherits from Vehicle and adds:
+
+- private data: doors
+
+- a constructor that sets both brand and doors
+
+- a public function showCarInfo() that prints brand and doors
+
+In main(), create a Car object and call both showInfo() and showCarInfo().
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+
+<div  style="font-size: 1.3em; line-height: 0.9;">
+
+```
+#include <iostream>
+#include <string>
+
+// Base (parent) class
+class Vehicle {
+protected:
+    std::string brand; // protected: child classes can use it
+
+public:
+    // Constructor: runs when a Vehicle (or derived) object is created
+    Vehicle(const std::string& b) {
+        brand = b;
+    }
+
+    // A simple function that all vehicles have
+    void showInfo() const {
+        std::cout << "Brand: " << brand << "\n";
+    }
+};
+
+// Derived (child) class
+class Car : public Vehicle {
+private:
+    int doors;
+
+public:
+    // Car constructor calls the Vehicle constructor using : Vehicle(b)
+    Car(const std::string& b, int d) : Vehicle(b) {
+        doors = d;
+    }
+
+    void showCarInfo() const {
+        // brand comes from Vehicle (because Car inherited it)
+        std::cout << "Car brand: " << brand << "\n";
+        std::cout << "Doors: " << doors << "\n";
+    }
+};
+
+int main() {
+    Car myCar("Toyota", 4);
+
+    // Inherited function from Vehicle
+    myCar.showInfo();
+
+    // Car's own function
+    myCar.showCarInfo();
+
+    return 0;
+}
+
+```
+
+</div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch9" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Polymorphism</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Concept intro</div>
+  <div class="definition-pro-Y-shadebox">
+  <div style="width: 800px;"></div>
+
+Polymorphism lets you treat different derived types as the same base type, while calling the “right” behavior at runtime (via virtual functions).
+
+- Base class pointer/reference can point to derived objects.
+
+- virtual enables dynamic dispatch (runtime decision).
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Examples</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Animals: all animals “make a sound,” but each one is different.
+
+- Vehicles: all vehicles “move,” but a car drives, a boat sails.
+
+- Payment methods: “pay()” works differently for cash vs card vs online.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Lab: Animals Speak</div>
+  <div class="definition-shadebox">
+  
+Make a base class Animal with virtual void speak(). Create Dog and Cat. Store them as Animal* and call speak().
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+
+<div  style="font-size: 1.3em; line-height: 0.9;">
+
+```
+#include <iostream>
+#include <vector>
+
+class Animal {
+public:
+    virtual void speak() const {
+        std::cout << "Some animal sound...\n";
+    }
+    virtual ~Animal() {} // important for base classes
+};
+
+class Dog : public Animal {
+public:
+    void speak() const override {
+        std::cout << "Woof!\n";
+    }
+};
+
+class Cat : public Animal {
+public:
+    void speak() const override {
+        std::cout << "Meow!\n";
+    }
+};
+
+int main() {
+    Dog d;
+    Cat c;
+
+    std::vector<Animal*> animals;
+    animals.push_back(&d);
+    animals.push_back(&c);
+
+    for (Animal* a : animals) {
+        a->speak(); // calls the correct derived version
+    }
+
+    return 0;
+}
+
+```
+
+</div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch10" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Templates</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Concept intro</div>
+  <div class="definition-pro-Y-shadebox">
+  <div style="width: 800px;"></div>
+
+Templates allow writing code that works with many types.
+
+- Function templates: same logic for int, double, std::string, etc.
+
+- Class templates: containers like std::vector<T>
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Examples</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- One recipe, different servings: same steps, different quantities.
+
+- Universal box: can store toys, books, tools—still a box.
+
+- “Maximum” idea: max of two numbers, max of two prices, max of two scores.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Lab: Generic Max Function</div>
+  <div class="definition-shadebox">
+  
+Write a template function myMax(a, b) returning the larger value. Test with int and double.
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+
+<div  style="font-size: 1.3em; line-height: 0.9;">
+
+```
+#include <iostream>
+
+template <typename T>
+T myMax(T a, T b) {
+    if (a > b) return a;
+    return b;
+}
+
+int main() {
+    int a = 10, b = 25;
+    std::cout << "Max int: " << myMax(a, b) << "\n";
+
+    double x = 3.14, y = 2.72;
+    std::cout << "Max double: " << myMax(x, y) << "\n";
+
+    return 0;
+}
+
+```
+
+</div>
+
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch11" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Files</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Concept intro</div>
+  <div class="definition-pro-Y-shadebox">
+  <div style="width: 800px;"></div>
+
+File I/O lets your program save data and load data later.
+
+- std::ofstream: write to a file
+
+- std::ifstream: read from a file
+
+- std::fstream: read + write
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Examples</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Notebook: write notes now, read them tomorrow.
+
+- Receipts: store transaction history for future checking.
+
+- Game save file: continue where you left off.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Lab: Simple To-Do Saver</div>
+  <div class="definition-shadebox">
+  
+Ask the user to type 3 tasks, save them to todo.txt, then read the file and print it back.
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+
+<div  style="font-size: 1.3em; line-height: 0.9;">
+
+```
+#include <iostream>
+#include <fstream>
+#include <string>
+
+int main() {
+    // 1) Write tasks to a file
+    std::ofstream out("todo.txt");
+    if (!out) {
+        std::cout << "Error: could not open file for writing.\n";
+        return 1;
+    }
+
+    for (int i = 0; i < 3; i++) {
+        std::string task;
+        std::cout << "Enter task " << (i + 1) << ": ";
+        std::getline(std::cin >> std::ws, task); // std::ws eats leftover whitespace/newlines
+        out << task << "\n";
+    }
+    out.close();
+
+    // 2) Read tasks back from the file
+    std::ifstream in("todo.txt");
+    if (!in) {
+        std::cout << "Error: could not open file for reading.\n";
+        return 1;
+    }
+
+    std::cout << "\nTasks from todo.txt:\n";
+    std::string line;
+    while (std::getline(in, line)) {
+        std::cout << "- " << line << "\n";
+    }
+
+    return 0;
+}
+
+```
+
+</div>
+</div>
+
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+</div>
+	
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/settings.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/effects.js"></script>
+<!--<script src="settings.js"></script>-->
+<!--<script src="effects.js"></script>-->
+</body>
+</html>

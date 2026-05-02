@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Guess the Number</title>
+  <style>
+    :root{
+      --bg1:#0b1020; --bg2:#070a14;
+      --card:#0b1433; --card2:#060a18;
+      --text:#eaf2ff; --muted:rgba(234,242,255,.75);
+      --border:rgba(255,255,255,.12);
+      --shadow:rgba(0,0,0,.45);
+      --good:#3ddc97; --warn:#ffd166; --bad:#ff5c7a;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; min-height:100vh; display:grid; place-items:center;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: radial-gradient(1000px 650px at 20% 10%, rgba(110,180,255,.20), transparent 60%),
+                  radial-gradient(900px 600px at 80% 30%, rgba(255,110,200,.18), transparent 55%),
+                  linear-gradient(180deg, var(--bg1), var(--bg2));
+      color:var(--text);
+      padding:22px;
+    }
+    .wrap{
+      width:min(820px, 100%);
+      border:1px solid var(--border);
+      border-radius:22px;
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      box-shadow: 0 22px 70px var(--shadow);
+      overflow:hidden;
+    }
+    header{
+      padding:18px 18px 0 18px;
+    }
+    .hero{
+      border-radius:18px;
+      padding:18px;
+      background: linear-gradient(180deg, rgba(11,20,51,.85), rgba(6,10,24,.88));
+      border:1px solid rgba(255,255,255,.10);
+    }
+    h1{margin:0; font-size:clamp(22px, 2.2vw + 14px, 34px); letter-spacing:.2px}
+    .sub{margin:8px 0 0; color:var(--muted); line-height:1.5}
+    main{padding:18px}
+    .grid{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:14px;
+    }
+    @media (max-width: 720px){
+      .grid{grid-template-columns:1fr}
+    }
+    .card{
+      border-radius:18px;
+      background: linear-gradient(180deg, rgba(11,20,51,.70), rgba(6,10,24,.82));
+      border:1px solid rgba(255,255,255,.10);
+      padding:16px;
+    }
+    label{display:block; color:var(--muted); margin-bottom:8px}
+    .row{display:flex; gap:10px; flex-wrap:wrap}
+    input[type="number"]{
+      flex:1;
+      min-width:180px;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.25);
+      color:var(--text);
+      font-size:16px;
+      outline:none;
+    }
+    input[type="number"]:focus{
+      border-color: rgba(110,180,255,.55);
+      box-shadow: 0 0 0 4px rgba(110,180,255,.15);
+    }
+    button{
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.10);
+      color:var(--text);
+      cursor:pointer;
+      font-size:15px;
+    }
+    button:hover{background: rgba(255,255,255,.14)}
+    button:active{transform: translateY(1px)}
+    .hint{
+      margin-top:12px;
+      padding:12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      line-height:1.5;
+      min-height:52px;
+    }
+    .hint.good{border-color: rgba(61,220,151,.35)}
+    .hint.warn{border-color: rgba(255,209,102,.35)}
+    .hint.bad{border-color: rgba(255,92,122,.35)}
+    .stats{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-top:12px;
+    }
+    .stat{
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      padding:12px;
+    }
+    .k{color:var(--muted); font-size:13px}
+    .v{font-size:18px; margin-top:4px}
+    .footerNote{
+      margin-top:10px;
+      color: rgba(234,242,255,.65);
+      font-size:13px;
+    }
+    .pill{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.08);
+      color: rgba(234,242,255,.85);
+      font-size:13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="hero">
+        <h1>Guess the Number 🎯</h1>
+        <p class="sub">I’m thinking of a number from <b>1</b> to <b>100</b>. Type a guess and I’ll tell you if it’s too high or too low.</p>
+      </div>
+    </header>
+
+    <main>
+      <div class="grid">
+        <section class="card">
+          <label for="guessInput">Your guess</label>
+          <div class="row">
+            <input id="guessInput" type="number" inputmode="numeric" min="1" max="100" placeholder="1 to 100" />
+            <button id="guessBtn">Guess</button>
+            <button id="restartBtn">Restart</button>
+          </div>
+
+          <div id="hintBox" class="hint">
+            Make your first guess!
+          </div>
+
+          <div class="footerNote">
+            Tip: Press <span class="pill">Enter</span> to submit.
+          </div>
+        </section>
+
+        <aside class="card">
+          <div class="stats">
+            <div class="stat">
+              <div class="k">Attempts</div>
+              <div id="attemptsVal" class="v">0</div>
+            </div>
+            <div class="stat">
+              <div class="k">Last guess</div>
+              <div id="lastGuessVal" class="v">—</div>
+            </div>
+            <div class="stat">
+              <div class="k">Range</div>
+              <div class="v">1–100</div>
+            </div>
+            <div class="stat">
+              <div class="k">Status</div>
+              <div id="statusVal" class="v">Playing</div>
+            </div>
+          </div>
+
+          <div class="hint" style="margin-top:12px;">
+            Goal: guess the secret number in as few tries as you can.
+          </div>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    var secret = 0;
+    var attempts = 0;
+    var gameOver = false;
+
+    function randomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function setHint(text, kind) {
+      var hintBox = document.getElementById("hintBox");
+      hintBox.className = "hint"; // reset classes
+      if (kind) hintBox.className = "hint " + kind;
+      hintBox.textContent = text;
+    }
+
+    function updateStats(lastGuessText, statusText) {
+      document.getElementById("attemptsVal").textContent = String(attempts);
+      document.getElementById("lastGuessVal").textContent = lastGuessText;
+      document.getElementById("statusVal").textContent = statusText;
+    }
+
+    function startGame() {
+      secret = randomInt(1, 100);
+      attempts = 0;
+      gameOver = false;
+
+      document.getElementById("guessInput").value = "";
+      document.getElementById("guessInput").disabled = false;
+      document.getElementById("guessBtn").disabled = false;
+
+      setHint("Make your first guess!", "");
+      updateStats("—", "Playing");
+      document.getElementById("guessInput").focus();
+    }
+
+    function endGame() {
+      gameOver = true;
+      document.getElementById("guessInput").disabled = true;
+      document.getElementById("guessBtn").disabled = true;
+    }
+
+    function handleGuess() {
+      if (gameOver) return;
+
+      var input = document.getElementById("guessInput");
+      var val = input.value;
+
+      if (val === "" || val === null) {
+        setHint("Type a number first (1 to 100).", "bad");
+        return;
+      }
+
+      var guess = Number(val);
+
+      if (!Number.isFinite(guess) || guess % 1 !== 0) {
+        setHint("Please enter a whole number (integer).", "bad");
+        return;
+      }
+
+      if (guess < 1 || guess > 100) {
+        setHint("Out of range. Please guess between 1 and 100.", "bad");
+        return;
+      }
+
+      attempts += 1;
+      updateStats(String(guess), "Playing");
+
+      if (guess === secret) {
+        setHint("✅ Correct! The number was " + secret + ". You won in " + attempts + " attempts.", "good");
+        updateStats(String(guess), "Won");
+        endGame();
+        return;
+      }
+
+      if (guess < secret) {
+        setHint("Too low 📉 Try a higher number.", "warn");
+      } else {
+        setHint("Too high 📈 Try a lower number.", "warn");
+      }
+
+      input.select();
+      input.focus();
+    }
+
+    function wireUI() {
+      document.getElementById("guessBtn").addEventListener("click", function () {
+        handleGuess();
+      });
+
+      document.getElementById("restartBtn").addEventListener("click", function () {
+        startGame();
+      });
+
+      document.getElementById("guessInput").addEventListener("keydown", function (e) {
+        if (e.key === "Enter") handleGuess();
+      });
+    }
+
+    wireUI();
+    startGame();
+  </script>
+</body>
+</html>
