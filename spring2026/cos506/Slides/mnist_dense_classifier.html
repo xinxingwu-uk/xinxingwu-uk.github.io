@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Beginner MNIST Classifier</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 24px;
+      background: #f5f7fb;
+      color: #222;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: white;
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+    h1, h2 {
+      margin-top: 0;
+    }
+    .note {
+      background: #eef4ff;
+      padding: 14px;
+      border-radius: 10px;
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 18px 0;
+    }
+    button {
+      padding: 12px 18px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: bold;
+    }
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+    .primary { background: #2563eb; color: white; }
+    .secondary { background: #10b981; color: white; }
+    .third { background: #7c3aed; color: white; }
+    .status, .summary {
+      background: #fafafa;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 14px;
+      margin-top: 12px;
+      white-space: pre-wrap;
+      line-height: 1.5;
+    }
+    .prediction-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+    .card {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+      background: #fcfcfc;
+    }
+    canvas {
+      border: 1px solid #ddd;
+      image-rendering: pixelated;
+      width: 84px;
+      height: 84px;
+      margin-bottom: 8px;
+    }
+    ul {
+      line-height: 1.7;
+    }
+    code {
+      background: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>MNIST Digit Classification - Beginner Dense Model</h1>
+
+    <div class="note">
+      This page is a beginner browser version of the Python example. It uses <b>TensorFlow.js</b> instead of Python TensorFlow.<br>
+      Goal: look at a handwritten digit image and classify it as <b>0 to 9</b>.
+    </div>
+
+    <h2>What this model does</h2>
+    <ul>
+      <li>Loads MNIST handwritten digit images.</li>
+      <li>Flattens each 28x28 image into 784 numbers.</li>
+      <li>Uses a simple dense neural network.</li>
+      <li>Predicts one of 10 digit classes.</li>
+    </ul>
+
+    <div class="controls">
+      <button id="loadBtn" class="primary">1. Load Data</button>
+      <button id="trainBtn" class="secondary" disabled>2. Train Model</button>
+      <button id="predictBtn" class="third" disabled>3. Show Predictions</button>
+    </div>
+
+    <div class="summary" id="summaryBox">
+Model summary will appear here.
+    </div>
+
+    <div class="status" id="statusBox">
+Status messages will appear here.
+    </div>
+
+    <h2>Sample Predictions</h2>
+    <div class="prediction-grid" id="predictionGrid"></div>
+  </div>
+
+  <script>
+    var IMAGE_SIZE = 784;
+    var NUM_CLASSES = 10;
+    var NUM_DATASET_ELEMENTS = 65000;
+    var TRAIN_TEST_RATIO = 5 / 6;
+    var NUM_TRAIN_ELEMENTS = Math.floor(TRAIN_TEST_RATIO * NUM_DATASET_ELEMENTS);
+    var NUM_TEST_ELEMENTS = NUM_DATASET_ELEMENTS - NUM_TRAIN_ELEMENTS;
+
+    var MNIST_IMAGES_SPRITE_PATH = 'https://storage.googleapis.com/learnjs-data/model-builder/mnist_images.png';
+    var MNIST_LABELS_PATH = 'https://storage.googleapis.com/learnjs-data/model-builder/mnist_labels_uint8';
+
+    var TRAIN_DATA_SIZE = 8000;
+    var TEST_DATA_SIZE = 2000;
+    var BATCH_SIZE = 256;
+    var EPOCHS = 10;
+
+    var data = null;
+    var model = null;
+    var testExamples = null;
+
+    function MnistData() {
+      this.shuffledTrainIndex = 0;
+      this.shuffledTestIndex = 0;
+    }
+
+    MnistData.prototype.load = async function() {
+      var img = new Image();
+      var canvas = document.createElement('canvas');
+      var ctx = canvas.getContext('2d');
+      var labelsRequest = fetch(MNIST_LABELS_PATH);
+      var self = this;
+
+      var imgRequest = new Promise(function(resolve) {
+        img.crossOrigin = '';
+        img.onload = function() {
+          img.width = img.naturalWidth;
+          img.height = img.naturalHeight;
+
+          var datasetBytesBuffer = new ArrayBuffer(NUM_DATASET_ELEMENTS * IMAGE_SIZE * 4);
+          var chunkSize = 5000;
+          canvas.width = img.width;
+          canvas.height = chunkSize;
+
+          for (var i = 0; i < NUM_DATASET_ELEMENTS / chunkSize; i++) {
+            var datasetBytesView = new Float32Array(
+              datasetBytesBuffer,
+              i * IMAGE_SIZE * chunkSize * 4,
+              IMAGE_SIZE * chunkSize
+            );
+
+            ctx.drawImage(
+              img,
+              0,
+              i * chunkSize,
+              img.width,
+              chunkSize,
+              0,
+              0,
+              img.width,
+              chunkSize
+            );
+
+            var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            for (var j = 0; j < imageData.data.length / 4; j++) {
+              datasetBytesView[j] = imageData.data[j * 4] / 255;
+            }
+          }
+
+          self.datasetImages = new Float32Array(datasetBytesBuffer);
+          resolve();
+        };
+        img.src = MNIST_IMAGES_SPRITE_PATH;
+      });
+
+      var labelsResponse = await labelsRequest;
+      var labelsBuffer = await labelsResponse.arrayBuffer();
+      this.datasetLabels = new Uint8Array(labelsBuffer);
+      await imgRequest;
+
+      this.trainIndices = tf.util.createShuffledIndices(NUM_TRAIN_ELEMENTS);
+      this.testIndices = tf.util.createShuffledIndices(NUM_TEST_ELEMENTS);
+
+      this.trainImages = this.datasetImages.slice(0, IMAGE_SIZE * NUM_TRAIN_ELEMENTS);
+      this.testImages = this.datasetImages.slice(IMAGE_SIZE * NUM_TRAIN_ELEMENTS);
+      this.trainLabels = this.datasetLabels.slice(0, NUM_CLASSES * NUM_TRAIN_ELEMENTS);
+      this.testLabels = this.datasetLabels.slice(NUM_CLASSES * NUM_TRAIN_ELEMENTS);
+    };
+
+    MnistData.prototype.nextTrainBatch = function(batchSize) {
+      return this.nextBatch(
+        batchSize,
+        [this.trainImages, this.trainLabels],
+        function() {
+          this.shuffledTrainIndex = (this.shuffledTrainIndex + 1) % this.trainIndices.length;
+          return this.trainIndices[this.shuffledTrainIndex];
+        }.bind(this)
+      );
+    };
+
+    MnistData.prototype.nextTestBatch = function(batchSize) {
+      return this.nextBatch(
+        batchSize,
+        [this.testImages, this.testLabels],
+        function() {
+          this.shuffledTestIndex = (this.shuffledTestIndex + 1) % this.testIndices.length;
+          return this.testIndices[this.shuffledTestIndex];
+        }.bind(this)
+      );
+    };
+
+    MnistData.prototype.nextBatch = function(batchSize, dataArrays, indexFunction) {
+      var batchImagesArray = new Float32Array(batchSize * IMAGE_SIZE);
+      var batchLabelsArray = new Uint8Array(batchSize * NUM_CLASSES);
+
+      for (var i = 0; i < batchSize; i++) {
+        var idx = indexFunction();
+        var image = dataArrays[0].slice(idx * IMAGE_SIZE, idx * IMAGE_SIZE + IMAGE_SIZE);
+        batchImagesArray.set(image, i * IMAGE_SIZE);
+
+        var label = dataArrays[1].slice(idx * NUM_CLASSES, idx * NUM_CLASSES + NUM_CLASSES);
+        batchLabelsArray.set(label, i * NUM_CLASSES);
+      }
+
+      var xs = tf.tensor2d(batchImagesArray, [batchSize, IMAGE_SIZE]);
+      var labels = tf.tensor2d(batchLabelsArray, [batchSize, NUM_CLASSES]);
+      return { xs: xs, labels: labels };
+    };
+
+    function setStatus(message) {
+      document.getElementById('statusBox').textContent = message;
+    }
+
+    function appendStatus(message) {
+      var box = document.getElementById('statusBox');
+      box.textContent += '\n' + message;
+    }
+
+    function setSummary(message) {
+      document.getElementById('summaryBox').textContent = message;
+    }
+
+    function buildDenseModel() {
+      var neuralNet = tf.sequential();
+      neuralNet.add(tf.layers.dense({
+        inputShape: [IMAGE_SIZE],
+        units: 128,
+        activation: 'relu'
+      }));
+      neuralNet.add(tf.layers.dense({
+        units: 64,
+        activation: 'relu'
+      }));
+      neuralNet.add(tf.layers.dense({
+        units: 10,
+        activation: 'softmax'
+      }));
+
+      neuralNet.compile({
+        optimizer: 'adam',
+        loss: 'categoricalCrossentropy',
+        metrics: ['accuracy']
+      });
+
+      return neuralNet;
+    }
+
+    function updateSummary() {
+      if (!model) {
+        return;
+      }
+
+      var lines = [];
+      lines.push('Model: Simple Dense Neural Network');
+      lines.push('Input: 784 numbers (28x28 image flattened)');
+      lines.push('Hidden layer 1: 128 neurons, ReLU');
+      lines.push('Hidden layer 2: 64 neurons, ReLU');
+      lines.push('Output layer: 10 neurons, Softmax');
+      lines.push('Training subset: ' + TRAIN_DATA_SIZE + ' images');
+      lines.push('Test subset: ' + TEST_DATA_SIZE + ' images');
+      lines.push('Epochs: ' + EPOCHS);
+      setSummary(lines.join('\n'));
+    }
+
+    async function loadData() {
+      setStatus('Loading MNIST data... This may take a little time the first time.');
+      data = new MnistData();
+      await data.load();
+      setStatus('Data loaded successfully. You can now train the model.');
+      document.getElementById('trainBtn').disabled = false;
+    }
+
+    async function trainModel() {
+      if (!data) {
+        setStatus('Please load the data first.');
+        return;
+      }
+
+      model = buildDenseModel();
+      updateSummary();
+
+      setStatus('Preparing training and test batches...');
+
+      var trainBatch = data.nextTrainBatch(TRAIN_DATA_SIZE);
+      var testBatch = data.nextTestBatch(TEST_DATA_SIZE);
+
+      var trainXs = trainBatch.xs;
+      var trainYs = trainBatch.labels;
+      var testXs = testBatch.xs;
+      var testYs = testBatch.labels;
+
+      testExamples = testBatch;
+
+      setStatus('Training started...');
+
+      await model.fit(trainXs, trainYs, {
+        batchSize: BATCH_SIZE,
+        epochs: EPOCHS,
+        shuffle: true,
+        validationData: [testXs, testYs],
+        callbacks: {
+          onEpochEnd: async function(epoch, logs) {
+            var trainAcc = logs.acc;
+            var valAcc = logs.val_acc;
+
+            if (trainAcc === undefined && logs.accuracy !== undefined) {
+              trainAcc = logs.accuracy;
+            }
+            if (valAcc === undefined && logs.val_accuracy !== undefined) {
+              valAcc = logs.val_accuracy;
+            }
+
+            appendStatus(
+              'Epoch ' + (epoch + 1) +
+              ': loss=' + logs.loss.toFixed(4) +
+              ', acc=' + Number(trainAcc).toFixed(4) +
+              ', val_acc=' + Number(valAcc).toFixed(4)
+            );
+            await tf.nextFrame();
+          }
+        }
+      });
+
+      var evalResult = model.evaluate(testXs, testYs, { verbose: 0 });
+      var testLoss = await evalResult[0].data();
+      var testAcc = await evalResult[1].data();
+
+      appendStatus('Training complete.');
+      appendStatus('Test loss: ' + testLoss[0].toFixed(4));
+      appendStatus('Test accuracy: ' + testAcc[0].toFixed(4));
+
+      document.getElementById('predictBtn').disabled = false;
+
+      trainXs.dispose();
+      trainYs.dispose();
+    }
+
+    async function showPredictions() {
+      if (!model || !testExamples) {
+        setStatus('Please train the model first.');
+        return;
+      }
+
+      var grid = document.getElementById('predictionGrid');
+      grid.innerHTML = '';
+
+      var sampleXs = testExamples.xs.slice([0, 0], [10, IMAGE_SIZE]);
+      var sampleYs = testExamples.labels.slice([0, 0], [10, NUM_CLASSES]);
+
+      var predictions = model.predict(sampleXs).argMax(-1);
+      var labels = sampleYs.argMax(-1);
+
+      var predictionValues = await predictions.data();
+      var labelValues = await labels.data();
+      var imageData = await sampleXs.data();
+
+      for (var i = 0; i < 10; i++) {
+        var card = document.createElement('div');
+        card.className = 'card';
+
+        var canvas = document.createElement('canvas');
+        canvas.width = 28;
+        canvas.height = 28;
+        drawImage(canvas, imageData, i * IMAGE_SIZE);
+
+        var result = document.createElement('div');
+        result.innerHTML = 'Predicted: <b>' + predictionValues[i] + '</b><br>True: <b>' + labelValues[i] + '</b>';
+
+        card.appendChild(canvas);
+        card.appendChild(result);
+        grid.appendChild(card);
+      }
+
+      sampleXs.dispose();
+      sampleYs.dispose();
+      predictions.dispose();
+      labels.dispose();
+    }
+
+    function drawImage(canvas, dataArray, startIndex) {
+      var ctx = canvas.getContext('2d');
+      var imageData = ctx.createImageData(28, 28);
+
+      for (var i = 0; i < IMAGE_SIZE; i++) {
+        var pixel = Math.floor(dataArray[startIndex + i] * 255);
+        var j = i * 4;
+        imageData.data[j] = pixel;
+        imageData.data[j + 1] = pixel;
+        imageData.data[j + 2] = pixel;
+        imageData.data[j + 3] = 255;
+      }
+
+      ctx.putImageData(imageData, 0, 0);
+    }
+
+    function setupButtons() {
+      document.getElementById('loadBtn').addEventListener('click', async function() {
+        document.getElementById('loadBtn').disabled = true;
+        try {
+          await loadData();
+        } catch (error) {
+          setStatus('Error while loading data: ' + error.message);
+          document.getElementById('loadBtn').disabled = false;
+        }
+      });
+
+      document.getElementById('trainBtn').addEventListener('click', async function() {
+        document.getElementById('trainBtn').disabled = true;
+        try {
+          await trainModel();
+        } catch (error) {
+          setStatus('Error while training model: ' + error.message);
+          document.getElementById('trainBtn').disabled = false;
+        }
+      });
+
+      document.getElementById('predictBtn').addEventListener('click', async function() {
+        try {
+          await showPredictions();
+        } catch (error) {
+          setStatus('Error while showing predictions: ' + error.message);
+        }
+      });
+    }
+
+    setupButtons();
+  </script>
+</body>
+</html>

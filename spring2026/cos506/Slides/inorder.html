@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inorder Traversal Explanation</title>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      background: #f7f9fc;
+      color: #222;
+    }
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    }
+    h1, h2, h3 {
+      color: #1f4e79;
+    }
+    pre {
+      background: #f0f3f7;
+      padding: 14px;
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+    code {
+      font-family: Consolas, monospace;
+    }
+    .tree {
+      font-family: Consolas, monospace;
+      background: #f9fbfd;
+      padding: 16px;
+      border-left: 4px solid #1f4e79;
+      white-space: pre;
+      border-radius: 8px;
+    }
+    .step {
+      margin-bottom: 18px;
+      padding: 14px 16px;
+      background: #fbfcfe;
+      border-left: 4px solid #7aa6d1;
+      border-radius: 8px;
+    }
+    .result {
+      background: #eef7ee;
+      border-left: 4px solid #2e8b57;
+      padding: 14px 16px;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+    ul {
+      padding-left: 22px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Step-by-Step Explanation of Inorder Traversal</h1>
+
+    <h2>Code</h2>
+    <pre><code>void inorder(Node* root) {
+    if (root == nullptr) return;
+    inorder(root->left);
+    std::cout &lt;&lt; root->key &lt;&lt; " ";
+    inorder(root->right);
+}</code></pre>
+
+    <h2>Main Idea</h2>
+    <p>
+      Inorder traversal visits nodes in this order:
+      <strong>Left → Root → Right</strong>.
+    </p>
+    <p>That means for each node:</p>
+    <ul>
+      <li>Go to the left child first</li>
+      <li>Print the current node</li>
+      <li>Go to the right child</li>
+    </ul>
+
+    <h2>Example Tree</h2>
+    <div class="tree">        10
+       /  \
+      5    15
+          /  \
+         12   20</div>
+
+    <h2>Step-by-Step Trace</h2>
+
+    <div class="step">
+      <h3>Step 1: Start at node 10</h3>
+      <p>Call: <code>inorder(10)</code></p>
+      <p>For node 10, the function does:</p>
+      <ul>
+        <li><code>inorder(10-&gt;left)</code> → <code>inorder(5)</code></li>
+        <li>Print <code>10</code></li>
+        <li><code>inorder(10-&gt;right)</code> → <code>inorder(15)</code></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <h3>Step 2: Move to the left of 10 → node 5</h3>
+      <p>Call: <code>inorder(5)</code></p>
+      <p>For node 5:</p>
+      <ul>
+        <li><code>inorder(5-&gt;left)</code> → <code>nullptr</code>, so return</li>
+        <li>Print <code>5</code></li>
+        <li><code>inorder(5-&gt;right)</code> → <code>nullptr</code>, so return</li>
+      </ul>
+      <p>Output so far: <strong>5</strong></p>
+    </div>
+
+    <div class="step">
+      <h3>Step 3: Return to node 10</h3>
+      <p>After finishing the left subtree, print <code>10</code>.</p>
+      <p>Output so far: <strong>5 10</strong></p>
+    </div>
+
+    <div class="step">
+      <h3>Step 4: Move to the right of 10 → node 15</h3>
+      <p>Call: <code>inorder(15)</code></p>
+      <p>For node 15:</p>
+      <ul>
+        <li><code>inorder(15-&gt;left)</code> → <code>inorder(12)</code></li>
+        <li>Print <code>15</code></li>
+        <li><code>inorder(15-&gt;right)</code> → <code>inorder(20)</code></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <h3>Step 5: Move to the left of 15 → node 12</h3>
+      <p>Call: <code>inorder(12)</code></p>
+      <ul>
+        <li><code>inorder(12-&gt;left)</code> → <code>nullptr</code>, so return</li>
+        <li>Print <code>12</code></li>
+        <li><code>inorder(12-&gt;right)</code> → <code>nullptr</code>, so return</li>
+      </ul>
+      <p>Output so far: <strong>5 10 12</strong></p>
+    </div>
+
+    <div class="step">
+      <h3>Step 6: Return to node 15</h3>
+      <p>Now print <code>15</code>.</p>
+      <p>Output so far: <strong>5 10 12 15</strong></p>
+    </div>
+
+    <div class="step">
+      <h3>Step 7: Move to the right of 15 → node 20</h3>
+      <p>Call: <code>inorder(20)</code></p>
+      <ul>
+        <li><code>inorder(20-&gt;left)</code> → <code>nullptr</code>, so return</li>
+        <li>Print <code>20</code></li>
+        <li><code>inorder(20-&gt;right)</code> → <code>nullptr</code>, so return</li>
+      </ul>
+      <p>Output so far: <strong>5 10 12 15 20</strong></p>
+    </div>
+
+    <h2>Call Flow</h2>
+    <pre><code>inorder(10)
+ ├─ inorder(5)
+ │   ├─ inorder(nullptr)
+ │   ├─ print 5
+ │   └─ inorder(nullptr)
+ ├─ print 10
+ └─ inorder(15)
+     ├─ inorder(12)
+     │   ├─ inorder(nullptr)
+     │   ├─ print 12
+     │   └─ inorder(nullptr)
+     ├─ print 15
+     └─ inorder(20)
+         ├─ inorder(nullptr)
+         ├─ print 20
+         └─ inorder(nullptr)</code></pre>
+
+    <div class="result">
+      Final inorder output: 5 10 12 15 20
+    </div>
+
+    <h2>Simple Summary</h2>
+    <p>
+      Inorder traversal always follows <strong>Left → Root → Right</strong>.
+      That is why for this tree, the nodes are printed in the order:
+      <strong>5 10 12 15 20</strong>.
+    </p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Beginner Notes: MNIST CNN Classification</title>
+  <style>
+    :root{
+      --bg:#f4f7fb;
+      --card:#ffffff;
+      --ink:#1f2937;
+      --muted:#5b6472;
+      --line:#dce4ef;
+      --accent:#7c3aed;
+      --soft:#f5f0ff;
+      --good:#0f766e;
+      --code:#111827;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      background:linear-gradient(180deg,#faf8ff 0%,#eef2fb 100%);
+      color:var(--ink);
+      line-height:1.65;
+    }
+    .wrap{max-width:1100px;margin:0 auto;padding:28px 18px 50px}
+    .hero,.card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:26px;
+      box-shadow:0 8px 24px rgba(20,30,70,.06);
+      margin-bottom:20px;
+    }
+    h1,h2,h3{margin:0 0 12px}
+    h1{font-size:2rem;color:#4b1fb5}
+    h2{font-size:1.35rem;color:#5b21b6;margin-top:20px}
+    h3{font-size:1.05rem;color:#6d28d9;margin-top:16px}
+    p{margin:10px 0}
+    .lead{font-size:1.07rem;color:#334155}
+    .tag{
+      display:inline-block;
+      padding:4px 10px;
+      border-radius:999px;
+      background:var(--soft);
+      color:var(--accent);
+      font-weight:700;
+      font-size:.86rem;
+      margin-bottom:10px;
+    }
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+    .mini-card{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:18px;
+    }
+    .flow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+    .step{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-weight:700}
+    .arrow{font-size:1.3rem;color:var(--accent);font-weight:700}
+    .callout{
+      background:#fcfbff;
+      border-left:5px solid var(--accent);
+      padding:14px 16px;
+      border-radius:10px;
+      margin:14px 0;
+    }
+    .good{border-left-color:var(--good);background:#f4fffd}
+    pre{
+      margin:14px 0 0;
+      padding:16px;
+      background:var(--code);
+      color:#eef2ff;
+      overflow:auto;
+      border-radius:14px;
+      border:1px solid #1f2937;
+      font-size:.93rem;
+      line-height:1.5;
+    }
+    code{font-family:Consolas, Monaco, monospace}
+    table{
+      width:100%;border-collapse:collapse;margin-top:12px;background:#fff;border-radius:14px;overflow:hidden;border:1px solid var(--line)
+    }
+    th,td{padding:12px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+    th{background:#faf7ff;color:#5b21b6}
+    .footer{text-align:center;color:#64748b;font-size:.94rem;margin-top:8px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="tag">Teaching Notes</div>
+      <h1>Beginner CNN for MNIST Classification</h1>
+      <p class="lead">
+        This page explains a beginner version of a Convolutional Neural Network (CNN) for MNIST. A CNN is often better
+        than a simple dense network for images because it can learn local patterns such as edges, curves, and strokes.
+      </p>
+      <div class="flow">
+        <div class="step">Load Images</div>
+        <div class="arrow">→</div>
+        <div class="step">Normalize</div>
+        <div class="arrow">→</div>
+        <div class="step">Reshape to 28×28×1</div>
+        <div class="arrow">→</div>
+        <div class="step">Convolution</div>
+        <div class="arrow">→</div>
+        <div class="step">Pooling</div>
+        <div class="arrow">→</div>
+        <div class="step">Dense Output</div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Why use a CNN?</h2>
+      <div class="grid">
+        <div class="mini-card">
+          <div class="tag">Reason 1</div>
+          <p>A CNN keeps the <strong>2D image structure</strong> instead of flattening immediately.</p>
+        </div>
+        <div class="mini-card">
+          <div class="tag">Reason 2</div>
+          <p>It learns <strong>small visual patterns</strong> such as corners, lines, and curves.</p>
+        </div>
+        <div class="mini-card">
+          <div class="tag">Reason 3</div>
+          <p>It usually gives <strong>better accuracy</strong> on image tasks than a basic dense model.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>1. Load and normalize the dataset</h2>
+      <p>
+        We start with the same MNIST images, but this time we will keep the image shape because a CNN works directly on image grids.
+      </p>
+<pre><code>(x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
+
+x_train = x_train.astype("float32") / 255.0
+x_test = x_test.astype("float32") / 255.0</code></pre>
+    </section>
+
+    <section class="card">
+      <h2>2. Reshape the images for CNN input</h2>
+      <p>
+        CNN layers expect height, width, and channels. MNIST images are grayscale, so the number of channels is 1.
+      </p>
+<pre><code>x_train = x_train.reshape((-1, 28, 28, 1))
+x_test = x_test.reshape((-1, 28, 28, 1))</code></pre>
+      <div class="callout">
+        <strong>Meaning of 28 × 28 × 1:</strong><br>
+        28 = image height<br>
+        28 = image width<br>
+        1 = one grayscale channel
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>3. Build a small CNN model</h2>
+      <p>
+        This beginner version keeps the structure simple: one convolution layer, one pooling layer, then flatten and dense layers.
+      </p>
+<pre><code>model = keras.Sequential([
+    keras.Input(shape=(28, 28, 1)),
+    layers.Conv2D(16, (3, 3), activation="relu"),
+    layers.MaxPooling2D((2, 2)),
+    layers.Flatten(),
+    layers.Dense(64, activation="relu"),
+    layers.Dense(10, activation="softmax")
+])</code></pre>
+
+      <table>
+        <tr>
+          <th>Layer</th>
+          <th>What it does</th>
+        </tr>
+        <tr>
+          <td><code>Conv2D(16, (3, 3))</code></td>
+          <td>Looks at small 3×3 parts of the image and learns 16 useful filters.</td>
+        </tr>
+        <tr>
+          <td><code>MaxPooling2D((2, 2))</code></td>
+          <td>Makes the feature maps smaller and keeps important information.</td>
+        </tr>
+        <tr>
+          <td><code>Flatten()</code></td>
+          <td>Turns the 2D feature maps into a 1D vector for the dense layer.</td>
+        </tr>
+        <tr>
+          <td><code>Dense(64, activation="relu")</code></td>
+          <td>Learns higher-level combinations of the extracted features.</td>
+        </tr>
+        <tr>
+          <td><code>Dense(10, activation="softmax")</code></td>
+          <td>Outputs probabilities for the 10 digit classes.</td>
+        </tr>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>4. What is convolution?</h2>
+      <p>
+        Convolution means sliding a small filter over the image to detect simple patterns.
+        Early filters often learn shapes like edges, curves, and stroke pieces.
+      </p>
+      <div class="callout good">
+        <strong>Beginner picture idea:</strong> think of a tiny window moving across the image and checking what pattern is present in each area.
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>5. What is max pooling?</h2>
+      <p>
+        Max pooling reduces the size of the feature map. It keeps the strongest signal in each small region.
+        This helps the model focus on important patterns and reduces computation.
+      </p>
+      <div class="callout">
+        For example, a 2×2 pooling window looks at four nearby values and keeps only the largest one.
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>6. Compile the model</h2>
+      <p>
+        The compile step is almost the same as in the dense classifier because this is still a 10-class classification problem.
+      </p>
+<pre><code>model.compile(
+    optimizer="adam",
+    loss="sparse_categorical_crossentropy",
+    metrics=["accuracy"]
+)</code></pre>
+    </section>
+
+    <section class="card">
+      <h2>7. Train the CNN</h2>
+      <p>
+        The model learns by seeing many examples of labeled digit images.
+      </p>
+<pre><code>history = model.fit(
+    x_train, y_train,
+    validation_split=0.1,
+    epochs=5,
+    batch_size=128,
+    verbose=1
+)</code></pre>
+      <div class="callout">
+        A beginner CNN often performs very well on MNIST even with a small number of epochs.
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>8. Evaluate and predict</h2>
+      <p>
+        After training, we evaluate on test data and then predict labels for some unseen images.
+      </p>
+<pre><code>test_loss, test_accuracy = model.evaluate(x_test, y_test, verbose=0)
+print("Test Accuracy:", test_accuracy)
+
+predictions = model.predict(x_test[:10], verbose=0)
+predicted_labels = np.argmax(predictions, axis=1)</code></pre>
+    </section>
+
+    <section class="card">
+      <h2>Complete beginner CNN code</h2>
+<pre><code>import numpy as np
+import matplotlib.pyplot as plt
+from tensorflow import keras
+from tensorflow.keras import layers
+
+# 1) Load data
+(x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
+
+# 2) Normalize
+x_train = x_train.astype("float32") / 255.0
+x_test = x_test.astype("float32") / 255.0
+
+# 3) Reshape for CNN
+x_train = x_train.reshape((-1, 28, 28, 1))
+x_test = x_test.reshape((-1, 28, 28, 1))
+
+# 4) Build beginner CNN
+model = keras.Sequential([
+    keras.Input(shape=(28, 28, 1)),
+    layers.Conv2D(16, (3, 3), activation="relu"),
+    layers.MaxPooling2D((2, 2)),
+    layers.Flatten(),
+    layers.Dense(64, activation="relu"),
+    layers.Dense(10, activation="softmax")
+])
+
+# 5) Compile
+model.compile(
+    optimizer="adam",
+    loss="sparse_categorical_crossentropy",
+    metrics=["accuracy"]
+)
+
+# 6) Train
+history = model.fit(
+    x_train, y_train,
+    validation_split=0.1,
+    epochs=5,
+    batch_size=128,
+    verbose=1
+)
+
+# 7) Evaluate
+test_loss, test_accuracy = model.evaluate(x_test, y_test, verbose=0)
+print("Test Accuracy:", test_accuracy)
+
+# 8) Predict
+predictions = model.predict(x_test[:10], verbose=0)
+predicted_labels = np.argmax(predictions, axis=1)
+
+# 9) Show some predictions
+plt.figure(figsize=(14, 4))
+for i in range(10):
+    plt.subplot(2, 5, i + 1)
+    plt.imshow(x_test[i].reshape(28, 28), cmap="gray")
+    plt.title(f"Pred: {predicted_labels[i]}\\nTrue: {y_test[i]}")
+    plt.axis("off")
+
+plt.tight_layout()
+plt.show()</code></pre>
+    </section>
+
+    <section class="card">
+      <h2>Dense model vs CNN</h2>
+      <table>
+        <tr>
+          <th>Dense classifier</th>
+          <th>CNN classifier</th>
+        </tr>
+        <tr>
+          <td>Flattens image into 784 values at the beginning</td>
+          <td>Keeps the image structure longer</td>
+        </tr>
+        <tr>
+          <td>Very simple to teach first</td>
+          <td>Better for teaching image-specific learning</td>
+        </tr>
+        <tr>
+          <td>Usually lower accuracy than CNN on images</td>
+          <td>Usually higher accuracy on images</td>
+        </tr>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>Short teaching summary</h2>
+      <p>
+        A beginner CNN is a natural next step after a dense classifier. It helps understand that image tasks are special:
+        the arrangement of pixels matters. With just one convolution layer and one pooling layer, you can already see why CNNs are powerful.
+      </p>
+    </section>
+
+    <div class="footer">MNIST CNN classification.</div>
+  </div>
+</body>
+</html>

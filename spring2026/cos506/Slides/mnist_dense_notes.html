@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Beginner Notes: MNIST Dense Classification</title>
+  <style>
+    :root{
+      --bg:#f6f8fc;
+      --card:#ffffff;
+      --ink:#1f2937;
+      --muted:#5b6472;
+      --line:#d9e2f0;
+      --accent:#2563eb;
+      --soft:#eef4ff;
+      --good:#0f766e;
+      --code:#0f172a;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      background:linear-gradient(180deg,#f8fbff 0%,#eef3fb 100%);
+      color:var(--ink);
+      line-height:1.65;
+    }
+    .wrap{max-width:1100px;margin:0 auto;padding:28px 18px 50px}
+    .hero{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:28px;
+      box-shadow:0 8px 24px rgba(20,40,90,.06);
+      margin-bottom:22px;
+    }
+    h1,h2,h3{margin:0 0 12px}
+    h1{font-size:2rem;color:#12306b}
+    h2{font-size:1.35rem;color:#163f8c;margin-top:26px}
+    h3{font-size:1.05rem;color:#1f4fa8;margin-top:18px}
+    p{margin:10px 0}
+    .lead{font-size:1.07rem;color:#334155}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin:18px 0}
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:18px;
+      box-shadow:0 5px 14px rgba(20,40,90,.05);
+    }
+    .tag{
+      display:inline-block;
+      padding:4px 10px;
+      border-radius:999px;
+      background:var(--soft);
+      color:var(--accent);
+      font-weight:700;
+      font-size:.86rem;
+      margin-bottom:10px;
+    }
+    .flow{
+      display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:10px
+    }
+    .step{
+      background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-weight:700
+    }
+    .arrow{font-size:1.3rem;color:var(--accent);font-weight:700}
+    .callout{
+      background:#f8fbff;
+      border-left:5px solid var(--accent);
+      padding:14px 16px;
+      border-radius:10px;
+      margin:14px 0;
+    }
+    .good{border-left-color:var(--good); background:#f4fffd}
+    pre{
+      margin:14px 0 0;
+      padding:16px;
+      background:var(--code);
+      color:#e5eefc;
+      overflow:auto;
+      border-radius:14px;
+      border:1px solid #1e293b;
+      font-size:.93rem;
+      line-height:1.5;
+    }
+    code{font-family:Consolas, Monaco, monospace}
+    .mini{
+      color:var(--muted);
+      font-size:.95rem;
+    }
+    .compare{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:12px;
+      background:#fff;
+      border-radius:14px;
+      overflow:hidden;
+      border:1px solid var(--line);
+    }
+    .compare th,.compare td{
+      border-bottom:1px solid var(--line);
+      padding:12px 14px;
+      text-align:left;
+      vertical-align:top;
+    }
+    .compare th{background:#f7faff;color:#163f8c}
+    .footer{
+      margin-top:26px;
+      text-align:center;
+      color:#64748b;
+      font-size:.94rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="tag">Teaching Notes</div>
+      <h1>MNIST Classification with a Simple Dense Neural Network</h1>
+      <p class="lead">
+        This page explains a beginner-friendly classification example based on MNIST. The goal is to learn
+        how a neural network can look at a handwritten digit image and decide whether it is 0, 1, 2, ..., or 9.
+      </p>
+      <div class="flow">
+        <div class="step">Load Data</div>
+        <div class="arrow">→</div>
+        <div class="step">Normalize</div>
+        <div class="arrow">→</div>
+        <div class="step">Flatten Images</div>
+        <div class="arrow">→</div>
+        <div class="step">Build Model</div>
+        <div class="arrow">→</div>
+        <div class="step">Train</div>
+        <div class="arrow">→</div>
+        <div class="step">Evaluate</div>
+        <div class="arrow">→</div>
+        <div class="step">Predict</div>
+      </div>
+    </section>
+
+    <div class="grid">
+      <div class="card">
+        <div class="tag">Big Idea</div>
+        <p><strong>Classification</strong> means choosing a label from several possible classes.</p>
+        <p>In this example, the classes are the digits <strong>0 through 9</strong>.</p>
+      </div>
+      <div class="card">
+        <div class="tag">Input</div>
+        <p>Each image is <strong>28 × 28</strong> pixels.</p>
+        <p>That gives <strong>784</strong> values after flattening.</p>
+      </div>
+      <div class="card">
+        <div class="tag">Output</div>
+        <p>The final layer has <strong>10 neurons</strong>.</p>
+        <p>Each neuron gives the probability of one digit class.</p>
+      </div>
+    </div>
+
+    <section class="card">
+      <h2>1. Load the dataset</h2>
+      <p>
+        MNIST is a very popular beginner dataset. It contains many small grayscale images of handwritten digits.
+        It is a good starting point because it is simple, clean, and fast to train.
+      </p>
+<pre><code>(x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()</code></pre>
+      <div class="callout">
+        <strong>What are these variables?</strong><br>
+        <code>x_train</code> = training images<br>
+        <code>y_train</code> = correct labels for training images<br>
+        <code>x_test</code> = test images<br>
+        <code>y_test</code> = correct labels for test images
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>2. Normalize the pixel values</h2>
+      <p>
+        Pixel values in MNIST go from 0 to 255. Dividing by 255 changes them to the range 0 to 1.
+        This makes training easier and usually helps the model learn better.
+      </p>
+<pre><code>x_train = x_train.astype("float32") / 255.0
+x_test = x_test.astype("float32") / 255.0</code></pre>
+      <div class="callout good">
+        <strong>Simple explanation:</strong> smaller numbers are easier for the neural network to work with.
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>3. Flatten each image</h2>
+      <p>
+        A dense neural network expects a one-dimensional input vector. Since each image is 28 × 28,
+        we convert it into a row of 784 values.
+      </p>
+<pre><code>x_train = x_train.reshape((-1, 28 * 28))
+x_test = x_test.reshape((-1, 28 * 28))</code></pre>
+      <p class="mini">
+        The <code>-1</code> tells Python to keep the number of images automatically.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>4. Build the model</h2>
+      <p>
+        This model has two hidden layers and one output layer. The hidden layers use <code>ReLU</code>, and the output
+        layer uses <code>softmax</code> because this is a multi-class classification problem.
+      </p>
+<pre><code>model = keras.Sequential([
+    keras.Input(shape=(784,)),
+    layers.Dense(128, activation="relu"),
+    layers.Dense(64, activation="relu"),
+    layers.Dense(10, activation="softmax")
+])</code></pre>
+
+      <table class="compare">
+        <tr>
+          <th>Part</th>
+          <th>Meaning</th>
+        </tr>
+        <tr>
+          <td><code>Input(shape=(784,))</code></td>
+          <td>The model receives 784 numbers for each image.</td>
+        </tr>
+        <tr>
+          <td><code>Dense(128, activation="relu")</code></td>
+          <td>First hidden layer learns useful patterns from the pixels.</td>
+        </tr>
+        <tr>
+          <td><code>Dense(64, activation="relu")</code></td>
+          <td>Second hidden layer builds more abstract features.</td>
+        </tr>
+        <tr>
+          <td><code>Dense(10, activation="softmax")</code></td>
+          <td>Outputs probabilities for the 10 digit classes.</td>
+        </tr>
+      </table>
+
+      <div class="callout">
+        <strong>Why softmax?</strong><br>
+        Softmax turns the final outputs into probabilities that add up to 1. The largest probability becomes the prediction.
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>5. Compile the model</h2>
+      <p>
+        Compiling tells Keras how to train the model. We choose an optimizer, a loss function, and a metric.
+      </p>
+<pre><code>model.compile(
+    optimizer="adam",
+    loss="sparse_categorical_crossentropy",
+    metrics=["accuracy"]
+)</code></pre>
+
+      <table class="compare">
+        <tr>
+          <th>Term</th>
+          <th>Beginner meaning</th>
+        </tr>
+        <tr>
+          <td><code>adam</code></td>
+          <td>A popular optimizer that updates weights efficiently.</td>
+        </tr>
+        <tr>
+          <td><code>sparse_categorical_crossentropy</code></td>
+          <td>Good for multi-class classification when labels are integers like 0, 1, 2, ..., 9.</td>
+        </tr>
+        <tr>
+          <td><code>accuracy</code></td>
+          <td>Measures the percentage of correct predictions.</td>
+        </tr>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>6. Train the model</h2>
+      <p>
+        Training means showing many labeled examples to the neural network so it can gradually improve.
+      </p>
+<pre><code>history = model.fit(
+    x_train, y_train,
+    validation_split=0.1,
+    epochs=10,
+    batch_size=256,
+    verbose=1
+)</code></pre>
+      <p>
+        During training, Keras reports values such as training accuracy and validation accuracy.
+        You can observe whether the model is learning better from one epoch to the next.
+      </p>
+      <div class="callout">
+        <strong>Key terms:</strong><br>
+        <strong>Epoch</strong> = one full pass through the training data<br>
+        <strong>Batch size</strong> = number of samples processed at one time<br>
+        <strong>Validation split</strong> = part of the training data used to check progress
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>7. Evaluate the model</h2>
+      <p>
+        After training, we test the model on data it did not use during learning. This gives a more honest measure of performance.
+      </p>
+<pre><code>test_loss, test_accuracy = model.evaluate(x_test, y_test, verbose=0)
+print("Test Loss:", test_loss)
+print("Test Accuracy:", test_accuracy)</code></pre>
+      <p>
+        If the test accuracy is high, the model is doing well on unseen examples.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>8. Make predictions</h2>
+      <p>
+        The model produces a probability for each class. We usually choose the class with the highest probability.
+      </p>
+<pre><code>predictions = model.predict(x_test[:10], verbose=0)
+predicted_labels = np.argmax(predictions, axis=1)</code></pre>
+      <div class="callout good">
+        <strong>Example:</strong> if the model outputs probabilities and the largest one is at index 7, then the predicted digit is 7.
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>9. Visualize the results</h2>
+      <p>
+        It is helpful for beginners to see the image together with the predicted label and the true label.
+        This makes the model behavior easier to understand.
+      </p>
+<pre><code>plt.imshow(x_test[i].reshape(28, 28), cmap="gray")
+plt.title(f"Pred: {predicted_labels[i]}\nTrue: {y_test[i]}")</code></pre>
+      <p>
+        You can immediately notice which digits were predicted correctly and which ones were difficult.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>10. Why this example is beginner-friendly</h2>
+      <p>
+        This example is suitable for beginners because the data is easy to understand, the model is short,
+        and the final output is intuitive. You can see a digit and understand why the answer should be one of 10 classes.
+      </p>
+      <table class="compare">
+        <tr>
+          <th>Good for beginners because...</th>
+          <th>Explanation</th>
+        </tr>
+        <tr>
+          <td>Simple dataset</td>
+          <td>Everyone understands handwritten digits.</td>
+        </tr>
+        <tr>
+          <td>Small code size</td>
+          <td>The code is short enough to explain in one class session.</td>
+        </tr>
+        <tr>
+          <td>Clear output</td>
+          <td>The model predicts 0–9, which is easy to interpret.</td>
+        </tr>
+        <tr>
+          <td>Easy extension</td>
+          <td>You can later compare this model with a CNN.</td>
+        </tr>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>Complete beginner version of the Python code</h2>
+<pre><code>import numpy as np
+import matplotlib.pyplot as plt
+from tensorflow import keras
+from tensorflow.keras import layers
+
+# 1) Load data
+(x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
+
+# 2) Normalize
+x_train = x_train.astype("float32") / 255.0
+x_test = x_test.astype("float32") / 255.0
+
+# 3) Flatten images
+x_train = x_train.reshape((-1, 28 * 28))
+x_test = x_test.reshape((-1, 28 * 28))
+
+# 4) Build model
+model = keras.Sequential([
+    keras.Input(shape=(784,)),
+    layers.Dense(128, activation="relu"),
+    layers.Dense(64, activation="relu"),
+    layers.Dense(10, activation="softmax")
+])
+
+# 5) Compile model
+model.compile(
+    optimizer="adam",
+    loss="sparse_categorical_crossentropy",
+    metrics=["accuracy"]
+)
+
+# 6) Train model
+history = model.fit(
+    x_train, y_train,
+    validation_split=0.1,
+    epochs=10,
+    batch_size=256,
+    verbose=1
+)
+
+# 7) Evaluate model
+test_loss, test_accuracy = model.evaluate(x_test, y_test, verbose=0)
+print("Test Accuracy:", test_accuracy)
+
+# 8) Predict first 10 images
+predictions = model.predict(x_test[:10], verbose=0)
+predicted_labels = np.argmax(predictions, axis=1)
+
+# 9) Show results
+plt.figure(figsize=(14, 4))
+for i in range(10):
+    plt.subplot(2, 5, i + 1)
+    plt.imshow(x_test[i].reshape(28, 28), cmap="gray")
+    plt.title(f"Pred: {predicted_labels[i]}\\nTrue: {y_test[i]}")
+    plt.axis("off")
+
+plt.tight_layout()
+plt.show()</code></pre>
+    </section>
+
+    <section class="card">
+      <h2>Short teaching summary</h2>
+      <p>
+        A dense classifier for MNIST is one of the best first examples for deep learning. It is how to
+        prepare data, build a model, train it, test it, and visualize predictions. It also prepares for the next
+        step: using a CNN, which usually performs better on images.
+      </p>
+    </section>
+
+    <div class="footer">MNIST dense classification.</div>
+  </div>
+</body>
+</html>
