@@ -1,0 +1,1358 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Midterm Exam</title>
+    <meta name="description" content="A set of slides for Machine Learning">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/effectsGreen.css">
+	<!--<link rel="stylesheet" href="./css/style.css">-->
+	<!--<link rel="stylesheet" href="./css/effects.css">-->
+	
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+	</script>
+
+	<style>
+	    pre {
+            background-color: black;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+        }
+        code {
+            font-family: "Courier New", monospace;
+            color: #d63384; /* Python-style color */
+        }
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }	
+	</style>
+
+  </head>
+
+  <body onload="startTime()">
+    <div class="reveal" >
+	  <p><img src="images/midwaylogo.png"  align="left" height="6%" width="6%" style="vertical-align:left;margin:-15px 5px"><img src="images/mueagle.png"  color="white" align="left" height="4%" width="4%" style="vertical-align:center;margin:-1% 45%">
+		<div style="color:white;font-size: 20px; vertical-align:left;margin:-1% 0%" align="right" id="realtimeclock"></div></p>
+      <div class="slides">
+
+  <div class="me">Xinxing Wu</div>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown id="cover"><textarea data-template>
+<p class='titlep'>&nbsp;</p>
+
+# Outline of Midterm Exam
+
+<hr>
+
+<br>
+
+Xinxing Wu
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline
+
+[<p class="hover-underline-animation">Exam Structure</p>](#/ch1)
+
+[<p class="hover-underline-animation">Outline</p>](#/ch2)
+
+[<p class="hover-underline-animation">Midterm Exam Example</p>](#/ch3)
+
+</textarea></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch1" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Exam Structure</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Exam Structure</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Part A: 10 True/False
+
+- Part B: 10 Fill-in-the-Blank
+
+- Part C: 2 Code Tracing Questions (predict output, follow variables/flow)
+
+- Part D: 2 Debugging Questions (find and fix common mistakes)
+
+- Part E: 2 Coding Questions (write short programs using Week 1–6 skills)
+</div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch2" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Outline</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div id="rainbow-type"> Outline </div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Program structure</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Question: Label the role of each line (header, namespace, entry point, output, return).
+
+  ```
+  #include <iostream>
+using namespace std;
+
+int main() {
+  cout << "Hi\n";
+  return 0;
+}
+
+  ```
+  
+  </p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Variables (declare + initialize) & basic data types</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Question: Identify each variable’s type and what kind of data it stores.
+
+```
+int studentAge = 23;
+float studentFee = 75.25;
+char studentGrade = 'B';
+```
+  </p>
+</div>
+</div>
+
+
+
+<div id="rainbow-type"> Outline (Cont.) </div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Output with cout and formatting with \n</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Question: What will be printed (exactly), including spacing and newline?
+
+```
+cout << "Student Age: " << studentAge << "\n";
+```
+  
+  </p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Input with cin (read user values)</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Question: If the user inputs 4 6, what values are stored?
+
+```
+int length, width;
+cin >> length >> width;
+```
+  
+  </p>
+</div>
+
+</div>
+</div>
+
+
+
+<div id="rainbow-type"> Outline (Cont.) </div>
+
+<div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Math expressions (area/perimeter)</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Question: Compute area and perimeter for length=4, width=6.
+
+```
+int area = length * width;
+int perimeter = 2 * (length + width);
+
+```
+  
+  </p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Boolean basics (bool, true/false)</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Question: When is ok true? Give one true case and one false case.
+
+```
+bool ok = (length > 0 && width > 0);
+
+```
+  
+  </p>
+</div>
+
+</div>
+</div>
+
+
+
+<div id="rainbow-type"> Outline (Cont.) </div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">if statement (decision making)</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Question: What prints? Why?
+
+```
+int x = 20, y = 18;
+if (x > y) cout << "x is greater than y";
+```
+  </p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">else if chain (multiple conditions)</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Question: What prints when time=22?
+
+```
+int time = 22;
+if (time < 10) cout << "Good morning.";
+else if (time < 20) cout << "Good day.";
+else cout << "Good evening.";
+
+```
+  </p>
+</div>
+
+</div>
+</div>
+
+
+
+
+<div id="rainbow-type"> Outline (Cont.) </div>
+
+<div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Functions (organize reusable code)</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Question: Write a call to compute add(7, 5) and print the result.
+  
+```
+int add(int a, int b) { return a + b; }
+
+```
+
+  </p>
+</div>
+
+</div>
+</div>
+
+
+
+<div id="rainbow-type"> Outline (Cont.) </div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Loops (repeat actions)</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Question: Write the output.
+  
+```
+int i = 1;
+while (i <= 3) { cout << i << " "; i++; }
+```
+
+  </p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">break / continue (control loop behavior) </h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Question: What prints?
+
+```
+for (int i = 1; i <= 5; i++) {
+  if (i == 3) continue;
+  if (i == 5) break;
+  cout << i << " ";
+}
+
+```
+  </p>
+</div>
+</div>
+</div>
+
+
+
+
+<div id="rainbow-type"> Outline (Cont.) </div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">represent a fixed set of values safely</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Give an enum for MenuOption with values {Start, Settings, Quit} and explain why it’s clearer than integers.</p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">enum class definition & syntax</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Question: Is c = 1; allowed? Why/why not?
+
+```
+enum class Color { Red, Green, Blue };
+Color c = Color::Green;
+```
+  </p>
+</div>
+
+</div>
+</div>
+
+
+
+<div id="rainbow-type"> Outline (Cont.) </div>
+
+<div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Enums vs primitive types (type safety idea)</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Why does enum class help prevent “invalid states” compared to int?</p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Using enums in switch (clean control flow)</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Question: What prints if c = Color::Blue?
+
+```
+switch (c) {
+  case Color::Red: cout << "R"; break;
+  case Color::Green: cout << "G"; break;
+  case Color::Blue: cout << "B"; break;
+}
+```
+  </p>
+</div>
+
+</div>
+</div>
+
+
+
+<div id="rainbow-type"> Outline (Cont.) </div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Best practice idea: don’t treat enums as ints (avoid scattered casts)</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">You read an int choice from the user. Show one safe way to convert it to a MenuOption without comparing enums to raw ints everywhere.</p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">many related values (avoid score1, score2, ...)</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">You have 10 quiz scores. Why is an array better than 10 separate variables?</p>
+</div>
+
+</div>
+</div>
+
+
+
+<div id="rainbow-type"> Outline (Cont.) </div>
+
+<div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Declare/initialize an array; access by index</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">What is scores[0]? What is scores[3]?
+
+```
+int scores[5] = {90, 78, 85, 100, 67};
+```
+  
+  </p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Loop through an array (sum/average) </h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Question: Explain what sum and avg represent.
+
+```
+int sum = 0;
+for (int i = 0; i < 5; i++) sum += scores[i];
+double avg = (double)sum / 5;
+```
+  </p>
+</div>
+
+</div>
+</div>
+
+
+
+<div id="rainbow-type"> Outline (Cont.) </div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Common mistakes: out-of-bounds + hard-coded sizes </h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Question: What’s the bug? Fix it.
+
+```
+for (int i = 0; i <= 5; i++) cout << scores[i];
+```
+  </p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">C-style char[] is fixed-size and needs \0</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Question: Why is this unsafe/incorrect?
+ 
+```
+char name[5] = "Alice";
+```
+  
+  </p>
+</div>
+
+<div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Use std::string (store and manipulate text) </h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Question: Build "Hello University" using concatenation or append().
+
+```
+string first = "Hello";
+string last = "University";
+
+```
+  
+  </p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Input: getline() for spaces (vs cin >>)  </h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Question: Why does getline matter for names like “Mary Jane”?
+  
+```
+string fullName;
+getline(cin, fullName);
+
+```
+  </p>
+</div>
+
+</div>
+</div>
+
+
+
+<div id="rainbow-type"> Outline (Cont.) </div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Common operations: length()/size(), indexing, find()</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Question: What prints?
+
+```
+string s = "hello";
+cout << s.length();
+cout << s[1];
+```
+
+  </p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Common mistake: mixing cin >> then getline()</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Question: After reading an int age with cin >> age;, your getline reads an empty string. What fix would you add?</p>
+</div>
+
+</div>
+</div>
+
+
+
+<div id="rainbow-type"> Outline (Cont.) </div>
+
+<div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">group related data into one meaningful type</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Question: List 3 fields you’d store for a “Student” record, and explain why separate variables get messy.</p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Define a struct (custom type</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Question: What is the type name? What are the fields?
+  
+```
+struct Student {
+  int id;
+  string name;
+  double gpa;
+};
+
+```
+  </p>
+</div>
+
+</div>
+</div>
+
+
+
+<div id="rainbow-type"> Outline (Cont.) </div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Create a struct variable and access fields with .</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Question: Write one line to print s.name.
+
+```
+Student s;
+s.id = 1001;
+s.name = "Alice";
+```
+  </p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Arrays (or vectors) of structs (many records)</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Question: Create an array of 3 Student records and loop to print all IDs.</p>
+</div>
+
+<div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Use a struct in a function (pass in / return)</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Question: Write a function bool isHonors(Student s) that returns true if s.gpa >= 3.5.</p>
+</div>
+
+</div>
+</div>
+</textarea></section>
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch3" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Midterm Exam Example</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+
+<p class='titlep'>&nbsp;</p>
+<p class='titlep'>&nbsp;</p>
+
+## 10 True/False
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">True/False</div>
+  <div class="definition-com-shadebox">
+
+Every C++ program must have a main() function to start execution. <button type="button" class="reveal-btn" data-answer="answer-q1">Show Answer</button>
+<div id="answer-q1" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+#include <iostream> is needed if you want to use cout and cin. <button type="button" class="reveal-btn" data-answer="answer-q2">Show Answer</button>
+<div id="answer-q2" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+using namespace std; is required in every C++ program. <button type="button" class="reveal-btn" data-answer="answer-q3">Show Answer</button>
+<div id="answer-q3" class="answer-box">
+<b>Answer:</b>False (it’s optional; you can use std::cout instead)
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">True/False</div>
+  <div class="definition-com-shadebox">
+
+cin >> fullName; can read a full name like Mary Jane including the space.  <button type="button" class="reveal-btn" data-answer="answer-q4">Show Answer</button>
+<div id="answer-q4" class="answer-box">
+<b>Answer:</b>False (it stops at spaces; use getline)
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+An if statement runs its block only when its condition is true. <button type="button" class="reveal-btn" data-answer="answer-q5">Show Answer</button>
+<div id="answer-q5" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">True/False</div>
+  <div class="definition-com-shadebox">
+
+continue ends the entire loop immediately.  <button type="button" class="reveal-btn" data-answer="answer-q6">Show Answer</button>
+<div id="answer-q6" class="answer-box">
+<b>Answer:</b>False (break ends the loop; continue skips to the next iteration)
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+Array indexing in C++ starts at index 1. <button type="button" class="reveal-btn" data-answer="answer-q7">Show Answer</button>
+<div id="answer-q7" class="answer-box">
+<b>Answer:</b>False (it starts at 0)
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+enum class prevents accidental mixing with integers (type safety). <button type="button" class="reveal-btn" data-answer="answer-q8">Show Answer</button>
+<div id="answer-q8" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">True/False</div>
+  <div class="definition-com-shadebox">
+
+std::string can grow in size, unlike a fixed-size char name[10].  <button type="button" class="reveal-btn" data-answer="answer-q9">Show Answer</button>
+<div id="answer-q9" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+To access a struct field, you use the dot operator like s.gpa. <button type="button" class="reveal-btn" data-answer="answer-q10">Show Answer</button>
+<div id="answer-q10" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+   </div>
+</div>
+
+
+
+<p class='titlep'>&nbsp;</p>
+<p class='titlep'>&nbsp;</p>
+
+## 10 Fill-in-the-Blank
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Fill-in-the-Blank</div>
+  <div class="definition-com-shadebox">
+
+To print text to the screen, we commonly use ______. <button type="button" class="reveal-btn" data-answer="answer-q11">Show Answer</button>
+<div id="answer-q11" class="answer-box">
+<b>Answer:</b>cout
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+The header needed for cout and cin is #include <______>. <button type="button" class="reveal-btn" data-answer="answer-q12">Show Answer</button>
+<div id="answer-q12" class="answer-box">
+<b>Answer:</b>iostream
+</div>
+
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+The function where a C++ program begins is int ______(). <button type="button" class="reveal-btn" data-answer="answer-q13">Show Answer</button>
+<div id="answer-q13" class="answer-box">
+<b>Answer:</b>main
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Fill-in-the-Blank</div>
+  <div class="definition-com-shadebox">
+
+New lines can be printed using "\______" inside a string.  <button type="button" class="reveal-btn" data-answer="answer-q14">Show Answer</button>
+<div id="answer-q14" class="answer-box">
+<b>Answer:</b>n
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+To read an integer from the keyboard, we use ______ >> myNumber;. <button type="button" class="reveal-btn" data-answer="answer-q15">Show Answer</button>
+<div id="answer-q15" class="answer-box">
+<b>Answer:</b>cin
+</div>
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Fill-in-the-Blank</div>
+  <div class="definition-com-shadebox">
+
+A type-safe enumeration is declared using enum ______ Day { Mon, Tue };  <button type="button" class="reveal-btn" data-answer="answer-q16">Show Answer</button>
+<div id="answer-q16" class="answer-box">
+<b>Answer:</b>class
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+To access the third element of an array named scores, we write scores[_____]. <button type="button" class="reveal-btn" data-answer="answer-q17">Show Answer</button>
+<div id="answer-q17" class="answer-box">
+<b>Answer:</b>2
+</div>
+
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+To read an entire line (including spaces) into a string name, use ______ (cin, name); <button type="button" class="reveal-btn" data-answer="answer-q18">Show Answer</button>
+<div id="answer-q18" class="answer-box">
+<b>Answer:</b>getline
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Fill-in-the-Blank</div>
+  <div class="definition-com-shadebox">
+
+The length of a string s can be found using s.______().  <button type="button" class="reveal-btn" data-answer="answer-q19">Show Answer</button>
+<div id="answer-q19" class="answer-box">
+<b>Answer:</b>length (also size is acceptable)
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+If Student s; is a struct variable, then s.______ accesses the field named id. <button type="button" class="reveal-btn" data-answer="answer-q20">Show Answer</button>
+<div id="answer-q20" class="answer-box">
+<b>Answer:</b>id
+</div>
+
+   </div>
+</div>
+
+
+
+<p class='titlep'>&nbsp;</p>
+<p class='titlep'>&nbsp;</p>
+
+## 2 Code Tracing Questions
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Code Tracing Questions</div>
+  <div class="definition-com-shadebox">
+
+- Code Tracing (arrays + loop + continue) Question: What is the exact output?
+
+```
+#include <iostream>
+using namespace std;
+
+int main() {
+    int scores[5] = {90, 70, 100, 80, 60};
+    int sum = 0;
+
+    for (int i = 0; i < 5; i++) {
+        if (scores[i] < 80) continue;
+        sum += scores[i];
+    }
+
+    cout << sum << "\n";
+    return 0;
+}
+
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Code Tracing Questions</div>
+  <div class="definition-com-shadebox">
+
+- Code Tracing (arrays + loop + continue) Question: What is the exact output? <button type="button" class="reveal-btn" data-answer="answer-q21">Show Answer</button>
+<div id="answer-q21" class="answer-box">
+<b>Answer:</b>It adds only scores that are >= 80: 90 + 100 + 80 = 270  Output: 270
+</div>
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Code Tracing Questions</div>
+  <div class="definition-com-shadebox">
+
+- Code Tracing (enum class + switch) Question: What is the exact output? 
+
+```
+#include <iostream>
+using namespace std;
+
+enum class Mode { MENU, RUN, EXIT };
+
+int main() {
+    Mode mode = Mode::MENU;
+    int x = 3;
+
+    if (x > 5) mode = Mode::RUN;
+    else mode = Mode::EXIT;
+
+    switch (mode) {
+        case Mode::MENU: cout << "Menu\n"; break;
+        case Mode::RUN:  cout << "Run\n";  break;
+        case Mode::EXIT: cout << "Exit\n"; break;
+    }
+    return 0;
+}
+```
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Code Tracing Questions</div>
+  <div class="definition-com-shadebox">
+
+- Code Tracing (enum class + switch) Question: What is the exact output? <button type="button" class="reveal-btn" data-answer="answer-q22">Show Answer</button>
+<div id="answer-q22" class="answer-box">
+<b>Answer:</b>x = 3 is not greater than 5, so mode = Mode::EXIT.  Output: Exit
+</div>
+
+   </div>
+</div>
+
+
+
+<p class='titlep'>&nbsp;</p>
+<p class='titlep'>&nbsp;</p>
+
+## 2 Code Debugging Questions
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Code Debugging Questions</div>
+  <div class="definition-com-shadebox">
+
+- Debugging (array out-of-bounds) Question: The code may crash or print garbage. Find the bug and fix it.
+
+```
+#include <iostream>
+using namespace std;
+
+int main() {
+    int ages[4] = {18, 20, 22, 19};
+
+    for (int i = 0; i <= 4; i++) {   // bug here
+        cout << ages[i] << " ";
+    }
+    return 0;
+}
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Code Debugging Questions</div>
+  <div class="definition-com-shadebox">
+
+- Debugging (array out-of-bounds) Question: The code may crash or print garbage. Find the bug and fix it.   <button type="button" class="reveal-btn" data-answer="answer-q23">Show Answer</button>
+<div id="answer-q23" class="answer-box">
+<b>Answer:</b>Bug: loop goes i <= 4, but valid indexes are 0..3. Fix: use i < 4.
+
+```
+#include <iostream>
+using namespace std;
+
+int main() {
+    int ages[4] = {18, 20, 22, 19};
+
+    for (int i = 0; i < 4; i++) {
+        cout << ages[i] << " ";
+    }
+    return 0;
+}
+
+```
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Code Debugging Questions</div>
+  <div class="definition-com-shadebox">
+
+- Debugging(cin >> then getline) Question: The program reads an empty name. Fix it.
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    int age;
+    string name;
+
+    cout << "Age: ";
+    cin >> age;
+
+    cout << "Name: ";
+    getline(cin, name);   // reads empty
+
+    cout << name << " is " << age << "\n";
+    return 0;
+}
+
+```
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Code Debugging Questions</div>
+  <div class="definition-com-shadebox">
+
+- Debugging(cin >> then getline) Question: The program reads an empty name. Fix it.    <button type="button" class="reveal-btn" data-answer="answer-q24">Show Answer</button>
+<div id="answer-q24" class="answer-box">
+<b>Answer:</b> Bug: after cin >> age, the newline remains in the input buffer, so getline reads it immediately. Fix: clear the leftover newline using cin.ignore() before getline.
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    int age;
+    string name;
+
+    cout << "Age: ";
+    cin >> age;
+
+    cin.ignore(); // remove leftover '\n'
+
+    cout << "Name: ";
+    getline(cin, name);
+
+    cout << name << " is " << age << "\n";
+    return 0;
+}
+
+```
+</div>
+
+   </div>
+</div>
+
+
+
+<p class='titlep'>&nbsp;</p>
+<p class='titlep'>&nbsp;</p>
+
+## 2 Coding Questions
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Coding 1 (struct + arrays + loop + if)</div>
+  <div class="definition-com-shadebox">
+
+- Question: Write a program that:
+
+	- Defines a struct Student with id, name, and gpa.
+
+	- Reads 3 students from the user.
+
+	- Prints the average GPA.
+
+	- Prints the names of students with GPA >= 3.5 (Honors).
+
+
+   </div>
+</div>
+
+
+
+
+<div id="shadebox">
+
+### An answer
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Student {
+    int id;
+    string name;
+    double gpa;
+};
+
+int main() {
+    const int N = 3;
+    Student students[N];
+
+    for (int i = 0; i < N; i++) {
+        cout << "Student " << (i + 1) << " ID: ";
+        cin >> students[i].id;
+
+        cin.ignore(); // clear newline before getline
+
+        cout << "Student " << (i + 1) << " Name: ";
+        getline(cin, students[i].name);
+
+        cout << "Student " << (i + 1) << " GPA: ";
+        cin >> students[i].gpa;
+
+        cout << "\n";
+    }
+
+    double sum = 0;
+    for (int i = 0; i < N; i++) sum += students[i].gpa;
+
+    double avg = sum / N;
+    cout << "Average GPA: " << avg << "\n";
+
+    cout << "Honors (GPA >= 3.5):\n";
+    bool found = false;
+    for (int i = 0; i < N; i++) {
+        if (students[i].gpa >= 3.5) {
+            cout << "- " << students[i].name << "\n";
+            found = true;
+        }
+    }
+    if (!found) cout << "None\n";
+
+    return 0;
+}
+
+```
+
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Coding 2 (enum menu + arrays + switch + loop)</div>
+  <div class="definition-com-shadebox">
+
+- Question: Create a menu program using enum class MenuOption with options:
+
+	- 1)Add score
+
+	- 2)Show average
+
+	- 3)Show lowest
+
+	- 9)Quit
+
+<hr style="border: none; border-top: 1.5px solid red;">
+
+- Rules:
+
+	- Store up to 5 integer scores in an array.
+
+	- If the user asks for average/lowest before adding any scores, print "No scores yet".
+
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### An answer
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+using namespace std;
+
+enum class MenuOption { Add = 1, Average = 2, Lowest = 3, Quit = 9 };
+
+int main() {
+    const int MAX = 5;
+    int scores[MAX];
+    int count = 0;
+
+    MenuOption opt = MenuOption::Add; // any non-quit start
+
+    while (opt != MenuOption::Quit) {
+        cout << "\n1) Add score\n2) Show average\n3) Show lowest\n9) Quit\n";
+        cout << "Choice: ";
+
+        int choice;
+        cin >> choice;
+
+        if (choice == 1) opt = MenuOption::Add;
+        else if (choice == 2) opt = MenuOption::Average;
+        else if (choice == 3) opt = MenuOption::Lowest;
+        else if (choice == 9) opt = MenuOption::Quit;
+        else {
+            cout << "Invalid choice\n";
+            continue;
+        }
+
+        switch (opt) {
+            case MenuOption::Add: {
+                if (count >= MAX) {
+                    cout << "Array full (max 5 scores)\n";
+                } else {
+                    cout << "Enter score: ";
+                    cin >> scores[count];
+                    count++;
+                    cout << "Saved.\n";
+                }
+                break;
+            }
+            case MenuOption::Average: {
+                if (count == 0) {
+                    cout << "No scores yet\n";
+                } else {
+                    int sum = 0;
+                    for (int i = 0; i < count; i++) sum += scores[i];
+                    double avg = (double)sum / count;
+                    cout << "Average: " << avg << "\n";
+                }
+                break;
+            }
+            case MenuOption::Lowest: {
+                if (count == 0) {
+                    cout << "No scores yet\n";
+                } else {
+                    int lowest = scores[0];
+                    for (int i = 1; i < count; i++) {
+                        if (scores[i] < lowest) lowest = scores[i];
+                    }
+                    cout << "Lowest: " << lowest << "\n";
+                }
+                break;
+            }
+            case MenuOption::Quit:
+                cout << "Goodbye!\n";
+                break;
+        }
+    }
+
+    return 0;
+}
+
+```
+
+</div>
+
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+</div>
+	
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/settings.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/effects.js"></script>
+<!--<script src="settings.js"></script>-->
+<!--<script src="effects.js"></script>-->
+</body>
+</html>

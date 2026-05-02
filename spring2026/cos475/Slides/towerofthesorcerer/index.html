@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tower of the Sorcerer</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <h1>Tower of the Sorcerer</h1>
+            <div class="game-stats">
+                <div class="stat-item">Floor: <span id="floor-display">1</span></div>
+                <div class="stat-item">HP: <span id="hp-display">1000</span></div>
+                <div class="stat-item">Attack: <span id="attack-display">10</span></div>
+                <div class="stat-item">Defense: <span id="defense-display">10</span></div>
+                <div class="stat-item">Gold: <span id="gold-display">0</span></div>
+                <div class="stat-item">Experience: <span id="exp-display">0</span></div>
+            </div>
+            <div class="key-container">
+                <div class="key-item">Yellow Keys: <span id="yellow-key-display">0</span></div>
+                <div class="key-item">Blue Keys: <span id="blue-key-display">0</span></div>
+                <div class="key-item">Red Keys: <span id="red-key-display">0</span></div>
+            </div>
+        </div>
+        <canvas id="game-canvas"></canvas>
+        <div class="game-controls">
+            <p>Use arrow keys to move</p>
+            <button id="restart-btn">Restart Game</button>
+        </div>
+    </div>
+    <script src="js/constants.js"></script>
+    <script src="js/levels.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/entities.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html> 

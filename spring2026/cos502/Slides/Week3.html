@@ -1,0 +1,2356 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Enumeration Types</title>
+    <meta name="description" content="A set of slides for Machine Learning">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/effectsGreen.css">
+	<!--<link rel="stylesheet" href="./css/style.css">-->
+	<!--<link rel="stylesheet" href="./css/effects.css">-->
+	
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+	</script>
+
+	<style>
+	    pre {
+            background-color: black;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+        }
+        code {
+            font-family: "Courier New", monospace;
+            color: #d63384; /* Python-style color */
+        }
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }	
+	</style>
+
+  </head>
+
+  <body onload="startTime()">
+    <div class="reveal" >
+	  <p><img src="images/midwaylogo.png"  align="left" height="6%" width="6%" style="vertical-align:left;margin:-15px 5px"><img src="images/mueagle.png"  color="white" align="left" height="4%" width="4%" style="vertical-align:center;margin:-1% 45%">
+		<div style="color:white;font-size: 20px; vertical-align:left;margin:-1% 0%" align="right" id="realtimeclock"></div></p>
+      <div class="slides">
+
+  <div class="me">Xinxing Wu</div>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown id="cover"><textarea data-template>
+<p class='titlep'>&nbsp;</p>
+
+# Enumeration Types (Enums)
+
+<hr>
+
+<br>
+
+Xinxing Wu
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline
+
+[<p class="hover-underline-animation">Motivation: Why Enumeration Types?</p>](#/ch1)
+
+[<p class="hover-underline-animation">Definition and Syntax</p>](#/ch2)
+
+[<p class="hover-underline-animation">Enumerations vs. Primitive Data Types</p>](#/ch3)
+
+[<p class="hover-underline-animation">Using Enumeration Types</p>](#/ch4)
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline (Cont.)
+
+[<p class="hover-underline-animation">Common Design Patterns Using Enums</p>](#/ch5)
+
+[<p class="hover-underline-animation">Common Mistakes and Best Practices</p>](#/ch6)
+
+[<p class="hover-underline-animation">Summary</p>](#/ch7)
+
+[<p class="hover-underline-animation">Mini Case Study</p>](#/ch8)
+
+</textarea></section>
+
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+
+## Goal
+
+<div id="shadebox-neon" class="shadebox neon">
+
+Will be able to define and use <spanGREEN>enumeration types</spanGREEN> to represent fixed sets of values, improving program <spanBYMix>clarity</spanBYMix>, <spanBYMix>safety</spanBYMix>, and <spanBYMix>design</spanBYMix>.
+</div>
+
+</textarea></section>
+
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch1" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Motivation</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Questions</div>
+  <div class="definition-com-shadebox">
+
+What happens when a program must manage many related values instead of just one?   <button type="button" class="reveal-btn" data-answer="answer-q1">Show Answer</button>
+<div id="answer-q1" class="answer-box">
+<b>Answer:</b>This leads to the study of arrays, which allow programs to efficiently store and process collections of data.
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+How do programs work with text, user input, and formatted information?  <button type="button" class="reveal-btn" data-answer="answer-q2">Show Answer</button>
+<div id="answer-q2" class="answer-box">
+<b>Answer:</b>Since real applications constantly handle words, messages, and commands, an in-depth treatment of strings becomes essential.
+</div>
+
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+How can a program represent real-world entities such as students, employees, or transactions?  <button type="button" class="reveal-btn" data-answer="answer-q3">Show Answer</button>
+<div id="answer-q3" class="answer-box">
+<b>Answer:</b>This motivates the use of record structures (structs), which group related data into meaningful units.
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Questions (Cont.)</div>
+  <div class="definition-com-shadebox">
+
+How can data persist after a program finishes running? <button type="button" class="reveal-btn" data-answer="answer-q4">Show Answer</button>
+<div id="answer-q4" class="answer-box">
+<b>Answer:</b>To move beyond temporary memory, must learn file input and output, enabling programs to save, retrieve, and manage long-term data.
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+How can programs be organized as they grow larger and more complex?  <button type="button" class="reveal-btn" data-answer="answer-q5">Show Answer</button>
+<div id="answer-q5" class="answer-box">
+<b>Answer:</b>Object-Oriented Programming (OOP) helps shift from simply writing code to designing well-structured software systems.
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Focus</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Why enums exist + how to declare them correctly
+
+<div id="shadebox-glass" class="shadebox glass">
+Show why ints/strings (“Magic numbers”) cause bugs
+</div>
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code (bad <spanRED>?</spanRED> vs good)
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    int day = 5; // what is 5?
+    if (day == 6 || day == 7) cout << "Weekend\n";
+
+    string grade = "A ";
+    if (grade == "A") cout << "Excellent\n";
+
+    return 0;
+}
+
+```
+
+</div>
+
+
+
+<div class="definition-shakeflash-container">
+  <div class="definition-shakeflash-title">“Magic numbers” problem</div>
+  <div class="definition-shakeflash-shadebox">
+
+In C++, magic numbers are hard-coded numeric literals in your code whose meaning is <spanGREEN>not</spanGREEN> obvious from the number itself.
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+```
+int day = 5;
+if (day == 6 || day == 7) {
+    cout << "Weekend\n";
+}
+```
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+- Here, 6 and 7 are “magic” because a reader has to <spanBYMix>guess</spanBYMix> they mean Saturday and Sunday.
+
+   </div>
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Notes</div>
+  <div class="question-shadebox">
+<div style="width: 800px;"></div>
+
+<spanRED>Why magic numbers are a problem</spanRED>
+
+<hr style="border: none; border-top: 2px dashed green;">
+
+- Unreadable: 42, 0.85, 7, 255 don’t explain themselves.
+
+- <spanRED>Error-prone</spanRED>: you can mistype or misunderstand them.
+
+- Hard to maintain: if the meaning changes, you must hunt down every occurrence.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Notes - Better alternatives</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+<b>Option 1</b> - Named constants
+
+```
+const int SATURDAY = 6;
+const int SUNDAY   = 7;
+
+if (day == SATURDAY || day == SUNDAY) cout << "Weekend\n";
+
+```
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Notes - Better alternatives</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+<b>Option 2</b> - Enums / enum class
+
+```
+enum class Day { Mon=1, Tue, Wed, Thu, Fri, Sat, Sun };
+
+Day d = Day::Fri;
+if (d == Day::Sat || d == Day::Sun) cout << "Weekend\n";
+
+```
+   </div>
+</div>
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+<div id="roundbox">
+If a number has a meaning, give it a name (constant) or a type (enum).
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Enums</div>
+  <div class="definition-shadebox">
+
+An enum is a special type that represents a group of constants (<spanBYMix>unchangeable</spanBYMix> values).
+
+<hr style="border:0;height:25px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+To create an enum, use the enum keyword, followed by the name of the enum, and separate the enum items with a comma:
+
+```
+enum Level {
+  LOW,
+  MEDIUM,
+  HIGH
+};
+```
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Enums</div>
+  <div class="definition-shadebox">
+
+- Note that the last item does <spanRED>not</spanRED> need a comma.
+
+- It is <spanRED>not</spanRED> required to use uppercase, but often considered as good practice.
+
+- Enum is short for "enumerations", which means "specifically listed".
+
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Note</div>
+  <div class="question-shadebox">
+
+```
+string grade = "A ";
+if (grade == "A") cout << "Excellent\n"; 
+```
+   </div>
+</div>
+
+
+
+
+<div class="definition-shakeflash-container">
+  <div class="definition-shakeflash-title">Strings are “typo-prone” problem</div>
+  <div class="definition-shakeflash-shadebox">
+
+```
+string grade = "A ";
+if (grade == "A") cout << "Excellent\n"; // won't run due to typo
+
+```
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+- Strings must match exactly (character-by-character).
+
+- "A " is NOT the same as "A" because of the extra space at the end.
+   </div>
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Notes</div>
+  <div class="question-shadebox">
+
+Why enums are explicit and safe
+
+<hr style="border: none; border-top: 2px dashed green;">
+
+- You stop using unclear numbers like 6 and 7
+
+- You stop relying on fragile string equality like "A " vs "A"
+
+- The compiler can catch invalid values earlier.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Enums</div>
+  <div class="definition-shadebox">
+
+
+```
+const int SATURDAY = 6;
+enum Day { Mon=1, Tue, Wed, Thu, Fri, Sat, Sun };
+Day day = Fri;
+if (day == Sat || day == Sun) cout << "Weekend\n";
+
+```
+
+- Sat and Sun are self-explaining.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Enums</div>
+  <div class="definition-shadebox">
+  
+To access the enum, you must create a variable of it.
+
+Inside the main() method, specify the enum keyword, followed by the name of the enum (Level) and then the name of the enum variable (myVar in this example):
+
+```
+enum Level myVar;
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Enums</div>
+  <div class="definition-shadebox">
+  
+Now that you have created an enum variable (myVar), you can assign a value to it. The assigned value must be one of the items inside the enum (LOW, MEDIUM or HIGH):
+
+
+```
+enum Level myVar = MEDIUM;
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Enums</div>
+  <div class="definition-shadebox">
+
+By default, the first item (LOW) has the value 0, the second (MEDIUM) has the value 1, etc. If you now try to print myVar, it will output 1, which represents MEDIUM:
+
+```
+#include <iostream>
+using namespace std;
+ 
+enum Level {
+  LOW,
+  MEDIUM,
+  HIGH
+}; 
+
+int main() {
+  enum Level myVar = MEDIUM;
+  cout << myVar;
+  return 0;
+}
+
+```
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Enums - Change Values</div>
+  <div class="definition-shadebox">
+
+The first item of an enum has the value 0. The second has the value 1, and so on. To make more sense of the values, you can easily change them:
+
+```
+#include <iostream>
+using namespace std;
+ 
+enum Level {
+  LOW = 25,
+  MEDIUM = 50,
+  HIGH = 75
+}; 
+
+int main() {
+  enum Level myVar = MEDIUM;
+  cout << myVar;
+  return 0;
+}
+
+```
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Enums</div>
+  <div class="definition-shadebox">
+  
+If you assign a value to one specific item, the next items will update their numbers accordingly (Try it)
+
+```
+#include <iostream>
+using namespace std;
+ 
+enum Level {
+  LOW = 5,
+  MEDIUM, // Value? 
+  HIGH
+}; 
+
+int main() {
+  enum Level myVar = MEDIUM;
+  cout << myVar;
+  return 0;
+}
+
+```
+
+   </div>
+</div>
+
+
+
+> Can make the output a string, but not automatically with a plain enum?
+
+- By default, C++ prints the integer value of an enum.
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Enums</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+enum Level {
+    LOW = 5,
+    MEDIUM,
+    HIGH
+};
+
+string LevelToString(Level level) {
+    switch (level) {
+        case LOW: return "LOW";
+        case MEDIUM: return "MEDIUM";
+        case HIGH: return "HIGH";
+        default: return "UNKNOWN";
+    }
+}
+
+int main() {
+    Level myVar = MEDIUM;
+    cout << LevelToString(myVar);
+    return 0;
+}
+
+```
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Enums</div>
+  <div class="definition-shadebox">
+  
+Enum in a Switch Statement
+
+
+<div style="width: 800px;"></div>
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+using namespace std;
+ 
+enum Level {
+  LOW = 1,
+  MEDIUM,
+  HIGH
+};
+
+int main() {
+  enum Level myVar = MEDIUM;
+
+  switch (myVar) {
+    case 1:
+      cout << "Low Level";
+      break;
+    case 2:
+      cout << "Medium level";
+      break;
+    case 3:
+      cout << "High level";
+      break;
+  }
+  return 0;
+}
+
+```
+
+</div>
+   </div>
+</div>
+
+
+
+
+<div id="shadebox">
+
+### Example code - With Comment
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    // BAD: "magic numbers"
+    int day = 5; // what is 5?
+    if (day == 6 || day == 7) cout << "Weekend\n";
+
+    // BAD: strings are typo-prone
+    string grade = "A ";
+    if (grade == "A") cout << "Excellent\n"; // won't run due to typo
+
+    // GOOD: enums are explicit and safe (shown next section)
+    return 0;
+}
+
+```
+</div>
+</div>
+
+
+
+<div class="definition-pro-X-container">
+  <div class="definition-pro-X-title">Exercises/Assignments</div>
+  <div class="definition-pro-X-shadebox">
+  
+When a program must manage many related values instead of just one, this motivates learning arrays.  <button type="button" class="reveal-btn" data-answer="answer-e1">Show Answer</button>
+<div id="answer-e1" class="answer-box"> 
+<b>Answer:</b> True
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+In C++, magic numbers are hard-coded numeric literals whose meaning is not obvious from the number itself. <button type="button" class="reveal-btn" data-answer="answer-e2">Show Answer</button>
+<div id="answer-e2" class="answer-box">
+<b>Answer:</b> True
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+Magic numbers are usually easy to maintain because if the meaning changes, you only update one place.  <button type="button" class="reveal-btn" data-answer="answer-e3">Show Answer</button>
+<div id="answer-e3" class="answer-box">
+<b>Answer:</b> False
+</div>
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-X-container">
+  <div class="definition-pro-X-title">Exercises/Assignments (Cont.)</div>
+  <div class="definition-pro-X-shadebox">
+
+Strings are typo-prone because they must match exactly (character-by-character), so "A " is different from "A".  <button type="button" class="reveal-btn" data-answer="answer-e4">Show Answer</button>
+<div id="answer-e4" class="answer-box">
+<b>Answer:</b> True
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+Using enums (or enum class) helps avoid unclear numbers (like 6 and 7) and allows the compiler to catch invalid values earlier.  <button type="button" class="reveal-btn" data-answer="answer-e5">Show Answer</button>
+<div id="answer-e5" class="answer-box">
+<b>Answer:</b> True
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-X-container">
+  <div class="definition-pro-X-title">Exercises/Assignments (Cont.)</div>
+  <div class="definition-pro-X-shadebox">
+  
+When a program must manage many related values, this leads to the study of ______. <button type="button" class="reveal-btn" data-answer="answer-e6">Show Answer</button>
+<div id="answer-e6" class="answer-box">
+<b>Answer:</b> arrays
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+In C++, ______ numbers are hard-coded numeric literals whose meaning is not obvious. <button type="button" class="reveal-btn" data-answer="answer-e7">Show Answer</button>
+<div id="answer-e7" class="answer-box">
+<b>Answer:</b> magic
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+A better alternative to magic numbers is using named ______ (e.g., const int SATURDAY = 6;).  <button type="button" class="reveal-btn" data-answer="answer-e8">Show Answer</button>
+<div id="answer-e8" class="answer-box">
+<b>Answer:</b> constants
+</div>
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-X-container">
+  <div class="definition-pro-X-title">Exercises/Assignments (Cont.)</div>
+  <div class="definition-pro-X-shadebox">
+
+Another alternative is using ______ (or enum class) to give values a clear type (e.g., Day::Sat).  <button type="button" class="reveal-btn" data-answer="answer-e9">Show Answer</button>
+<div id="answer-e9" class="answer-box">
+<b>Answer:</b> enums
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+Strings are ______-prone because "A " is not the same as "A". <button type="button" class="reveal-btn" data-answer="answer-e10">Show Answer</button>
+<div id="answer-e10" class="answer-box">
+<b>Answer:</b> typo
+</div>
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch2" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Definition and Syntax</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Note</div>
+  <div class="definition-com-shadebox">
+
+Simple enum class (implicit values)
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+```
+enum class Color { Red, Green, Blue };   // Red=0, Green=1, Blue=2
+
+int main() {
+    Color c = Color::Green;
+    return 0;
+}
+
+```
+
+   </div>
+</div>
+
+- What is the output of c? <button type="button" class="reveal-btn" data-answer="answer-q6">Show Answer</button>
+<div id="answer-q6" class="answer-box">
+<b>Answer:</b> std::cout << static_cast<int>(c) << "\n";  // prints 1
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Note</div>
+  <div class="definition-com-shadebox">
+
+Enum class with explicit values
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+```
+enum class MenuOption { View = 1, Add = 2, Remove = 3, Quit = 9 };
+
+int main() {
+    MenuOption opt = MenuOption::Quit;
+    return 0;
+}
+
+```
+
+   </div>
+</div>
+
+- What is the output of opt? <button type="button" class="reveal-btn" data-answer="answer-q7">Show Answer</button>
+<div id="answer-q7" class="answer-box">
+<b>Answer:</b> std::cout << static_cast<int>(opt) << "\n";  // prints 9
+
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Note</div>
+  <div class="definition-com-shadebox">
+
+Enum class inside a struct (real-world style)
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+```
+struct Student {
+    enum class Grade { A, B, C, D, F };
+    Grade g;
+};
+
+int main() {
+    Student s;
+    s.g = Student::Grade::C;
+    return 0;
+}
+
+
+```
+
+   </div>
+</div>
+
+- What is the output of s.g? <button type="button" class="reveal-btn" data-answer="answer-q8">Show Answer</button>
+<div id="answer-q8" class="answer-box">
+<b>Answer:</b> std::cout << static_cast<int>(s.g) << "\n";  // prints 2
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Write a C++ program that:
+
+- Step 1: Defines an enum class Day with 7 values in this order:
+Mon, Tue, Wed, Thu, Fri, Sat, Sun
+(Do not assign numbers—use the default/implicit values.)
+
+- Step 2: Defines an enum class MenuOption with these explicit values:
+View = 1, Add = 2, Remove = 3, Quit = 9
+
+- Step 3:  In main(): Create a Day variable set to Friday; Create a MenuOption variable set to Quit; Print the integer value of each enum value on its own line (use static_cast<int>(...))
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Expected Output. Your program should print two lines:
+
+- The integer value of Day::Fri
+
+- The integer value of MenuOption::Quit
+
+</div>
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### An answer
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+using namespace std;
+
+enum class Day { Mon, Tue, Wed, Thu, Fri, Sat, Sun };        // implicit 0..6
+enum class MenuOption { View = 1, Add = 2, Remove = 3, Quit = 9 }; // explicit
+
+int main() {
+    Day d = Day::Fri;
+    MenuOption opt = MenuOption::Quit;
+    (void)d; (void)opt;
+
+    std::cout << static_cast<int>(d) << "\n";
+    std::cout << static_cast<int>(opt) << "\n";
+    return 0;
+}
+
+```
+
+</div>
+
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch3" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Enumerations vs. Primitive Data Types</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Program</div>
+  <div class="definition-com-shadebox">
+
+```
+#include <iostream>
+using namespace std;
+
+enum class Day { Mon, Tue, Wed, Thu, Fri, Sat, Sun };
+
+int main() {
+    Day d = Day::Mon;
+
+    // d = 3;            // ERROR (good! prevents invalid assignment)
+    // if (d == 1) { }   // ERROR (can't compare to int)
+
+    if (d == Day::Mon) cout << "Start of week\n";
+    return 0;
+}
+
+```
+
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+  
+What enum class Day { ... } means
+
+<div id="shadebox-glass" class="shadebox glass">
+
+- You create a new type named Day.
+
+- It can only hold one of these values:
+
+	- Day::Mon, Day::Tue, …, Day::Sun
+
+- Internally, those are stored as integers (usually starting at 0), but you don’t treat them like integers.
+
+</div>
+
+- So d is not an int. It’s a Day.
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+
+Why d = 3; is an error
+
+- If Day were just an int, d = 999; would “work” but would make no sense as a day. With enum class:
+
+<div id="shadebox-glass" class="shadebox glass">
+
+- d = 3; fails because 3 is an int, not a Day
+
+- This prevents invalid values from entering your program.
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Why if (d == 1) is an error
+
+<div id="shadebox-glass" class="shadebox glass">
+
+- d is a Day
+
+- 1 is an int
+
+- C++ won’t compare different types here (good type safety).
+
+</div>
+
+```
+if (d == Day::Mon) { ... }
+```
+
+   </div>
+</div>
+
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+  
+The if (d == Day::Mon) line
+
+- This checks whether the variable d is currently storing the enum value Day::Mon. If true, it prints:
+
+<div id="shadebox-glass" class="shadebox glass">
+
+```
+Start of week
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Enum class gives you:
+
+<div id="shadebox-glass" class="shadebox glass">
+
+- Type safety (can’t mix with ints by accident)
+
+- Readable code (Day::Mon is clearer than 0 or 1)
+
+- Fewer bugs (no “magic numbers”)
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-X-container">
+  <div class="definition-pro-X-title">Exercises/Assignments</div>
+  <div class="definition-pro-X-shadebox">
+
+enum class Day { Mon, Tue, Wed, Thu, Fri, Sat, Sun }; defines a new type named Day. <button type="button" class="reveal-btn" data-answer="answer-e11">Show Answer</button>
+<div id="answer-e11" class="answer-box"> 
+<b>Answer:</b> True
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+A variable of type Day can be assigned any integer value, such as 3 or 999. <button type="button" class="reveal-btn" data-answer="answer-e12">Show Answer</button>
+<div id="answer-e12" class="answer-box">
+<b>Answer:</b> False
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+The statement if (d == 1) causes a compile-time error because it compares an enum value with an integer.  <button type="button" class="reveal-btn" data-answer="answer-e13">Show Answer</button>
+<div id="answer-e13" class="answer-box">
+<b>Answer:</b> True
+</div>
+
+</div>
+   </div>
+
+
+
+<div class="definition-pro-X-container">
+  <div class="definition-pro-X-title">Exercises/Assignments (Cont.)</div>
+  <div class="definition-pro-X-shadebox">
+
+Internally, enum values are stored as integers, but programmers should treat them like ordinary integers. <button type="button" class="reveal-btn" data-answer="answer-e14">Show Answer</button>
+<div id="answer-e14" class="answer-box"> 
+<b>Answer:</b> False
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+Using enum class helps reduce bugs by preventing accidental mixing of enum values and integers. <button type="button" class="reveal-btn" data-answer="answer-e15">Show Answer</button>
+<div id="answer-e15" class="answer-box">
+<b>Answer:</b> True
+</div>
+
+</div>
+</div>
+
+
+
+
+<div class="definition-pro-X-container">
+  <div class="definition-pro-X-title">Exercises/Assignments (Cont.)</div>
+  <div class="definition-pro-X-shadebox">
+
+enum class Day { Mon, Tue, Wed, Thu, Fri, Sat, Sun }; creates a new ______ named Day. <button type="button" class="reveal-btn" data-answer="answer-e16">Show Answer</button>
+<div id="answer-e16" class="answer-box"> 
+<b>Answer:</b> type
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+With enum class, the assignment d = 3; fails because 3 is an ______, not a Day. <button type="button" class="reveal-btn" data-answer="answer-e17">Show Answer</button>
+<div id="answer-e17" class="answer-box">
+<b>Answer:</b> integer (int)
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+To correctly compare a Day variable, you must use another ______ value, such as Day::Mon.  <button type="button" class="reveal-btn" data-answer="answer-e18">Show Answer</button>
+<div id="answer-e18" class="answer-box">
+<b>Answer:</b> enum
+</div>
+
+</div>
+</div>
+
+
+
+
+<div class="definition-pro-X-container">
+  <div class="definition-pro-X-title">Exercises/Assignments (Cont.)</div>
+  <div class="definition-pro-X-shadebox">
+
+The comparison if (d == Day::Mon) prints ______ when the condition is true. <button type="button" class="reveal-btn" data-answer="answer-e19">Show Answer</button>
+<div id="answer-e19" class="answer-box"> 
+<b>Answer:</b> Start of week
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+One major advantage of enum class over primitive data types is improved ______ safety. <button type="button" class="reveal-btn" data-answer="answer-e20">Show Answer</button>
+<div id="answer-e20" class="answer-box">
+<b>Answer:</b> type
+</div>
+
+
+</div>
+</div>
+
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch4" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Using Enumeration Types</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Learning Goal</div>
+  <div class="definition-com-shadebox">
+
+Variables, comparisons, if / switch, looping (manual list).
+
+- Enums + switch + looping through enum values
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task</div>
+  <div class="definition-pro-Y-shadebox">
+
+Write a C++ program that does the following:
+
+- Step 1: Create an enum class Day with these values (in order):
+Mon, Tue, Wed, Thu, Fri, Sat, Sun
+
+- Step 2: Create an array named allDays that stores all 7 enum values in order.
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+
+- Step 3: In main():
+
+	- Create a Day variable named d and set it to Saturday.
+
+	- Use a switch statement to print:
+
+<div id="roundbox">
+
+- "Weekend" if the day is Saturday or Sunday
+
+- "Weekday" for all other days
+
+</div>
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+
+- Step 4: Add a range-based for loop that goes through allDays (you don’t need to print inside the loop yet—just loop through them).
+
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+
+Expected Behavior
+
+- When d is Day::Sat, the program prints:
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+```
+Weekend
+```
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### An answer
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+using namespace std;
+
+enum class Day { Mon, Tue, Wed, Thu, Fri, Sat, Sun };
+
+const Day allDays[] = { Day::Mon, Day::Tue, Day::Wed, Day::Thu, Day::Fri, Day::Sat, Day::Sun };
+
+int main() {
+    Day d = Day::Sat;
+
+    switch (d) {
+        case Day::Sat:
+        case Day::Sun: cout << "Weekend\n"; break;
+        default: cout << "Weekday\n"; break;
+    }
+
+    for (Day x : allDays) {
+        (void)x; // use later (e.g., print)
+    }
+    return 0;
+}
+
+
+```
+
+</div>
+
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch5" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Common Design Patterns Using Enums</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Goal</div>
+  <div class="definition-com-shadebox">
+
+States/modes, menu-driven programs, intro finite-state.
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task</div>
+  <div class="definition-pro-Y-shadebox">
+
+<div id="roundbox">
+
+Write a C++ program that uses an enum class to control the flow of a simple menu-driven app. Your final program should behave exactly like the sample output below.
+</div>
+
+- Step 1: Define an enum:
+
+```
+enum class Mode { MENU, RUNNING, EXIT };
+
+```
+
+- Step 2: Start the program in MENU mode: 
+
+```
+Create a variable Mode mode = Mode::MENU;
+```
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+
+- Step 3: Use a while loop that keeps the program running until the mode becomes EXIT:
+
+```
+Example idea: while (mode != Mode::EXIT)
+```
+
+- Step 4: In MENU mode:
+
+	- Display: 1) Start  2) Quit
+
+	- Read an integer choice
+	
+	- If choice == 1, change mode to RUNNING
+	
+	- Otherwise, change mode to EXIT
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+
+- Step 5: In RUNNING mode:
+	- Print exactly: ```Running... done.```
+	- Then change mode back to MENU
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+
+Sample Run
+
+```
+1) Start  2) Quit
+1
+Running... done.
+1) Start  2) Quit
+2
+
+```
+
+<hr style="border: none; border-top: 1.5px solid yellow;">
+
+What to submit
+
+- Your .cpp file
+
+- A 2–3 sentence explanation: What does the enum Mode represent, and why is it useful here?
+   </div>
+</div>
+
+
+
+
+<div id="shadebox">
+
+### An answer
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+using namespace std;
+
+enum class Mode { MENU, RUNNING, EXIT };
+
+int main() {
+    Mode mode = Mode::MENU;
+
+    while (mode != Mode::EXIT) {
+        if (mode == Mode::MENU) {
+            cout << "1) Start  2) Quit\n";
+            int choice; cin >> choice;
+            mode = (choice == 1) ? Mode::RUNNING : Mode::EXIT;
+        } else if (mode == Mode::RUNNING) {
+            cout << "Running... done.\n";
+            mode = Mode::MENU;
+        }
+    }
+    return 0;
+}
+
+```
+
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch6" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Common Mistakes and Best Practices</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Goal</div>
+  <div class="definition-com-shadebox">
+
+Don’t treat enums as ints; avoid “over-extending” enums.
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+```
+// Best practice: keep conversions localized (avoid scattering casts).
+// Also: use enum class (prevents accidental int mixing).
+enum class Color { Red, Green, Blue };
+```
+   </div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Replace “magic numbers” in a starter program with an enum.
+
+- Build a switch menu using an enum for menu options.
+
+- Add a safe list/array of enum values for looping.
+</div>
+   </div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Starter code</div>
+  <div class="definition-pro-Y-shadebox">
+  
+```
+#include <iostream>
+using namespace std;
+
+// TODO: create enum class MenuOption
+// TODO: write function to show menu
+// TODO: switch on MenuOption
+
+int main() {
+    // starter: int option; cin >> option; // replace with enum approach
+    return 0;
+}
+
+```
+</div>
+   </div>
+
+
+
+<div id="shadebox">
+
+### An answer
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+// Section 2: Definition & Syntax (enum class)
+enum class MenuOption {
+    View = 1,
+    Add  = 2,
+    Remove = 3,
+    Quit = 9
+};
+
+// Section 4: Safe list/array of enum values for looping
+const MenuOption allOptions[] = {
+    MenuOption::View,
+    MenuOption::Add,
+    MenuOption::Remove,
+    MenuOption::Quit
+};
+
+// Convert enum -> string (helps display nicely)
+string toString(MenuOption opt) {
+    switch (opt) {
+        case MenuOption::View:   return "View";
+        case MenuOption::Add:    return "Add";
+        case MenuOption::Remove: return "Remove";
+        case MenuOption::Quit:   return "Quit";
+        default:                 return "Unknown";
+    }
+}
+
+// Show menu (prints using the safe list)
+void showMenu() {
+    cout << "\n===== MENU =====\n";
+    for (MenuOption opt : allOptions) {
+        cout << static_cast<int>(opt) << ") " << toString(opt) << "\n";
+    }
+    cout << "Choose: ";
+}
+
+// Read int, validate, convert to MenuOption safely
+MenuOption readMenuOption() {
+    int choice;
+    cin >> choice;
+
+    // Section 1: prevent magic numbers + invalid choices
+    switch (choice) {
+        case 1: return MenuOption::View;
+        case 2: return MenuOption::Add;
+        case 3: return MenuOption::Remove;
+        case 9: return MenuOption::Quit;
+        default:
+            cout << "Invalid choice. Try again.\n";
+            return readMenuOption(); // simple retry for beginner lab
+    }
+}
+
+int main() {
+    // Section 3: enums vs primitives (type-safe menu choices)
+    MenuOption option = MenuOption::View; // initial value doesn't matter much
+
+    while (option != MenuOption::Quit) {
+        showMenu();
+        option = readMenuOption();
+
+        // Section 4: switch on MenuOption
+        switch (option) {
+            case MenuOption::View:
+                cout << "Showing items...\n";
+                break;
+            case MenuOption::Add:
+                cout << "Adding an item...\n";
+                break;
+            case MenuOption::Remove:
+                cout << "Removing an item...\n";
+                break;
+            case MenuOption::Quit:
+                cout << "Goodbye!\n";
+                break;
+            default:
+                cout << "Unknown option.\n";
+                break;
+        }
+    }
+
+    return 0;
+}
+
+
+```
+
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Task</div>
+  <div class="definition-shadebox">
+  
+It removes magic numbers, uses an enum-based switch menu, and includes a safe enum list for looping.
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-X-container">
+  <div class="definition-pro-X-title">Exercises/Assignments</div>
+  <div class="definition-pro-X-shadebox">
+
+A best practice is to use enum class because it prevents accidental mixing of enums with integers. <button type="button" class="reveal-btn" data-answer="answer-e21">Show Answer</button>
+<div id="answer-e21" class="answer-box"> 
+<b>Answer:</b> True
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+You should freely scatter static_cast<int>(...) conversions throughout the code whenever you need an enum’s number. <button type="button" class="reveal-btn" data-answer="answer-e22">Show Answer</button>
+<div id="answer-e22" class="answer-box">
+<b>Answer:</b> False
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+Using a safe list/array of enum values (like allOptions) makes looping through menu options safer and clearer. <button type="button" class="reveal-btn" data-answer="answer-e23">Show Answer</button>
+<div id="answer-e23" class="answer-box">
+<b>Answer:</b> True
+</div>
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-X-container">
+  <div class="definition-pro-X-title">Exercises/Assignments (Cont.)</div>
+  <div class="definition-pro-X-shadebox">
+
+Best practice: Don’t treat enums as ______. <button type="button" class="reveal-btn" data-answer="answer-e24">Show Answer</button>
+<div id="answer-e24" class="answer-box"> 
+<b>Answer:</b> ints (integers)
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+In the menu solution, toString(MenuOption opt) converts an enum value to a ______ for display. <button type="button" class="reveal-btn" data-answer="answer-e25">Show Answer</button>
+<div id="answer-e25" class="answer-box">
+<b>Answer:</b> string
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+The allOptions[] array is used as a safe list of enum values for ______ through all menu options. <button type="button" class="reveal-btn" data-answer="answer-e26">Show Answer</button>
+<div id="answer-e26" class="answer-box">
+<b>Answer:</b> looping
+</div>
+
+</div>
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch7" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Summary</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div id="rainbow-type"> Summary </div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Enums replace magic numbers and fragile strings</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Enumeration types allow programs to represent fixed sets of meaningful values (such as days, menu options, or states) without relying on unclear numbers or typo-prone strings.</p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">enum class creates a new, type-safe data type</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">An enum class defines its own type, preventing accidental assignment from integers and unsafe comparisons, which helps catch errors at compile time.</p>
+</div>
+
+</div>
+
+<div class="enum-bigidea-wrapper">
+  <style>
+    .enum-bigidea-wrapper .big-idea-callout{
+      margin: 16px 0;
+      padding: 12px 14px;
+      border-radius: 12px;
+
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.12);
+
+      color: #eaf3ff;
+      line-height: 1.55;
+      font-size: 25px;
+
+      border-left: 5px solid rgba(132, 255, 170, 0.85);
+      box-shadow: 0 0 0 1px rgba(132, 255, 170, 0.08);
+
+      /* ✅ align left */
+      text-align: left;
+    }
+
+    .enum-bigidea-wrapper .big-idea-callout b{
+      font-weight: 700;
+    }
+
+    .enum-bigidea-wrapper .big-idea-callout code{
+      font-family: Consolas, Monaco, monospace;
+      font-size: 0.95em;
+      padding: 2px 6px;
+      border-radius: 8px;
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+  </style>
+
+  <div class="big-idea-callout">
+    <b>Big idea:</b> If a value comes from a fixed set, don’t store it as a magic number or fragile string. Use <code>enum class</code> so your code is clearer, safer, and easier to maintain. Enums are used to give names to constants, which makes the code easier to read and maintain.
+
+Use enums when you have values that you know aren't going to change, like month days, days, colors, deck of cards, etc.
+  </div>
+</div>
+
+
+
+
+<div id="rainbow-type"> Summary (Cont.)</div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap; margin-bottom:-32px;">
+
+<div class="liquid-glass">
+
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Enums improve readability and maintainability</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Code using values like MenuOption::Quit or Day::Sat clearly communicates intent, making programs easier to understand, debug, and modify.</p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Enums work naturally with control structures</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Enumeration values are ideal for if statements, switch statements, and menu-driven logic, producing clear and well-structured program flow.</p>
+</div>
+
+
+<div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Safe enum lists enable controlled looping</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Since enums cannot be automatically iterated, explicitly listing enum values in an array provides a safe and intentional way to loop through valid options.</p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Enums model real-world states and behaviors</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Using enums for modes, statuses, and states (such as Available vs. CheckedOut) aligns program design with real-world concepts and reduces logical errors.</p>
+</div>
+
+</div>
+</div>
+
+</textarea></section>
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch8" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Mini Case Study</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Lab： Library Self-Checkout Kiosk</div>
+  <div class="definition-com-shadebox">
+
+Scenario - A small library wants a console kiosk. Students can:
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+- View inventory
+
+- Check out a book
+
+- Return a book
+
+- Quit
+   </div>
+</div>
+
+Note: The library had bugs from magic numbers and string typos, so you must use enum class and switch.
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Step 1: Defines 
+
+	- enum class MenuOption { View=1, Checkout=2, Return=3, Quit=9 };
+	- enum class BookStatus { Available, CheckedOut };
+
+- Step 2: Creates a safe list of menu options for looping
+
+	- const MenuOption allOptions[] = { View, Checkout, Return, Quit }; (with MenuOption::...)
+
+- Step 3: Creates a struct Book with
+
+	- string title;
+	- BookStatus status;
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Initializes 3 books.
+
+- Runs a menu loop until Quit:
+
+	- Print menu using allOptions
+
+	- Read an int choice
+
+	- Validate choice and convert to MenuOption
+   </div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Runs a menu loop until Quit:
+	- Use switch(option) to do actions:
+
+<div id="shadebox">
+
+- View: show all books with status
+
+- Checkout: ask for book number; if available → mark checked out; else message
+
+- Return: ask for book number; if checked out → mark available; else message
+
+- Quit: print “Goodbye!”
+
+</div>
+   </div>
+</div>
+
+
+
+
+<div id="shadebox">
+
+### An answer
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+enum class MenuOption { View = 1, Checkout = 2, Return = 3, Quit = 9 };
+enum class BookStatus { Available, CheckedOut };
+
+struct Book {
+    string title;
+    BookStatus status;
+};
+
+int main() {
+    // Safe list for looping (prints menu without magic numbers everywhere)
+    const MenuOption allOptions[] = {
+        MenuOption::View,
+        MenuOption::Checkout,
+        MenuOption::Return,
+        MenuOption::Quit
+    };
+
+    // Inventory (3 books)
+    Book books[3] = {
+        { "C++ for Beginners", BookStatus::Available },
+        { "Data Structures",   BookStatus::CheckedOut },
+        { "Discrete Math",     BookStatus::Available }
+    };
+    const int N = 3;
+
+    MenuOption option = MenuOption::View;
+
+    while (option != MenuOption::Quit) {
+        // ---- Show menu (no function) ----
+        cout << "\n===== Library Kiosk =====\n";
+        for (MenuOption opt : allOptions) {
+            cout << static_cast<int>(opt) << ") ";
+            switch (opt) {
+                case MenuOption::View:     cout << "View inventory"; break;
+                case MenuOption::Checkout: cout << "Check out a book"; break;
+                case MenuOption::Return:   cout << "Return a book"; break;
+                case MenuOption::Quit:     cout << "Quit"; break;
+                default:                   cout << "Unknown"; break;
+            }
+            cout << "\n";
+        }
+        cout << "Choose: ";
+
+        // ---- Read + validate + convert int -> MenuOption (no function) ----
+        int choice;
+        cin >> choice;
+
+        bool valid = true;
+        switch (choice) {
+            case 1: option = MenuOption::View; break;
+            case 2: option = MenuOption::Checkout; break;
+            case 3: option = MenuOption::Return; break;
+            case 9: option = MenuOption::Quit; break;
+            default:
+                cout << "Invalid choice. Try again.\n";
+                valid = false;
+                break;
+        }
+        if (!valid) continue;
+
+        // ---- Do action with enum switch ----
+        switch (option) {
+            case MenuOption::View: {
+                cout << "\n--- Inventory ---\n";
+                for (int i = 0; i < N; i++) {
+                    cout << (i + 1) << ") " << books[i].title << " [";
+                    if (books[i].status == BookStatus::Available) cout << "Available";
+                    else cout << "Checked out";
+                    cout << "]\n";
+                }
+                break;
+            }
+
+            case MenuOption::Checkout: {
+                cout << "\n--- Inventory ---\n";
+                for (int i = 0; i < N; i++) {
+                    cout << (i + 1) << ") " << books[i].title << " [";
+                    if (books[i].status == BookStatus::Available) cout << "Available";
+                    else cout << "Checked out";
+                    cout << "]\n";
+                }
+
+                cout << "Enter book number (1-" << N << "): ";
+                int k;
+                cin >> k;
+
+                if (k < 1 || k > N) {
+                    cout << "Invalid book number.\n";
+                    break;
+                }
+
+                int idx = k - 1;
+
+                if (books[idx].status == BookStatus::Available) {
+                    books[idx].status = BookStatus::CheckedOut;
+                    cout << "Checked out: " << books[idx].title << "\n";
+                } else {
+                    cout << "Already checked out.\n";
+                }
+                break;
+            }
+
+            case MenuOption::Return: {
+                cout << "\n--- Inventory ---\n";
+                for (int i = 0; i < N; i++) {
+                    cout << (i + 1) << ") " << books[i].title << " [";
+                    if (books[i].status == BookStatus::Available) cout << "Available";
+                    else cout << "Checked out";
+                    cout << "]\n";
+                }
+
+                cout << "Enter book number (1-" << N << "): ";
+                int k;
+                cin >> k;
+
+                if (k < 1 || k > N) {
+                    cout << "Invalid book number.\n";
+                    break;
+                }
+
+                int idx = k - 1;
+
+                if (books[idx].status == BookStatus::CheckedOut) {
+                    books[idx].status = BookStatus::Available;
+                    cout << "Returned: " << books[idx].title << "\n";
+                } else {
+                    cout << "Already available.\n";
+                }
+                break;
+            }
+
+            case MenuOption::Quit: {
+                cout << "Goodbye!\n";
+                break;
+            }
+
+            default: {
+                cout << "Unknown option.\n";
+                break;
+            }
+        }
+    }
+
+    return 0;
+}
+
+
+```
+
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Tips</div>
+  <div class="question-shadebox">
+
+- Keep enums as enums: don’t store menu choices in int after reading—convert once, then switch on the enum.
+
+- No magic numbers: only allow 1,2,3,9 in the conversion switch (one place). Everything else uses MenuOption::....
+
+- Safe looping: allOptions[] prevents forgetting to print a menu item.
+
+- Status is not text: store BookStatus (Available / CheckedOut) and only print words when displaying.
+</div>
+
+
+
+<div id="shadebox">
+
+### An answer (Improved)
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <string>
+#include <limits>
+using namespace std;
+
+enum class MenuOption { View = 1, Checkout = 2, Return = 3, Quit = 9 };
+enum class BookStatus { Available, CheckedOut };
+
+struct Book {
+    string title;
+    BookStatus status;
+};
+
+int main() {
+    const MenuOption allOptions[] = {
+        MenuOption::View,
+        MenuOption::Checkout,
+        MenuOption::Return,
+        MenuOption::Quit
+    };
+
+    Book books[3] = {
+        { "C++ for Beginners", BookStatus::Available },
+        { "Data Structures",   BookStatus::CheckedOut },
+        { "Discrete Math",     BookStatus::Available }
+    };
+    const int N = 3;
+
+    MenuOption option = MenuOption::View;
+
+    while (option != MenuOption::Quit) {
+        // ----- Show menu -----
+        cout << "\n===== Library Kiosk =====\n";
+        for (MenuOption opt : allOptions) {
+            cout << static_cast<int>(opt) << ") ";
+            switch (opt) {
+                case MenuOption::View:     cout << "View inventory"; break;
+                case MenuOption::Checkout: cout << "Check out a book"; break;
+                case MenuOption::Return:   cout << "Return a book"; break;
+                case MenuOption::Quit:     cout << "Quit"; break;
+                default:                   cout << "Unknown"; break;
+            }
+            cout << "\n";
+        }
+        cout << "Choose: ";
+
+        // ----- Read choice (with fail protection) -----
+        int choice;
+        cin >> choice;
+
+        if (cin.fail()) {
+            cin.clear(); // clear fail state
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // discard bad input
+            cout << "Invalid input (please enter a number).\n";
+            continue;
+        }
+
+        // ----- Convert int -> MenuOption safely -----
+        bool valid = true;
+        switch (choice) {
+            case 1: option = MenuOption::View; break;
+            case 2: option = MenuOption::Checkout; break;
+            case 3: option = MenuOption::Return; break;
+            case 9: option = MenuOption::Quit; break;
+            default:
+                cout << "Invalid choice. Try again.\n";
+                valid = false;
+                break;
+        }
+        if (!valid) continue;
+
+        // ----- Action -----
+        switch (option) {
+            case MenuOption::View: {
+                cout << "\n--- Inventory ---\n";
+                for (int i = 0; i < N; i++) {
+                    cout << (i + 1) << ") " << books[i].title << " [";
+                    if (books[i].status == BookStatus::Available) cout << "Available";
+                    else cout << "Checked out";
+                    cout << "]\n";
+                }
+                break;
+            }
+
+            case MenuOption::Checkout: {
+                cout << "\n--- Inventory ---\n";
+                for (int i = 0; i < N; i++) {
+                    cout << (i + 1) << ") " << books[i].title << " [";
+                    if (books[i].status == BookStatus::Available) cout << "Available";
+                    else cout << "Checked out";
+                    cout << "]\n";
+                }
+
+                cout << "Enter book number (1-" << N << "): ";
+                int k;
+                cin >> k;
+
+                if (cin.fail()) {
+                    cin.clear();
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    cout << "Invalid input (please enter a number).\n";
+                    break;
+                }
+
+                if (k < 1 || k > N) {
+                    cout << "Invalid book number.\n";
+                    break;
+                }
+
+                int idx = k - 1;
+                if (books[idx].status == BookStatus::Available) {
+                    books[idx].status = BookStatus::CheckedOut;
+                    cout << "Checked out: " << books[idx].title << "\n";
+                } else {
+                    cout << "Already checked out.\n";
+                }
+                break;
+            }
+
+            case MenuOption::Return: {
+                cout << "\n--- Inventory ---\n";
+                for (int i = 0; i < N; i++) {
+                    cout << (i + 1) << ") " << books[i].title << " [";
+                    if (books[i].status == BookStatus::Available) cout << "Available";
+                    else cout << "Checked out";
+                    cout << "]\n";
+                }
+
+                cout << "Enter book number (1-" << N << "): ";
+                int k;
+                cin >> k;
+
+                if (cin.fail()) {
+                    cin.clear();
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    cout << "Invalid input (please enter a number).\n";
+                    break;
+                }
+
+                if (k < 1 || k > N) {
+                    cout << "Invalid book number.\n";
+                    break;
+                }
+
+                int idx = k - 1;
+                if (books[idx].status == BookStatus::CheckedOut) {
+                    books[idx].status = BookStatus::Available;
+                    cout << "Returned: " << books[idx].title << "\n";
+                } else {
+                    cout << "Already available.\n";
+                }
+                break;
+            }
+
+            case MenuOption::Quit: {
+                cout << "Goodbye!\n";
+                break;
+            }
+
+            default: {
+                cout << "Unknown option.\n";
+                break;
+            }
+        }
+    }
+
+    return 0;
+}
+
+
+```
+
+</div>
+
+- Safely handling non-numeric input (like typing abc) using cin.fail()
+
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+</div>
+	
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/settings.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/effects.js"></script>
+<!--<script src="settings.js"></script>-->
+<!--<script src="effects.js"></script>-->
+</body>
+</html>

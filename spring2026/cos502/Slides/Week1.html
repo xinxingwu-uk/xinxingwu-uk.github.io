@@ -1,0 +1,1737 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Foundations of C++ (I)</title>
+    <meta name="description" content="A set of slides for Machine Learning">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/effectsGreen.css">
+	<!--<link rel="stylesheet" href="./css/style.css">-->
+	<!--<link rel="stylesheet" href="./css/effects.css">-->
+
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+	</script>
+
+	<style>
+	    pre {
+            background-color: black;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+        }
+        code {
+            font-family: "Courier New", monospace;
+            color: #d63384; /* Python-style color */
+        }
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }	
+	</style>
+
+  </head>
+
+  <body onload="startTime()">
+    <div class="reveal" >
+	  <p><img src="images/midwaylogo.png"  align="left" height="6%" width="6%" style="vertical-align:left;margin:-15px 5px"><img src="images/mueagle.png"  color="white" align="left" height="4%" width="4%" style="vertical-align:center;margin:-1% 45%">
+		<div style="color:white;font-size: 20px; vertical-align:left;margin:-1% 0%" align="right" id="realtimeclock"></div></p>
+      <div class="slides">
+
+  <div class="me"></div>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown id="cover"><textarea data-template>
+<p class='titlep'>&nbsp;</p>
+
+# Foundations of C++ (I)
+
+> Review
+
+<hr>
+
+<br>
+
+Xinxing Wu
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline
+
+[<p class="hover-underline-animation">Basic</p>](#/ch1)
+
+[<p class="hover-underline-animation">Varaibles</p>](#/ch2)
+
+[<p class="hover-underline-animation">Output \& Input</p>](#/ch3)
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline (Cont.)
+
+[<p class="hover-underline-animation">Data Types</p>](#/ch4)
+
+[<p class="hover-underline-animation">Math</p>](#/ch5)
+
+[<p class="hover-underline-animation">Boolean</p>](#/ch6)
+
+[<p class="hover-underline-animation">Mini Case Study</p>](#/ch7)
+
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+
+## Goal
+
+<div id="shadebox-neon" class="shadebox neon">
+
+- <spanGREEN>Review</spanGREEN> the core programming fundamentals： basic syntax, variables, and console output； then extend that foundation by reinforcing key data types, essential math operations, and user input, etc.
+
+
+- So you can write small complete programs that store data, compute results, and interact with the user clearly and correctly.
+</div>
+
+</textarea></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch1" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Basic</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Note</div>
+  <div class="definition-com-shadebox">
+
+- C++ is used to create computer programs, and is one of the most used language in game development.
+
+- C++ was developed by <spanGREEN>Bjarne Stroustrup</spanGREEN>, as an extension to the C language, and both languages have almost the same syntax. The main difference between C and C++ is that C++ supports classes and objects, while <spanGREEN>C does not</spanGREEN>.
+
+- C++ gives programmers a <spanGREEN>high level</spanGREEN> of control over system resources and memory.
+   </div>
+</div>
+
+
+
+<div style="display:flex; align-items:stretch; gap:16px; padding:14px; border:1px solid #d9d9d9; border-radius:12px; background:#ffffff; width:900px; height:600px;">
+  <!-- Left: Image -->
+  <img
+    src="./images/figadd3.png"
+    alt="C++ / Bjarne Stroustrup"
+    style="width:350px; height:400px; display:block; border-radius:30px; object-fit:cover;"
+  />
+
+  <!-- Right: Text -->
+  <div style="flex:1; display:flex; align-items:center; font-family:Arial, Helvetica, sans-serif; font-size:30px; line-height:1.55; color:#222;">
+    <div>
+		Bjarne Stroustrup began work on the project in 1979 at Bell Labs in Murray Hill, New Jersey.
+		The language was initially named <spanGREEN>"C with Classes"</spanGREEN> because it extended the C language with features from the Simula language, such as object-oriented programming capabilities. It was later <spanGREEN>renamed C++ in 1983</spanGREEN>, using the C increment operator ++ to signify it as an enhanced version of C.
+    </div>
+  </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Why Use C++</div>
+  <div class="definition-com-shadebox">
+
+- C++ is one of the world's most popular programming languages.
+
+- C++ can be found in today's operating systems, Graphical User Interfaces, and embedded systems.
+
+- C++ is an object-oriented programming language which gives a clear structure to programs and allows code to be reused, lowering development costs.
+
+- C++ is portable and can be used to develop applications that can be adapted to multiple platforms.
+
+- C++ is fun and easy to learn!
+
+- As C++ is close to C, C# and Java, it makes it easy for programmers to switch to C++ or vice versa.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">C++ IDE</div>
+  <div class="definition-com-shadebox">
+
+Code::Blocks, Eclipse, <spanBYMix>Visual Studio</spanBYMix>, Visual Studio Code, etc.
+
+<hr>
+
+Thonny
+
+PyCharm
+
+Google Colab  https://colab.research.google.com/signup
+
+Jupyter Lab
+   </div>
+</div>
+
+
+
+
+<div id="shadebox">
+
+### Example
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>          
+// Imports the iostream library so we can use input/output (cout, cin, etc.)
+
+using namespace std;         
+// Lets us write cout instead of std::cout (common in beginner examples)
+
+int main() {                 
+// Program entry point: execution starts here
+
+  iostream::cout << "Hello World!"; 
+  // Prints "Hello World!" to the screen (NOTE: this is incorrect; should be std::cout or just cout)
+  
+  return 0;                  
+  // Ends the program and returns success code 0 to the operating system
+}
+
+```
+
+</div>
+
+
+
+<div id="shadebox">
+
+### Example - Alternative
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+
+int main() {
+  std::cout << "Hello World!";
+  return 0;
+}
+
+```
+
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+
+- cout (and std::cout) is declared in the <iostream> header.
+
+- If you remove #include <iostream>, the compiler won’t know what cout is, so it will <spanRED>error</spanRED>.
+
+- using namespace std means that we can use names for objects and variables from the <spanGREEN>standard library</spanGREEN>.
+</div>
+</div>
+
+- MoneyPrinter template → a general design that does not care what kind of money
+
+- Concrete money (USD, EUR, JPY) → real objects created from that template
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+<div id="roundbox">
+
+A template is a general blueprint, a concrete class is a specific version of that blueprint, and an object is a real instance built from the concrete class.
+</div>
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+<div id="roundbox">
+
+How to “print without <iostream>”?
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">C-style I/O</div>
+  <div class="definition-shadebox">
+
+```
+#include <cstdio>
+
+int main() {
+    std::printf("Hello World!\n");
+    return 0;
+}
+```
+   </div>
+</div>
+
+
+
+<div id="roundbox">
+
+- #include <cstdio> tells the compiler to include the C standard I/O header. It provides functions like std::printf.
+
+- <spanGREEN>printf</spanGREEN> prints formatted text to the console.
+
+- <spanGREEN>std::</spanGREEN> means you’re using printf from the C++ standard namespace.
+
+- "Hello World!\n" is the text to print.
+
+- \n is a newline, so the cursor moves to the next line after printing.
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Code Explanation</div>
+  <div class="question-shadebox">
+
+```
+Line 1: #include <iostream>
+Line 2: using namespace std;
+Line 3: 
+Line 4: int main() {
+Line 5:   cout << "Hello World!";
+Line 6:   return 0;
+Line 7: }
+
+```
+</div>
+</div>
+
+<div id="roundbox"  style="font-size:24px;">
+
+- Line 1: #include <iostream> is a header file library that lets us work with input and output objects, such as cout (used in line 5). Header files add functionality to C++ programs.
+
+- Line 2: using namespace std means that we can use names for objects and variables from the standard library.
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Notes</div>
+  <div class="definition-pro-Y-shadebox">
+
+- #include: “bring in” a library so your program can use its features.
+
+- < iostream >: the C++ input/output library (I/O stream).
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+<div id="shadebox-glass" class="shadebox glass">
+
+Gives you std::cout (print to screen), std::cin (read from keyboard), std::endl (new line + flush), etc.
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Notes</div>
+  <div class="definition-pro-Y-shadebox">
+
+- using namespace std;
+
+	- It tells C++: “<spanGREEN>I don’t want to type std:: every time.</spanGREEN>”
+	- So you can write cout instead of std::cout, cin instead of std::cin.
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+<div id="shadebox-glass" class="shadebox glass">
+
+```
+#include <iostream>
+using namespace std;
+
+int main() {
+    cout << "Hello!\n";
+    return 0;
+}
+```
+</div>
+
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Input validation for non-numbers
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+using namespace std;
+
+int main() {
+    int age;
+    cout << "Enter your age: ";
+    cin >> age;
+
+    cout << "You entered: " << age << "\n";
+    return 0;
+}
+
+
+```
+
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Code Explanation</div>
+  <div class="question-shadebox">
+
+```
+Line 1: #include <iostream>
+Line 2: using namespace std;
+Line 3: 
+Line 4: int main() {
+Line 5:   cout << "Hello World!";
+Line 6:   return 0;
+Line 7: }
+
+```
+</div>
+</div>
+
+<div id="roundbox"  style="font-size:24px;">
+
+- Line 3: A blank line. C++ ignores white space. But we use it to make the code more readable.
+
+- Line 4: Another thing that always appear in a C++ program is int main(). This is called a function. Any code inside its curly brackets {} will be executed.
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Code Explanation</div>
+  <div class="question-shadebox">
+
+```
+Line 1: #include <iostream>
+Line 2: using namespace std;
+Line 3: 
+Line 4: int main() {
+Line 5:   cout << "Hello World!";
+Line 6:   return 0;
+Line 7: }
+
+```
+</div>
+</div>
+
+
+<div id="roundbox"  style="font-size:24px;">
+
+- Line 5: cout (pronounced "see-out") is an object used together with the insertion operator (<<) to output/print text. In our example, it will output "Hello World!".
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+- Note: C++ is <spanGREEN>case-sensitive</spanGREEN>: "cout" and "Cout" has different meaning. Every C++ statement ends with a semicolon ; The body of int main() could also been written as:
+int main () { cout << "Hello World! "; return 0; }
+</div>
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+<div id="roundbox">
+
+The compiler ignores white spaces. However, multiple lines makes the code more <spanBYMix>readable</spanBYMix>.
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Code Explanation</div>
+  <div class="question-shadebox">
+
+```
+Line 1: #include <iostream>
+Line 2: using namespace std;
+Line 3: 
+Line 4: int main() {
+Line 5:   cout << "Hello World!";
+Line 6:   return 0;
+Line 7: }
+
+```
+</div>
+</div>
+
+<div id="roundbox"  style="font-size:24px;">
+
+- Line 6: return 0; ends the main function.
+
+- Line 7: Do not forget to add the closing curly bracket } to actually end the main function.
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Notes</div>
+  <div class="definition-shadebox">
+
+- A computer program is a list of "instructions" to be "executed" by a computer.
+
+- In a programming language, these programming instructions are called <spanBYMix>statements</spanBYMix>.
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Comments</div>
+  <div class="definition-shadebox">
+
+- Comments can be used to explain C++ code, and to make it more readable.
+
+- Also be used to prevent execution when testing alternative code. 
+
+- Comments can be <spanBYMix>singled</spanBYMix>-lined (two forward slashes, //). or multi-lined (<spanBYMix>Multi</spanBYMix>-line comments start with /* and ends with */).
+
+   </div>
+</div
+
+
+
+<div class="definition-pro-X-container">
+  <div class="definition-pro-X-title">Exercises/Assignments</div>
+  <div class="definition-pro-X-shadebox">
+  
+C++ is not commonly used in game development. <button type="button" class="reveal-btn" data-answer="answer-e1">Show Answer</button>
+<div id="answer-e1" class="answer-box">
+<b>Answer:</b> False
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+C++ was developed by Bjarne Stroustrup as an extension of the C# language. <button type="button" class="reveal-btn" data-answer="answer-e2">Show Answer</button>
+<div id="answer-e2" class="answer-box">
+<b>Answer:</b> False
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+The main difference between C and C++ is that C supports classes and objects, while C++ does not.  <button type="button" class="reveal-btn" data-answer="answer-e3">Show Answer</button>
+<div id="answer-e3" class="answer-box">
+<b>Answer:</b> False
+</div>
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-X-container">
+  <div class="definition-pro-X-title">Exercises/Assignments (Cont)</div>
+  <div class="definition-pro-X-shadebox">
+  
+If you remove #include <iostream>, the compiler will not know what cout is. <button type="button" class="reveal-btn" data-answer="answer-e4">Show Answer</button>
+<div id="answer-e4" class="answer-box">
+<b>Answer:</b> True
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+C++ ignores whitespace, but we still use blank lines to make code more readable. <button type="button" class="reveal-btn" data-answer="answer-e5">Show Answer</button>
+<div id="answer-e5" class="answer-box">
+<b>Answer:</b> True
+</div>
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-X-container">
+  <div class="definition-pro-X-title">Exercises/Assignments (Cont)</div>
+  <div class="definition-pro-X-shadebox">
+  
+C++ was developed by __________. <button type="button" class="reveal-btn" data-answer="answer-e6">Show Answer</button>
+<div id="answer-e6" class="answer-box">
+<b>Answer:</b> Bjarne Stroustrup
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+The header that declares cout is __________. <button type="button" class="reveal-btn" data-answer="answer-e7">Show Answer</button>
+<div id="answer-e7" class="answer-box">
+<b>Answer:</b> < iostream >
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+using namespace std; allows us to write __________ instead of std::cout.  <button type="button" class="reveal-btn" data-answer="answer-e8">Show Answer</button>
+<div id="answer-e8" class="answer-box">
+<b>Answer:</b> cout
+</div>
+
+</div>
+</div>
+
+
+
+
+<div class="definition-pro-X-container">
+  <div class="definition-pro-X-title">Exercises/Assignments (Cont)</div>
+  <div class="definition-pro-X-shadebox">
+  
+The function where program execution starts is __________. <button type="button" class="reveal-btn" data-answer="answer-e9">Show Answer</button>
+<div id="answer-e9" class="answer-box">
+<b>Answer:</b> int main()
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+A single-line comment in C++ starts with __________.  <button type="button" class="reveal-btn" data-answer="answer-e10">Show Answer</button>
+<div id="answer-e10" class="answer-box">
+<b>Answer:</b> //
+</div>
+
+</div>
+</div>
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch2" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Varaibles</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Note</div>
+  <div class="definition-com-shadebox">
+
+- Variables are containers for storing data values.
+
+- Types of variables
+
+	- <spanGREEN>int</spanGREEN> - stores integers (whole numbers), without decimals, such as 123 or -123
+	- <spanGREEN>double</spanGREEN> - stores floating point numbers, with decimals, such as 19.99 or -19.99
+	- <spanGREEN>char</spanGREEN> - stores single characters, such as 'a' or 'B'. Char values are surrounded by single quotes
+	- <spanGREEN>string</spanGREEN> - stores text, such as "Hello World". String values are surrounded by double quotes
+	- <spanGREEN>bool</spanGREEN> - stores values with two states: true or false
+   </div>
+</div>
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+<div id="roundbox">
+How to declare (create) Variables
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Syntax</div>
+  <div class="definition-pro-Y-shadebox">
+  
+```
+type variableName = value;
+```
+</div>
+</div>
+
+<div id="roundbox"  style="font-size:24px;">
+
+Create a variable called myNum of type int and assign it the value 15:
+
+```
+int myNum = 15;
+```
+
+or
+
+```
+int myNum;
+myNum = 15;
+```
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Changing Variable Values</div>
+  <div class="definition-pro-Y-shadebox">
+
+```
+int myNum = 22;  // myNum is 22
+myNum = 30;  // Now myNum is 30
+```
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Other Types</div>
+  <div class="definition-pro-Y-shadebox">
+
+```
+int myNum = 5;               // Integer (whole number without decimals)
+double myFloatNum = 5.99;    // Floating point number (with decimals)
+char myLetter = 'D';         // Character
+string myText = "Hello";     // String (text)
+bool myBoolean = true;       // Boolean (true or false)
+```
+</div>
+</div>
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+<div id="roundbox">
+How to display variables?
+</div>
+
+
+
+<div id="shadebox">
+
+### Example of Displaying Variables
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+  string name = "John";
+  int age = 35;
+  double height = 6.1;
+
+  cout << name << " is " << age << " years old and " << height << " feet tall.";
+  return 0;
+}
+
+```
+
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Add Variables</div>
+  <div class="question-shadebox">
+
+```
+
+int x = 5;
+int y = 6;
+int sum = x + y;
+```
+
+</div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Declare Many Variables</div>
+  <div class="definition-shadebox">
+
+To declare more than one variable of the same type, use a comma-separated list:
+
+```
+int x = 5, y = 6, z = 50;
+cout << x + y + z;
+
+```
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">One Value to Multiple Variables</div>
+  <div class="definition-shadebox">
+
+Assign the same value to multiple variables in one line:
+
+```
+int x, y, z;
+x = y = z = 50;
+cout << x + y + z;
+
+```
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title"> Identifiers</div>
+  <div class="question-shadebox">
+
+All C++ variables must be <spanRED>identified</spanRED> with <spanRED>unique</spanRED> names. These unique names are called <spanBYMix>identifiers</spanBYMix>.
+
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title"> Notes</div>
+  <div class="question-shadebox">
+
+> C++ is a statically typed and strongly typed language, but it supports limited dynamic behavior.
+
+- https://kysu.instructure.com/courses/7060/pages/understanding-types-static-vs-dynamic-and-strong-vs-weak
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">General rules for naming variables</div>
+  <div class="question-shadebox">
+
+- Names can contain <spanBYMix>letters</spanBYMix>, <spanBYMix>digits</spanBYMix> and <spanBYMix>underscores</spanBYMix>
+- Names must <spanGREEN>begin</spanGREEN> with a <spanGREEN>letter</spanGREEN> or an <spanGREEN>underscore (_)</spanGREEN>
+- Names are case-sensitive (myVar and myvar are different variables)
+- Names cannot contain whitespaces or special characters like !, #, %, etc.
+- Reserved words (like C++ keywords, such as int) cannot be used as names
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Constants</div>
+  <div class="definition-shadebox">
+
+When you do not want others (or yourself) to change existing variable values, use the const keyword (this will declare the variable as "constant", which means unchangeable and read-only):
+   </div>
+</div>
+
+
+
+<div class="definition-shakeflash-container">
+  <div class="definition-shakeflash-title">Unchangeable and read-only</div>
+  <div class="definition-shakeflash-shadebox">
+
+```
+const int myNum = 15;  // myNum will always be 15
+myNum = 10;  // error: assignment of read-only variable 'myNum'
+```
+
+   </div>
+</div>
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+<div id="roundbox">
+
+> You should always declare the variable as constant when you have values that are unlikely to change
+</div>
+
+
+
+<div class="definition-pro-X-container">
+  <div class="definition-pro-X-title">Exercises/Assignments</div>
+  <div class="definition-pro-X-shadebox">
+  
+Write a C++ program that: 
+
+- <b>Requirement 1</b>： Declares these variables:
+
+```
+int studentID
+
+int studentAge
+
+float studentFee
+
+char studentGrade
+```
+
+- <b>Requirement 2</b>： Reads all 4 values from the user using cin.
+
+- <b>Requirement 3</b>： Prints them in the same style as the example.
+   </div>
+</div>
+
+
+
+<div class="definition-pro-X-container">
+  <div class="definition-pro-X-title">Exercises/Assignments (Cont.)</div>
+  <div class="definition-pro-X-shadebox">
+<div style="width: 800px;"></div>
+  
+Write a C++ program that: 
+
+- <b>Requirement 4</b>： Adds two extra outputs:
+
+	- Print the student’s age next year (studentAge + 1)
+
+	- Print the fee for 4 classes (assume studentFee is per class → studentFee * 4)
+   </div>
+</div>
+
+
+
+<div class="definition-pro-X-container">
+  <div class="definition-pro-X-title">Exercises/Assignments (Cont.)</div>
+  <div class="definition-pro-X-shadebox">
+<div style="width: 800px;"></div>
+
+Output looks like
+
+- Student ID: ...
+
+- Student Age: ...
+
+- Student Fee: ...
+
+- Student Grade: ...
+
+- Age next year: ...
+
+- Fee for 4 classes: ...
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+using namespace std;
+
+int main() {
+  // Student data
+  int studentID = 15;
+  int studentAge = 23;
+  float studentFee = 75.25;
+  char studentGrade = 'B';
+
+  // Print variables using cout
+  cout << "Student ID: " << studentID << "\n";
+  cout << "Student Age: " << studentAge << "\n";
+  cout << "Student Fee: " << studentFee << "\n";
+  cout << "Student Grade: " << studentGrade << "\n";
+
+  return 0;
+}
+
+```
+
+</div>
+
+
+
+<div class="definition-pro-X-container">
+  <div class="definition-pro-X-title">Exercises/Assignments</div>
+  <div class="definition-pro-X-shadebox">
+  
+Write a C++ program that:
+
+- <b>Requirement 1</b>： Declares:
+
+```
+int length
+
+int width
+```
+
+- <b>Requirement 2</b>： Reads length and width from the user.
+
+- <b>Requirement 3</b>： Computes
+
+```
+int area = length * width
+int perimeter = 2 * (length + width)
+```
+   </div>
+</div>
+
+
+
+<div class="definition-pro-X-container">
+  <div class="definition-pro-X-title">Exercises/Assignments (Cont.)</div>
+  <div class="definition-pro-X-shadebox">
+
+- <b>Requirement 4</b>： Prints length, width, area, and perimeter using cout.
+   </div>
+</div>
+
+
+
+<div class="definition-pro-X-container">
+  <div class="definition-pro-X-title">Exercises/Assignments (Cont.)</div>
+  <div class="definition-pro-X-shadebox">
+  
+Extra rule: If either length or width is 0 or negative, print:
+
+```
+Invalid rectangle size
+```
+
+Otherwise, print the full results.
+
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+using namespace std;
+
+int main() {
+  // Create integer variables
+  int length = 4;
+  int width = 6;
+
+  // Calculate the area of a rectangle
+  int area = length * width;
+
+  // Print the variables
+  cout << "Length is: " << length << "\n";
+  cout << "Width is: " << width << "\n";
+  cout << "Area of the rectangle is: " << area << "\n";
+
+  return 0;
+}
+
+
+```
+
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch3" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Output & Input</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Output</div>
+  <div class="definition-com-shadebox">
+
+The cout object, together with the << operator, is used to output values and print text.
+
+Just remember to surround the text with double quotes (""):
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">New Lines - Option 1</div>
+  <div class="definition-pro-Y-shadebox">
+  
+```
+#include <iostream>
+using namespace std;
+
+int main() {
+  cout << "Hello World! \n";
+  cout << "I am learning C++";
+  return 0;
+}
+```
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">New Lines - Option 2</div>
+  <div class="definition-pro-Y-shadebox">
+  
+```
+#include <iostream>
+using namespace std;
+
+int main() {
+  cout << "Hello World!" << "\n";
+  cout << "I am learning C++";
+  return 0;
+}
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">New Lines - Option 3</div>
+  <div class="definition-pro-Y-shadebox">
+  
+```
+#include <iostream>
+using namespace std;
+
+int main() {
+  cout << "Hello World!" << endl;
+  cout << "I am learning C++";
+  return 0;
+}
+```
+
+   </div>
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Escape sequence</div>
+  <div class="question-shadebox">
+
+The newline character (\n) is called an <b>escape sequence</b>, and it forces the cursor to change its position to the beginning of the next line on the screen. This results in a new line.
+</div>
+</div>
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch4" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Data Types</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Basic Data Types</div>
+  <div class="definition-com-shadebox">
+
+<table style="width:100%; border-collapse:collapse; font-size:22px; line-height:1.4;">
+  <thead>
+    <tr>
+      <th style="border:1px solid #ccc; padding:10px; text-align:left;">Data Type</th>
+      <th style="border:1px solid #ccc; padding:10px; text-align:left;">Size</th>
+      <th style="border:1px solid #ccc; padding:10px; text-align:left;">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="border:1px solid #ccc; padding:10px;">boolean</td>
+      <td style="border:1px solid #ccc; padding:10px;">1 byte</td>
+      <td style="border:1px solid #ccc; padding:10px;">Stores true or false values</td>
+    </tr>
+    <tr>
+      <td style="border:1px solid #ccc; padding:10px;">char</td>
+      <td style="border:1px solid #ccc; padding:10px;">1 byte</td>
+      <td style="border:1px solid #ccc; padding:10px;">Stores a single character/letter/number, or ASCII values</td>
+    </tr>
+    <tr>
+      <td style="border:1px solid #ccc; padding:10px;">int</td>
+      <td style="border:1px solid #ccc; padding:10px;">2 or 4 bytes</td>
+      <td style="border:1px solid #ccc; padding:10px;">Stores whole numbers, without decimals</td>
+    </tr>
+    <tr>
+      <td style="border:1px solid #ccc; padding:10px;">float</td>
+      <td style="border:1px solid #ccc; padding:10px;">4 bytes</td>
+      <td style="border:1px solid #ccc; padding:10px;">Stores fractional numbers, containing one or more decimals. Sufficient for storing 6-7 decimal digits</td>
+    </tr>
+    <tr>
+      <td style="border:1px solid #ccc; padding:10px;">double</td>
+      <td style="border:1px solid #ccc; padding:10px;">8 bytes</td>
+      <td style="border:1px solid #ccc; padding:10px;">Stores fractional numbers, containing one or more decimals. Sufficient for storing 15 decimal digits</td>
+    </tr>
+  </tbody>
+</table>
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Basic Data Types</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Numeric: int ```int myNum = 1000;```
+- Numeric: float ```float myNum = 5.75;```
+- Numeric: double ```double myNum = 19.99;```
+- Boolean: ```bool isCodingFun = true;```
+- Character: ```char myGrade = 'B';```
+- string: ```string greeting = "Hello";```
+
+<div id="shadebox">
+The char data type is used to store a single character. 
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">auto</div>
+  <div class="question-shadebox">
+
+The <spanBYMix>auto</spanBYMix> keyword automatically <spanGREEN>detects the type of a variable based on the value you assign to it</spanGREEN>.
+
+It helps you write cleaner code and avoid repeating types, especially for long or complex types.
+
+```
+auto x = 5; // x is automatically treated as int
+```
+
+<div id="shadebox">
+Starting in C++11, auto became a powerful way to let the compiler figure out the type based on the value you assign.
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-shakeflash-container">
+  <div class="definition-shakeflash-title">Error</div>
+  <div class="definition-shakeflash-shadebox">
+
+```
+#include <iostream>
+using namespace std;
+ 
+int main () {
+  auto x;
+  x=5;
+  cout << x;
+  return 0;
+}
+
+```
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Notes</div>
+  <div class="definition-shadebox">
+
+auto only works when you assign a value at the same time (You can't declare auto x; <spanRED>without</spanRED> assigning a value)
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch5" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Math</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Note</div>
+  <div class="definition-com-shadebox">
+
+- The max(x,y) function can be used to find the highest value of x and y:
+
+```
+cout << max(5, 10);
+```
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+- min(x,y) function can be used to find the lowest value of x and y:
+
+```
+cout << min(5, 10);
+```
+
+   </div>
+</div>
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+<div id="roundbox">
+
+> Other functions, such as sqrt (square root), round (rounds a number) and log (natural logarithm), can be found in the <cmath> header file.
+
+
+```
+#include <cmath>
+
+cout << sqrt(64);
+cout << round(2.6);
+cout << log(2);
+```
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch6" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Boolean</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Note</div>
+  <div class="definition-com-shadebox">
+
+A boolean variable is declared with the bool keyword and can take the values true or false:
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+```
+#include <iostream>
+using namespace std;
+
+int main() {
+  bool isCodingFun = true;
+  bool isFishTasty = false;
+  cout << isCodingFun << "\n";
+  cout << isFishTasty;
+  return 0;
+}
+```
+
+   </div>
+</div>
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+<div id="roundbox">
+
+>  How to print true and false as words instead of 1 and 0?
+
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Use the boolalpha manipulator:
+
+<div id="shadebox-glass" class="shadebox glass">
+Show why ints/strings (“Magic numbers”) cause bugs
+</div>
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+using namespace std;
+
+int main() {
+  bool isCodingFun = true;
+  bool isFishTasty = false;
+
+  cout << boolalpha; // enable printing "true"/"false"
+
+  cout << isCodingFun << "\n";   // Outputs true
+  cout << isFishTasty << "\n";  // Outputs false
+  return 0;
+}
+
+```
+
+</div>
+
+
+
+<div id="shadebox">
+
+### Questions
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+	cout << isCodingFun << "\n";   // Outputs true
+
+	cout << isFishTasty << "\n";  // Outputs 0
+```
+
+</div>
+
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+using namespace std;
+
+int main() {
+	bool isCodingFun = true;
+	bool isFishTasty = false;
+
+	cout << boolalpha; // enable printing "true"/"false"
+
+	cout << isCodingFun << "\n";   // Outputs true
+
+	cout << noboolalpha;
+
+	cout << isFishTasty << "\n";  // Outputs 0
+	return 0;
+}
+```
+
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Notes</div>
+  <div class="definition-shadebox">
+
+boolalpha is <spanRED>not</spanRED> a data type. It is an I/O manipulator - a setting that changes how cout displays boolean values.
+
+<hr>
+
+When you use it, you are telling cout: "From now on, print booleans as true and false instead of 1 and 0."
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Resetting Back With noboolalpha</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+```
+bool isCodingFun = true;
+
+cout << boolalpha;   // print as true/false
+cout << isCodingFun << "\n";  // Outputs true
+
+cout << noboolalpha; // reset to 1/0
+cout << isCodingFun << "\n";  // Outputs 1
+
+```
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Boolean expression</div>
+  <div class="question-shadebox">
+
+- A Boolean expression is a piece of code that compares values or variables and returns a boolean value: 1 (true) or 0 (false).
+
+- Boolean expressions are the <spanGREEN>foundation of decision making</spanGREEN> in programming - they let your program decide what to do based on <spanBYMix>whether something is true or false</spanBYMix>.
+
+```
+int x = 10;
+int y = 9;
+cout << (x > y); // returns 1 (true), because 10 is higher than 9
+```
+
+<hr style="border: none; border-top: 2px dashed green;">
+
+Others
+
+```
+int x = 10;
+cout << (x == 10);  // returns 1 (true), because the value of x is equal to 10
+```
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch7" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Mini Case Study</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="question-container">
+  <div class="question-title">Lab: Voting Age Checker</div>
+  <div class="question-shadebox">
+
+Voting Age Checker (if/else): Create a simple C++ program that checks whether a person is old enough to vote.
+
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Task</div>
+  <div class="question-shadebox">
+
+- Requirement 1: Create two integer variables:
+
+	- myAge (this is the user’s age)
+
+	- votingAge (set this to 18)
+
+- Requirement 2: Use an if/else statement:
+
+	- If myAge is greater than or equal to votingAge, print: Old enough to vote!
+
+	- Otherwise, print: Not old enough to vote.
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Task (Cont.)</div>
+  <div class="question-shadebox">
+
+- Requirement 3: Test your program with three different values of myAge:
+
+	- One value less than 18 
+
+	- One value equal to 18
+
+	- One value greater than 18
+   </div>
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Task (Cont.)</div>
+  <div class="question-shadebox">
+
+Expected Output Examples:
+
+- If myAge = 16 → Not old enough to vote.
+
+- If myAge = 18 → Old enough to vote!
+
+- If myAge = 25 → Old enough to vote!
+
+<hr style="border: none; border-top: 2px dashed green;">
+
+Challenge (Optional): Ask the user to type their age using cin instead of hard-coding myAge.
+
+```
+int number;
+std::cin >> number; 
+```
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+int myAge = 25;
+int votingAge = 18;
+
+if (myAge >= votingAge) {
+  cout << "Old enough to vote!";
+} else {
+  cout << "Not old enough to vote.";
+}
+
+// Outputs: Old enough to vote!
+
+```
+
+</div>
+
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+</div>
+	
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/settings.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/effects.js"></script>
+<!--<script src="settings.js"></script>-->
+<!--<script src="effects.js"></script>-->
+</body>
+</html>

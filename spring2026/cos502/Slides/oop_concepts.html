@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C++ OOP Concepts: Overloading, Overriding, Overwrite, and Polymorphism</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f6f8;
+        color: #222;
+    }
+
+    .container {
+        width: 85%;
+        max-width: 1000px;
+        margin: 30px auto;
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.08);
+    }
+
+    h1, h2, h3 {
+        color: #1f4e79;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .subtitle {
+        text-align: center;
+        color: #555;
+        margin-bottom: 30px;
+    }
+
+    .section {
+        margin-bottom: 35px;
+    }
+
+    .term-box {
+        background: #eef5ff;
+        border-left: 6px solid #1f4e79;
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 6px;
+    }
+
+    pre {
+        background: #272822;
+        color: #f8f8f2;
+        padding: 15px;
+        overflow-x: auto;
+        border-radius: 6px;
+        font-size: 15px;
+    }
+
+    code {
+        font-family: Consolas, monospace;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+
+    th, td {
+        border: 1px solid #ccc;
+        padding: 12px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #1f4e79;
+        color: white;
+    }
+
+    .note {
+        background: #fff8e6;
+        border-left: 6px solid #d9a300;
+        padding: 12px;
+        margin-top: 15px;
+        border-radius: 6px;
+    }
+
+    .output {
+        background: #f9f9f9;
+        border: 1px solid #ddd;
+        padding: 15px;
+        border-radius: 6px;
+        white-space: pre-line;
+        font-family: Consolas, monospace;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>C++ OOP Concepts</h1>
+
+    <div class="section">
+        <h2>1. Simple Meanings</h2>
+
+        <div class="term-box">
+            <h3>Overloading</h3>
+            <p>Overloading means using the <strong>same function name</strong> with <strong>different parameter lists</strong>.</p>
+        </div>
+
+        <div class="term-box">
+            <h3>Overriding</h3>
+            <p>Overriding means a derived class provides a <strong>new version</strong> of a base class <code>virtual</code> function.</p>
+        </div>
+
+        <div class="term-box">
+            <h3>Overwrite</h3>
+            <p>Overwrite usually means replacing an old value with a new value. It is not a special OOP feature like overloading or overriding.</p>
+        </div>
+
+        <div class="term-box">
+            <h3>Polymorphism</h3>
+            <p>Polymorphism means one base-class pointer can point to different child objects, and the correct function runs automatically.</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>2. Complete Example</h2>
+<pre><code>#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+class Person {
+public:
+    string name;
+    int age;
+
+    Person(string n, int a) {
+        name = n;
+        age = a;
+    }
+
+    // Overloaded function #1
+    void setInfo(string n) {
+        name = n;
+    }
+
+    // Overloaded function #2
+    void setInfo(string n, int a) {
+        name = n;
+        age = a;
+    }
+
+    // Virtual function
+    virtual void showInfo() {
+        cout &lt;&lt; "Person Information:" &lt;&lt; endl;
+        cout &lt;&lt; "Name: " &lt;&lt; name &lt;&lt; endl;
+        cout &lt;&lt; "Age: " &lt;&lt; age &lt;&lt; endl;
+    }
+};
+
+class Student : public Person {
+public:
+    string studentID;
+
+    Student(string n, int a, string id) : Person(n, a) {
+        studentID = id;
+    }
+
+    // Override
+    void showInfo() override {
+        cout &lt;&lt; "Student Information:" &lt;&lt; endl;
+        cout &lt;&lt; "Name: " &lt;&lt; name &lt;&lt; endl;
+        cout &lt;&lt; "Age: " &lt;&lt; age &lt;&lt; endl;
+        cout &lt;&lt; "Student ID: " &lt;&lt; studentID &lt;&lt; endl;
+    }
+};
+
+class Teacher : public Person {
+public:
+    string subject;
+
+    Teacher(string n, int a, string s) : Person(n, a) {
+        subject = s;
+    }
+
+    // Override
+    void showInfo() override {
+        cout &lt;&lt; "Teacher Information:" &lt;&lt; endl;
+        cout &lt;&lt; "Name: " &lt;&lt; name &lt;&lt; endl;
+        cout &lt;&lt; "Age: " &lt;&lt; age &lt;&lt; endl;
+        cout &lt;&lt; "Subject: " &lt;&lt; subject &lt;&lt; endl;
+    }
+};
+
+int main() {
+    Student s("Alice", 20, "S101");
+
+    // Overloading
+    s.setInfo("Alice Johnson");
+    s.setInfo("Alice Johnson", 21);
+
+    // Overwrite old value with new value
+    s.studentID = "S202";
+
+    s.showInfo();
+
+    cout &lt;&lt; endl;
+
+    // Polymorphism
+    Person* p1 = new Person("Tom", 40);
+    Person* p2 = new Student("Bob", 19, "S303");
+    Person* p3 = new Teacher("Mr. Brown", 35, "Math");
+
+    p1-&gt;showInfo();
+    cout &lt;&lt; endl;
+
+    p2-&gt;showInfo();
+    cout &lt;&lt; endl;
+
+    p3-&gt;showInfo();
+    cout &lt;&lt; endl;
+
+    delete p1;
+    delete p2;
+    delete p3;
+
+    return 0;
+}</code></pre>
+    </div>
+
+    <div class="section">
+        <h2>3. Where Each Concept Appears</h2>
+
+        <h3>Overloading</h3>
+<pre><code>void setInfo(string n)
+void setInfo(string n, int a)</code></pre>
+        <p>These functions have the same name, but different parameters.</p>
+
+        <h3>Overriding</h3>
+<pre><code>virtual void showInfo()</code></pre>
+<pre><code>void showInfo() override</code></pre>
+        <p>The child classes <code>Student</code> and <code>Teacher</code> provide their own versions of <code>showInfo()</code>.</p>
+
+        <h3>Overwrite</h3>
+<pre><code>s.studentID = "S202";</code></pre>
+        <p>This replaces the old value <code>"S101"</code> with the new value <code>"S202"</code>.</p>
+
+        <h3>Polymorphism</h3>
+<pre><code>Person* p2 = new Student("Bob", 19, "S303");
+Person* p3 = new Teacher("Mr. Brown", 35, "Math");</code></pre>
+        <p>Even though the pointers are of type <code>Person*</code>, the correct child version of <code>showInfo()</code> runs.</p>
+    </div>
+
+    <div class="section">
+        <h2>4. Important Note</h2>
+        <div class="note">
+            If you remove <code>virtual</code> from <code>Person::showInfo()</code>, then polymorphism will not work correctly.  
+            In that case, a <code>Person*</code> pointer would call the base class version instead of the child class version.
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>5. Comparison Table</h2>
+        <table>
+            <tr>
+                <th>Term</th>
+                <th>Meaning</th>
+                <th>Example</th>
+            </tr>
+            <tr>
+                <td>Overloading</td>
+                <td>Same function name, different parameters</td>
+                <td><code>setInfo(string)</code> and <code>setInfo(string, int)</code></td>
+            </tr>
+            <tr>
+                <td>Overriding</td>
+                <td>Child class changes a parent virtual function</td>
+                <td><code>showInfo()</code> in <code>Student</code></td>
+            </tr>
+            <tr>
+                <td>Overwrite</td>
+                <td>Replace old data with new data</td>
+                <td><code>s.studentID = "S202";</code></td>
+            </tr>
+            <tr>
+                <td>Polymorphism</td>
+                <td>Base pointer works with many forms</td>
+                <td><code>Person* p = new Student(...);</code></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>6. Example Output</h2>
+        <div class="output">Student Information:
+Name: Alice Johnson
+Age: 21
+Student ID: S202
+
+Person Information:
+Name: Tom
+Age: 40
+
+Student Information:
+Name: Bob
+Age: 19
+Student ID: S303
+
+Teacher Information:
+Name: Mr. Brown
+Age: 35
+Subject: Math</div>
+    </div>
+
+
+    <div class="section">
+        <h2>7. Short Summary</h2>
+        <p><strong>Overloading</strong> = same name, different inputs</p>
+        <p><strong>Overriding</strong> = child changes parent function</p>
+        <p><strong>Overwrite</strong> = replace old value with new value</p>
+        <p><strong>Polymorphism</strong> = one pointer, many forms</p>
+    </div>
+</div>
+
+</body>
+</html>
