@@ -1,0 +1,1167 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Composition + Encapsulation</title>
+    <meta name="description" content="A set of slides for Machine Learning">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/effectsGreen.css">
+	<!--<link rel="stylesheet" href="./css/style.css">-->
+	<!--<link rel="stylesheet" href="./css/effects.css">-->
+	
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+	</script>
+
+	<style>
+	    pre {
+            background-color: black;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+        }
+        code {
+            font-family: "Courier New", monospace;
+            color: #d63384; /* Python-style color */
+        }
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }	
+	</style>
+
+  </head>
+
+  <body onload="startTime()">
+    <div class="reveal" >
+	  <p><img src="images/midwaylogo.png"  align="left" height="6%" width="6%" style="vertical-align:left;margin:-15px 5px"><img src="images/mueagle.png"  color="white" align="left" height="4%" width="4%" style="vertical-align:center;margin:-1% 45%">
+		<div style="color:white;font-size: 20px; vertical-align:left;margin:-1% 0%" align="right" id="realtimeclock"></div></p>
+      <div class="slides">
+
+  <div class="me">Xinxing Wu</div>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown id="cover"><textarea data-template>
+<p class='titlep'>&nbsp;</p>
+
+# Composition + Encapsulation
+
+<hr>
+
+<br>
+
+Xinxing Wu
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline
+
+[<p class="hover-underline-animation">Encapsulation</p>](#/ch1)
+
+[<p class="hover-underline-animation">Composition</p>](#/ch2)
+
+[<p class="hover-underline-animation">Application</p>](#/ch3)
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline (Cont.)
+
+[<p class="hover-underline-animation">Summary</p>](#/ch4)
+
+[<p class="hover-underline-animation">Mini Case Study</p>](#/ch5)
+
+</textarea></section>
+
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+
+## Goal
+
+<div id="shadebox-neon" class="shadebox neon">
+
+Design a small C++ program using encapsulation (private data with public methods), apply composition to build a class that has another object inside it, and explain/use a friend function as a controlled exception to access private members for a specific purpose (e.g., printing a pay stub) while keeping the class interface safe and clean.
+</div>
+
+</textarea></section>
+
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch1" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Encapsulation</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Why Encapsulation?</div>
+  <div class="definition-com-shadebox">
+
+- It is considered good practice to declare your class attributes as private (as often as you can). Encapsulation ensures better control of your data, because you (or others) can change one part of the code without affecting other parts
+- Increased security of data
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Encapsulation</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- The meaning of Encapsulation, is to make sure that "sensitive" data is hidden from users.
+
+- To achieve this, you must declare class variables/attributes as private (cannot be accessed from outside the class).
+
+- If you want others to read or modify the value of a private member, you can provide public get and set methods.
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Example</div>
+  <div class="question-shadebox">
+
+- An employee's salary:
+
+	- The salary is private - the employee can't change it directly
+	- Only their manager can update it or share it when appropriate
+
+- Encapsulation works the same way. The data is hidden, and only trusted methods can access or modify it.
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Access Private Members</div>
+  <div class="question-shadebox">
+
+- To access a private attribute, use public "get" and "set" methods:
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+using namespace std;
+
+class Employee {
+  private:
+    int salary;
+
+  public:
+    void setSalary(int s) {
+      salary = s;
+    }
+    int getSalary() {
+      return salary;
+    }
+};
+
+int main() {
+  Employee myObj;
+  myObj.setSalary(50000);
+  cout << myObj.getSalary();
+  return 0;
+}
+```
+
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Explanation</div>
+  <div class="definition-shadebox">
+
+- salary is private - it cannot be accessed directly
+- setSalary() sets the value
+- getSalary() returns the value
+
+We use myObj.setSalary(50000) to assign a value, and myObj.getSalary() to print it.
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch2" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Composition</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">What is Composition (in OOP / C++)?</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Composition is a way to build a class by putting other objects inside it—a “has-a” relationship.
+
+<div id="shadebox-glass" class="shadebox glass">
+
+- A Car has an Engine
+
+- A Student has an Address
+
+- A Computer has a CPU
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">What is Composition (in OOP / C++)?</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- In composition, the whole owns its parts. Usually:
+
+<div id="shadebox-glass" class="shadebox glass">
+
+- The part objects are members (fields) inside the class
+
+- The parts’ lifetime is tied to the whole (when the whole is destroyed, the parts are destroyed too)
+
+</div>
+   </div>
+</div>
+
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+class Engine {
+public:
+    void start() { /* ... */ }
+};
+
+class Car {
+private:
+    Engine engine;   // Car HAS an Engine (composition)
+public:
+    void startCar() {
+        engine.start();
+    }
+};
+
+```
+
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Relationship</div>
+  <div class="question-shadebox">
+
+- Relationship between Composition and Encapsulation. They are different ideas, but they work great together.
+
+<hr style="border: none; border-top: 2px dashed green;">
+
+- 1)Encapsulation helps composition by hiding the parts
+
+	- Encapsulation means: keep data private and expose safe, controlled public methods.
+
+	- With composition, you often encapsulate the internal objects so users don’t mess with them directly.
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Relationship</div>
+  <div class="definition-pro-Y-shadebox">
+
+<div id="shadebox-glass" class="shadebox glass">
+
+Example idea:
+
+- Car does not let the outside world directly control engine
+
+- instead, Car exposes startCar() and keeps engine private
+
+</div>
+
+- So the user interacts with Car, not its internal details.
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Relationship</div>
+  <div class="definition-pro-Y-shadebox">
+
+- 2)Composition is a common way to implement encapsulation
+
+	- A class can encapsulate complexity by delegating work to internal objects.
+
+<div id="shadebox-glass" class="shadebox glass">
+
+Example:
+
+- Car.startCar() calls engine.start()
+
+- The engine details are inside and hidden from the user
+
+- The outside only sees a simple interface: startCar()
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Relationship</div>
+  <div class="definition-pro-Y-shadebox">
+
+- 3)Composition supports “information hiding” better than inheritance (often)
+
+	- If you use inheritance, the internal structure can become more exposed through overridden behavior.
+
+<div id="shadebox-glass" class="shadebox glass">
+
+Composition lets you:
+
+- keep parts private
+
+- swap/change the internal implementation later
+
+- keep the public interface stable
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Summary</div>
+  <div class="definition-shadebox">
+
+- Composition = “has-a” (build bigger objects from smaller objects)
+
+- Encapsulation = “hide and protect” (private data + controlled public methods)
+
+- Together: composition puts objects inside; encapsulation hides them and controls access.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Friend functions</div>
+  <div class="definition-com-shadebox">
+
+Friend functions relate to encapsulation as an exception you grant on purpose.
+
+- 1)Friend functions vs. Encapsulation
+
+	- Encapsulation says: keep data private and access it through public methods.
+
+	- A friend function is a function (or another class) that you explicitly allow to access your private/protected members.
+   </div>
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Relationship</div>
+  <div class="question-shadebox">
+
+- Friend breaks encapsulation rules technically
+
+- But it is still controlled, because the class author chooses who is a friend
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+Example: “I keep my data locked… but I give a spare key to this one trusted helper.”
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Friend functions</div>
+  <div class="definition-com-shadebox">
+
+Friend functions relate to encapsulation as an exception you grant on purpose.
+
+- 2)Why use friend functions (common reasons)
+
+	- A.Operator overloading: Especially operator<< for printing, often needs access to private fields.
+
+</div>
+</div>
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+<div id="roundbox">
+	
+```
+#include <iostream>
+using namespace std;
+
+class Student {
+private:
+    int id;
+public:
+    Student(int i) { id = i; }
+
+    friend ostream& operator<<(ostream& out, const Student& s);
+};
+
+ostream& operator<<(ostream& out, const Student& s) {
+    out << "Student ID: " << s.id; // allowed (friend)
+    return out;
+}
+```
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Friend functions</div>
+  <div class="definition-com-shadebox">
+
+Friend functions relate to encapsulation as an exception you grant on purpose.
+
+- 2)Why use friend functions (common reasons)
+
+	- B.Two classes need tight cooperation. Example: BankAccount and a BankAudit tool.
+	
+	- C.Performance / convenience (use carefully). Sometimes you want direct access without lots of getters (but overuse is a bad sign).
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Friend functions</div>
+  <div class="definition-com-shadebox">
+
+Friend functions relate to encapsulation as an exception you grant on purpose.
+
+- 3)Friend functions and Composition. In composition, you often want the “whole” class to protect (“encapsulate”) its parts.
+
+	- If you make an external function a friend, that function can bypass the wrapper and peek inside.
+	- This can weaken the “clean interface” you get from composition + encapsulation.
+	
+- So, friend functions can be used with composition, but they should be rare and justified.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Friend functions</div>
+  <div class="definition-com-shadebox">
+
+Friend functions relate to encapsulation as an exception you grant on purpose.
+
+- 4)Key rules students often miss
+
+	- Friendship is not symmetric: if A is friend of B, it does not mean B is friend of A.
+	- Friendship is not inherited: derived classes don’t automatically get friendship.
+	- Friend is declared inside the class, but it’s not a member of the class.
+   </div>
+</div>
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+<div id="roundbox">
+
+Friend functions are a controlled way to bypass encapsulation when a trusted external function needs access to private data (often for operator overloading or tight cooperation).
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Friend Function</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Normally, private members of a class can only be accessed using public methods like getters and setters. But in some cases, you can use a special function called a friend function to access them directly.
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+- A friend function is not a member of the class, but it is allowed to access the class's private data:
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+using namespace std;
+
+class Employee {
+  private:
+    int salary;
+
+  public:
+    Employee(int s) {
+      salary = s;
+    }
+
+    // Declare friend function
+    friend void displaySalary(Employee emp);
+};
+
+void displaySalary(Employee emp) {
+  cout << "Salary: " << emp.salary;
+}
+
+int main() {
+  Employee myEmp(50000);
+  displaySalary(myEmp);
+  return 0;
+}
+```
+
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Notes</div>
+  <div class="question-shadebox">
+
+- The friend function displaySalary() is declared inside the Employee class but defined outside of it.
+- Even though displaySalary() is not a member of the class, it can still access the private member salary.
+- In the main() function, we create an Employee object and call the friend function to print its salary.
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch3" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Application</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Payroll App</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Application: Payroll App (Employee has a Salary)
+
+	- Encapsulation: salary is private, only changed through safe methods.
+
+	- Composition: Employee has a SalaryRecord object inside it.
+
+	- Friend function: printPayStub(...) can access private details to print a full pay stub (like a trusted payroll office).
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+class Student {
+private:
+    int score;
+};
+
+```
+</div>
+
+- A normal outside function cannot do this:
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+void showScore(Student s) {
+    // cout << s.score;   // error: score is private
+}
+```
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+- In C++, a friend function is a function that is not a member of a class, but it is allowed to access the class’s private and protected data.
+
+	- not a member
+	- not called with dot .
+	- just given permission to access private data
+
+
+<hr>
+
+- member function = belongs to the class
+- friend function = outside the class, but trusted by the class
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+- Define friend function directly inside class
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+
+```
+#include <iostream>
+using namespace std;
+
+class Student {
+private:
+    int score;
+
+public:
+    Student(int s) {
+        score = s;
+    }
+
+    friend void showScore(Student s) {
+        cout << s.score << endl;
+    }
+};
+
+int main() {
+    Student s1(95);
+    showScore(s1);
+    return 0;
+}
+
+```
+   </div>
+</div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+- friend function declared inside class
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+
+```
+#include <iostream>
+using namespace std;
+
+class Student {
+private:
+    int score;
+
+public:
+    Student(int s) {
+        score = s;
+    }
+
+    friend void showScore(Student s);   // friend function declaration
+};
+
+void showScore(Student s) {
+    cout << s.score << endl;
+}
+
+int main() {
+    Student s1(90);
+    showScore(s1);
+    return 0;
+}
+
+```
+   </div>
+</div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+// PART (Composition): This is the "part" object
+class SalaryRecord {
+private:
+    int baseSalary; // private (encapsulation)
+
+public:
+    SalaryRecord() {
+        baseSalary = 0;
+    }
+
+    SalaryRecord(int s) {
+        baseSalary = s;
+    }
+
+    void setBaseSalary(int s) {
+        if (s >= 0) baseSalary = s;   // simple validation
+    }
+
+    int getBaseSalary() const {
+        return baseSalary;
+    }
+};
+
+// WHOLE (Composition): Employee HAS a SalaryRecord
+class Employee {
+private:
+    string name;
+    SalaryRecord salaryInfo;   // composition: Employee has SalaryRecord
+
+public:
+    Employee(string n, int s) {
+        name = n;
+        salaryInfo.setBaseSalary(s);
+    }
+
+    // Encapsulation: public controlled methods
+    void giveRaise(int amount) {
+        int newSalary = salaryInfo.getBaseSalary() + amount;
+        salaryInfo.setBaseSalary(newSalary);
+    }
+
+    string getName() const {
+        return name;
+    }
+
+    // Friend function: trusted helper can access private data directly
+    friend void printPayStub(const Employee& e);
+};
+
+// Friend function definition (NOT a member function)
+void printPayStub(const Employee& e) {
+    cout << "===== PAY STUB =====\n";
+    cout << "Employee: " << e.name << "\n";                       // private access
+    cout << "Base Salary: $" << e.salaryInfo.getBaseSalary() << "\n";
+    cout << "====================\n";
+}
+
+int main() {
+    Employee emp("Alice", 50000);
+
+    emp.giveRaise(3000);      // controlled update (encapsulation)
+    printPayStub(emp);        // friend function prints private details
+
+    return 0;
+}
+```
+
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Notes</div>
+  <div class="question-shadebox">
+
+- Encapsulation: baseSalary is protected (not directly changeable from outside).
+
+- Composition: Employee is built using a SalaryRecord object.
+
+- Friend function: payroll printing is allowed to “peek” when necessary, but only because the class author permits it.
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch4" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Summary</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div id="rainbow-type"> Summary </div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Encapsulation</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">protects data by keeping class members private and allowing access only through controlled public methods, improving safety and maintainability.</p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Composition</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">builds complex objects using smaller objects with a clear “has-a” relationship, where the whole owns and manages the lifetime of its parts.</p>
+</div>
+
+</div>
+
+
+
+
+<div id="rainbow-type"> Summary (Cont.)</div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap; margin-bottom:-32px;">
+
+<div class="liquid-glass">
+
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Encapsulation and composition work together</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">composition organizes internal parts, while encapsulation hides those parts and exposes a simple, stable public interface.</p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Friend functions</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">provide a deliberate and controlled exception to encapsulation, allowing trusted external functions or classes to access private data when necessary (e.g., operator overloading or tight cooperation).</p>
+</div>
+
+</div>
+
+
+</textarea></section>
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch5" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Mini Case Study</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Lab: Student Profile + Transcript</div>
+  <div class="definition-com-shadebox">
+
+- Project Assignment - “Student Profile + Transcript (Encapsulation + Composition + Friend)”: Create a C++ program that models a student system.
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Requirement 1: Create a class Transcript
+
+- Private data: gpa (double), credits (int)
+
+- Public methods:
+
+	- setGpa(double g) (only accept 0.0–4.0)
+
+	- setCredits(int c) (only accept 0 or more)
+
+	- getGpa() and getCredits()
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Requirement 2: Create a class Student (Composition)
+
+- Private data: name (string), and a Transcript object inside it
+
+- Public methods:
+
+	- updateGpa(double g)
+
+	- addCredits(int c) (adds to existing credits)
+
+Requirement 3: Create a friend function printReport(const Student& s)
+
+- It prints the student’s name, GPA, and credits in a clean format.
+   </div>
+</div>
+
+
+
+
+<div id="shadebox">
+
+### An answer
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Transcript {
+private:
+    double gpa;
+    int credits;
+
+public:
+    Transcript() {
+        gpa = 0.0;
+        credits = 0;
+    }
+
+    void setGpa(double g) {
+        if (g >= 0.0 && g <= 4.0) {
+            gpa = g;
+        }
+    }
+
+    void setCredits(int c) {
+        if (c >= 0) {
+            credits = c;
+        }
+    }
+
+    double getGpa() const {
+        return gpa;
+    }
+
+    int getCredits() const {
+        return credits;
+    }
+};
+
+class Student {
+private:
+    string name;
+    Transcript transcript; // composition: Student HAS a Transcript
+
+public:
+    Student(string n, double g, int c) {
+        name = n;
+        transcript.setGpa(g);
+        transcript.setCredits(c);
+    }
+
+    void updateGpa(double g) {
+        transcript.setGpa(g);
+    }
+
+    void addCredits(int c) {
+        if (c >= 0) {
+            int newCredits = transcript.getCredits() + c;
+            transcript.setCredits(newCredits);
+        }
+    }
+
+    // friend function declaration
+    friend void printReport(const Student& s);
+};
+
+void printReport(const Student& s) {
+    cout << "===== Student Report =====\n";
+    cout << "Name: " << s.name << "\n";
+    cout << "GPA: " << s.transcript.getGpa() << "\n";
+    cout << "Credits: " << s.transcript.getCredits() << "\n";
+    cout << "==========================\n";
+}
+
+int main() {
+    Student st("Bob", 3.5, 30);
+
+    st.addCredits(3);     // composition + encapsulation (controlled update)
+    st.updateGpa(3.8);    // encapsulation (valid range)
+
+    printReport(st);      // friend function prints report
+
+    return 0;
+}
+
+```
+
+</div>
+
+
+
+<div id="shadebox">
+
+### Expected Output
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+===== Student Report =====
+Name: Bob
+GPA: 3.8
+Credits: 33
+==========================
+```
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+</div>
+	
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/settings.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/effects.js"></script>
+<!--<script src="settings.js"></script>-->
+<!--<script src="effects.js"></script>-->
+</body>
+</html>

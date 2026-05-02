@@ -1,0 +1,1405 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Class and Object</title>
+    <meta name="description" content="A set of slides for Machine Learning">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/effectsGreen.css">
+	<!--<link rel="stylesheet" href="./css/style.css">-->
+	<!--<link rel="stylesheet" href="./css/effects.css">-->
+	
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+	</script>
+
+	<style>
+	    pre {
+            background-color: black;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+        }
+        code {
+            font-family: "Courier New", monospace;
+            color: #d63384; /* Python-style color */
+        }
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }	
+	</style>
+
+  </head>
+
+  <body onload="startTime()">
+    <div class="reveal" >
+	  <p><img src="images/midwaylogo.png"  align="left" height="6%" width="6%" style="vertical-align:left;margin:-15px 5px"><img src="images/mueagle.png"  color="white" align="left" height="4%" width="4%" style="vertical-align:center;margin:-1% 45%">
+		<div style="color:white;font-size: 20px; vertical-align:left;margin:-1% 0%" align="right" id="realtimeclock"></div></p>
+      <div class="slides">
+
+  <div class="me">Xinxing Wu</div>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown id="cover"><textarea data-template>
+<p class='titlep'>&nbsp;</p>
+
+# Class and Object
+
+<hr>
+
+<br>
+
+Xinxing Wu
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline
+
+[<p class="hover-underline-animation">Motivation</p>](#/ch1)
+
+[<p class="hover-underline-animation">Definition and Syntax</p>](#/ch2)
+
+[<p class="hover-underline-animation">Application</p>](#/ch3)
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline (Cont.)
+
+[<p class="hover-underline-animation">Summary</p>](#/ch4)
+
+[<p class="hover-underline-animation">Mini Case Study</p>](#/ch5)
+
+</textarea></section>
+
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+
+## Goal
+
+<div id="shadebox-neon" class="shadebox neon">
+
+- Explain why OOP is useful
+- Define and use classes and objects in C++
+- Create <spanGREEN>classes</spanGREEN> with <spanGREEN>attributes</spanGREEN> and methods
+- Use <spanGREEN>constructors</spanGREEN> to initialize objects
+- Apply <spanGREEN>encapsulation (public/private)</spanGREEN> to protect data and build a small real-world program (such as a Student Record Manager) that creates and manages multiple objects safely.
+</div>
+
+</textarea></section>
+
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch1" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Motivation</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Motivation</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- You “need” OOP (Object-Oriented Programming) because it helps you manage <spanGREEN>complex</spanGREEN> programs by organizing code around real things (objects) instead of scattered variables + functions.
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+- When projects get bigger (games, apps, systems), OOP makes code easier to <spanGREEN>reuse</spanGREEN>, <spanGREEN>change</spanGREEN>, <spanGREEN>test</spanGREEN>, and <spanGREEN>maintain</spanGREEN>.
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Better organization</div>
+  <div class="question-shadebox">
+
+- Instead of lots of <spanGREEN>unrelated</spanGREEN> variables:
+
+	- studentName, studentAge, studentGPA...
+
+- You group them into <spanGREEN>one “thing”</spanGREEN>:
+
+	- Student object with name, age, gpa
+
+- This matches how we think and keeps <spanGREEN>code cleaner</spanGREEN>.
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Encapsulation (protect data + reduce bugs)</div>
+  <div class="question-shadebox">
+
+- OOP lets you hide internal details and control access.
+
+	- Keep fields <spanGREEN>private</spanGREEN>
+
+	- Allow changes only through safe methods (e.g., <spanGREEN>setAge()</spanGREEN> checks age isn’t negative)
+
+- This prevents “random code” from breaking your data.
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Reuse code (inheritance)</div>
+  <div class="question-shadebox">
+
+- If many classes share common behavior, you <spanGREEN>don’t want to rewrite it</spanGREEN>.
+
+- Example idea:
+
+	- Character (health, move, attack)
+
+	- Player and Enemy both reuse Character stuff
+
+- Less duplication = fewer mistakes.
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Flexibility (polymorphism)</div>
+  <div class="question-shadebox">
+
+- You can write code that works with many types in a uniform way.
+
+- Example idea:
+
+	- vector<Shape*> shapes;
+
+	- Each shape has draw() but circle/rectangle draw differently
+Your loop calls draw() and each object does the right thing automatically.
+
+- This makes it easy to add new types later without rewriting old logic.
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Easier teamwork + scaling</div>
+  <div class="question-shadebox">
+
+- In bigger projects, you can split work:
+
+	- <spanGREEN>One person</spanGREEN> builds Player
+
+	- <spanBYMix>Another</spanBYMix> builds Enemy
+
+	- <spanRED>Another</spanRED> builds Weapon
+- They plug together because each class has clear responsibilities.
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch2" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Definition and Syntax</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Definition and Syntax</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Object-oriented programming is about creating "objects", which can hold data and functions that work on that data.
+
+- The DRY (Don't Repeat Yourself) principle means you should avoid writing the same code more than once. Move repeated code into functions or classes and reuse it. 
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">What are Classes and Objects?</div>
+  <div class="question-shadebox">
+
+Classes and objects are the two main aspects of object-oriented programming.
+
+A class defines what an object should look like, and an object is created based on that class. 
+
+<hr style="border: none; border-top: 2px dashed green;">
+
+<table style="border-collapse: collapse; width: 420px; font-size: 18px;">
+  <thead>
+    <tr>
+      <th style="border: 1px solid #ccc; padding: 8px; text-align: left;">Class</th>
+      <th style="border: 1px solid #ccc; padding: 8px; text-align: left;">Objects</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="border: 1px solid #ccc; padding: 8px;">Fruit</td>
+      <td style="border: 1px solid #ccc; padding: 8px;">Apple, Banana, Mango</td>
+    </tr>
+    <tr>
+      <td style="border: 1px solid #ccc; padding: 8px;">Car</td>
+      <td style="border: 1px solid #ccc; padding: 8px;">Volvo, Audi, Toyota</td>
+    </tr>
+  </tbody>
+</table>
+
+   </div>
+</div>
+
+- When you create an object from a class, it inherits all the variables and functions defined inside that class.
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Classes and Objects</div>
+  <div class="definition-shadebox">
+
+- Everything in C++ is associated with classes and objects, along with its attributes and methods. For example: in real life, a car is an object. The car has attributes, such as weight and color, and methods, such as drive and brake.
+
+- Attributes and methods are basically variables and functions that belongs to the class. These are often referred to as "class members".
+
+- A class is a user-defined data type that we can use in our program, and it works as an object constructor, or a "blueprint" for creating objects.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Create a Class</div>
+  <div class="definition-shadebox">
+
+To create a class, use the class keyword:
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+class MyClass {       // The class
+  public:             // Access specifier
+    int myNum;        // Attribute (int variable)
+    string myString;  // Attribute (string variable)
+};
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Explanation</div>
+  <div class="question-shadebox">
+
+- The <spanGREEN>class</spanGREEN> keyword is used to create a class called MyClass.
+- The <spanGREEN>public</spanGREEN> keyword is an access specifier, which specifies that members (attributes and methods) of the class are accessible from outside the class.
+- <spanGREEN>Inside the class</spanGREEN>, there is an integer variable myNum and a string variable myString. When variables are declared within a class, they are called attributes.
+- At last, end the class definition with a <spanGREEN>semicolon ;</spanGREEN>. 
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Create an Object</div>
+  <div class="definition-shadebox">
+
+- In C++, an object is created from a class. We have already created the class named MyClass, so now we <spanBYMix>can use this to create objects</spanBYMix>.
+
+- To create an object of MyClass, specify the class name, followed by the object name.
+
+- To access the class attributes (myNum and myString), <spanBYMix>use the dot syntax (.)</spanBYMix> on the object:
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+<div style="width: 800px;"></div>
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+class MyClass {       // The class
+  public:             // Access specifier
+    int myNum;        // Attribute (int variable)
+    string myString;  // Attribute (string variable)
+};
+
+int main() {
+  MyClass myObj;  // Create an object of MyClass
+
+  // Access attributes and set values
+  myObj.myNum = 15;
+  myObj.myString = "Some text";
+
+  // Print values
+  cout << myObj.myNum << "\n"; 
+  cout << myObj.myString; 
+  return 0;
+}
+```
+
+</div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Class Methods</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+- Methods are functions that belongs to the class.
+
+- There are two ways to define functions that belongs to a class:
+
+	- Inside class definition
+	- Outside class definition
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Define a Method Inside the Class</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+- You access methods just like you access attributes; by creating an object of the class and using the dot syntax (.):
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+using namespace std;
+
+class MyClass {         // The class
+  public:               // Access specifier
+    void myMethod() {   // Method/function
+      cout << "Hello World!";
+    }
+};
+
+int main() {
+  MyClass myObj;     // Create an object of MyClass
+  myObj.myMethod();  // Call the method
+  return 0;
+}
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note on how you access members</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+<div id="shadebox">
+
+- use . when you have a normal struct variable
+- use -> when you have a pointer to a struct
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note - Struct variable: use .</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+using namespace std;
+
+struct Student {
+    string name;
+    int age;
+};
+
+int main() {
+    Student s1;       // normal struct variable
+
+    s1.name = "Tom";  // use .
+    s1.age = 20;      // use .
+
+    cout << s1.name << endl;
+    cout << s1.age << endl;
+
+    return 0;
+}
+```
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+- Here s1 is a real Student object in memory.
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note - Struct pointer: use -></div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+using namespace std;
+
+struct Student {
+    string name;
+    int age;
+};
+
+int main() {
+    Student s1;
+    s1.name = "Tom";
+    s1.age = 20;
+
+    Student* p = &s1;   // p points to s1
+
+    cout << p->name << endl;   // use ->
+    cout << p->age << endl;    // use ->
+
+    return 0;
+}
+```
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Here p is not a Student itself. It is a pointer that stores the address of s1.
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Student {
+public:
+    string name;
+    int age;
+};
+
+int main() {
+    Student s1;
+    s1.name = "Tom";
+    s1.age = 20;
+
+    Student* p = &s1;
+
+    cout << s1.name << endl;   // direct access
+    cout << s1.age << endl;
+
+    cout << p->name << endl;   // pointer access
+    cout << p->age << endl;
+
+    return 0;
+}
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+- They are not the same syntax, but if p points to s1, then they access the same object data.
+
+- Also, with class, you must add public.
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Define a Method Outside the Class</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+using namespace std;
+
+class MyClass {         // The class
+  public:               // Access specifier
+    void myMethod();    // Method/function declaration
+};
+
+// Method/function definition outside the class
+void MyClass::myMethod() {
+  cout << "Hello World!";
+}
+
+int main() {
+  MyClass myObj;     // Create an object of MyClass
+  myObj.myMethod();  // Call the method
+  return 0;
+}
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Constructors</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+- A constructor is a special method that is automatically called when an object of a class is created.
+
+- To create a constructor, use the same name as the class, followed by parentheses ().
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Constructors</div>
+  <div class="definition-shadebox">
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+using namespace std;
+
+class MyClass {     // The class
+  public:           // Access specifier
+    MyClass() {     // Constructor
+      cout << "Hello World!";
+    }
+};
+
+int main() {
+  MyClass myObj;    // Create an object of MyClass (this will call the constructor)
+  return 0;
+}
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Constructors Rules</div>
+  <div class="definition-shadebox">
+
+- The constructor has the same name as the class.
+- It has no return type (<spanRED>not</spanRED> even void).
+- It is usually declared public.
+- It is automatically called when an object is created.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Constructor with Parameters</div>
+  <div class="definition-shadebox">
+
+- Constructors can also take parameters (just like regular functions), which can be useful for setting initial values for attributes.
+
+- The following class have brand, model and year attributes, and a constructor with different parameters. Inside the constructor we set the attributes equal to the constructor parameters (brand=x, etc).
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Constructor with Parameters</div>
+  <div class="definition-shadebox">
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+using namespace std;
+
+class Car {        // The class
+  public:          // Access specifier
+    string brand;  // Attribute
+    string model;  // Attribute
+    int year;      // Attribute
+    Car(string x, string y, int z) {  // Constructor with parameters
+      brand = x;
+      model = y;
+      year = z;
+    }
+};
+
+int main() {
+  // Create Car objects and call the constructor with different values
+  Car carObj1("BMW", "X5", 1999);
+  Car carObj2("Ford", "Mustang", 1969);
+
+  // Print values
+  cout << carObj1.brand << " " << carObj1.model << " " << carObj1.year << "\n";
+  cout << carObj2.brand << " " << carObj2.model << " " << carObj2.year << "\n";
+  return 0;
+}
+```
+</div>
+   
+</div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Constructor Defined Outside the Class</div>
+  <div class="definition-shadebox">
+
+- You can also define the constructor outside the class using the scope resolution operator ::
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+using namespace std;
+
+class Car {        // The class
+  public:          // Access specifier
+    string brand;  // Attribute
+    string model;  // Attribute
+    int year;      // Attribute
+    Car(string x, string y, int z); // Constructor declaration
+};
+
+// Constructor definition outside the class
+Car::Car(string x, string y, int z) {
+  brand = x;
+  model = y;
+  year = z;
+}
+
+int main() {
+  // Create Car objects and call the constructor with different values
+  Car carObj1("BMW", "X5", 1999);
+  Car carObj2("Ford", "Mustang", 1969);
+
+  // Print values
+  cout << carObj1.brand << " " << carObj1.model << " " << carObj1.year << "\n";
+  cout << carObj2.brand << " " << carObj2.model << " " << carObj2.year << "\n";
+  return 0;
+}
+
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Why Constructors Are Useful</div>
+  <div class="definition-shadebox">
+
+- Constructors run by themselves when you create an object. They set things up so everything is ready right away.
+
+- Exampe: When you order a pizza (object), the constructor is the chef who adds the sauce, cheese, and toppings before it gets to you - you don't have to do it yourself!
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Constructor Overloading</div>
+  <div class="definition-shadebox">
+
+- In C++, you can have more than one constructor in the same class. This is called <spanGREEN>constructor overloading</spanGREEN>.
+
+- Each constructor must have a different number or type of parameters, so the compiler knows which one to use when you create an object.
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Why Use Constructor Overloading?</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+- To give flexibility when creating objects
+- To set default or custom values
+- To reduce repetitive code
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example </div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Car {
+  public:
+    string brand;
+    string model;
+
+    Car() {
+      brand = "Unknown";
+      model = "Unknown";
+    }
+
+    Car(string b, string m) {
+      brand = b;
+      model = m;
+    }
+};
+
+int main() {
+  Car car1;
+  Car car2("BMW", "X5");
+  Car car3("Ford", "Mustang");
+
+  cout << "Car1: " << car1.brand << " " << car1.model << "\n";
+  cout << "Car2: " << car2.brand << " " << car2.model << "\n";
+  cout << "Car3: " << car3.brand << " " << car3.model;
+  return 0;
+}
+```
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Access Specifiers</div>
+  <div class="definition-shadebox">
+
+- Access specifiers control how the members (attributes and methods) of a class can be accessed.
+
+- They help protect data and organize code so that only the right parts can be seen or changed.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+using namespace std;
+
+class MyClass {   // The class
+  public:         // Public access specifier
+    int x;        // Public attribute (int variable)
+};
+
+int main() {
+  MyClass myObj;  // Create an object of MyClass
+
+  // Access attributes and set values
+  myObj.x = 15;
+
+  // Print values
+  cout << myObj.x; 
+  return 0;
+}
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Access specifiers</div>
+  <div class="definition-shadebox">
+
+- In C++, there are three access specifiers:
+
+	- public - members are accessible from outside the class
+	- private - members cannot be accessed (or viewed) from outside the class
+	- *protected - members cannot be accessed from outside the class, however, they can be accessed in inherited classes. You will learn more about Inheritance later.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Private</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+using namespace std;
+
+class MyClass {
+  public:    // Public access specifier
+    int x;   // Public attribute
+  private:   // Private access specifier
+    int y;   // Private attribute
+};
+
+int main() {
+  MyClass myObj;
+  myObj.x = 25;  // Allowed (x is public)
+  myObj.y = 50;  // Not allowed (y is private)
+  return 0;
+}
+```
+</div>
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch3" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Application</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Application</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Application - Student Record Manager (Console App)
+
+<div id="shadebox-glass" class="shadebox glass">
+
+- Creates multiple Student objects
+
+- Each student stores: name, age, GPA
+
+- Uses private data to protect fields (<spanBYMix>encapsulation</spanBYMix>)
+
+- Uses safe methods to update data (e.g., age can’t be negative, GPA must be 0–4)
+
+- Prints student info neatly
+</div>
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+class Student {
+private:
+    string name;
+    int age;
+    double gpa;
+
+public:
+    // Constructor
+    Student(string n, int a, double g) {
+        name = n;
+        setAge(a);
+        setGPA(g);
+    }
+
+    // Encapsulation: safe setters
+    void setAge(int a) {
+        if (a >= 0) age = a;
+        else age = 0;
+    }
+
+    void setGPA(double g) {
+        if (g >= 0.0 && g <= 4.0) gpa = g;
+        else gpa = 0.0;
+    }
+
+    // Getters
+    string getName() { return name; }
+    int getAge() { return age; }
+    double getGPA() { return gpa; }
+
+    // Method
+    void printInfo() {
+        cout << "Name: " << name
+             << ", Age: " << age
+             << ", GPA: " << gpa << "\n";
+    }
+};
+
+int main() {
+    vector<Student> students;
+
+    // Create objects using constructor
+    students.push_back(Student("Alice", 20, 3.8));
+    students.push_back(Student("Bob", 18, 2.9));
+    students.push_back(Student("Cindy", -5, 5.2)); // invalid values -> fixed by setters
+
+    cout << "=== Student List ===\n";
+    for (int i = 0; i < (int)students.size(); i++) {
+        students[i].printInfo();
+    }
+
+    // Update example
+    cout << "\nUpdate Bob's GPA to 3.5\n";
+    students[1].setGPA(3.5);
+    students[1].printInfo();
+
+    return 0;
+}
+
+```
+
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">What concepts this application practices</div>
+  <div class="question-shadebox">
+
+- Class & Object: Student class, many Student objects
+
+- Constructor: initializes each student when created
+
+- Class methods: printInfo(), setAge(), setGPA()
+
+- Encapsulation: name/age/gpa are private, changed only via safe methods
+
+- Scaling idea: You can later add inheritance (e.g., Student → GraduateStudent)
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch4" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Summary</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div id="rainbow-type"> Summary </div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Organize code using real-world objects</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Object-Oriented Programming groups related data and functions into classes (such as Student or Car), making programs easier to understand, structure, and maintain as they grow.</p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Use encapsulation to protect data</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">By keeping data members private and accessing them through public methods, OOP prevents invalid or unsafe changes, reducing bugs and improving program reliability.</p>
+</div>
+
+</div>
+
+
+
+
+<div id="rainbow-type"> Summary (Cont.)</div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap; margin-bottom:-32px;">
+
+<div class="liquid-glass">
+
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Constructors ensure proper initialization</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Constructors automatically set up objects with valid initial values when they are created, so objects are always ready to use and less error-prone.</p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">OOP supports reuse and scalability</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Through features like methods, inheritance, and polymorphism, OOP allows code reuse, easier updates, and smooth expansion of programs without rewriting existing logic.</p>
+</div>
+
+</div>
+
+</textarea></section>
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch5" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Mini Case Study</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Lab: Mini Library Book Tracker</div>
+  <div class="definition-com-shadebox">
+
+Project Assignment: Mini Library Book Tracker (OOP in C++) - Create a console program that helps a small library track books using OOP.
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Requirement 1: Create a class named Book.
+- Requirement 2: The class must have private attributes:
+
+	- title (string)
+
+	- author (string)
+
+	- year (int)
+
+	- isBorrowed (bool)
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Requirement 3: Add a constructor that sets title, author, and year, and sets isBorrowed to false.
+- Requirement 4: Add methods:
+
+	- borrowBook() → if already borrowed, print "Already borrowed!", otherwise mark borrowed.
+
+	- returnBook() → if not borrowed, print "Not borrowed yet!", otherwise mark available.
+
+	- printInfo() → prints all book info (including borrowed status).
+   </div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Requirement 5: In main(), create 3 Book objects, store them in a vector<Book>, and:
+
+	- Print all books
+
+	- Borrow the 2nd book
+
+	- Try borrowing it again (should show warning)
+
+	- Return it
+
+	- Print all books again
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### An answer
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+class Book {
+private:
+    string title;
+    string author;
+    int year;
+    bool isBorrowed;
+
+public:
+    // Constructor
+    Book(string t, string a, int y) {
+        title = t;
+        author = a;
+        year = y;
+        isBorrowed = false; // default: available
+    }
+
+    void borrowBook() {
+        if (isBorrowed) {
+            cout << "Already borrowed!\n";
+        } else {
+            isBorrowed = true;
+            cout << "Borrowed successfully.\n";
+        }
+    }
+
+    void returnBook() {
+        if (!isBorrowed) {
+            cout << "Not borrowed yet!\n";
+        } else {
+            isBorrowed = false;
+            cout << "Returned successfully.\n";
+        }
+    }
+
+    void printInfo() {
+        cout << "Title: " << title
+             << " | Author: " << author
+             << " | Year: " << year
+             << " | Status: " << (isBorrowed ? "Borrowed" : "Available")
+             << "\n";
+    }
+};
+
+int main() {
+    vector<Book> books;
+
+    // Create 3 Book objects
+    books.push_back(Book("The Hobbit", "J.R.R. Tolkien", 1937));
+    books.push_back(Book("Clean Code", "Robert C. Martin", 2008));
+    books.push_back(Book("C++ Primer", "Lippman", 2012));
+
+    cout << "=== All Books (Start) ===\n";
+    for (int i = 0; i < (int)books.size(); i++) {
+        books[i].printInfo();
+    }
+
+    cout << "\n=== Borrow the 2nd Book ===\n";
+    books[1].borrowBook();
+
+    cout << "\n=== Try Borrowing the 2nd Book Again ===\n";
+    books[1].borrowBook();
+
+    cout << "\n=== Return the 2nd Book ===\n";
+    books[1].returnBook();
+
+    cout << "\n=== All Books (End) ===\n";
+    for (int i = 0; i < (int)books.size(); i++) {
+        books[i].printInfo();
+    }
+
+    return 0;
+}
+
+```
+
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Expected Output</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- It will list 3 books as Available
+
+- Borrowing the 2nd book prints Borrowed successfully.
+
+- Borrowing again prints Already borrowed!
+
+- Returning prints Returned successfully.
+
+- Final list shows the 2nd book back to Available
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+</div>
+	
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/settings.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/effects.js"></script>
+<!--<script src="settings.js"></script>-->
+<!--<script src="effects.js"></script>-->
+</body>
+</html>

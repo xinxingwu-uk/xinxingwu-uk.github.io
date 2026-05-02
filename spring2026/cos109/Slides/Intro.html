@@ -1,0 +1,787 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Intro</title>
+    <meta name="description" content="A set of slides for Machine Learning">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/effectsGreen.css">
+	<!--<link rel="stylesheet" href="./css/style.css">-->
+	<!--<link rel="stylesheet" href="./css/effects.css">-->
+
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+	</script>
+
+	<style>
+	    pre {
+            background-color: black;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+        }
+        code {
+            font-family: "Courier New", monospace;
+            color: #d63384; /* Python-style color */
+        }
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }	
+	</style>
+
+  </head>
+
+  <body onload="startTime()">
+    <div class="reveal" >
+	  <p><img src="images/midwaylogo.png"  align="left" height="6%" width="6%" style="vertical-align:left;margin:-15px 5px"><img src="images/mueagle.png"  color="white" align="left" height="4%" width="4%" style="vertical-align:center;margin:-1% 45%">
+		<div style="color:white;font-size: 20px; vertical-align:left;margin:-1% 0%" align="right" id="realtimeclock"></div></p>
+      <div class="slides">
+
+  <div class="me">Xinxing Wu</div>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown id="cover"><textarea data-template>
+<p class='titlep'>&nbsp;</p>
+
+# Intro of COS 109
+
+
+<hr>
+
+<br>
+
+Xinxing Wu
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline
+
+[<p class="hover-underline-animation">Course Link</p>](#/ch1)
+
+[<p class="hover-underline-animation">About This Course</p>](#/ch2)
+
+[<p class="hover-underline-animation">Course Policies</p>](#/ch3)
+
+[<p class="hover-underline-animation">A Game</p>](#/ch4)
+
+
+</textarea></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch1" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Course Link</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Course Link</div>
+  <div class="definition-com-shadebox">
+
+
+https://kysu.instructure.com/courses/7060
+
+
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch2" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">About This Course</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Syllabus</div>
+  <div class="definition-com-shadebox">
+
+- https://kysu.instructure.com/courses/7060/assignments/syllabus
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+- https://kysu.instructure.com/courses/7060/assignments/146419
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Info</div>
+  <div class="question-shadebox">
+
+- <a href="https://xinxingwu.github.io/" target="_blank">Instructor</a>
+
+- <spanGREEN>Email</spanGREEN> xinxing.wu@kysu.edu (Best way to reach out)     Office Hathaway Hall 307
+
+- <spanGREEN>Class time</spanGREEN> 9:30 AM – 10:45 AM (MW)   Classroom Hathaway Hall 320
+
+- <spanGREEN>Final Exam time</spanGREEN>  Wednesday, May 04, 2026 9:00 AM - 11:50 AM
+
+- Spring 2026 Schedule https://xinxingwu-ksu.github.io/schedule/wu.html <spanGREEN>In-person</spanGREEN> or <spanGREEN>Online</spanGREEN>
+   </div>
+</div>
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+<div id="roundbox">
+
+> Introducn yourself
+
+</div>
+
+- https://kysu.instructure.com/courses/7060/assignments/146933?module_item_id=391033
+
+
+
+- Click new meeting
+
+<img src="images/figure1.png"  align="left" height="500px" width="800px"/>
+
+
+
+- Click start
+
+<img src="images/figure2.png"  align="left" height="500px" width="800px"/>
+
+
+
+- Click video
+
+<img src="images/figure3.png"  align="left" height="500px" width="800px"/>
+
+
+
+- Choose avatar
+
+<img src="images/figure4.png"  align="left" height="500px" width="400px"/>
+
+
+
+- Record
+
+<img src="images/figure5.png"  align="left" height="500px" width="800px"/>
+
+
+
+<div class="question-container">
+  <div class="question-title">Course Objectives</div>
+  <div class="question-shadebox">
+
+This course serves as the introduction to the <spanGREEN>Object-Oriented Programming</spanGREEN> model. We will cover programming techniques to manipulate members of C++'s string class, arrays and pointers. Additionally, object-oriented programming techniques will be introduced.
+
+<hr>
+
+Students will understand the goals and concepts of object-oriented design such as abstraction, encapsulation, code <spanBYMix>re-use</spanBYMix>, inheritance, structure hiding, and polymorphism.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Points</div>
+  <div class="definition-shadebox">
+
+<div style="max-width: 820px; margin: 16px auto; font-family: system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;">
+    <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 0 0 10px 0;">
+        <div style="margin: 0; font-size: 20px; color: #0f172a;">Evaluation Procedures (Extra points: challenges, evaluations, etc. 0~20 pts)</div>
+        <div style="font-size: 13px; color: #64748b;">Total: 100 points</div>
+    </div>
+    <table style="width: 100%; border-collapse: separate; border-spacing: 0; background: rgba(255,255,255,.85); border: 1px solid rgba(148,163,184,.35); border-radius: 16px; overflow: hidden;" aria-label="Evaluation procedures table">
+        <thead>
+            <tr>
+                <th style="text-align: left; padding: 14px 16px; color: #fff; font-size: 14px; background: linear-gradient(135deg,#0ea5e9,#2563eb);">Course Item</th>
+                <th style="text-align: right; width: 160px; padding: 14px 16px; color: #fff; font-size: 25px; background: linear-gradient(135deg,#0ea5e9,#2563eb);">Total Points</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="padding: 13px 16px; font-size: 14px; color: #0f172a; border-top: 1px solid rgba(148,163,184,.22); background: rgba(255,255,255,.78);">Syllabus Acknowledgement</td>
+                <td style="padding: 13px 16px; font-size: 14px; border-top: 1px solid rgba(148,163,184,.22); background: rgba(255,255,255,.78); text-align: right; color: #0b1220;">3</td>
+            </tr>
+            <tr>
+                <td style="padding: 13px 16px; font-size: 14px; color: #0f172a; border-top: 1px solid rgba(148,163,184,.22); background: rgba(241,245,249,.70);">Attendance</td>
+                <td style="padding: 13px 16px; font-size: 14px; border-top: 1px solid rgba(148,163,184,.22); background: rgba(241,245,249,.70); text-align: right; color: #0b1220;">10</td>
+            </tr>
+            <tr>
+                <td style="padding: 13px 16px; font-size: 14px; color: #0f172a; border-top: 1px solid rgba(148,163,184,.22); background: rgba(255,255,255,.78);">Exercise</td>
+                <td style="padding: 13px 16px; font-size: 14px; border-top: 1px solid rgba(148,163,184,.22); background: rgba(255,255,255,.78); text-align: right; color: #0b1220;">8</td>
+            </tr>
+            <tr>
+                <td style="padding: 13px 16px; font-size: 14px; color: #0f172a; border-top: 1px solid rgba(148,163,184,.22); background: rgba(241,245,249,.70);">Lab</td>
+                <td style="padding: 13px 16px; font-size: 14px; border-top: 1px solid rgba(148,163,184,.22); background: rgba(241,245,249,.70); text-align: right; color: #0b1220;">25</td>
+            </tr>
+            <tr>
+                <td style="padding: 13px 16px; font-size: 14px; color: #0f172a; border-top: 1px solid rgba(148,163,184,.22); background: rgba(255,255,255,.78);">Project</td>
+                <td style="padding: 13px 16px; font-size: 14px; border-top: 1px solid rgba(148,163,184,.22); background: rgba(255,255,255,.78); text-align: right; color: #0b1220;">12</td>
+            </tr>
+            <tr>
+                <td style="padding: 13px 16px; font-size: 14px; color: #0f172a; border-top: 1px solid rgba(148,163,184,.22); background: rgba(241,245,249,.70);">Team work (Discussions)</td>
+                <td style="padding: 13px 16px; font-size: 14px; border-top: 1px solid rgba(148,163,184,.22); background: rgba(241,245,249,.70); text-align: right; color: #0b1220;">12</td>
+            </tr>
+            <tr>
+                <td style="padding: 13px 16px; font-size: 14px; color: #0f172a; border-top: 1px solid rgba(148,163,184,.22); background: rgba(255,255,255,.78);">Final Presentation</td>
+                <td style="padding: 13px 16px; font-size: 14px; border-top: 1px solid rgba(148,163,184,.22); background: rgba(255,255,255,.78); text-align: right; color: #0b1220;">8</td>
+            </tr>
+            <tr>
+                <td style="padding: 13px 16px; font-size: 14px; color: #0f172a; border-top: 1px solid rgba(148,163,184,.22); background: rgba(241,245,249,.70);">Midterm Exam</td>
+                <td style="padding: 13px 16px; font-size: 14px; border-top: 1px solid rgba(148,163,184,.22); background: rgba(241,245,249,.70); text-align: right; color: #0b1220;">10</td>
+            </tr>
+            <tr>
+                <td style="padding: 13px 16px; font-size: 14px; color: #0f172a; border-top: 1px solid rgba(148,163,184,.22); background: rgba(255,255,255,.78);">Final Exam</td>
+                <td style="padding: 13px 16px; font-size: 14px; border-top: 1px solid rgba(148,163,184,.22); background: rgba(255,255,255,.78); text-align: right; color: #0b1220;">12</td>
+            </tr>
+            <tr>
+                <td style="padding: 13px 16px; font-size: 14px; border-top: 1px solid rgba(148,163,184,.22); background: rgba(15,23,42,.06); color: #0f172a;">Total of points</td>
+                <td style="padding: 13px 16px; font-size: 15px; border-top: 1px solid rgba(148,163,184,.22); background: rgba(15,23,42,.06); text-align: right; color: #1d4ed8;">100</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Grading</div>
+  <div class="definition-shadebox">
+
+<div style="max-width: 780px; margin: 16px auto; font-family: system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;">
+    <div style="border: 1px solid rgba(148,163,184,.35); border-radius: 18px; overflow: hidden; background: rgba(255,255,255,.88);">
+        <div style="padding: 16px 18px; color: #fff; background: linear-gradient(135deg,#10b981,#2563eb);">
+            <div style="margin: 0; font-size: 18px;">Grading Scale</div>
+            <div style="margin-top: 6px; font-size: 13px; line-height: 1.45;">This grading scale outlines how final grades are determined based on the total points earned in the course. Each letter grade corresponds to a specific range of percentages or points.</div>
+        </div>
+        <table style="width: 100%; border-collapse: separate; border-spacing: 0;" aria-label="Grading scale table">
+            <thead>
+                <tr>
+                    <th style="text-align: left; padding: 12px 16px; font-size: 13px; color: #0f172a; background: rgba(241,245,249,.9); border-bottom: 1px solid rgba(148,163,184,.25);">Grade</th>
+                    <th style="text-align: right; width: 220px; padding: 12px 16px; font-size: 13px; color: #0f172a; background: rgba(241,245,249,.9); border-bottom: 1px solid rgba(148,163,184,.25);">Points</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding: 12px 16px; font-size: 14px; color: #0f172a; border-bottom: 1px solid rgba(148,163,184,.18); background: rgba(255,255,255,.7);"><span style="display: inline-flex; align-items: center; justify-content: center; min-width: 34px; padding: 6px 10px; border-radius: 999px; border: 1px solid rgba(16,185,129,.55); background: rgba(255,255,255,.9);"> A </span></td>
+                    <td style="padding: 12px 16px; font-size: 14px; border-bottom: 1px solid rgba(148,163,184,.18); background: rgba(255,255,255,.7); text-align: right; color: #0b1220;">&ge; 90</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px 16px; font-size: 14px; color: #0f172a; border-bottom: 1px solid rgba(148,163,184,.18); background: rgba(248,250,252,.85);"><span style="display: inline-flex; align-items: center; justify-content: center; min-width: 34px; padding: 6px 10px; border-radius: 999px; border: 1px solid rgba(37,99,235,.55); background: rgba(255,255,255,.9);"> B </span></td>
+                    <td style="padding: 12px 16px; font-size: 14px; border-bottom: 1px solid rgba(148,163,184,.18); background: rgba(248,250,252,.85); text-align: right; color: #0b1220;">80 &ndash; 89</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px 16px; font-size: 14px; color: #0f172a; border-bottom: 1px solid rgba(148,163,184,.18); background: rgba(255,255,255,.7);"><span style="display: inline-flex; align-items: center; justify-content: center; min-width: 34px; padding: 6px 10px; border-radius: 999px; border: 1px solid rgba(245,158,11,.55); background: rgba(255,255,255,.9);"> C </span></td>
+                    <td style="padding: 12px 16px; font-size: 14px; border-bottom: 1px solid rgba(148,163,184,.18); background: rgba(255,255,255,.7); text-align: right; color: #0b1220;">70 &ndash; 79</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px 16px; font-size: 14px; color: #0f172a; border-bottom: 1px solid rgba(148,163,184,.18); background: rgba(248,250,252,.85);"><span style="display: inline-flex; align-items: center; justify-content: center; min-width: 34px; padding: 6px 10px; border-radius: 999px; border: 1px solid rgba(249,115,22,.55); background: rgba(255,255,255,.9);"> D </span></td>
+                    <td style="padding: 12px 16px; font-size: 14px; border-bottom: 1px solid rgba(148,163,184,.18); background: rgba(248,250,252,.85); text-align: right; color: #0b1220;">60 &ndash; 69</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px 16px; font-size: 14px; color: #0f172a; border-bottom: 0; background: rgba(255,255,255,.7);"><span style="display: inline-flex; align-items: center; justify-content: center; min-width: 34px; padding: 6px 10px; border-radius: 999px; border: 1px solid rgba(239,68,68,.55); background: rgba(255,255,255,.9);"> F </span></td>
+                    <td style="padding: 12px 16px; font-size: 14px; border-bottom: 0; background: rgba(255,255,255,.7); text-align: right; color: #0b1220;">below 60</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+   </div>
+</div>
+
+
+
+
+<div id="roundbox">
+
+- Review and grade your submissions every <spanBYMix>Saturday or Sunday</spanBYMix>
+
+- Teams to do class recording
+
+- Team work (<spanGREEN>Discussions - pts will be given in related assignments</spanGREEN>)  or Come to discuss with me (Spring 2026 Schedule https://xinxingwu-ksu.github.io/schedule/wu.html)
+
+- Exercise attempt: <spanRED>1</spanRED>; Lab/project attempt: <spanRED>3</spanRED>.
+
+- Mid-term: try to complete before  March 6; Final-term: try to complete before May 2.
+
+</div>
+
+
+
+
+
+<iframe
+    src="./Discussion.html"
+    style="width:100%;max-width:1200px;height:620px;border:0;border-radius:14px;overflow:hidden;display:block;margin:30px auto;"
+    allow="autoplay"
+    sandbox="allow-scripts allow-same-origin">
+</iframe>
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+<video controls>
+  <source src="./files/From_Idea_to_App.mp4" type="video/mp4">
+</video>
+
+</textarea></section>
+</section>
+
+
+
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch3" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Course Policies</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Note</div>
+  <div class="definition-com-shadebox">
+
+Regular attendance is required for success in this course.
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-shakeflash-container">
+  <div class="definition-shakeflash-title">Class Attendance</div>
+  <div class="definition-shakeflash-shadebox">
+
+- Unexcused absences: To help maintain a smooth learning environment, students who arrive more than five (5) minutes late to start of class AND OR leaving class early will be marked as ‘Absent’. Each three (3) unexcused absences will be a drop in a letter grade for the course. If you have any form of note or excuse IT must be submitted to Student Services for review and dispersion! No exceptions!
+
+- More detail, https://kysu.instructure.com/courses/7060/pages/policy-class-attendance?module_item_id=384412
+   </div>
+</div>
+
+
+
+
+<div class="definition-shakeflash-container">
+  <div class="definition-shakeflash-title">Assignments</div>
+  <div class="definition-shakeflash-shadebox">
+
+- ... To support meaningful learning, students are expected to come to class prepared and engaged, with the goal of developing a thorough understanding of the course material. A due date will be provided on Canvas or announced in class for each weekly homework assignment... Please pay close attention to assignment and exam deadlines. In general, deadlines will not be extended, and late submissions are not accepted.
+
+- Generally, assignments are required to be submitted to Canvas. Do not use KSU email to email/submit your work.
+
+- More detail, https://kysu.instructure.com/courses/7060/pages/policy-assignments?module_item_id=388934
+   </div>
+</div>
+
+
+
+
+<div class="definition-shakeflash-container">
+  <div class="definition-shakeflash-title">Cell Phone</div>
+  <div class="definition-shakeflash-shadebox">
+
+- To create a focused and respectful learning environment, all cell phones, PDAs, beepers, and similar electronic devices must be turned off and put away during class. Texting is not permitted at any time during class. Failure to follow this policy will result in an unexcused absence for that day.
+
+- Headphones, earbuds, and music-playing devices may not be worn or used during class. During exams, no cell phones may be on desks or visible at any time; the presence of a cell phone during a test will result in a zero for that exam.
+   </div>
+</div>
+
+
+
+
+<div class="definition-shakeflash-container">
+  <div class="definition-shakeflash-title">Academic Honesty</div>
+  <div class="definition-shakeflash-shadebox">
+
+- Cheating may result in an F in the class. It may also result in expulsion from the university.
+
+- More detail, https://kysu.instructure.com/courses/7060/pages/policy-academic-honesty?module_item_id=388936
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Artificial Intelligence</div>
+  <div class="question-shadebox">
+
+Artificial Intelligence (AI) Tool Usage - If you use any AI tool at any point in your work, you must clearly and fully disclose its use in your assignment, report, project submission, or any other deliverable. Your disclosure must be specific and detailed, including 📢
+
+
+<hr>
+
+<spanRED>First 8 weeks, suggesting not use AI tools in your submissions.</spanRED>
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Artificial Intelligence (cont.)</div>
+  <div class="question-shadebox">
+
+- <spanGREEN>Where</spanGREEN> AI was used (e.g., summarizing readings, generating ideas, code assistance, debugging, data analysis, data visualization, outlining, editing).
+- <spanGREEN>What</spanGREEN> tool(s) were used (tool name and, when available, version/model, plus platform/app).
+- <spanBYMix>Why</spanBYMix> you chose to use the tool (e.g., brainstorming, translation, grammar checking, accelerating coding, improving clarity).
+- <spanBYMix>How</spanBYMix> you used the output (e.g., modified/edited, cited/quoted, directly included, used only as a reference, used to compare against your own work).
+- Other details as needed. 😊 The instructor reserves the right to impose additional disclosure requirements as necessary.
+   </div>
+</div>
+
+
+
+<div class="definition-shakeflash-container">
+  <div class="definition-shakeflash-title">Artificial Intelligence (cont.)</div>
+  <div class="definition-shakeflash-shadebox">
+
+- 🚨Important: Failure to <spanBYMix>disclose</spanBYMix> AI use—or presenting AI-generated work as entirely your own without clear clarification—may be considered a violation of academic integrity.
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Notes</div>
+  <div class="question-shadebox">
+
+The materials provided on Canvas are intended for educational use only. Please do not share, upload, or distribute these materials on the internet or to others outside this course.
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Notes</div>
+  <div class="definition-shadebox">
+
+Based on practical class needs, 😄 the instructor reserves the right to make changes or impose additional requirements as necessary.
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch4" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">A Game</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<p class='titlep'>&nbsp;</p>
+
+<div id="roundbox">
+
+Tower of Hanoi 🎮🕹️
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+The object of the game is to move all the disks over to Tower 3 (drag and drop). But you cannot place a larger disk onto a smaller disk.
+</div>
+
+<hr>
+
+- Recursive Algorithms
+
+
+
+<iframe
+    src="./Hanoi_Tower.html"
+    style="width:100%;max-width:1200px;height:660px;border:0;border-radius:14px;overflow:hidden;display:block;margin:30px auto;"
+    allow="autoplay"
+    sandbox="allow-scripts allow-same-origin">
+</iframe>
+
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+<div id="roundbox">
+
+- Can you wrire a progam to sum from 1 to 10?
+
+- Can you wrire a progam to calculate 10!?
+
+</div>
+
+
+
+<img src="images/figadd1.png"  align="left" height="600px" width="900px" >
+
+
+
+
+<img src="images/figadd2.png"  align="left" height="600px" width="900px" >
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+<div id="roundbox">
+
+```
+#include <iostream>
+using namespace std;
+
+int main() {
+    int sum = 0;
+
+    // Add numbers from 1 to 10
+    for (int i = 1; i <= 10; i++) {
+        sum += i;
+    }
+
+    cout << "Sum from 1 to 10 is: " << sum << endl;
+    return 0;
+}
+```
+
+</div>
+
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+<div id="roundbox">
+
+```
+#include <iostream> 
+// Lets us use input/output like cout
+
+using namespace std;
+// So we can write cout instead of std::cout
+
+int main() {          
+// Program starts here
+
+    int sum = 0;      
+	// Create an integer variable named sum and start it at 0
+
+    // Add numbers from 1 to 10
+    for (int i = 1; i <= 10; i++) {  
+	// Loop: i goes 1,2,3,...,10
+	
+        sum += i;    
+		// Add i into sum (same as: sum = sum + i)
+    }
+
+    cout << "Sum from 1 to 10 is: " << sum << endl; 
+	// Print the result to the screen
+	
+    return 0;        
+	// End the program successfully
+}
+
+```
+
+</div>
+
+
+
+
+<div id="roundbox">
+
+```
+cout << "Sum from 1 to 10 is: " << sum << endl;
+```
+
+- cout = “print to the screen”
+
+- << = the insertion operator (it inserts things into the output stream)
+
+<hr>
+
+So:
+
+- << sum means print the value stored in sum
+
+- << endl means end the line (go to a new line) and it also flushes the output buffer
+
+</div>
+
+
+
+
+## Recursive algorithm
+
+<div id="roundbox">
+
+```
+#include <iostream>
+
+using namespace std;
+
+int sumToN(int n) {           
+// a function that returns 1 + 2 + ... + n
+
+    if (n == 1) {             
+	// base case: when n is 1, the sum is 1
+	
+        return 1;             
+    }
+    return n + sumToN(n - 1); 
+	// recursive case: n + (sum from 1 to n-1)
+}
+
+int main() {                          
+// program starts here
+
+    int result = sumToN(10);          
+	// compute sum from 1 to 10 using recursion
+	
+    cout << "Sum from 1 to 10 is: "   
+	// print message
+	
+         << result                    
+		 // print the result value
+		 
+         << endl;                     
+		 // move to next line
+		 
+    return 0;                         
+	// end program
+}
+
+```
+
+</div>
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+
+> Mathematical Formula
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Course Link</div>
+  <div class="definition-com-shadebox">
+
+Canvas https://kysu.instructure.com/courses/7060
+
+
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+</div>
+	
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/settings.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/effects.js"></script>
+<!--<script src="settings.js"></script>-->
+<!--<script src="effects.js"></script>-->
+</body>
+</html>

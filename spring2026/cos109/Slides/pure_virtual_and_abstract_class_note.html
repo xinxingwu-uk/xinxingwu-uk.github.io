@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pure Virtual Function and Abstract Class Note</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f8f9fb;
+      color: #222;
+    }
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    }
+    h1, h2, h3 {
+      color: #1f4e79;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 14px;
+      border-radius: 8px;
+      overflow-x: auto;
+      border-left: 4px solid #1f4e79;
+    }
+    code {
+      font-family: Consolas, monospace;
+    }
+    .note {
+      background: #eef6ff;
+      border-left: 5px solid #4a90e2;
+      padding: 12px 16px;
+      margin: 16px 0;
+      border-radius: 8px;
+    }
+    .summary {
+      background: #f0fff4;
+      border-left: 5px solid #2f855a;
+      padding: 12px 16px;
+      margin-top: 24px;
+      border-radius: 8px;
+    }
+    ul {
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Note: Pure Virtual Function and Abstract Class in C++</h1>
+
+    <h2>1. Pure Virtual Function</h2>
+    <p>A <strong>pure virtual function</strong> is a function declared in a base class that has no implementation in that class.</p>
+
+    <pre><code>class Vehicle {
+public:
+    virtual void stop() = 0;
+};</code></pre>
+
+    <p>In this example, <code>stop()</code> is a pure virtual function.</p>
+
+    <h3>What does this mean?</h3>
+    <ul>
+      <li><code>virtual</code> tells C++ to use runtime polymorphism.</li>
+      <li><code>= 0</code> means the function is pure virtual.</li>
+      <li>The base class does not provide the real behavior for this function.</li>
+      <li>Any derived class must write its own version of <code>stop()</code>.</li>
+    </ul>
+
+    <div class="note">
+      A pure virtual function says: <strong>"Every child class must define this function."</strong>
+    </div>
+
+    <h3>Example with derived classes</h3>
+    <pre><code>class Car : public Vehicle {
+public:
+    void stop() override {
+        cout &lt;&lt; "Car stops by pressing the brake pedal." &lt;&lt; endl;
+    }
+};
+
+class Bicycle : public Vehicle {
+public:
+    void stop() override {
+        cout &lt;&lt; "Bicycle stops by squeezing the hand brakes." &lt;&lt; endl;
+    }
+};</code></pre>
+
+    <p>Here, both <code>Car</code> and <code>Bicycle</code> provide their own implementation of <code>stop()</code>.</p>
+
+    <h2>2. Abstract Class</h2>
+    <p>An <strong>abstract class</strong> is a class that cannot be used to create objects directly. It is meant to be a parent class for other classes.</p>
+
+    <pre><code>class Vehicle {
+public:
+    virtual void stop() = 0;
+};</code></pre>
+
+    <p>Because <code>Vehicle</code> contains a pure virtual function, it becomes an abstract class.</p>
+
+    <h3>What does abstract mean here?</h3>
+    <p>It means <code>Vehicle</code> is only a general idea, not a specific object.</p>
+
+    <ul>
+      <li><code>Vehicle</code> is a general category.</li>
+      <li><code>Car</code>, <code>Bicycle</code>, and <code>Truck</code> are specific types of vehicles.</li>
+    </ul>
+
+    <h3>Allowed and not allowed</h3>
+    <pre><code>Vehicle v;   // Not allowed</code></pre>
+
+    <pre><code>Car car;         // Allowed
+Bicycle bike;    // Allowed
+Truck truck;     // Allowed</code></pre>
+
+    <div class="note">
+      An abstract class is used to provide a common structure for child classes.
+    </div>
+
+    <h2>3. Relationship Between Them</h2>
+    <p>A class becomes abstract when it has at least one pure virtual function.</p>
+
+    <pre><code>virtual void stop() = 0;</code></pre>
+
+    <p>So in this project:</p>
+    <ul>
+      <li><code>stop()</code> is the pure virtual function.</li>
+      <li><code>Vehicle</code> is the abstract class.</li>
+    </ul>
+
+    <h2>4. Simple Real-Life Idea</h2>
+    <p>Think of <code>Vehicle</code> as a general idea. A vehicle must stop, but different vehicles stop in different ways.</p>
+
+    <ul>
+      <li>A car stops with a brake pedal.</li>
+      <li>A bicycle stops with hand brakes.</li>
+      <li>A truck may stop with air brakes.</li>
+    </ul>
+
+    <p>So the parent class gives the rule, and the child classes give the details.</p>
+
+    <div class="summary">
+      <h2>5. Quick Summary</h2>
+      <ul>
+        <li>A <strong>pure virtual function</strong> is written like <code>virtual void stop() = 0;</code></li>
+        <li>It forces child classes to implement that function.</li>
+        <li>A class with a pure virtual function becomes an <strong>abstract class</strong>.</li>
+        <li>An abstract class cannot create objects directly.</li>
+        <li>It is used as a base class for derived classes.</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
