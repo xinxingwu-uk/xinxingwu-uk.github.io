@@ -1,0 +1,2992 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Week 12</title>
+    <meta name="description" content="A set of slides for Machine Learning">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/effectsGreen.css">
+	<!--<link rel="stylesheet" href="./css/style.css">-->
+	<!--<link rel="stylesheet" href="./css/effects.css">-->
+	
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+	</script>
+
+	<style>
+	    pre {
+            background-color: black;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+        }
+        code {
+            font-family: "Courier New", monospace;
+            color: #d63384; /* Python-style color */
+        }
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }	
+	</style>
+
+  </head>
+
+  <body onload="startTime()">
+    <div class="reveal" >
+	  <p><img src="images/midwaylogo.png"  align="left" height="6%" width="6%" style="vertical-align:left;margin:-15px 5px"><img src="images/mueagle.png"  color="white" align="left" height="4%" width="4%" style="vertical-align:center;margin:-1% 45%">
+		<div style="color:white;font-size: 20px; vertical-align:left;margin:-1% 0%" align="right" id="realtimeclock"></div></p>
+      <div class="slides">
+
+  <div class="me">Xinxing Wu</div>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown id="cover"><textarea data-template>
+
+<p class='titlep'>&nbsp;</p>
+
+# Heaps
+
+<hr>
+
+<br>
+
+Xinxing Wu
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline
+
+[<p class="hover-underline-animation">Priority Queues (ADT)</p>](#/ch1)
+
+[<p class="hover-underline-animation">Complexity</p>](#/ch2)
+
+[<p class="hover-underline-animation">Heap Sort</p>](#/ch3)
+
+[<p class="hover-underline-animation">Summary</p>](#/ch4)
+
+[<p class="hover-underline-animation">Application</p>](#/ch5)
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+
+## Goal
+
+<div id="shadebox-neon" class="shadebox neon">
+
+You should be able to:
+
+- Explain what a **<spanRED>priority</spanRED> queue** does and its core operations  
+- Store a **binary tree in an array** using <spanGREEN>index formulas</spanGREEN>  
+- Explain **<spanGREEN>full</spanGREEN>** vs **<spanGREEN>complete</spanGREEN>** binary trees (why heaps need “complete”)  
+- Define a **heap** using **<spanGREEN>shape</spanGREEN>** + **<spanGREEN>order</spanGREEN>** properties  
+- Perform **insert** and **remove-root** using **ReheapUp** and **ReheapDown**  
+- Implement a simple **MaxHeap in C++**
+- Explain and trace **HeapSort** ($\mathcal{O}(N \log N)$)
+</div>
+
+</textarea></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch1" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Priority Queues (ADT)</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Priority Queues (ADT)</div>
+  <div class="definition-pro-Y-shadebox">
+  <div style="width: 800px;"></div>
+
+<spanGREEN>Priority</spanGREEN> Queue idea + <spanGREEN>binary</spanGREEN> tree stored in an <spanGREEN>array</spanGREEN>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Regular Queue vs Priority Queue</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+**Regular queue (FIFO):** 
+
+<div id="shadebox">
+
+first in → first out
+</div>
+
+<hr>
+
+**Priority queue:** 
+
+<div id="shadebox">
+
+*highest priority* comes out first
+</div>
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+Examples:
+
+- Hospital triage: most severe gets served first
+- Registration waitlist: <spanGREEN>seniors</spanGREEN> might get priority  
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Priority Queue = “Access rule”</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+In a priority queue:
+- You don’t remove “the <spanRED>oldest</spanRED>” item.
+
+<hr>
+
+- You remove the item with the **<spanGREEN>highest</spanGREEN> priority**.
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+Important:
+- “<spanGREEN>Highest</spanGREEN> priority” depends on the application  
+  (could mean *largest number*, or *longest waiting* - is the same to regular FIFO Queue, etc.) 
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">What operations?</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+A priority queue ADT typically supports:
+- `MakeEmpty()` — clear all items
+- `IsEmpty()` — any items?
+- `IsFull()` — out of space? (array-based)
+- `Enqueue(x)` — add item
+- `Dequeue(x)` — remove the **<spanGREEN>highest-priority</spanGREEN>** item (return it)  
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Key difference from FIFO Queue</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+The **names** of operations look similar to a normal queue…
+
+… but the meaning of `Dequeue()` changes:
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+- FIFO queue: remove the *<spanGREEN>oldest</spanGREEN>*
+
+<hr>
+
+- Priority queue: remove the *<spanGREEN>highest</spanGREEN> priority*
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Example</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+Suppose higher number = higher priority.
+
+We enqueue: `5, 1, 9, 3`
+
+- If we dequeue once → we get `9`  
+- If we dequeue again → we get `5`  
+
+<div id="shadebox">
+
+<spanGREEN>order depends on priority</spanGREEN>, not arrival time
+
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Implementation Choices</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+To implement a priority queue, we want:
+- <spanGREEN>Fast</spanGREEN> insertion (enqueue)
+
+<br>
+<br>
+
+- <spanGREEN>Fast</spanGREEN> removal of <spanRED>highest</spanRED> priority (dequeue)
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Implementation Choices (cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+Possible structures discussed:
+- Unsorted list / array
+- Sorted list / array
+- Linked sorted list
+- Stack
+- Queue
+- Binary search tree
+- Heap (our focus)
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title"><spanBYMix>Unsorted</spanBYMix> list</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+- Enqueue: easy (<spanGREEN>append</spanGREEN>) → fast
+
+<br>
+<br>
+
+- Dequeue: must search for <spanGREEN>max</spanGREEN> → slow
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title"><spanBYMix>Sorted</spanBYMix> list</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+- Enqueue: must insert in <spanGREEN>correct</spanGREEN> place → slower
+
+<br>
+<br>
+
+- Dequeue: remove from <spanGREEN>end/front</spanGREEN> → fast  
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">BST idea</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+Binary search tree can do both in ~log N *if <spanGREEN>balanced</spanGREEN>*…
+
+…but in worst case it can become “<spanRED>skewed</spanRED>” and degrade toward $\mathcal{O}(N))$ (<spanRED>? Why </spanRED>).
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Why heaps?</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+Heaps give:
+
+- Predictable height (because shape is **complete**)
+- Both enqueue and dequeue around **O(log N)**  
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Heap</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+- A heap is a special tree-based data structure used to quickly find the largest or smallest item.
+
+- “heap” means a data structure heap, not the “heap memory” in programming.
+
+
+<div id="shadebox">
+
+A heap is usually a complete binary tree with a special order rule:
+
+- In a max-heap, every parent is greater than or equal to its children.
+- In a min-heap, every parent is less than or equal to its children.
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Heap</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+  
+In a heap, the tree is complete, which is why its height is predictable.
+
+<div id="shadebox">
+
+A complete binary tree means:
+
+- every level is completely filled except possibly the last level
+- the last level is filled from left to right
+
+So the tree never becomes long and skinny like a linked list. It stays compact.
+</div>
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Heap</div>
+  <div class="question-shadebox">
+<div style="width: 800px;"></div>
+  
+- A binary tree is the general idea.
+
+- A BST usually means binary search tree, which is a special kind of binary tree.
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Heap</div>
+  <div class="question-shadebox">
+<div style="width: 800px;"></div>
+
+<div id="roundbox">
+
+A binary tree is a tree data structure where each node has at most two children:
+
+- a left child
+- a right child
+
+That is the only basic rule.
+</div>
+
+- This is a binary tree because every node has no more than two children.
+
+```
+      A
+     / \
+    B   C
+   /
+  D
+```
+
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Heap</div>
+  <div class="question-shadebox">
+<div style="width: 800px;"></div>
+
+<div id="roundbox">
+
+A binary search tree is a binary tree with an extra ordering rule:
+
+- all values in the left subtree are smaller than the node
+- all values in the right subtree are larger than the node
+
+</div>
+
+```
+        8
+      /   \
+     3     10
+    / \      \
+   1   6      14
+      / \     /
+     4   7   13
+```
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Heap</div>
+  <div class="question-shadebox">
+<div style="width: 800px;"></div>
+  
+Why is this a BST?
+
+- left of 8: 3, 1, 6, 4, 7 are all smaller than 8
+- right of 8: 10, 14, 13 are all larger than 8
+- and the same rule also works inside each subtree
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+Important idea:
+
+- Every BST is a binary tree, but not every binary tree is a BST.
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Heap</div>
+  <div class="question-shadebox">
+<div style="width: 800px;"></div>
+  
+Example - a binary tree but not a BST:
+
+```
+      8
+     / \
+   12   3
+```
+
+<hr>
+
+Why not a BST?
+
+- the left child 12 is bigger than 8
+- the right child 3 is smaller than 8
+
+So it breaks the BST ordering rule.
+   </div>
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Heap</div>
+  <div class="question-shadebox">
+<div style="width: 800px;"></div>
+  
+<div id="shadebox">
+
+- Binary tree = structure rule only
+- BST = structure rule + <spanGREEN>ordering</spanGREEN> rule
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Heap</div>
+  <div class="question-shadebox">
+<div style="width: 800px;"></div>
+
+<div  style="font-size: 0.8em; line-height: 1.0;">
+
+| Type                         | Main idea                                   | Rule                                                                                   | Example                                                       |
+| ---------------------------- | ------------------------------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| **Binary Tree**              | General tree with up to 2 children per node | Each node has at most one left child and one right child                               | Any shape is okay as long as no node has more than 2 children |
+| **BST** (Binary Search Tree) | A binary tree for searching                 | Left subtree values < node < right subtree values                                      | Good for searching numbers in order                           |
+| **Full Binary Tree**         | Every node is “all or nothing”              | Each node has either 0 or 2 children                                                   | No node has only one child                                    |
+| **Complete Binary Tree**     | Tree is filled compactly                    | All levels are full except maybe the last, and the last level fills from left to right | Used in heaps                                                 |
+| **Heap**                     | A complete binary tree with priority order  | Max-heap: parent ≥ children, or Min-heap: parent ≤ children                            | Used in priority queues                                       |
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Heap</div>
+  <div class="question-shadebox">
+<div style="width: 800px;"></div>
+  
+Binary Tree - each node has at most 2 children.
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+
+      A
+     / \
+    B   C
+     \
+      D
+```
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Heap</div>
+  <div class="question-shadebox">
+<div style="width: 800px;"></div>
+  
+BST - smaller values go <spanGREEN>left</spanGREEN> and larger values go <spanGREEN>right</spanGREEN>.
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+
+       8
+      / \
+     3   10
+    / \    \
+   1   6    14
+```
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Heap</div>
+  <div class="question-shadebox">
+<div style="width: 800px;"></div>
+
+Full Binary Tree - Every node has either <spanGREEN> 2 </spanGREEN> children or <spanGREEN>0</spanGREEN> children.
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+        1
+       / \
+      2   3
+     / \ / \
+    4  5 6  7
+
+```
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Heap</div>
+  <div class="question-shadebox">
+<div style="width: 800px;"></div>
+  
+Complete Binary Tree - the last level is filled from left to right.
+
+<div  style="font-size: 1.2em; line-height: 1.2;">
+
+```
+
+        1
+       / \
+      2   3
+     / \  /
+    4  5 6
+```
+</div>
+
+
+Not Complete - there is a gap on the left.
+
+<div  style="font-size: 1.2em; line-height: 1.2;">
+
+```
+        1
+       / \
+      2   3
+       \    
+        5
+```
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Heap</div>
+  <div class="question-shadebox">
+<div style="width: 800px;"></div>
+
+Max-heap example:
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+        90
+       /  \
+     70    60
+    / \    /
+   40 50  20
+
+```
+</div>
+
+This is a heap because:
+
+- it is a complete binary tree
+- each parent is bigger than its children
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Heap</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+- BST is about search order
+- Full is about number of children
+- Complete is about shape
+- Heap is about shape + <spanRED>priority</spanRED> order
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+Binary Tree
+├── BST
+├── Full Binary Tree
+├── Complete Binary Tree
+│   └── Heap
+
+```
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Heap</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+  
+So a heap is not a BST.
+
+<div id="shadebox">
+
+       100
+      /   \
+     50    80
+	 
+<div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Heap</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+- Binary tree = at most 2 children
+- BST = left smaller, right bigger
+- Full = 0 or 2 children
+- Complete = packed left to right
+- Heap = complete tree + <spanBYMix>parent priority</spanBYMix> rule
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Heap</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+  
+Complete
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+        10
+      /    \
+     20     30
+    /  \   /
+   40  50 60
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Heap</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Not complete - Because there is a gap on the left.
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+        10
+      /    \
+     20     30
+      \     
+      50
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Heap</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+  
+Why is the height predictable?
+
+- If a heap has $N$ nodes, its height is about $\log_2^N$.
+
+<hr>
+
+That is because each level roughly doubles the number of nodes:
+
+- level 0: 1 node
+- level 1: 2 nodes
+- level 2: 4 nodes
+- level 3: 8 nodes
+
+
+So if you keep adding levels, the number of nodes grows exponentially, which means the number of levels grows logarithmically. That is why heap operations are about $\mathcal{O}(\log N)$.
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Heap</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+  
+Example - an emergency room priority system.
+
+- Patients with more urgent conditions should be treated first.
+- When a new patient arrives, they are inserted into the priority structure.
+- If their case is very urgent, they may move upward in priority.
+- When the doctor is ready, the highest-priority patient is removed first.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Heap</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+  
+- A heap is a special tree-based data structure used to quickly find the largest or smallest item.
+
+- Here, “heap” means a data structure heap, <spanRED>not</spanRED> the “heap memory” in programming.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Heap</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+  
+A heap is usually a complete binary tree with a special order rule:
+
+- In a max-heap, every parent is greater than or equal to its children.
+- In a min-heap, every parent is less than or equal to its children.
+
+So the top element is always easy to access.
+
+Example of a max-heap:
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+        90
+      /    \
+    70      60
+   /  \    /  \
+  40  50  20  10
+```
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Heap</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Why is this a max-heap?
+
+- 90 is bigger than 70 and 60
+- 70 is bigger than 40 and 50
+- 60 is bigger than 20 and 10
+
+
+   </div>
+</div>
+
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Heap</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+  
+Example of a min-heap:
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+        10
+      /    \
+    20      30
+   /  \    /  \
+  40  50  60  70
+```
+</div>
+
+- 10 is smaller than 20 and 30
+- 20 is smaller than 40 and 50
+- 30 is smaller than 60 and 70
+
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Heap</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+  
+<div id="shadebox">
+
+- A heap is not the same as a sorted tree.
+- It only <spanBYMix>guarantees</spanBYMix> the parent-child order, <spanRED>not</spanRED> full left-to-right sorting.
+
+<hr>
+
+
+```
+
+        5
+      /   \
+     9     7
+    / \   /
+   20 15 10
+   
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Heap</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+  
+Example: hospital emergency room
+
+- The most serious patient should be treated first.
+- A max-heap can store patients by priority.
+- The patient with the highest urgency stays at the top.
+- When a new critical patient arrives, they may move upward.
+- When a doctor becomes available, the top patient is removed first.
+
+So the heap helps always find the highest-priority patient quickly.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Heap</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+In programming, heap memory is a region of memory used for dynamic allocation.
+
+- That means memory is created while the program is running, when the program does <spanRED>not</spanRED> know in advance exactly how much space it will need.
+
+<hr>
+
+Examples:
+
+- making a new object
+- creating a linked list node
+- building a tree
+- creating a dynamic array
+- storing data that should live longer than one function call
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Heap</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+- stack memory = small, automatic, temporary memory
+- heap memory = flexible memory you ask for during runtime
+
+<hr>
+
+malloc asks for memory from the heap.
+
+```
+int *p = malloc(sizeof(int));
+*p = 10;
+```
+
+- The object created by new is usually stored in the heap.
+
+```
+int *p = new int(10);
+```
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Heap</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Why is it called “heap memory”?
+
+- It is just a traditional name for that memory area.
+- It is not the same as the heap data structure you learned about in algorithms.
+
+So:
+
+- heap data structure = a special tree for priorities
+- heap memory = an area of RAM used for dynamic objects 
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Heap</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Stack memory: This is a region of memory used by a running program, especially for:
+
+- function calls
+- local variables
+- return addresses
+- parameters
+
+It is called “stack” because it is usually managed in a stack-like LIFO way.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Heap</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+
+| Term                     | Meaning                                                                         |
+| ------------------------ | ------------------------------------------------------------------------------- |
+| **Stack data structure** | A LIFO structure used in algorithms                                             |
+| **Stack memory**         | A memory area used for calls and local variables, usually managed in LIFO order |
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+- heap data structure and heap memory are mostly just same word, different meanings
+- stack data structure and stack memory are different, but more closely connected, because stack memory really follows stack behavior
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Heap</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Think of a stack of plates.
+
+- You put a new plate on top.
+- You remove the top plate first.
+
+That is like the stack data structure.
+
+<hr>
+
+Now think of function calls in a program:
+
+- the newest function call goes on top
+- the most recent one finishes first
+
+That is like stack memory.
+
+So “stack” in these two cases is not exactly the same thing, but the memory version is based on the same idea.
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Why store a tree in an array?</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+Pointer-based trees store:
+- node + left pointer + right pointer
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+Array-based (“implicit links”) stores:
+- Just the values in level-order
+- Parent/child relationships computed by index formulas  
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Level-order storage rule</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+Store nodes:
+- level by level
+- left to right within each level
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+So the array becomes like:
+- index <spanGREEN>0</spanGREEN>: root
+
+<br>
+<br>
+
+- index <spanGREEN>1,2</spanGREEN>: root’s children
+
+<br>
+<br>
+
+- index <spanGREEN>3,4,5,6</spanGREEN>: next level
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">0-based indexing</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+If a node is at index `i`:
+- Left child index = `2*i + 1`
+- Right child index = `2*i + 2`
+- Parent index = `(i - 1) / 2` (integer division) 
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">index example</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+Array (indices shown):
+- `A[0]` = root  
+- children of `A[0]` → `A[1]`, `A[2]`
+- children of `A[1]` → `A[3]`, `A[4]`
+- children of `A[2]` → `A[5]`, `A[6]`
+
+This matches the “complete binary tree layout.”
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">A node is a leaf</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+How do we know if a node is a leaf?
+
+A node at index `i` is a **leaf** if:
+
+- Its left child index `2*i + 1` is **<spanRED>outside</spanRED>** the current size
+
+If `2*i + 1 > lastIndex`, then `i` has <spanGREEN>no</spanGREEN> children → leaf.
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Full binary tree</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+ 
+- All leaves on the <spanGREEN>same</spanGREEN> level
+
+<br>
+<br>
+
+- Every non-leaf has <spanGREEN>exactly two</spanGREEN> children
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Complete binary tree</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+- Full through <spanGREEN>next-to-last level</spanGREEN>
+
+<br>
+<br>
+
+- Last level filled **<spanGREEN>left to right</spanGREEN>**
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Why “complete” matters</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+If the tree is complete:
+- Nodes occupy **contiguous** array positions
+- No “holes” in the middle
+- Index formulas work cleanly
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+If not complete:
+- You may need “dummy values” to represent missing nodes  
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Heap = a special binary tree</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+A heap is a binary tree with two properties:
+
+- **Shape property:** tree is **<spanGREEN>complete</spanGREEN>**  
+
+<br>
+<br>
+
+- **Order property:** parent <spanGREEN>dominates</spanGREEN> children  
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+Two versions:
+- **Max heap:** parent $\geqslant$ children (root is maximum)
+- **Min heap:** parent $\leqslant$ children (root is minimum)
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Max heap</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+Max heap order property:
+For every non-leaf node at index `i`:
+- `A[i] >= A[leftChild]`
+- `A[i] >= A[rightChild]` (if right exists)
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">What heaps are great at</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+In a max heap:
+
+<div id="shadebox">
+
+- The **largest value is always at the root**
+- so “get max” is fast (peek root)
+</div>
+
+<br>
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+But heaps are <spanRED>NOT</spanRED> good for:
+
+<div id="shadebox">
+
+- searching for an arbitrary element quickly (like BST)
+</div> 
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Heap shape is fixed</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+Two heaps can have:
+- The same shape (complete tree)
+- The same set of values
+- Different internal arrangement
+
+As long as the heap order property holds
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Heap shape is fixed, but different internal arrangement</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 1000px;"></div>
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+        100
+       /   \
+     90     80
+    /  \   /  \
+   70  60 50  40
+```
+
+</div>
+
+vs
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+        100
+       /   \
+     80     90
+    /  \   /  \
+   70  50 60  40
+```
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Two fundamental heap repair operations</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+When the heap rule is <spanRED>broken</spanRED>, we “fix” it using:
+
+- **ReheapDown(root, bottom)**  
+  Used when the *root* might be <spanGREEN>too small</spanGREEN> (after remove-root)
+
+- **ReheapUp(root, bottom)**  
+  Used when the *new bottom element* might be <spanBYMix>too large</spanBYMix> (after insert)
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Remove Root</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+ 
+Removing the max (root)
+To remove highest priority (root):
+- Save `A[0]` (this is the max)
+- Move the **last element** into `A[0]`
+- Reduce size by 1
+- **ReheapDown** <spanGREEN>from root to restore heap order</spanGREEN>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Remove Root</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+ 
+Why move the last element to the root?
+
+<div id="shadebox">
+Because the heap must remain <spanRED>complete</spanRED>:
+
+- Removing root leaves a hole
+- You must fill that hole
+- Using the last element preserves the complete shape
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">ReheapDown idea</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+At a node:
+- compare the node with its children
+- if a child is bigger, swap with the bigger child
+- keep going down until:
+  - you reach a leaf, OR
+  - parent is already $\geqslant$ both children
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">ReheapDown (simple pseudocode)</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+Given array A and heap size n:
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+i = root
+
+while i has at least a left child:
+    biggerChild = index of larger child
+
+    if A[i] < A[biggerChild]:
+        swap(A[i], A[biggerChild])
+        i = biggerChild
+    else:
+        stop
+
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">heap tree</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Start heap array: [50, 40, 45, 29, 3]
+
+In a heap array:
+
+- index 0 is the root
+- index 1 is the root’s left child
+- index 2 is the root’s right child
+- index 3 is the left child of 40
+- index 4 is the right child of 40
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">heap tree</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+        50
+       /  \
+     40    45
+    /  \
+   29   3
+```
+</div>
+
+After removing the root 50. Move the last element 3 to the root. Array becomes: [3, 40, 45, 29]
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+        3
+       / \
+     40   45
+    /
+   29
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">heap tree</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Now do ReheapDown: Compare 3 with its children 40 and 45.
+
+- Since this is a max heap, the larger child is 45, so swap 3 and 45.
+
+- Array becomes: [45, 40, 3, 29]
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+        45
+       /  \
+     40    3
+    /
+   29
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Quick Trace</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+Start heap array:
+`[50, 40, 45, 29, 3]`
+
+Remove root (50):
+- move last (3) to root → `[3, 40, 45, 29]`
+- ReheapDown:
+  - compare 3 with (40,45) → swap with 45 → `[45, 40, 3, 29]`
+  - now 3 has no children → done
+
+Heap restored
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Inserting a new value</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+To insert in a heap:
+- Put the new value at the **next available slot** (<spanGREEN>end of array</spanGREEN>)
+- This preserves completeness (shape property)
+- But order might be broken
+- <spanGREEN>Fix</spanGREEN> using **ReheapUp** 
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">ReheapUp idea</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+At the new node:
+- compare with its parent
+- if the new node is bigger, swap upward
+- repeat until:
+  - you reach the root, OR
+  - parent is already $\geqslant$ new node
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">ReheapUp (simple pseudocode)</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+i = bottom
+
+while i > 0:
+    p = (i - 1) / 2
+
+    if A[p] < A[i]:
+        swap(A[p], A[i])
+        i = p
+    else:
+        stop
+```
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Quick Trace</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+Heap:
+`[45, 40, 3, 29]`
+
+Insert `50`:
+- append → `[45, 40, 3, 29, 50]`
+- ReheapUp:
+  - parent of index 4 is 1 → compare 40 vs 50 → swap
+    `[45, 50, 3, 29, 40]`
+  - parent of index 1 is 0 → compare 45 vs 50 → swap
+    `[50, 45, 3, 29, 40]`
+Done.
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">C++ MaxHeap</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+Goal: beginner-friendly heap with `int`.
+
+Operations:
+- `push(x)`  (insert)
+- `top()`    (peek max)
+- `pop()`    (remove max)
+
+We’ll store the heap in a `vector<int>`.
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+<div style="width: 800px;"></div>
+
+### MaxHeap class (part 1)
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class MaxHeap {
+private:
+    vector<int> a; // heap array (0-based)
+
+    int parent(int i) { return (i - 1) / 2; }
+    int left(int i)   { return 2 * i + 1; }
+    int right(int i)  { return 2 * i + 2; }
+
+    void reheapUp(int i) {
+        while (i > 0) {
+            int p = parent(i);
+            if (a[p] < a[i]) {
+                int temp = a[p];
+                a[p] = a[i];
+                a[i] = temp;
+                i = p;
+            } else {
+                break;
+            }
+        }
+    }
+
+```
+
+</div>
+
+
+
+<div id="shadebox">
+
+### MaxHeap class (part 2)
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+    void reheapDown(int i) {
+        int n = (int)a.size();
+
+        while (true) {
+            int L = left(i);
+            int R = right(i);
+
+            // if no left child, it's a leaf
+            if (L >= n) break;
+
+            // pick bigger child
+            int bigger = L;
+            if (R < n && a[R] > a[L]) bigger = R;
+
+            // if order violated, swap and continue
+            if (a[i] < a[bigger]) {
+                int temp = a[i];
+                a[i] = a[bigger];
+                a[bigger] = temp;
+                i = bigger;
+            } else {
+                break;
+            }
+        }
+    }
+
+public:
+    bool empty() const { return a.empty(); }
+    int size() const { return (int)a.size(); }
+
+
+```
+
+</div>
+
+
+
+<div id="shadebox">
+
+### push, top, pop (part 3)
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+    void push(int x) {
+        a.push_back(x);           // put at bottom
+        reheapUp((int)a.size()-1);
+    }
+
+    int top() const {
+        // assume not empty
+        return a[0];
+    }
+
+    int pop() {
+        // remove and return max
+        int n = (int)a.size();
+        int result = a[0];
+
+        a[0] = a[n - 1];   // move last to root
+        a.pop_back();      // shrink
+
+        if (!a.empty()) reheapDown(0);
+        return result;
+    }
+};
+
+
+```
+
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">C++ Test Program</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+ 
+```
+int main() {
+    MaxHeap h;
+
+    h.push(5);
+    h.push(1);
+    h.push(9);
+    h.push(3);
+
+    cout << "Top = " << h.top() << "\n"; // 9
+
+    while (!h.empty()) {
+        cout << h.pop() << " ";
+    }
+    cout << "\n";
+    // Expected: 9 5 3 1
+    return 0;
+}
+```
+
+</div>
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch2" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Complexity</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Complexity</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Heap rules + insert/remove + ReheapUp/ReheapDown
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Why heaps are O(log N)</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+A heap is complete, so its height is small:
+
+- height is about $\log2(N)$
+
+Insert uses ReheapUp:
+
+- moves up at most one level each swap → $\leqslant$ height swaps
+
+Remove uses ReheapDown:
+
+- moves down at most one level each swap → $\leqslant$ height swaps
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Typical heap costs</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+For a max heap with $N$ items:
+
+- Peek max (root): $\mathcal{O}(1)$
+
+- Insert (enqueue): $\mathcal{O}(\log N)$
+
+- Remove max (dequeue): $\mathcal{O}(\log N)$
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Compare Priority Queue implementations</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+ 
+- Sorted list: dequeue fast, enqueue slow
+
+- Unsorted list: enqueue fast, dequeue slow
+
+- BST: good average, can degrade
+
+- Heap: good and stable for enqueue/dequeue
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch3" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Heap Sort</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Heap Sort</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+HeapSort (build heap + sort loop) + practice
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Idea of Heap Sort</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+Heap sort is like “smart selection sort”:
+
+- in selection sort, finding the max each time costs $\mathcal{O}(N)$
+
+- in a heap, max is always at root (easy), and fixing heap costs $\mathcal{O}(\log N)$
+
+So heap sort becomes $\mathcal{O}(N \log N)$.
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">max-heap → ascending order</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+Remember:
+
+- root has largest
+- we can place largest at the end
+
+Plan:
+
+- Build a max heap from the array
+- Repeat:
+
+	- swap root with last element in heap
+
+	- reduce heap size
+
+	- ReheapDown at root
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Step 1: BuildHeap</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+To build a heap from array values[0..n-1]:
+
+- find the first non-leaf index
+
+- call ReheapDown on each node from there down to 0
+
+First non-leaf index:
+
+- n/2 - 1 (0-based)
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">BuildHeap pseudocode</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+ 
+```
+for i = n/2 - 1 down to 0:
+    ReheapDown(values, i, n-1)
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Example array</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+Original values: [25, 17, 36, 2, 3, 100, 1, 19, 7]
+
+After heapify steps (shown in the chapter):
+
+- after index = 3: [25, 17, 36, 19, 3, 100, 1, 2, 7]
+
+- after index = 2: [25, 17, 100, 19, 3, 36, 1, 2, 7]
+
+- after index = 1: [25, 19, 100, 17, 3, 36, 1, 2, 7]
+
+- after index = 0: [100, 19, 36, 17, 3, 25, 1, 2, 7]
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Step 2: Sort loop</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+After we have a max heap:
+
+- swap values[0] with values[last]
+
+- the last element is now correctly placed (largest)
+
+- heap size shrinks by 1
+
+- ReheapDown to fix the heap in the remaining portion
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Sort loop pseudocode</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+for end = n-1 down to 1:
+    swap(values[0], values[end])
+    ReheapDown(values, 0, end-1)
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">HeapSort complexity</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+- BuildHeap (heapify): about $\mathcal{O}(N)$
+
+- Then N removals, each ReheapDown is $\mathcal{O}(\log N)$
+
+Total:
+
+- $\mathcal{O}(N \log N)$ time
+
+- can be done in-place (no extra big array) 
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Example: HeapSort for int</div>
+  <div class="definition-pro-Y-shadebox">
+  
+ReheapDown for array segment. This version treats a[0...end] as a heap.
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+void reheapDown(vector<int> &a, int root, int end) {
+    int i = root;
+
+    while (true) {
+        int L = 2 * i + 1;
+        int R = 2 * i + 2;
+        if (L > end) break; // no children
+
+        int bigger = L;
+        if (R <= end && a[R] > a[L]) bigger = R;
+
+        if (a[i] < a[bigger]) {
+            int temp = a[i];
+            a[i] = a[bigger];
+            a[bigger] = temp;
+            i = bigger;
+        } else {
+            break;
+        }
+    }
+}
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Example: HeapSort for int (cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+C++ BuildHeap + HeapSort
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+
+```
+void heapSort(vector<int> &a) {
+    int n = (int)a.size();
+
+    // 1) BuildHeap (heapify)
+    for (int i = n/2 - 1; i >= 0; i--) {
+        reheapDown(a, i, n - 1);
+    }
+
+    // 2) Sort (move max to the end)
+    for (int end = n - 1; end >= 1; end--) {
+        int temp = a[0];
+        a[0] = a[end];
+        a[end] = temp;
+
+        reheapDown(a, 0, end - 1);
+    }
+}
+
+```
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">C++ test for HeapSort</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+int main() {
+    vector<int> a = {25, 17, 36, 2, 3, 100, 1, 19, 7};
+
+    heapSort(a);
+
+    for (int x : a) cout << x << " ";
+    cout << "\n";
+    // Expected ascending:
+    // 1 2 3 7 17 19 25 36 100
+    return 0;
+}
+```
+</div>
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch4" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Summary</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<iframe
+    src="./Discussion9.html"
+    style="width:100%;max-width:1200px;height:620px;border:0;border-radius:14px;overflow:hidden;display:block;margin:30px auto;"
+    allow="autoplay"
+    sandbox="allow-scripts allow-same-origin">
+</iframe>
+
+
+
+<iframe
+  style="width:100%;max-width:1200px;height:700px;border:0;border-radius:16px;overflow:hidden;display:block;margin:0 auto;box-shadow:0 18px 50px rgba(0,0,0,.35);background:rgba(0,0,0,.06);"
+  src="./files/12_Heaps.pdf#page=1&zoom=page-width"
+  allow="fullscreen"
+  loading="lazy">
+</iframe>
+
+
+
+<iframe
+  style="width:100%;max-width:1200px;height:700px;border:0;border-radius:12px;overflow:hidden;display:block;margin:0 auto;"
+  srcdoc='<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+  body{margin:0;padding:14px;font-family:Arial,Helvetica,sans-serif;background:#32a881;}
+  .wrap{width:100%;max-width:1200px;margin:0 auto;}
+  .bar{display:flex;gap:10px;align-items:center;margin-bottom:10px;}
+  button{padding:8px 12px;border:1px solid #ccc;border-radius:8px;background:#fff;cursor:pointer;}
+  .label{margin-left:auto;font-size:14px;color:#333;}
+  .box{width:100%;height:650px;border:1px solid rgba(0,0,0,.18);border-radius:12px;overflow:auto;background:#fafafa;box-shadow:0 10px 25px rgba(0,0,0,.10);}
+  img{display:block;width:auto;height:700px;max-width:none;max-height:none;transform-origin:top left;transform:scale(1);}
+</style>
+</head>
+<body>
+  <div class="wrap" id="root">
+    <div class="bar">
+      <button id="zin" type="button">Zoom +</button>
+      <button id="zout" type="button">Zoom -</button>
+      <button id="zreset" type="button">Reset (100%)</button>
+      <span class="label" id="zl">100%</span>
+    </div>
+
+    <div class="box" id="box">
+      <img id="img" src="./images/MindMap9.png" alt="Large image" />
+    </div>
+  </div>
+
+<script>
+(function(){
+  var zoom=1, step=0.2, min=0.2, max=6;
+  var img=document.getElementById("img");
+  var label=document.getElementById("zl");
+  var box=document.getElementById("box");
+
+  function apply(){
+    img.style.transform="scale("+zoom+")";
+    label.textContent=Math.round(zoom*100)+"%";
+  }
+
+  document.getElementById("zin").addEventListener("click", function(){
+    zoom=Math.min(max, zoom+step); apply();
+  });
+  document.getElementById("zout").addEventListener("click", function(){
+    zoom=Math.max(min, zoom-step); apply();
+  });
+  document.getElementById("zreset").addEventListener("click", function(){
+    zoom=1; apply();
+  });
+
+  box.addEventListener("wheel", function(e){
+    if(!e.ctrlKey) return;
+    e.preventDefault();
+    zoom += (e.deltaY < 0) ? step : -step;
+    zoom = Math.max(min, Math.min(max, zoom));
+    apply();
+  }, {passive:false});
+
+  apply();
+})();
+</script>
+</body>
+</html>'>
+</iframe>
+
+
+
+## Review
+
+<video controls>
+  <source src="./files/The_Explainer_Heaps.mp4" type="video/mp4">
+</video>
+
+</textarea></section>
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch5" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Application</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Exercise</div>
+  <div class="definition-com-shadebox">
+<div style="width: 800px;"></div>
+
+If a node is at index i = 6:
+
+- left child index = ?
+
+- right child index = ?
+
+- parent index = ?  <button type="button" class="reveal-btn" data-answer="answer-q1">Show Answer</button>
+<div id="answer-q1" class="answer-box">
+<b>Answer:</b>For i = 6: left = 2*6 + 1 = 13; right = 2*6 + 2 = 14; parent = (6 - 1)/2 = 2 (integer division)
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+Heap array:
+[50, 40, 45, 10, 20]
+
+Insert 60:
+
+- show array after append
+
+- show swaps until heap restored <button type="button" class="reveal-btn" data-answer="answer-q2">Show Answer</button>
+<div id="answer-q2" class="answer-box">
+<b>Answer:</b>Append: [50, 40, 45, 10, 20, 60]; ReheapUp: parent of index 5 is 2 → 45 < 60 swap [50, 40, 60, 10, 20, 45]; parent of index 2 is 0 → 50 < 60 swap [60, 40, 50, 10, 20, 45]
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Exercise</div>
+  <div class="definition-com-shadebox">
+<div style="width: 800px;"></div>
+
+Heap array:
+[90, 70, 80, 10, 60, 20]
+
+Remove root:
+
+- move last to root
+
+- reheapDown until fixed <button type="button" class="reveal-btn" data-answer="answer-q3">Show Answer</button>
+<div id="answer-q3" class="answer-box">
+<b>Answer:</b>Remove 90: move last (20) to root → [20, 70, 80, 10, 60]; ReheapDown: compare 20 with (70,80) → swap with 80 [80, 70, 20, 10, 60]; now 20 has no children (end) → done
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-shakeflash-container">
+  <div class="definition-shakeflash-title">Common mistakes</div>
+  <div class="definition-shakeflash-shadebox">
+
+<div id="shadebox">
+
+Mistake 1: mixing 1-based and 0-based formulas
+
+Our formulas here are 0-based:
+
+- left = 2*i + 1
+
+- right = 2*i + 2
+
+- parent = (i - 1)/2
+
+If you accidentally use 1-based formulas, your heap breaks immediately.
+
+  </div>
+   </div>
+</div>
+
+
+
+<div class="definition-shakeflash-container">
+  <div class="definition-shakeflash-title">Common mistakes (cont.)</div>
+  <div class="definition-shakeflash-shadebox">
+
+<div id="shadebox">
+
+Mistake 2: forgetting to shrink size before ReheapDown
+
+When popping:
+
+- replace root with last
+
+- remove last
+
+- then reheapDown
+
+If you reheapDown while “old last” is still counted, you may compare with garbage.
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-shakeflash-container">
+  <div class="definition-shakeflash-title">Common mistakes (cont.)</div>
+  <div class="definition-shakeflash-shadebox">
+<div id="shadebox">
+
+Mistake 3: choosing the wrong child (must pick bigger child for max-heap)
+
+In a max heap, when bubbling down:
+
+- swap with the larger child; Otherwise you can still violate the heap rule.
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Lab</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Lab: Emergency Room Triage (Max-Heap Priority Queue)
+
+Goal: Build a Max-Heap priority queue to simulate a hospital triage line:
+
+- Higher severity number = higher priority
+- If severities tie, earlier arrival wins (smaller arrival id)
+
+<hr>
+
+You will:
+
+- Implement a simple Patient struct
+- Implement a MaxHeap with push, top, pop
+- Run a small scenario and print the order patients are treated
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Lab (cont.)</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Requirements
+
+<hr style="border: none; border-top: 1.5px solid red;">
+
+Patient data. Each patient has:
+
+- string name
+
+- int severity (1–10)
+
+- int arrivalId (0,1,2,... assigned in arrival order)
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Lab (cont.)</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Requirements
+
+<hr style="border: none; border-top: 1.5px solid red;">
+
+Priority rule. Patient A has higher priority than Patient B if:
+
+- A.severity > B.severity, OR
+
+- A.severity == B.severity AND A.arrivalId < B.arrivalId
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Lab (cont.)</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Requirements - Program behavior
+
+<hr style="border: none; border-top: 1.5px solid red;">
+
+Add these patients in this order (arrival order):
+
+- Alice severity 3
+- Bob severity 9
+- Cindy severity 9
+- David severity 5
+- Eva severity 1
+
+Then repeatedly treat (pop) until empty, printing each treated patient:
+
+- expected treated order should reflect priority rule
+
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+struct Patient {
+    string name;
+    int severity;   // higher = more urgent
+    int arrivalId;  // smaller = arrived earlier
+};
+
+// Return true if x should be ABOVE y in a max-heap
+bool higherPriority(const Patient &x, const Patient &y) {
+    if (x.severity != y.severity) {
+        return x.severity > y.severity;          // bigger severity first
+    }
+    return x.arrivalId < y.arrivalId;            // earlier arrival first
+}
+
+class PatientMaxHeap {
+private:
+    vector<Patient> a; // heap array
+
+    int parent(int i) { return (i - 1) / 2; }
+    int left(int i)   { return 2 * i + 1; }
+    int right(int i)  { return 2 * i + 2; }
+
+    void swapPatients(int i, int j) {
+        Patient temp = a[i];
+        a[i] = a[j];
+        a[j] = temp;
+    }
+
+    // Fix heap upward after insert
+    void reheapUp(int i) {
+        while (i > 0) {
+            int p = parent(i);
+            if (higherPriority(a[i], a[p])) {
+                swapPatients(i, p);
+                i = p;
+            } else {
+                break;
+            }
+        }
+    }
+
+    // Fix heap downward after remove-root
+    void reheapDown(int i) {
+        int n = (int)a.size();
+
+        while (true) {
+            int L = left(i);
+            int R = right(i);
+
+            if (L >= n) break; // no children => leaf
+
+            // choose child with higher priority
+            int bestChild = L;
+            if (R < n && higherPriority(a[R], a[L])) {
+                bestChild = R;
+            }
+
+            // if child outranks parent, swap
+            if (higherPriority(a[bestChild], a[i])) {
+                swapPatients(bestChild, i);
+                i = bestChild;
+            } else {
+                break;
+            }
+        }
+    }
+
+public:
+    bool empty() const { return a.empty(); }
+
+    void push(const Patient &p) {
+        a.push_back(p);
+        reheapUp((int)a.size() - 1);
+    }
+
+    Patient top() const {
+        return a[0]; // assume not empty
+    }
+
+    Patient pop() {
+        // remove and return highest priority
+        Patient result = a[0];
+
+        int lastIndex = (int)a.size() - 1;
+        a[0] = a[lastIndex];
+        a.pop_back();
+
+        if (!a.empty()) reheapDown(0);
+        return result;
+    }
+};
+
+int main() {
+    PatientMaxHeap pq;
+
+    int arrival = 0;
+
+    // arrivals (in order)
+    pq.push({"Alice", 3, arrival++});
+    pq.push({"Bob", 9, arrival++});
+    pq.push({"Cindy", 9, arrival++});
+    pq.push({"David", 5, arrival++});
+    pq.push({"Eva", 1, arrival++});
+
+    cout << "Treatment order:\n";
+    while (!pq.empty()) {
+        Patient p = pq.pop();
+        cout << p.name
+             << " (severity " << p.severity
+             << ", arrival " << p.arrivalId << ")\n";
+    }
+
+    return 0;
+}
+
+
+```
+
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Expected Output</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Bob (9, arrival 1) and Cindy (9, arrival 2) both have severity 9 → Bob first because he arrived earlier
+
+Then next highest is David (5), then Alice (3), then Eva (1)
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Expected Output (cont.)</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+So the treatment order should be:
+
+- 1.Bob
+
+- 2.Cindy
+
+- 3.David
+
+- 4.Alice
+
+- 5.Eva
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Homework</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Task Scheduler Using a Max-Heap Priority Queue
+
+Learning goals
+
+- Practice heap array index formulas
+
+- Implement push (ReheapUp) and pop (ReheapDown)
+
+- Apply heaps to a real “scheduler” problem
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Homework (cont.)</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Problem. You are building a simple task scheduler. Each task has:
+
+- string title
+
+- int priority (1–10, higher = more important)
+
+- int taskId (0,1,2,… assigned by arrival order)
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Homework (cont.)</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Priority rule (Max-Heap). Task A should be treated as “higher” than Task B if:
+
+- A.priority > B.priority, OR
+
+- A.priority == B.priority AND A.taskId < B.taskId (earlier task wins)
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Homework (cont.)</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Requirements
+
+<hr style="border: none; border-top: 1.5px solid red;">
+
+Implement a MaxHeap (array/vector) for tasks (no STL priority_queue)
+
+Support operations:
+
+- addTask(title, priority) (push)
+
+- peekNext() (top)
+
+- runNext() (pop and return)
+
+- isEmpty()
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Homework (cont.)</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Requirements
+
+<hr style="border: none; border-top: 1.5px solid red;">
+
+In main(), add the following tasks in this order:
+
+- "Email students", priority 4
+
+- "Fix server bug", priority 10
+
+- "Grade homework", priority 7
+
+- "Team meeting", priority 7
+
+- "Backup files", priority 2
+
+Print tasks in the order they are executed (run until empty)
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+struct Task {
+    string title;
+    int priority;  // higher = more important
+    int taskId;    // smaller = earlier arrival
+};
+
+// Return true if x should be ABOVE y in the max-heap
+bool higherPriority(const Task &x, const Task &y) {
+    if (x.priority != y.priority) {
+        return x.priority > y.priority;
+    }
+    return x.taskId < y.taskId; // earlier first if tie
+}
+
+class TaskMaxHeap {
+private:
+    vector<Task> a;
+    int nextId;
+
+    int parent(int i) { return (i - 1) / 2; }
+    int left(int i)   { return 2 * i + 1; }
+    int right(int i)  { return 2 * i + 2; }
+
+    void swapTasks(int i, int j) {
+        Task temp = a[i];
+        a[i] = a[j];
+        a[j] = temp;
+    }
+
+    void reheapUp(int i) {
+        while (i > 0) {
+            int p = parent(i);
+            if (higherPriority(a[i], a[p])) {
+                swapTasks(i, p);
+                i = p;
+            } else {
+                break;
+            }
+        }
+    }
+
+    void reheapDown(int i) {
+        int n = (int)a.size();
+
+        while (true) {
+            int L = left(i);
+            int R = right(i);
+
+            if (L >= n) break; // leaf
+
+            // choose better child
+            int best = L;
+            if (R < n && higherPriority(a[R], a[L])) {
+                best = R;
+            }
+
+            // if child outranks parent, swap
+            if (higherPriority(a[best], a[i])) {
+                swapTasks(best, i);
+                i = best;
+            } else {
+                break;
+            }
+        }
+    }
+
+public:
+    TaskMaxHeap() : nextId(0) {}
+
+    bool isEmpty() const {
+        return a.empty();
+    }
+
+    void addTask(const string &title, int priority) {
+        Task t;
+        t.title = title;
+        t.priority = priority;
+        t.taskId = nextId++;
+
+        a.push_back(t);
+        reheapUp((int)a.size() - 1);
+    }
+
+    Task peekNext() const {
+        return a[0]; // assume not empty
+    }
+
+    Task runNext() {
+        Task result = a[0];
+
+        int last = (int)a.size() - 1;
+        a[0] = a[last];
+        a.pop_back();
+
+        if (!a.empty()) reheapDown(0);
+        return result;
+    }
+};
+
+int main() {
+    TaskMaxHeap scheduler;
+
+    scheduler.addTask("Email students", 4);
+    scheduler.addTask("Fix server bug", 10);
+    scheduler.addTask("Grade homework", 7);
+    scheduler.addTask("Team meeting", 7);
+    scheduler.addTask("Backup files", 2);
+
+    cout << "Execution order:\n";
+    while (!scheduler.isEmpty()) {
+        Task t = scheduler.runNext();
+        cout << "- " << t.title
+             << " (priority " << t.priority
+             << ", id " << t.taskId << ")\n";
+    }
+
+    return 0;
+}
+```
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Homework (cont.)</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+
+```
+
+Execution order:
+- Fix server bug (priority 10, id 1)
+- Grade homework (priority 7, id 2)
+- Team meeting (priority 7, id 3)
+- Email students (priority 4, id 0)
+- Backup files (priority 2, id 4)
+
+```
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+</div>
+	
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/settings.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/effects.js"></script>
+<!--<script src="settings.js"></script>-->
+<!--<script src="effects.js"></script>-->
+</body>
+</html>

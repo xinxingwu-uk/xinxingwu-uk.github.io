@@ -1,0 +1,2204 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Week 13</title>
+    <meta name="description" content="A set of slides for Machine Learning">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/effectsGreen.css">
+	<!--<link rel="stylesheet" href="./css/style.css">-->
+	<!--<link rel="stylesheet" href="./css/effects.css">-->
+	
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+	</script>
+
+	<style>
+	    pre {
+            background-color: black;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+        }
+        code {
+            font-family: "Courier New", monospace;
+            color: #d63384; /* Python-style color */
+        }
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }	
+	</style>
+
+  </head>
+
+  <body onload="startTime()">
+    <div class="reveal" >
+	  <p><img src="images/midwaylogo.png"  align="left" height="6%" width="6%" style="vertical-align:left;margin:-15px 5px"><img src="images/mueagle.png"  color="white" align="left" height="4%" width="4%" style="vertical-align:center;margin:-1% 45%">
+		<div style="color:white;font-size: 20px; vertical-align:left;margin:-1% 0%" align="right" id="realtimeclock"></div></p>
+      <div class="slides">
+
+  <div class="me">Xinxing Wu</div>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown id="cover"><textarea data-template>
+
+<p class='titlep'>&nbsp;</p>
+
+# Hashing
+
+<hr>
+
+<br>
+
+Xinxing Wu
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline
+
+[<p class="hover-underline-animation">Sets</p>](#/ch1)
+
+[<p class="hover-underline-animation">Implementing Sets + Maps</p>](#/ch2)
+
+[<p class="hover-underline-animation">Hashing</p>](#/ch3)
+
+[<p class="hover-underline-animation">Summary</p>](#/ch4)
+
+[<p class="hover-underline-animation">Application</p>](#/ch5)
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+
+## Goal
+
+<div id="shadebox-neon" class="shadebox neon">
+
+By the end, you can:
+
+- Explain **Set** and **Map** (logical level)
+- Implement a **Set** (explicit + implicit)
+- Explain **Map** as **key → value**
+- Understand **hashing** and why it can be <spanGREEN>fast</spanGREEN>
+- Define: **hash function, collision, linear probing, clustering, rehashing**
+- Write a small **hash table** in C++
+</div>
+
+</textarea></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch1" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Sets</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Sets</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+Set ADT + operations + tiny C++  
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Warm-up: Why new containers?</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+We already know:
+- **Array / vector** (fast index, but not “search by value”)
+- **Linked list** (easy insert/delete, but slow search)
+- **Tree** (sorted, search is fast: `$\mathcal{O}(\log n)$`)
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+Now we want:
+- **Set:** keep unique items
+- **Map:** key-value lookup (dictionary)
+- **Hash table:** *average* `$\mathcal{O}(1)$` lookup
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+“Find the value 42.” in a[5]
+
+Now the computer does not know where 42 is. It may need to check:
+
+- a[0]
+- a[1]
+- a[2]
+...
+
+until it finds 42 or reaches the end. That is usually $\mathcal{O}(n)$.
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+```
+[10, 3, 11, 5, 1]
+```
+
+If you ask for index 3, answer is immediate: 5.
+
+If you ask, “where is value 5?”, the computer may scan:
+
+```
+10 → 3 → 11 → 5
+```
+
+So arrays/vectors are:
+
+- fast for search by index
+- not naturally fast for search by value
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+A set is for storing unique values only.
+
+```
+{3, 7, 9}
+```
+
+- No duplicates allowed.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+A map stores key-value pairs.
+
+```
+{"name" : "Tom", "age" : 20}
+```
+
+- You search by key, not usually by value.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+A hash table is used inside many sets and maps. It turns a key into a location using a hash function, so lookup is average $\mathcal{O}(1)$.
+
+<hr>
+
+- Array/vector: fast by position
+- Set: unique items
+- Map: key → value
+- Hash table: makes lookup very fast on average
+
+<hr>
+
+Note -  “Tree search is $\mathcal{O}(\log n)$” is true mainly for a balanced BST, not every tree. A bad BST can become $\mathcal{O}(n)$.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Vocabulary </div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+- **Set**: a collection of **unique** items (no duplicates)
+- **Map**: a collection of **(key, value)** pairs
+- **Key**: the “name” we search by
+- **Hash function**: converts a key → array index
+- **Collision**: two keys produce the same index
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note </div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+- Set: a collection of unique items
+
+```
+{ "apple", "banana", "orange" }
+```
+
+- If you try to add "apple" again, the set still keeps only one "apple".
+
+- A guest list where each person appears only once.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note </div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+- Map: a collection of (key, value) pairs
+
+```
+{
+  "Ava" -> 90,
+  "Ben" -> 85,
+  "Cara" -> 92
+}
+```
+
+Here:
+
+- key = student's name
+- value = student's score
+
+- A dictionary or phone book.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note </div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Key: the “name” we search by
+
+Using the map above:
+
+```
+"Ben"
+```
+
+is the key. We use "Ben" to find the value:
+
+```
+"Ben" -> 85
+```
+
+- key = "Ben", value = 85
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note </div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+- Hash function: converts a key → array index. Suppose we have an array with 10 positions:
+
+```
+index: 0 1 2 3 4 5 6 7 8 9
+```
+
+A simple hash function might be:
+
+```
+hash(key) = length of key % 10
+```
+
+Example:
+
+- key = "cat"
+- length = 3
+- hash("cat") = 3 % 10 = 3
+
+So "cat" goes to index 3.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note </div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Collision: two keys produce the same index. Using the same hash function:
+
+```
+hash(key) = length of key % 10
+```
+
+- "dog" → length 3 → index 3
+- "cat" → length 3 → index 3
+
+Both go to the same index.
+
+That is a collision
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note </div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+- Set: {red, blue, green}
+- Map: {name -> Tom, age -> 20}
+- Key: "name"
+- Hash function: "name" → index 4
+- Collision: "cat" and "dog" both go to index 3
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note </div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+- certutil.exe is a powerful Windows command-line utility for managing Certification Authority (CA) services, dumping configuration information, and managing certificate stores.
+
+<hr>
+
+- On Windows, certutil is a command-line utility mainly used for certificate-related tasks, and one of its documented options is -hashfile, which generates and displays a cryptographic hash for a file. Microsoft documents the syntax as:
+
+```
+certutil [options] -hashfile InFile [HashAlgorithm]
+```
+
+<hr>
+
+For an MD5 example, open Command Prompt and run:
+
+```
+certutil -hashfile "C:\Users\YourName\Downloads\example.zip" MD5
+```
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note </div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+```
+certutil -hashfile "C:\Users\YourName\Downloads\example.zip" MD5
+```
+
+That tells certutil to compute the MD5 hash of example.zip. Or If your file is in the current folder, you can use a shorter version:
+
+```
+certutil -hashfile example.zip MD5
+```
+
+<hr>
+
+The SHA256 version looks like this:
+
+```
+certutil -hashfile "C:\Users\YourName\Downloads\example.zip" SHA256
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Set ADT</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+A **Set** is:
+- **Unordered**
+- **No duplicates**
+- Same “type” of elements (int, char, string, ...)
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+Examples:
+- Set of student IDs: `{1001, 1020, 1150}`
+- Set of letters: `{A, D, Q}`
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Special sets</div>
+  <div class="definition-shadebox">
+
+- **Universal set**: “all possible values” (depends on the type)
+- **Empty set**: `{ }` (no items)
+   </div>
+</div>
+
+
+
+> Think: “what can we do with a set?”
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Core Set operations</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Typical operations:
+- `MakeEmpty()`
+- `IsEmpty()`
+- `IsFull()` (if fixed-size)
+- `Store(x)` (insert)
+- `Delete(x)` (remove)
+- `Contains(x)` (membership test)
+- `Cardinality()` (how many items?)
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Math-style operations</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Given sets A and B:
+- **Union:** `A ∪ B` (in A or B)
+- **Intersection:** `A ∩ B` (in both)
+- **Difference:** `A − B` (in A but not B)
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example sets</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Let:
+- `A = {A, B, D, Q, G, S}`
+- `B = {A, D, S, P, Z}`
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+Compute:
+- `A ∪ B = {A, B, D, Q, G, S, P, Z}`
+- `A ∩ B = {A, D, S}`
+- `A − B = {B, Q, G}`
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Set rule</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Set rule: duplicates do nothing
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+If `A = {2, 5, 7}`
+- `Store(5)` changes nothing  
+Still `{2,5,7}`
+
+This property is useful in real programs:
+- “unique words in a paragraph”
+- “unique student IDs in a file”
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">“Set” idea using vector</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+This is NOT the fastest way yet.
+But it is easiest to understand.
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+```cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+bool contains(const vector<int>& s, int x) {
+    for (int v : s) {
+        if (v == x) return true;
+    }
+    return false;
+}
+
+void store(vector<int>& s, int x) {
+    if (!contains(s, x)) s.push_back(x); // avoid duplicates
+}
+
+void removeValue(vector<int>& s, int x) {
+    for (int i = 0; i < (int)s.size(); i++) {
+        if (s[i] == x) {
+            // delete by swapping with last (fast)
+            s[i] = s.back();
+            s.pop_back();
+            return;
+        }
+    }
+}
+
+int main() {
+    vector<int> S;
+    store(S, 5);
+    store(S, 2);
+    store(S, 5); // duplicate ignored
+    removeValue(S, 2);
+
+    cout << "Size = " << S.size() << "\n";
+    for (int v : S) cout << v << " ";
+    cout << "\n";
+    return 0;
+}
+```
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Complexity</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Using the vector approach:
+
+- contains: scans → $\mathcal{O}(n)$
+
+- store: includes contains → $\mathcal{O}(n)$
+
+- remove: scans → $\mathcal{O}(n)$
+
+So we want a better method for faster membership.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Practice</div>
+  <div class="definition-com-shadebox">
+<div style="width: 800px;"></div>
+
+If S = {4, 7, 9}
+
+- After store(7), what is S?
+
+- After remove(4), what is S?  <button type="button" class="reveal-btn" data-answer="answer-q1">Show Answer</button>
+<div id="answer-q1" class="answer-box">
+<b>Answer:</b>Still {4,7,9} (duplicate ignored); {7,9}
+</div>
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch2" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Implementing Sets + Maps</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Implementing Sets + Maps</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+Set implementations + Map ADT + tiny C++
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Two main Set implementations</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Explicit representation (bit vector / boolean array)
+
+- Track presence/absence for every possible value
+
+Implicit representation (store actual items in a list)
+
+- Store only elements that exist
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Explicit set</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+If the universe is small (like integers 0..9):
+
+- Create an array present[10]
+
+- present[x] = true means “x is in the set”
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+Example (universe 0..9):
+
+- Set {2, 5, 7} becomes:
+
+	- present[2]=true, present[5]=true, present[7]=true
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Explicit set (cont.)</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Operations become simple:
+
+- Contains(x) → check boolean → $\mathcal{O}(1)$
+
+- Store(x) → set boolean true → $\mathcal{O}(1)$
+
+- Delete(x) → set boolean false → $\mathcal{O}(1)$
+
+But:
+
+- Uses memory for the whole universe size $U$
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Explicit set (cont.)</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+```
+#include <iostream>
+using namespace std;
+
+class TinySet {
+private:
+    static const int MAXV = 10;
+    bool present[MAXV];
+
+public:
+    TinySet() { makeEmpty(); }
+
+    void makeEmpty() {
+        for (int i = 0; i < MAXV; i++) present[i] = false;
+    }
+
+    bool contains(int x) const {
+        if (x < 0 || x >= MAXV) return false;
+        return present[x];
+    }
+
+    void store(int x) {
+        if (x < 0 || x >= MAXV) return;
+        present[x] = true;
+    }
+
+    void removeValue(int x) {
+        if (x < 0 || x >= MAXV) return;
+        present[x] = false;
+    }
+
+    int cardinality() const {
+        int count = 0;
+        for (int i = 0; i < MAXV; i++) {
+            if (present[i]) count++;
+        }
+        return count;
+    }
+
+    void print() const {
+        cout << "{ ";
+        for (int i = 0; i < MAXV; i++) {
+            if (present[i]) cout << i << " ";
+        }
+        cout << "}\n";
+    }
+};
+
+int main() {
+    TinySet s;
+    s.store(2);
+    s.store(5);
+    s.store(5);
+    s.store(7);
+    s.print();
+
+    cout << "contains(5)? " << s.contains(5) << "\n";
+    cout << "size = " << s.cardinality() << "\n";
+
+    s.removeValue(5);
+    s.print();
+    return 0;
+}
+```
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Explicit set (cont.)</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Explicit set: Union / Intersection / Difference
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+If both sets use the same universe array:
+
+- Union: C[i] = A[i] OR B[i]
+
+- Intersection: C[i] = A[i] AND B[i]
+
+- Difference: C[i] = A[i] AND (NOT B[i])
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Explicit set (cont.)</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+```
+TinySet setUnion(const TinySet& A, const TinySet& B) {
+    TinySet C;
+    for (int i = 0; i < 10; i++) {
+        if (A.contains(i) || B.contains(i)) C.store(i);
+    }
+    return C;
+}
+
+TinySet setIntersection(const TinySet& A, const TinySet& B) {
+    TinySet C;
+    for (int i = 0; i < 10; i++) {
+        if (A.contains(i) && B.contains(i)) C.store(i);
+    }
+    return C;
+}
+
+TinySet setDifference(const TinySet& A, const TinySet& B) {
+    TinySet C;
+    for (int i = 0; i < 10; i++) {
+        if (A.contains(i) && !B.contains(i)) C.store(i);
+    }
+    return C;
+}
+```
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Explicit set (cont.)</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Use explicit sets when:
+
+- Universe is small and known
+
+- Example: uppercase letters (26)
+
+- Example: digits (10)
+
+- Example: days of week (7)
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+Avoid when:
+
+- Universe is huge (all integers)
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Implicit set</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+We store only the elements that exist:
+
+- Empty set = empty list
+
+- Store(x): insert x if not already there
+
+- Delete(x): remove x if there
+
+- Contains(x): search the list
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Implicit set (cont.)</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Good when:
+
+- Universe is large or unknown
+
+- The set is small compared to the universe
+
+Tradeoff:
+
+- Contains(x) is usually O(n) unless using other structures
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Implicit set (cont.)</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+- Implicit set using vector
+
+```
+class ImplicitSet {
+private:
+    vector<int> items;
+
+public:
+    bool contains(int x) const {
+        for (int v : items) if (v == x) return true;
+        return false;
+    }
+
+    void store(int x) {
+        if (!contains(x)) items.push_back(x);
+    }
+
+    void removeValue(int x) {
+        for (int i = 0; i < (int)items.size(); i++) {
+            if (items[i] == x) {
+                items[i] = items.back();
+                items.pop_back();
+                return;
+            }
+        }
+    }
+
+    int cardinality() const { return (int)items.size(); }
+};
+```
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Implicit set (cont.)</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Big-$\mathcal{O}$ comparison
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+Let n = number of items in set, U = universe size
+
+Explicit set (bool array):
+
+- Contains/Store/Delete: $\mathcal{O}(1)$
+
+- Space: $\mathcal{O}(U)$
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Implicit set (cont.)</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Big-$\mathcal{O}$ comparison
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+Let n = number of items in set, U = universe size
+
+Implicit set (vector/list):
+
+- Contains/Store/Delete: $\mathcal{O}(n)$
+
+- Space: $\mathcal{O}(n)$
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Map ADT (key → value)</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+A Map stores pairs:
+
+- key → value
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+Examples:
+
+- ("Alice") → 859-1111
+
+- 101 → "Bob"
+
+- "CS101" → "Room 204"
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Map operations</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Common operations:
+
+- MakeEmpty()
+
+- IsEmpty()
+
+- IsFull() (if fixed-size)
+
+- Store(key, value)
+
+- Delete(key)
+
+- Find(key, found) → returns value if found
+
+- Size()
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Set vs Map</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+- Set: only stores “keys” (unique items)
+
+- Map: stores “key + value”
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Vector of pairs</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+```
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+struct Entry {
+    string key;
+    string value;
+};
+
+class SimpleMap {
+private:
+    vector<Entry> data;
+
+public:
+    void store(const string& key, const string& value) {
+        for (int i = 0; i < (int)data.size(); i++) {
+            if (data[i].key == key) {
+                data[i].value = value; // update
+                return;
+            }
+        }
+        Entry e;
+        e.key = key;
+        e.value = value;
+        data.push_back(e);
+    }
+
+    bool findValue(const string& key, string& outValue) const {
+        for (const Entry& e : data) {
+            if (e.key == key) {
+                outValue = e.value;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void removeKey(const string& key) {
+        for (int i = 0; i < (int)data.size(); i++) {
+            if (data[i].key == key) {
+                data[i] = data.back();
+                data.pop_back();
+                return;
+            }
+        }
+    }
+};
+
+int main() {
+    SimpleMap phone;
+    phone.store("Alice", "859-1111");
+    phone.store("Bob", "502-2222");
+    phone.store("Alice", "859-9999"); // update
+
+    string v;
+    if (phone.findValue("Alice", v)) cout << "Alice: " << v << "\n";
+    else cout << "Not found\n";
+
+    return 0;
+}
+
+```
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Map complexity</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Using vector:
+
+- Store/Find/Delete often $\mathcal{O}(n)$
+
+We want faster!
+Two popular strategies:
+
+- Use a tree ($\mathcal{O}(\log n)$)
+
+- Use hashing (average $\mathcal{O}(1)$)
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Real C++ standard containers</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+- std::set<T> implements a set
+
+- std::map<K,V> implements a map
+
+- std::unordered_set<T> hash-based set
+
+- std::unordered_map<K,V> hash-based map
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch3" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Hashing</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Hashing</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+ 
+Hashing + collisions + linear probing + rehashing + chaining + tiny C++
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Why hashing?</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+We want search faster than:
+
+- List: $\mathcal{O}(n)$
+
+- Tree: $\mathcal{O}(\log n)$
+
+Goal: Average $\mathcal{O}(1)$ search (very fast)
+   </div>
+</div>
+
+
+
+> Hashing: Use a hash function to convert a key into an array index.
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Hash function</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+A hash function takes a key and returns an index:
+
+- index = h(key)
+
+Example (table size = 10):
+
+- h(key) = key % 10
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Employee ID example</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Suppose employee IDs are like:
+
+- 53374, 81235, ...
+
+If we choose table size = 100:
+
+- h(key) = key % 100 (last two digits)
+
+- 53374 → 74
+
+- 81235 → 35
+
+This is fast… but can cause collisions.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Collision</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+A collision happens when:
+
+- Two different keys map to the same index
+
+Example size=10:
+
+- h(21)=1
+
+- h(31)=1
+
+Collision at index 1.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Handle collisions</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Open addressing
+
+- Keep everything inside the array
+
+- Example: linear probing
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+Chaining
+
+- Each array cell stores a list (bucket)
+
+- Collisions go into the list
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Linear probing</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+If index is taken:
+
+- Try next index
+
+- Keep moving until you find an empty spot
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+Example size=10, insert 21 then 31:
+
+- 21 → index 1 (empty) store at 1
+
+- 31 → index 1 (occupied) try 2 (empty) store at 2
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Clustering</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Linear probing makes clusters:
+
+- A block of filled cells grows
+
+- New keys keep joining the block
+
+- Searching/inserting can take longer
+
+This is called primary clustering.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Rehashing</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+If the table is crowded, performance drops.
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+Rehashing idea:
+
+- Create a bigger table (often ~2x)
+
+- Re-insert all items using the new table size
+
+Key concept:
+
+- Hash results change because h(key) depends on table size.
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Load factor</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+Load factor tells how full the table is:
+
+$$
+\alpha = (number of stored items) / (table size)
+$$
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+Example:
+
+- 7 items in a table of size 10 → $\alpha$=0.7
+
+Many implementations rehash around $\alpha$≈0.7 (rule of thumb).
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Design choices</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+We use:
+
+- fixed array size M
+
+- empty cell marker = -1
+
+- deleted marker = -2 (lazy deletion)
+
+- hash function h(k)=k%M
+
+- collision handling = linear probing
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Hash table with linear probing</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+```
+#include <iostream>
+using namespace std;
+
+class IntHashTable {
+private:
+    static const int M = 11;   // small prime size
+    int table[M];
+
+    int hashFunc(int key) const {
+        if (key < 0) key = -key;
+        return key % M;
+    }
+
+public:
+    IntHashTable() {
+        for (int i = 0; i < M; i++) table[i] = -1; // -1 means empty
+    }
+
+    bool insert(int key) {
+        int idx = hashFunc(key);
+        for (int step = 0; step < M; step++) {
+            int pos = (idx + step) % M;
+            if (table[pos] == -1 || table[pos] == -2) {
+                table[pos] = key;
+                return true;
+            }
+            if (table[pos] == key) return false; // no duplicates (set behavior)
+        }
+        return false; // table full
+    }
+
+    bool contains(int key) const {
+        int idx = hashFunc(key);
+        for (int step = 0; step < M; step++) {
+            int pos = (idx + step) % M;
+            if (table[pos] == -1) return false;   // hit empty => not found
+            if (table[pos] == key) return true;
+        }
+        return false;
+    }
+
+    bool removeKey(int key) {
+        int idx = hashFunc(key);
+        for (int step = 0; step < M; step++) {
+            int pos = (idx + step) % M;
+            if (table[pos] == -1) return false; // not found
+            if (table[pos] == key) {
+                table[pos] = -2; // mark deleted
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void print() const {
+        for (int i = 0; i < M; i++) {
+            cout << i << ": " << table[i] << "\n";
+        }
+    }
+};
+
+int main() {
+    IntHashTable ht;
+    ht.insert(21);
+    ht.insert(31); // collision with 21 if M=10; with M=11 they differ but still okay
+    ht.insert(42);
+
+    cout << "contains(31)? " << ht.contains(31) << "\n";
+    ht.removeKey(31);
+    cout << "contains(31)? " << ht.contains(31) << "\n";
+
+    ht.print();
+    return 0;
+}
+```
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Notes</div>
+  <div class="question-shadebox">
+<div style="width: 800px;"></div>
+
+Why do we need “-2” deleted?
+
+<hr style="border: none; border-top: 2px dashed green;">
+
+If we delete by making it empty (-1):
+
+- search might stop too early
+
+- because contains stops when it sees an empty slot
+
+So we use:
+
+- -1 = never used
+
+- -2 = used before but deleted (keep probing!)
+   </div>
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">string hash</div>
+  <div class="question-shadebox">
+<div style="width: 800px;"></div>
+
+We can turn a string into a number:
+
+- add up character codes
+
+- then mod by table size
+
+Example:
+
+- "cat" → 'c'+'a'+'t'
+
+This is NOT perfect, but good for learning.
+   </div>
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">string hash function</div>
+  <div class="question-shadebox">
+<div style="width: 800px;"></div>
+
+```
+int hashString(const string& s, int M) {
+    int sum = 0;
+    for (char c : s) sum += (int)c;
+    if (sum < 0) sum = -sum;
+    return sum % M;
+}
+```
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Chaining</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+At each index, store a list (bucket):
+
+- table[index] is a vector (or linked list)
+
+- collisions just go into the bucket
+
+Pros:
+
+- simpler delete (remove from bucket)
+
+- less clustering
+
+Cons:
+
+- uses extra memory for lists
+
+- lookup is $\mathcal{O}(1)$ average but bucket can grow
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">chaining sketch</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+
+```
+#include <vector>
+
+static const int M = 11;
+vector<int> buckets[M];
+
+int h(int key) { return (key < 0 ? -key : key) % M; }
+
+void insert(int key) {
+    int idx = h(key);
+    // avoid duplicates
+    for (int v : buckets[idx]) if (v == key) return;
+    buckets[idx].push_back(key);
+}
+
+```
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Practice 1 (linear probing trace)</div>
+  <div class="definition-com-shadebox">
+<div style="width: 800px;"></div>
+
+Table size M=7, hash h(k)=k%7
+Insert in order:
+
+- 10, 24, 17, 31
+
+Questions:
+
+- Where does each key go?
+
+- Any collisions? <button type="button" class="reveal-btn" data-answer="answer-q2">Show Answer</button>
+<div id="answer-q2" class="answer-box">
+<b>Answer:</b>10 % 7 = 3 → put at 3; 24 % 7 = 3 → collision → try 4 → put at 4; 17 % 7 = 3 → collision → try 4 (full) → try 5 → put at 5; 31 % 7 = 3 → collision → try 4 (full) → try 5 (full) → try 6 → put at 6. Cluster formed at 3-6.
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Practice 2 (rehash thinking)</div>
+  <div class="definition-com-shadebox">
+<div style="width: 800px;"></div>
+
+If your hash table size is 10 and you stored 8 items:
+
+- What is load factor $\alpha$?
+
+- Is it time to rehash (likely)? <button type="button" class="reveal-btn" data-answer="answer-q3">Show Answer</button>
+<div id="answer-q3" class="answer-box">
+<b>Answer:</b>$\alpha$ = 8/10 = 0.8; Usually yes (performance can drop)
+</div>
+
+
+   </div>
+</div>
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch4" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Summary</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<iframe
+    src="./Discussion10.html"
+    style="width:100%;max-width:1200px;height:620px;border:0;border-radius:14px;overflow:hidden;display:block;margin:30px auto;"
+    allow="autoplay"
+    sandbox="allow-scripts allow-same-origin">
+</iframe>
+
+
+
+<iframe
+  style="width:100%;max-width:1200px;height:700px;border:0;border-radius:16px;overflow:hidden;display:block;margin:0 auto;box-shadow:0 18px 50px rgba(0,0,0,.35);background:rgba(0,0,0,.06);"
+  src="./files/13_Hashing.pdf#page=1&zoom=page-width"
+  allow="fullscreen"
+  loading="lazy">
+</iframe>
+
+
+
+<iframe
+  style="width:100%;max-width:1200px;height:700px;border:0;border-radius:12px;overflow:hidden;display:block;margin:0 auto;"
+  srcdoc='<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+  body{margin:0;padding:14px;font-family:Arial,Helvetica,sans-serif;background:#32a881;}
+  .wrap{width:100%;max-width:1200px;margin:0 auto;}
+  .bar{display:flex;gap:10px;align-items:center;margin-bottom:10px;}
+  button{padding:8px 12px;border:1px solid #ccc;border-radius:8px;background:#fff;cursor:pointer;}
+  .label{margin-left:auto;font-size:14px;color:#333;}
+  .box{width:100%;height:650px;border:1px solid rgba(0,0,0,.18);border-radius:12px;overflow:auto;background:#fafafa;box-shadow:0 10px 25px rgba(0,0,0,.10);}
+  img{display:block;width:auto;height:700px;max-width:none;max-height:none;transform-origin:top left;transform:scale(1);}
+</style>
+</head>
+<body>
+  <div class="wrap" id="root">
+    <div class="bar">
+      <button id="zin" type="button">Zoom +</button>
+      <button id="zout" type="button">Zoom -</button>
+      <button id="zreset" type="button">Reset (100%)</button>
+      <span class="label" id="zl">100%</span>
+    </div>
+
+    <div class="box" id="box">
+      <img id="img" src="./images/MindMap10.png" alt="Large image" />
+    </div>
+  </div>
+
+<script>
+(function(){
+  var zoom=1, step=0.2, min=0.2, max=6;
+  var img=document.getElementById("img");
+  var label=document.getElementById("zl");
+  var box=document.getElementById("box");
+
+  function apply(){
+    img.style.transform="scale("+zoom+")";
+    label.textContent=Math.round(zoom*100)+"%";
+  }
+
+  document.getElementById("zin").addEventListener("click", function(){
+    zoom=Math.min(max, zoom+step); apply();
+  });
+  document.getElementById("zout").addEventListener("click", function(){
+    zoom=Math.max(min, zoom-step); apply();
+  });
+  document.getElementById("zreset").addEventListener("click", function(){
+    zoom=1; apply();
+  });
+
+  box.addEventListener("wheel", function(e){
+    if(!e.ctrlKey) return;
+    e.preventDefault();
+    zoom += (e.deltaY < 0) ? step : -step;
+    zoom = Math.max(min, Math.min(max, zoom));
+    apply();
+  }, {passive:false});
+
+  apply();
+})();
+</script>
+</body>
+</html>'>
+</iframe>
+
+
+
+## Review
+
+<video controls>
+  <source src="./files/Hashing_Explained.mp4" type="video/mp4">
+</video>
+
+
+</textarea></section>
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch5" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Application</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Lab</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+Scenario: Student ID Check-in
+
+You are building a tiny check-in system for a class event.
+
+<div id="shadebox-glass" class="shadebox glass">
+
+- Each student has a unique student ID (an integer).
+
+- When a student checks in, you insert their ID.
+
+- If they try to check in again, you should report duplicate.
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Lab (cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+Scenario: Student ID Check-in
+
+You are building a tiny check-in system for a class event.
+
+<div id="shadebox-glass" class="shadebox glass">
+
+- You must support:
+
+	- checkIn(id) → insert if not already present
+
+	- isCheckedIn(id) → true/false
+
+	- cancelCheckIn(id) → remove the ID
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Lab (cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+- Use a hash table with linear probing (open addressing).
+
+- Use:
+
+	- EMPTY = -1
+
+	- DELETED = -2
+
+- Hash function:
+
+	- h(id) = id % tableSize
+
+- If the table becomes too full (load factor > 0.7), rehash into a new table of double size + 1.
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Lab (cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+Requirements
+
+<div id="shadebox-glass" class="shadebox glass">
+
+- Complete the hash table class skeleton:
+
+	- insert
+
+	- contains
+
+	- removeKey
+
+	- rehashIfNeeded
+
+- Test it with this sequence:
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Test sequence</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+- Start table size = 11
+
+- Check in: 21, 32, 43, 54, 65, 76, 87
+
+- Try duplicate: check in 43 again
+
+- Cancel: 54
+
+- Check: isCheckedIn(54) and isCheckedIn(65)
+
+- Check in: 98, 109 (this may trigger rehash depending on size)
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Test sequence (cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+Expected behavior:
+
+<div id="shadebox-glass" class="shadebox glass">
+
+- Duplicate is detected
+
+- Removed element is not found
+
+- No “search stops early” bug after deletion
+</div>
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+using namespace std;
+
+class HashSetInt {
+private:
+    int* table;
+    int capacity;
+    int count;
+
+    static const int EMPTY = -1;
+    static const int DELETED = -2;
+
+    int hashFunc(int key) const {
+        if (key < 0) key = -key;
+        return key % capacity;
+    }
+
+    double loadFactor() const {
+        return (double)count / capacity;
+    }
+
+    // Insert into a specific table (used during rehash)
+    bool insertInto(int* target, int targetCap, int key) {
+        int idx = (key < 0 ? -key : key) % targetCap;
+
+        for (int step = 0; step < targetCap; step++) {
+            int pos = (idx + step) % targetCap;
+            if (target[pos] == EMPTY || target[pos] == DELETED) {
+                target[pos] = key;
+                return true;
+            }
+            if (target[pos] == key) return false; // duplicate
+        }
+        return false; // full
+    }
+
+    void rehashIfNeeded() {
+        if (loadFactor() <= 0.7) return;
+
+        int newCap = capacity * 2 + 1;
+        int* newTable = new int[newCap];
+
+        for (int i = 0; i < newCap; i++) newTable[i] = EMPTY;
+
+        // Re-insert only valid keys
+        for (int i = 0; i < capacity; i++) {
+            if (table[i] != EMPTY && table[i] != DELETED) {
+                insertInto(newTable, newCap, table[i]);
+            }
+        }
+
+        delete[] table;
+        table = newTable;
+        capacity = newCap;
+
+        // count stays the same (same # of stored real keys)
+    }
+
+public:
+    HashSetInt(int cap = 11) {
+        capacity = cap;
+        count = 0;
+        table = new int[capacity];
+        for (int i = 0; i < capacity; i++) table[i] = EMPTY;
+    }
+
+    ~HashSetInt() {
+        delete[] table;
+    }
+
+    bool contains(int key) const {
+        int idx = hashFunc(key);
+
+        for (int step = 0; step < capacity; step++) {
+            int pos = (idx + step) % capacity;
+
+            if (table[pos] == EMPTY) {
+                // EMPTY means: no key was ever placed later in this probe chain
+                return false;
+            }
+            if (table[pos] == key) return true;
+
+            // If DELETED or some other key, continue probing
+        }
+        return false;
+    }
+
+    bool insert(int key) {
+        // Avoid duplicates
+        if (contains(key)) return false;
+
+        int idx = hashFunc(key);
+
+        for (int step = 0; step < capacity; step++) {
+            int pos = (idx + step) % capacity;
+
+            if (table[pos] == EMPTY || table[pos] == DELETED) {
+                table[pos] = key;
+                count++;
+                rehashIfNeeded();
+                return true;
+            }
+        }
+
+        // Table is full; force rehash and try again
+        rehashIfNeeded();
+        // If still full (rare in this lab), try once more after rehash
+        if (loadFactor() > 0.9) return false;
+        return insert(key);
+    }
+
+    bool removeKey(int key) {
+        int idx = hashFunc(key);
+
+        for (int step = 0; step < capacity; step++) {
+            int pos = (idx + step) % capacity;
+
+            if (table[pos] == EMPTY) return false; // not found
+            if (table[pos] == key) {
+                table[pos] = DELETED;
+                count--;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void printTable() const {
+        cout << "Capacity=" << capacity << ", Count=" << count
+             << ", LoadFactor=" << loadFactor() << "\n";
+        for (int i = 0; i < capacity; i++) {
+            cout << i << ": ";
+            if (table[i] == EMPTY) cout << "EMPTY";
+            else if (table[i] == DELETED) cout << "DELETED";
+            else cout << table[i];
+            cout << "\n";
+        }
+    }
+};
+
+int main() {
+    HashSetInt checkedIn(11);
+
+    int ids1[] = {21, 32, 43, 54, 65, 76, 87};
+    for (int x : ids1) {
+        cout << "Check in " << x << ": " << (checkedIn.insert(x) ? "OK" : "DUPLICATE") << "\n";
+    }
+
+    cout << "Check in 43 again: " << (checkedIn.insert(43) ? "OK" : "DUPLICATE") << "\n";
+
+    cout << "Cancel 54: " << (checkedIn.removeKey(54) ? "REMOVED" : "NOT FOUND") << "\n";
+
+    cout << "isCheckedIn(54): " << (checkedIn.contains(54) ? "YES" : "NO") << "\n";
+    cout << "isCheckedIn(65): " << (checkedIn.contains(65) ? "YES" : "NO") << "\n";
+
+    cout << "Check in 98: " << (checkedIn.insert(98) ? "OK" : "DUPLICATE") << "\n";
+    cout << "Check in 109: " << (checkedIn.insert(109) ? "OK" : "DUPLICATE") << "\n";
+
+    cout << "\n--- Final Table ---\n";
+    checkedIn.printTable();
+
+    return 0;
+}
+
+```
+
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Notes</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+- Collisions happen naturally (same id % size)
+
+- Linear probing finds the “next free spot”
+
+- DELETED marker is required so search does not stop too early
+
+- Rehashing keeps performance good when the table is too full
+   </div>
+</div>
+
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+</div>
+	
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/settings.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/effects.js"></script>
+<!--<script src="settings.js"></script>-->
+<!--<script src="effects.js"></script>-->
+</body>
+</html>

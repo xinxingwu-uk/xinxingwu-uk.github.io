@@ -1,0 +1,1414 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Midterm Exam</title>
+    <meta name="description" content="A set of slides for Machine Learning">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/   dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/effectsGreen.css">
+	<!--<link rel="stylesheet" href="./css/style.css">-->
+	<!--<link rel="stylesheet" href="./css/effects.css">-->
+	
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+	</script>
+
+	<style>
+	    pre {
+            background-color: black;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+        }
+        code {
+            font-family: "Courier New", monospace;
+            color: #d63384; /* Python-style color */
+        }
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }	
+	</style>
+
+  </head>
+
+  <body onload="startTime()">
+    <div class="reveal" >
+	  <p><img src="images/midwaylogo.png"  align="left" height="6%" width="6%" style="vertical-align:left;margin:-15px 5px"><img src="images/mueagle.png"  color="white" align="left" height="4%" width="4%" style="vertical-align:center;margin:-1% 45%">
+		<div style="color:white;font-size: 20px; vertical-align:left;margin:-1% 0%" align="right" id="realtimeclock"></div></p>
+      <div class="slides">
+
+  <div class="me">Xinxing Wu</div>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown id="cover"><textarea data-template>
+<p class='titlep'>&nbsp;</p>
+
+# Outline of Midterm Exam
+
+<hr>
+
+<br>
+
+Xinxing Wu
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline
+
+[<p class="hover-underline-animation">Exam Structure</p>](#/ch1)
+
+[<p class="hover-underline-animation">Outline</p>](#/ch2)
+
+[<p class="hover-underline-animation">Midterm Exam Example</p>](#/ch3)
+
+</textarea></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch1" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Exam Structure</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Exam Structure</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Based on the learning of Week 1-7
+  
+- Part A: 10 True/False
+
+- Part B: 10 Multiple choice
+
+From Labs 1-4
+
+- Part C: 2 Coding Questions
+</div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch2" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Outline</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div id="rainbow-type"> Outline </div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Software Engineering & Process</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Software engineering is about building software correctly, on time, and within budget using a defined process (life-cycle activities and models like Waterfall and Spiral).
+  
+  </p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Requirements vs Specification</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Requirements describe what the user wants; specifications precisely define inputs, outputs, errors, assumptions, and tests—without a clear spec, correctness cannot be verified.
+  </p>
+</div>
+</div>
+
+
+
+<div id="rainbow-type"> Outline (Cont.) </div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Data Abstraction & Encapsulation</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Data abstraction separates what a data type does from how it is stored, while encapsulation hides internal details and forces controlled access.
+  
+  </p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Abstract Data Types (ADT)</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">An ADT is defined by its values and operations, not its implementation, and can be viewed from application, logical, and implementation perspectives.
+  </p>
+</div>
+
+</div>
+</div>
+
+
+<div id="rainbow-type"> Outline (Cont.) </div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Lists (Unsorted vs Sorted)</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Lists are linear structures identified by keys; unsorted lists have no order, while sorted lists maintain order and require special handling for insert, delete, and search.
+  
+  </p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Stacks</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">A stack follows LIFO, uses operations like Push, Pop, and Top, tracks state with a top index, and must handle overflow and underflow safely.
+  </p>
+</div>
+
+</div>
+</div>
+
+
+
+<div id="rainbow-type"> Outline (Cont.) </div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Queues</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">A queue follows FIFO, models waiting-line behavior, and contrasts with stacks in access order and use cases.
+  
+  </p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Templates (Generics)</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">C++ templates allow one data structure or function to work with multiple data types, with template instantiation occurring at compile time.
+  </p>
+</div>
+
+</div>
+</div>
+</textarea></section>
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch3" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Midterm Exam Example</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+
+<p class='titlep'>&nbsp;</p>
+<p class='titlep'>&nbsp;</p>
+
+## 10 True/False
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">True/False</div>
+  <div class="definition-com-shadebox">
+
+Software engineering focuses only on writing correct code, not on budget or schedule. <button type="button" class="reveal-btn" data-answer="answer-q1">Show Answer</button>
+<div id="answer-q1" class="answer-box">
+<b>Answer:</b>False
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+A software process describes how a team works, not just what code they write. <button type="button" class="reveal-btn" data-answer="answer-q2">Show Answer</button>
+<div id="answer-q2" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+In the Waterfall model, each phase is completed before moving to the next phase. <button type="button" class="reveal-btn" data-answer="answer-q3">Show Answer</button>
+<div id="answer-q3" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">True/False</div>
+  <div class="definition-com-shadebox">
+
+Data abstraction means exposing how data is stored in memory. <button type="button" class="reveal-btn" data-answer="answer-q4">Show Answer</button>
+<div id="answer-q4" class="answer-box">
+<b>Answer:</b>False
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+An Abstract Data Type (ADT) is defined by its operations and values, not by its implementation. <button type="button" class="reveal-btn" data-answer="answer-q5">Show Answer</button>
+<div id="answer-q5" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">True/False</div>
+  <div class="definition-com-shadebox">
+
+In an unsorted list, items must follow a specific order rule.  <button type="button" class="reveal-btn" data-answer="answer-q6">Show Answer</button>
+<div id="answer-q6" class="answer-box">
+<b>Answer:</b>False
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+In a sorted list, PutItem must place the new item in the correct position to maintain<button type="button" class="reveal-btn" data-answer="answer-q7">Show Answer</button>
+<div id="answer-q7" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+A stack follows the FIFO (First In, First Out) rule. <button type="button" class="reveal-btn" data-answer="answer-q8">Show Answer</button>
+<div id="answer-q8" class="answer-box">
+<b>Answer:</b>False
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">True/False</div>
+  <div class="definition-com-shadebox">
+
+Stack overflow occurs when attempting to pop an item from an empty stack.  <button type="button" class="reveal-btn" data-answer="answer-q9">Show Answer</button>
+<div id="answer-q9" class="answer-box">
+<b>Answer:</b>False
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+C++ templates allow one data structure implementation to work for multiple data types. <button type="button" class="reveal-btn" data-answer="answer-q10">Show Answer</button>
+<div id="answer-q10" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+   </div>
+</div>
+
+
+
+<p class='titlep'>&nbsp;</p>
+<p class='titlep'>&nbsp;</p>
+
+## 10 Multiple Choices
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title"> Multiple Choice</div>
+  <div class="definition-com-shadebox">
+
+Which of the following is NOT a typical software life-cycle activity?
+
+A. Requirements specification
+
+B. Implementation
+
+C. Compilation
+
+D. Maintenance <button type="button" class="reveal-btn" data-answer="answer-q11">Show Answer</button>
+<div id="answer-q11" class="answer-box">
+<b>Answer:</b>C
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title"> Multiple Choice</div>
+  <div class="definition-com-shadebox">
+
+Which quality goal means software can be changed easily?
+
+A. Works
+
+B. Modifiable
+
+C. Reusable
+
+D. On time <button type="button" class="reveal-btn" data-answer="answer-q12">Show Answer</button>
+<div id="answer-q12" class="answer-box">
+<b>Answer:</b>B
+</div>
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title"> Multiple Choice</div>
+  <div class="definition-com-shadebox">
+
+Which term best describes hiding internal data representation?
+
+A. Inheritance
+
+B. Abstraction
+
+C. Encapsulation
+
+D. Polymorphism <button type="button" class="reveal-btn" data-answer="answer-q13">Show Answer</button>
+<div id="answer-q13" class="answer-box">
+<b>Answer:</b>C
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title"> Multiple Choice</div>
+  <div class="definition-com-shadebox">
+
+Which of the following best defines an ADT?
+
+A. A C++ class with private data
+
+B. A data structure implemented using arrays
+
+C. A set of values and allowed operations
+
+D. A memory allocation technique <button type="button" class="reveal-btn" data-answer="answer-q14">Show Answer</button>
+<div id="answer-q14" class="answer-box">
+<b>Answer:</b>C
+</div>
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title"> Multiple Choice</div>
+  <div class="definition-com-shadebox">
+
+Which ADT operation removes an item from an Unsorted List?
+
+A. GetItem
+
+B. DeleteItem
+
+C. PutItem
+
+D. ResetList  <button type="button" class="reveal-btn" data-answer="answer-q15">Show Answer</button>
+<div id="answer-q15" class="answer-box">
+<b>Answer:</b>B
+</div>
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title"> Multiple Choice</div>
+  <div class="definition-com-shadebox">
+
+What makes a list a sorted list?
+
+A. It stores only numbers
+
+B. It has a fixed size
+
+C. Items follow an order based on a key
+
+D. Items are inserted at the end <button type="button" class="reveal-btn" data-answer="answer-q16">Show Answer</button>
+<div id="answer-q16" class="answer-box">
+<b>Answer:</b>C
+</div>
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title"> Multiple Choice</div>
+  <div class="definition-com-shadebox">
+
+What value of top usually indicates an empty stack?
+
+A. 0
+
+B. 1
+
+C. -1
+
+D. MAX <button type="button" class="reveal-btn" data-answer="answer-q17">Show Answer</button>
+<div id="answer-q17" class="answer-box">
+<b>Answer:</b>C
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title"> Multiple Choice</div>
+  <div class="definition-com-shadebox">
+
+Which stack operation only looks at the top item without removing it?
+
+A. Push
+
+B. Pop
+
+C. Top
+
+D. IsEmpty <button type="button" class="reveal-btn" data-answer="answer-q18">Show Answer</button>
+<div id="answer-q18" class="answer-box">
+<b>Answer:</b>C
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title"> Multiple Choice</div>
+  <div class="definition-com-shadebox">
+
+Which rule describes a queue?
+
+A. LIFO
+
+B. FIFO
+
+C. FILO
+
+D. Random order <button type="button" class="reveal-btn" data-answer="answer-q19">Show Answer</button>
+<div id="answer-q19" class="answer-box">
+<b>Answer:</b>B
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title"> Multiple Choice</div>
+  <div class="definition-com-shadebox">
+
+What does Box<int> mean in a C++ template?
+
+A. A runtime cast
+
+B. A pointer type
+
+C. A template instantiated with int
+
+D. A macro expansion <button type="button" class="reveal-btn" data-answer="answer-q20">Show Answer</button>
+<div id="answer-q20" class="answer-box">
+<b>Answer:</b>C
+</div>
+   </div>
+</div>
+
+
+
+<p class='titlep'>&nbsp;</p>
+<p class='titlep'>&nbsp;</p>
+
+## 2 Coding Questions
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Question 1</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Goal: Build a small console program that models a “job center”:
+
+<div id="shadebox-glass" class="shadebox glass">
+
+- Queue = jobs waiting to be processed (FIFO)
+
+- Stack = jobs already processed (LIFO) so we can UNDO the most recent processed job
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Job Center Simulator (cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Requirements 1: Circular Array Queue of string Operations
+
+<div id="shadebox-glass" class="shadebox glass">
+
+- Enqueue(job)
+
+- Dequeue()
+
+- Front()
+
+- IsEmpty()
+
+- IsFull()
+
+- Size()
+
+- PrintQueue() (show pending jobs in correct order)
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Job Center Simulator (cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Requirements 2: Array Stack of string Operations
+
+<div id="shadebox-glass" class="shadebox glass">
+
+- Push(job)
+
+- Pop()
+
+- Top()
+
+- IsEmpty()
+
+- IsFull()
+
+- Size()
+
+- PrintStack() (show processed jobs from top to bottom)
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Job Center Simulator (cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Commands your program must support 
+
+<div id="shadebox-glass" class="shadebox glass">
+
+- ADD jobName: Put a new job into the pending queue.
+
+- PROCESS: Take the next pending job (dequeue) and move it into processed stack (push).
+
+- UNDO: Undo the most recent processed job (pop from stack) and put it back into pending (enqueue).
+
+- NEXT: Print the job at the front of the pending queue.
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Job Center Simulator (cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Commands your program must support (cont.)
+
+<div id="shadebox-glass" class="shadebox glass">
+
+- HISTORY: Print the most recently processed job (top of stack).
+
+- STATUS: Print counts of pending and processed.
+
+- LIST: Print pending queue and processed stack.
+
+- END: Exit.
+</div>
+   </div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Job Center Simulator (cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Error handling (required)
+
+<div id="shadebox-glass" class="shadebox glass">
+
+- If PROCESS or NEXT when queue is empty → show an underflow error message.
+
+- If UNDO or HISTORY when stack is empty → show an underflow error message.
+
+- If ADD when queue is full → overflow message.
+
+- If PROCESS when stack is full → overflow message.
+</div>
+
+Assumption: jobName has no spaces (e.g., ADD HW1).
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### A Solution (Reference Answer)
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <string>
+#include <stdexcept>
+#include <sstream>
+using namespace std;
+
+/* =======================
+   Exceptions
+   ======================= */
+class QueueFull : public runtime_error {
+public:
+    QueueFull() : runtime_error("Queue overflow: pending queue is full") {}
+};
+
+class QueueEmpty : public runtime_error {
+public:
+    QueueEmpty() : runtime_error("Queue underflow: no pending jobs") {}
+};
+
+class StackFull : public runtime_error {
+public:
+    StackFull() : runtime_error("Stack overflow: processed stack is full") {}
+};
+
+class StackEmpty : public runtime_error {
+public:
+    StackEmpty() : runtime_error("Stack underflow: no processed jobs") {}
+};
+
+/* =======================
+   Circular Array Queue<string>
+   ======================= */
+class StringQueue {
+private:
+    static const int MAX = 10; // small for practice; you may increase
+    string items[MAX];
+    int front;
+    int rear;
+    int count;
+
+public:
+    StringQueue() {
+        front = 0;
+        rear = -1;
+        count = 0;
+    }
+
+    bool IsEmpty() const { return count == 0; }
+    bool IsFull()  const { return count == MAX; }
+    int  Size()    const { return count; }
+
+    void Enqueue(const string& job) {
+        if (IsFull()) throw QueueFull();
+        rear = (rear + 1) % MAX;
+        items[rear] = job;
+        count++;
+    }
+
+    void Dequeue() {
+        if (IsEmpty()) throw QueueEmpty();
+        front = (front + 1) % MAX;
+        count--;
+    }
+
+    string Front() const {
+        if (IsEmpty()) throw QueueEmpty();
+        return items[front];
+    }
+
+    void PrintQueue() const {
+        cout << "Pending (front -> rear): ";
+        if (IsEmpty()) {
+            cout << "[empty]\n";
+            return;
+        }
+
+        cout << "[";
+        for (int i = 0; i < count; i++) {
+            int idx = (front + i) % MAX;
+            cout << items[idx];
+            if (i != count - 1) cout << ", ";
+        }
+        cout << "]\n";
+    }
+};
+
+/* =======================
+   Array Stack<string>
+   ======================= */
+class StringStack {
+private:
+    static const int MAX = 10; // small for practice; you may increase
+    string items[MAX];
+    int top; // -1 means empty
+
+public:
+    StringStack() {
+        top = -1;
+    }
+
+    bool IsEmpty() const { return top == -1; }
+    bool IsFull()  const { return top == MAX - 1; }
+    int  Size()    const { return top + 1; }
+
+    void Push(const string& job) {
+        if (IsFull()) throw StackFull();
+        items[++top] = job;
+    }
+
+    void Pop() {
+        if (IsEmpty()) throw StackEmpty();
+        top--;
+    }
+
+    string Top() const {
+        if (IsEmpty()) throw StackEmpty();
+        return items[top];
+    }
+
+    void PrintStack() const {
+        cout << "Processed (top -> bottom): ";
+        if (IsEmpty()) {
+            cout << "[empty]\n";
+            return;
+        }
+
+        cout << "[";
+        for (int i = top; i >= 0; i--) {
+            cout << items[i];
+            if (i != 0) cout << ", ";
+        }
+        cout << "]\n";
+    }
+};
+
+/* =======================
+   Main Program
+   ======================= */
+int main() {
+    StringQueue pending;
+    StringStack processed;
+
+    cout << "=== Job Center Simulator (Queue + Stack) ===\n";
+    cout << "Commands:\n";
+    cout << "  ADD jobName\n";
+    cout << "  PROCESS\n";
+    cout << "  UNDO\n";
+    cout << "  NEXT\n";
+    cout << "  HISTORY\n";
+    cout << "  STATUS\n";
+    cout << "  LIST\n";
+    cout << "  END\n\n";
+
+    string line;
+    while (true) {
+        cout << "> ";
+        getline(cin, line);
+
+        if (line.empty()) continue;
+
+        stringstream ss(line);
+        string cmd;
+        ss >> cmd;
+
+        try {
+            if (cmd == "END") {
+                cout << "Goodbye.\n";
+                break;
+            } else if (cmd == "ADD") {
+                string job;
+                ss >> job;
+                if (job.empty()) {
+                    cout << "Error: ADD requires a job name (example: ADD HW1)\n";
+                } else {
+                    pending.Enqueue(job);
+                    cout << "Added job: " << job << "\n";
+                }
+            } else if (cmd == "PROCESS") {
+                // move from queue -> stack
+                string job = pending.Front();
+                pending.Dequeue();
+                processed.Push(job);
+                cout << "Processed job: " << job << "\n";
+            } else if (cmd == "UNDO") {
+                // move from stack -> queue (goes to rear)
+                string job = processed.Top();
+                processed.Pop();
+                pending.Enqueue(job);
+                cout << "Undo: returned job to pending: " << job << "\n";
+            } else if (cmd == "NEXT") {
+                cout << "Next pending job: " << pending.Front() << "\n";
+            } else if (cmd == "HISTORY") {
+                cout << "Most recent processed job: " << processed.Top() << "\n";
+            } else if (cmd == "STATUS") {
+                cout << "Pending count: " << pending.Size()
+                     << " | Processed count: " << processed.Size() << "\n";
+            } else if (cmd == "LIST") {
+                pending.PrintQueue();
+                processed.PrintStack();
+            } else {
+                cout << "Unknown command: " << cmd << "\n";
+            }
+        } catch (const exception& e) {
+            cout << "Error: " << e.what() << "\n";
+        }
+    }
+
+    return 0;
+}
+
+
+```
+
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Sample Run</div>
+  <div class="definition-pro-Y-shadebox">
+  
+```
+> ADD HW1
+Added job: HW1
+> ADD HW2
+Added job: HW2
+> NEXT
+Next pending job: HW1
+> PROCESS
+Processed job: HW1
+> HISTORY
+Most recent processed job: HW1
+> UNDO
+Undo: returned job to pending: HW1
+> LIST
+Pending (front -> rear): [HW2, HW1]
+Processed (top -> bottom): [empty]
+> PROCESS
+Processed job: HW2
+> STATUS
+Pending count: 1 | Processed count: 1
+> END
+Goodbye.
+```
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Question 2</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Unsorted List ADT — “Library Book Tracker”
+
+<div id="shadebox-glass" class="shadebox glass">
+
+Requirements: Create a program that manages a small library book list using an ADT Unsorted List.
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Question 2</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Each book has:
+
+- id (int) key (unique)
+
+- title (string, one word is OK for beginners)
+
+- copies (int)
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Question 2</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Your program must use these Unsorted List ADT operations:
+
+- MakeEmpty()
+
+- IsFull()
+
+- GetLength()
+
+- PutItem(item)
+
+- GetItem(item, found)
+
+- DeleteItem(item)
+
+- ResetList()
+
+- GetNextItem()
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Question 2</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Program features (menu)
+
+- Add a book
+
+- Find a book by id
+
+- Borrow a book (copies - 1 if possible)
+
+- Return a book (copies + 1)
+
+- Delete a book by id
+
+- Print all books
+
+- Clear the list (MakeEmpty)
+
+- Exit
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Question 2</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Rules
+
+<div id="shadebox-glass" class="shadebox glass">
+If list is full → cannot add.
+
+If id already exists → cannot add.
+
+Borrow:
+
+- If id not found → print “Not found”
+
+- If copies is 0 → print “No copies available”
+
+Print format:
+
+- id - title - copies
+</div>
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### An Answer
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+const int MAX_ITEMS = 100;
+
+enum RelationType { LESS, GREATER, EQUAL };
+
+struct Book {
+    int id;          // key
+    string title;
+    int copies;
+
+    RelationType CompareTo(const Book& other) const {
+        if (id < other.id) return LESS;
+        if (id > other.id) return GREATER;
+        return EQUAL;
+    }
+};
+
+class UnsortedList {
+private:
+    Book info[MAX_ITEMS];
+    int length;
+    int currentPos;
+
+public:
+    UnsortedList() {
+        length = 0;
+        currentPos = -1;
+    }
+
+    void MakeEmpty() {
+        length = 0;
+        currentPos = -1;
+    }
+
+    bool IsFull() const {
+        return (length == MAX_ITEMS);
+    }
+
+    int GetLength() const {
+        return length;
+    }
+
+    void PutItem(const Book& item) {
+        info[length] = item;
+        length++;
+    }
+
+    void GetItem(Book& item, bool& found) const {
+        found = false;
+        for (int i = 0; i < length; i++) {
+            if (info[i].CompareTo(item) == EQUAL) {
+                item = info[i];
+                found = true;
+                return;
+            }
+        }
+    }
+
+    void DeleteItem(const Book& item) {
+        int location = 0;
+        while (location < length) {
+            if (info[location].CompareTo(item) == EQUAL) {
+                info[location] = info[length - 1]; // swap with last
+                length--;
+                return;
+            }
+            location++;
+        }
+    }
+
+    void ResetList() {
+        currentPos = -1;
+    }
+
+    Book GetNextItem() {
+        currentPos++;
+        return info[currentPos];
+    }
+};
+
+// Helper: check if a book id exists
+bool Exists(UnsortedList& list, int id) {
+    Book q;
+    q.id = id;
+    bool found;
+    list.GetItem(q, found);
+    return found;
+}
+
+void PrintAll(UnsortedList& list) {
+    int n = list.GetLength();
+    if (n == 0) {
+        cout << "(No books)\n";
+        return;
+    }
+
+    list.ResetList();
+    for (int i = 0; i < n; i++) {
+        Book b = list.GetNextItem();
+        cout << b.id << " - " << b.title << " - copies: " << b.copies << "\n";
+    }
+}
+
+void AddBook(UnsortedList& list) {
+    if (list.IsFull()) {
+        cout << "Cannot add: list is FULL.\n";
+        return;
+    }
+
+    Book b;
+    cout << "Enter id: ";
+    cin >> b.id;
+
+    if (Exists(list, b.id)) {
+        cout << "Cannot add: id already exists.\n";
+        return;
+    }
+
+    cout << "Enter title (one word): ";
+    cin >> b.title;
+    cout << "Enter copies: ";
+    cin >> b.copies;
+
+    if (b.copies < 0) b.copies = 0;
+
+    list.PutItem(b);
+    cout << "Added.\n";
+}
+
+void FindBook(UnsortedList& list) {
+    int id;
+    cout << "Enter id to find: ";
+    cin >> id;
+
+    Book q;
+    q.id = id;
+    bool found;
+    list.GetItem(q, found);
+
+    if (found) {
+        cout << "Found: " << q.id << " - " << q.title << " - copies: " << q.copies << "\n";
+    } else {
+        cout << "Not found.\n";
+    }
+}
+
+// Borrow: copies-- if possible
+void BorrowBook(UnsortedList& list) {
+    int id;
+    cout << "Enter id to borrow: ";
+    cin >> id;
+
+    Book q;
+    q.id = id;
+    bool found;
+    list.GetItem(q, found);
+
+    if (!found) {
+        cout << "Not found.\n";
+        return;
+    }
+
+    if (q.copies == 0) {
+        cout << "No copies available.\n";
+        return;
+    }
+
+    // We cannot directly modify inside the list with GetItem alone,
+    // so we delete then re-insert the updated item (common beginner workaround).
+    list.DeleteItem(q);
+    q.copies--;
+    list.PutItem(q);
+
+    cout << "Borrowed. Now copies = " << q.copies << "\n";
+}
+
+// Return: copies++
+void ReturnBook(UnsortedList& list) {
+    int id;
+    cout << "Enter id to return: ";
+    cin >> id;
+
+    Book q;
+    q.id = id;
+    bool found;
+    list.GetItem(q, found);
+
+    if (!found) {
+        cout << "Not found.\n";
+        return;
+    }
+
+    list.DeleteItem(q);
+    q.copies++;
+    list.PutItem(q);
+
+    cout << "Returned. Now copies = " << q.copies << "\n";
+}
+
+void DeleteBook(UnsortedList& list) {
+    int id;
+    cout << "Enter id to delete: ";
+    cin >> id;
+
+    Book q;
+    q.id = id;
+    bool found;
+    list.GetItem(q, found);
+
+    if (!found) {
+        cout << "Not found. Nothing deleted.\n";
+        return;
+    }
+
+    list.DeleteItem(q);
+    cout << "Deleted.\n";
+}
+
+void ShowMenu() {
+    cout << "\n--- Library Book Tracker ---\n";
+    cout << "1) Add book\n";
+    cout << "2) Find book\n";
+    cout << "3) Borrow book\n";
+    cout << "4) Return book\n";
+    cout << "5) Delete book\n";
+    cout << "6) Print all books\n";
+    cout << "7) Clear list\n";
+    cout << "0) Exit\n";
+    cout << "Choose: ";
+}
+
+int main() {
+    UnsortedList books;
+    int choice;
+
+    do {
+        ShowMenu();
+        cin >> choice;
+
+        if (choice == 1) AddBook(books);
+        else if (choice == 2) FindBook(books);
+        else if (choice == 3) BorrowBook(books);
+        else if (choice == 4) ReturnBook(books);
+        else if (choice == 5) DeleteBook(books);
+        else if (choice == 6) PrintAll(books);
+        else if (choice == 7) { books.MakeEmpty(); cout << "List cleared.\n"; }
+        else if (choice == 0) cout << "Bye!\n";
+        else cout << "Invalid choice.\n";
+
+    } while (choice != 0);
+
+    return 0;
+}
+
+
+```
+
+</div>
+
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+</div>
+	
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/settings.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/effects.js"></script>
+<!--<script src="settings.js"></script>-->
+<!--<script src="effects.js"></script>-->
+</body>
+</html>

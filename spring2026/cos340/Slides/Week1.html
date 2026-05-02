@@ -1,0 +1,2981 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Week 1</title>
+    <meta name="description" content="A set of slides for Machine Learning">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/effectsGreen.css">
+	<!--<link rel="stylesheet" href="./css/style.css">-->
+	<!--<link rel="stylesheet" href="./css/effects.css">-->
+	
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+	</script>
+
+	<style>
+	    pre {
+            background-color: black;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+        }
+        code {
+            font-family: "Courier New", monospace;
+            color: #d63384; /* Python-style color */
+        }
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }	
+	</style>
+
+  </head>
+
+  <body onload="startTime()">
+    <div class="reveal" >
+	  <p><img src="images/midwaylogo.png"  align="left" height="6%" width="6%" style="vertical-align:left;margin:-15px 5px"><img src="images/mueagle.png"  color="white" align="left" height="4%" width="4%" style="vertical-align:center;margin:-1% 45%">
+		<div style="color:white;font-size: 20px; vertical-align:left;margin:-1% 0%" align="right" id="realtimeclock"></div></p>
+      <div class="slides">
+
+  <div class="me">Xinxing Wu</div>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown id="cover"><textarea data-template>
+
+# Software Engineering Principles
+
+<hr>
+
+<br>
+
+Xinxing Wu
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline
+
+[<p class="hover-underline-animation">Software engineering & process</p>](#/ch1)
+
+[<p class="hover-underline-animation">From Specification to Design</p>](#/ch2)
+
+[<p class="hover-underline-animation">Verification \& Testing</p>](#/ch3)
+
+[<p class="hover-underline-animation">Course Podcast</p>](#/ch4)
+
+[<p class="hover-underline-animation">Summary</p>](#/ch5)
+
+
+</textarea></section>
+
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+
+## Goal
+
+<div id="shadebox-neon" class="shadebox neon">
+
+- Explain **software process** + common **life-cycle activities**
+- Describe **quality goals**: works, modifiable, reusable, on time/budget
+- Write a *clear* **specification** (inputs/outputs/errors/assumptions/tests)
+
+</div>
+</textarea></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+
+## Goal (Cont.)
+
+<div id="shadebox-neon" class="shadebox neon">
+
+- Apply design principles:
+  - **abstraction**
+  - **information hiding**
+  - **cohesion** + **loose coupling**
+  - **stepwise refinement**
+  - **top-down** and **object-oriented design**
+
+- Do basic verification work:
+  - **pre/postconditions**, assertions
+  - **deskchecking**, walkthrough/inspection
+  - **unit tests**, black-box vs white-box
+  - simple **test drivers** and **integration testing** ideas
+</div>
+
+</textarea></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch1" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Software engineering & process</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Software engineering & process</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+What is SE? Process + life-cycle + quality goals
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Building a House</div>
+  <div class="question-shadebox">
+<div style="width: 800px;"></div>
+
+- <a href="./files/The Timeless Way of Building.pdf" target="_blank">The Timeless Way of Building</a>
+
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">An Example</div>
+  <div class="question-shadebox">
+<div style="width: 800px;"></div>
+
+> Building a House
+   </div>
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Building a House</div>
+  <div class="question-shadebox">
+<div style="width: 800px;"></div>
+
+Software Engineering — The Discipline
+
+Think of software engineering like <spanGREEN>house engineering</spanGREEN>.
+
+It is:
+
+- Planning carefully
+
+- Using proper methods and rules
+
+- Making sure the final result is safe, reliable, and usable
+
+👉 Just like a house is <spanRED>not</spanRED> built randomly, software is <spanRED>not</spanRED> written randomly.
+   </div>
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Building a House</div>
+  <div class="question-shadebox">
+<div style="width: 800px;"></div>
+
+- <spanBYMix>Requirements</spanBYMix>: The owner says: “I want 3 bedrooms, 2 bathrooms, and a kitchen.”
+
+- <spanBYMix>Design</spanBYMix>: The architect draws floor plans and layouts.
+
+- <spanBYMix>Implementation</spanBYMix>: Workers build the house using bricks and tools.
+
+- <spanBYMix>Testing / Inspection</spanBYMix>: Inspectors check electricity, water, and structure.
+
+- <spanBYMix>Maintenance</spanBYMix>: Later repairs, painting, or upgrades.
+
+👉 These steps together form the <spanGREEN>process</spanGREEN>.
+   </div>
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Building a House</div>
+  <div class="question-shadebox">
+<div style="width: 800px;"></div>
+
+Mapping to Software
+
+```
+| House Example     | Software Example          |
+| ----------------- | ------------------------- |
+| Decide room needs | Decide software features  |
+| Draw house plan   | Design software structure |
+| Build the house   | Write code                |
+| Inspect the house | Test software             |
+| Repair later      | Maintain software         |
+
+```
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Summary</div>
+  <div class="question-shadebox">
+<div style="width: 800px;"></div>
+
+- Software engineering is the <spanGREEN>disciplined way of building software, and the software process is the step-by-step path followed to do it.</spanGREEN>
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">What is software engineering?</div>
+  <div class="definition-shadebox">
+
+Software engineering is the discipline devoted to:
+
+- **design**
+- **production**
+- **maintenance**
+
+etc., of software systems **on time**, **within budget**, and with acceptable **quality**.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Software process</div>
+  <div class="definition-shadebox">
+
+A **software process** is a *standard, integrated set of tools & techniques* that helps teams:
+
+- build software consistently
+- coordinate work
+- manage complexity and change
+
+Think: “how we work” (not just “what we code”).
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Why not <spanGREEN>“just start coding”?</spanGREEN></div>
+  <div class="definition-shadebox">
+
+Because you will likely hit:
+
+- unclear requirements
+- surprises in edge cases
+- changes mid-way
+- hard-to-fix bugs late in the project
+
+**Process** reduces rework by catching problems early.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+
+- Example of an edge-case surprise: Parking garage payment system
+
+- The system was designed so drivers pay before leaving. It worked perfectly in normal tests.
+
+- But after deployment, a rare case appeared:
+
+	- A car entered just before midnight
+
+	- Stayed overnight
+
+	- Tried to exit early morning
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+
+> The system calculated negative parking time because the date rolled over, so the gate would not open
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+
+This edge case wasn’t in the original requirements, but once discovered:
+
+- Multiple cars were stuck
+
+- Staff had to manually open the gate
+
+- Engineers rushed an emergency fix
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+
+If the team had used early reviews, edge-case testing (time boundaries, date changes), or a pilot test, this problem would have been caught before deployment, saving rework and stress.
+
+<hr>
+
+> Edge cases are “rare but real” situations that break systems in unexpected ways—process helps catch them early.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Typical life-cycle activities</div>
+  <div class="definition-shadebox">
+
+1. Problem analysis  
+2. Requirements elicitation  
+3. Requirements specification (functional + non-functional)  
+4. <spanGREEN>High-level</spanGREEN> design  
+5. <spanGREEN>Low-level</spanGREEN> design  
+6. Implementation  
+7. Testing & verification  
+8. Delivery  
+9. Operation  
+10. Maintenance  
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+
+High-level design includes:
+
+- Number of floors (1-story or 2-story)
+
+- Rooms (bedrooms, kitchen, bathrooms, garage)
+
+- Where rooms are located (layout)
+
+- How electricity, water, and heating generally flow
+
+- Major materials (wood frame, concrete, brick)
+   </div>
+</div>
+
+- You’re deciding the structure, not the details.
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+
+Same house example:
+
+- Low-level design includes:
+
+- Exact electrical wiring paths
+
+- Number and location of outlets
+
+- Pipe diameters for water
+
+- Specific door sizes
+
+- Exact materials and measurements
+
+   </div>
+</div>
+
+- This is detailed enough that builders can directly construct from it.
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+
+<img src="images/bird.gif" width="1000" />
+
+   </div>
+</div>
+
+
+
+
+<img src="images/fig1_lifecycle_a.png" width="1000" />
+
+
+
+
+Spiral model
+
+<img src="images/fig1_lifecycle_b.png" width="650" />
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Waterfall (when it fits)</div>
+  <div class="definition-shadebox">
+
+Waterfall can work when:
+
+- requirements are **well understood**
+- requirements are **unlikely to change**
+- the environment is **stable**
+
+But many real projects need iteration.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Spiral (risk-driven iteration)</div>
+  <div class="definition-shadebox">
+
+Spiral repeats cycles like:
+
+- set objectives
+- identify alternatives & constraints
+- **assess risks**
+- develop + validate
+- plan next iteration
+
+Good when risks are high and requirements evolve.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Which model fits better?</div>
+  <div class="definition-shadebox">
+
+- A simple “submit grades” internal tool with stable rules  
+- A student mobile app where features change after user feedback  
+   </div>
+</div>
+
+
+
+> # What is Quality software?
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Four quality goals</div>
+  <div class="definition-shadebox">
+
+<spanBYMix>Quality</spanBYMix> software:
+
+- **Works**
+- Is **modifiable**
+- Is **reusable**
+- Is completed **on time** and **within budget**
+
+We’ll connect each goal to C++.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Works?</div>
+  <div class="definition-shadebox">
+
+To say “it works,” we must know:
+
+- What should it do? (**requirements / spec**)
+- What counts as correct output?
+- What errors should be handled?
+
+If you can’t define “correct,” you can’t test.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Works?</div>
+  <div class="definition-shadebox">
+
+Requirements vs Specification
+
+- **Requirements**: what the user needs (often informal)
+- **Specification**: *<spanGREEN>precise</spanGREEN>* description of what the system must do
+
+A program can pass tests and still be useless if the **spec** is wrong.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Works?</div>
+  <div class="definition-shadebox">
+
+- Example: requirement → specification
+
+**Requirement (informal):**  
+“Compute the average of three quiz scores.”
+
+<hr>
+
+**Specification (precise):**
+- <spanBYMix>Inputs</spanBYMix>: three integers `q1, q2, q3` in `[0,100]`
+- <spanGREEN>Output</spanGREEN>: average as `double` with 2 decimal places
+- <spanBYMix>Errors</spanBYMix>: if any score is out of range, print error message and stop
+- <spanGREEN>Assumptions</spanGREEN>: user enters integers
+- <spanBYMix>Tests</spanBYMix>: (100,100,100) → 100.00; (0,50,100) → 50.00; (-1,...) → error
+   </div>
+</div>
+
+
+
+> # Please implement this Specification by C++
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Works?</div>
+  <div class="definition-shadebox">
+
+- C++ example: put the spec in comments
+
+```cpp
+/*
+  average3
+  Inputs: q1, q2, q3 are integers in [0,100]
+  Output: returns the average as a double
+  Error: if any input is out of range, throws runtime_error
+*/
+double average3(int q1, int q2, int q3) {
+    if (q1 < 0 || q1 > 100 || q2 < 0 || q2 > 100 || q3 < 0 || q3 > 100) {
+        throw std::runtime_error("Score out of range");
+    }
+    return (q1 + q2 + q3) / 3.0;
+}
+```
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Modifiable</div>
+  <div class="definition-shadebox">
+
+Software changes because:
+
+- requirements evolve
+- bugs are found
+- new features are added
+- environment changes (OS, libraries, etc.)
+
+<hr>
+
+To modify safely, code must be:
+
+- **readable**
+- **well-designed** (good structure)
+- **well-documented**
+   </div>
+</div>
+
+
+
+> # Writing everything in main: good or bad?
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Modifiable</div>
+  <div class="definition-shadebox">
+
+- C++ example: “modifiable” = small focused functions
+
+<spanRED>Bad</spanRED> (everything in `main`): hard to change.
+
+Good (decompose):
+
+```cpp
+int readScore() { int s; std::cin >> s; return s; }
+
+double computeAverage(int a, int b, int c) {
+    return (a + b + c) / 3.0;
+}
+
+void printAverage(double avg) {
+    std::cout << "Average: " << avg << "\n";
+}
+```
+
+Now, changing input rules or output format is <spanBYMix>localized</spanBYMix>.
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Reusable</div>
+  <div class="definition-shadebox">
+
+Reuse saves time and reduces bugs (if reused code is tested).
+
+- functions (reusable behaviors)
+- classes (reusable “things” with data + behavior)
+- libraries (e.g., STL)
+
+**OO thinking:** the unit of reuse is often a **class**.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Reusable</div>
+  <div class="definition-shadebox">
+
+C++ Standard Template Library (STL), are collections of pre-written code (templates, classes, functions) for common tasks, providing ready-made tools for data structures (vectors, lists) and algorithms (sorting, searching) to simplify development and promote reusable, efficient code.
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Reusable</div>
+  <div class="definition-shadebox">
+
+- Reusable C++ example: a helper function
+
+```cpp
+void printLine(char ch, int n) {
+    for (int i = 0; i < n; i++) std::cout << ch;
+    std::cout << "\n";
+}
+```
+
+You can <spanBYMix>reuse</spanBYMix> it in <spanGREEN>many</spanGREEN> console apps to format output.
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">On time / within budget</div>
+  <div class="definition-shadebox">
+
+- Deadlines are real.
+
+Quality is not only correctness—also **predictability** and **planning**.
+
+A simple beginner rule:
+
+- write a small plan
+- build in small steps
+- test often
+
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch2" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">From Specification to Design</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+
+<div class="question-container">
+  <div class="question-title">An example of From Specification to Design</div>
+  <div class="question-shadebox">
+<div style="width: 950px;"></div>
+
+<div id="roundbox">
+Classroom Attendance App
+</div>
+
+
+Specification (What the system should do)
+
+Imagine a teacher says:
+
+> “I want a simple app to take attendance for my class.”
+
+   </div>
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Specification (What the system should do)</div>
+  <div class="question-shadebox">
+<div style="width: 950px;"></div>
+
+After talking more, the specification becomes:
+
+- The teacher can see a list of students
+
+- The teacher can mark each student as Present or Absent
+
+- The app should save attendance for each day
+
+- The teacher can view attendance later
+
+👉 Specification focuses on <spanBYMix>WHAT</spanBYMix>, not HOW
+   </div>
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Design (How the system will be built)</div>
+  <div class="question-shadebox">
+<div style="width: 950px;"></div>
+
+Design decisions:
+
+- Screens
+
+	- <spanBYMix>Screen 1</spanBYMix>: Student list with checkboxes
+
+	- <spanBYMix>Screen 2</spanBYMix>: Attendance history by date
+
+- Data structure
+
+	- Student: ID, Name
+
+	- Attendance: StudentID, Date, Status
+
+   </div>
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Design (cont.)</div>
+  <div class="question-shadebox">
+<div style="width: 950px;"></div>
+
+- Buttons
+
+	- “Save Attendance”
+
+	- “View Records”
+
+- Storage
+
+	- Use a simple database or local file to store attendance
+
+👉 Design focuses on HOW the system works internally
+   </div>
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Comparison</div>
+  <div class="question-shadebox">
+
+```
+
+| Step          | Question Answered       |
+| ------------- | ----------------------- |
+| Specification | What should the app do? |
+| Design        | How will we build it?   |
+
+```
+   </div>
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Summary</div>
+  <div class="question-shadebox">
+
+- Specification says “The app must take attendance.”
+- Design says “Here is the screen layout, data, and logic to make it happen.”
+   </div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">From Specification to Design</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Specification → Design (abstraction, info hiding, decomposition, OO, UML/CRC) 
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+
+Class-Responsibility-Collaborator, a low-tech, hands-on brainstorming technique using index cards (Class, Responsibilities, Collaborators) to model system interactions, explore object behaviors, and identify design flaws, working alongside concepts like abstraction, information hiding, and decomposition. 
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">A practical “spec checklist”</div>
+  <div class="definition-shadebox">
+
+Before you design, write:
+
+- Problem definition (in your own words)
+- Inputs (type, range, format)
+- Outputs (format, units, precision)
+- Processing requirements (what must be computed)
+- Error conditions (what can go wrong?)
+- Assumptions (what you are assuming is true)
+- Sample I/O + expected results
+- Initial test ideas
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Test cases</div>
+  <div class="definition-shadebox">
+
+Pick one:
+
+- “Simple ATM balance check”
+- “Grade calculator”
+- “Temperature converter”
+
+Write **3 test cases** (input → expected output).  
+(We’ll reuse them later for testing.)
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Program design</div>
+  <div class="definition-shadebox">
+
+Program design: from “what” to “how”
+
+- Specification tells **what** to do.  
+- Design decides **how** to do it.
+
+We’ll use four core ideas:
+
+- Abstraction
+- Information hiding (encapsulation)
+- Stepwise refinement
+- Visual tools (CRC / UML)
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">What is abstraction?</div>
+  <div class="definition-shadebox">
+
+- An **abstraction** is a model that keeps only the important details for a purpose.
+
+- Different people need different abstractions of the “same thing.”
+   </div>
+</div>
+
+
+
+> # Give an example of abstraction in real life.
+
+
+
+<div class="definition-container">
+  <div class="definition-title">What is abstraction?</div>
+  <div class="definition-shadebox">
+
+Start a car, we will not care about how the engine ignites the fuel, how sensors communicate with the ECU (Electronic Control Unit), or how electricity flows through the wiring.
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">What is abstraction?</div>
+  <div class="definition-shadebox">
+
+
+When you use an ATM, you don’t care how the bank’s servers verify your account, encrypt your PIN, or communicate across networks. You only care that you insert the card, enter the PIN, and get cash.
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">What is abstraction?</div>
+  <div class="definition-shadebox">
+
+Abstraction lets you focus on what to do, not how it works internally.
+
+   </div>
+</div>
+
+
+
+- An abstraction includes the essential details relative to the perspective of the viewer
+<img src="images/fig2_abstraction.png" width="800" />
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Abstraction in code</div>
+  <div class="definition-shadebox">
+
+When you call:
+
+```cpp
+std::cout << "Hello\n";
+```
+
+You **don’t** think about:
+
+- device drivers
+- CPU instructions
+- OS system calls
+
+That complexity is hidden behind an abstraction.
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">abstraction - BankAccount</div>
+  <div class="definition-shadebox">
+
+We only expose what users need:
+
+- deposit
+- withdraw
+- get balance
+
+```cpp
+class BankAccount {
+public:
+    void deposit(int cents);
+    bool withdraw(int cents); // returns true if successful
+    int getBalance() const;
+
+private:
+    int balanceCents;  // hidden detail
+};
+```
+
+Users don’t need to know how we store cents.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Information hiding (encapsulation)</div>
+  <div class="definition-shadebox">
+
+**Hide details likely to change** behind a stable interface.
+
+<b>Goal</b>: changing internal details should not force changes everywhere else.
+
+This supports:
+
+- modifiability
+- reusability
+- fewer bugs
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Cohesion & coupling</div>
+  <div class="definition-shadebox">
+
+- **High cohesion**: a module does *one clear job*
+- **Loose coupling**: modules depend on each other as little as possible
+
+A good module can be described in **one sentence**.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">C++ example: bad coupling</div>
+  <div class="definition-shadebox">
+
+If we expose internal details:
+
+```cpp
+struct BankAccountBad {
+    int balanceCents; // public (bad)
+};
+```
+
+Then other code might do:
+
+```cpp
+acc.balanceCents -= 50; // everywhere
+```
+
+If we later change representation, everything breaks.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">C++ example</div>
+  <div class="definition-shadebox">
+
+C++ example: info hiding done right
+
+```cpp
+class BankAccount {
+public:
+    BankAccount() : balanceCents(0) {}
+
+    void deposit(int cents) { balanceCents += cents; }
+
+    bool withdraw(int cents) {
+        if (cents > balanceCents) return false;
+        balanceCents -= cents;
+        return true;
+    }
+
+    int getBalance() const { return balanceCents; }
+
+private:
+    int balanceCents;
+};
+```
+
+Only methods touch internal details.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Stepwise refinement</div>
+  <div class="definition-shadebox">
+
+Start with a big task, then <spanBYMix>refine into smaller tasks, until each is easy to code</spanBYMix>.
+
+Common styles:
+
+- **top-down design** (functional decomposition)
+- bottom-up
+- OO “round-trip” design (revisit design as you learn more)
+
+   </div>
+</div>
+
+
+
+A portion of a functional design for baking a cake
+
+<img src="images/fig4_cake_topdown.png" width="650" />
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+
+-  Example (non-code): make a cake (functional decomposition)
+
+	- Big task → smaller tasks → code-sized tasks.
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">C++ example</div>
+  <div class="definition-shadebox">
+
+- C++ example: refine “grade calculator”
+
+**Level 0:**  
+- Read scores  
+- Compute average  
+- Print letter grade  
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">C++ example</div>
+  <div class="definition-shadebox">
+
+- C++ example: refine “grade calculator”
+
+**Level 1:**  
+- `readScores()`  
+- `computeAverage()`  
+- `letterGrade()`  
+- `printReport()`  
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">C++ skeleton (top-down)</div>
+  <div class="definition-shadebox">
+
+```cpp
+int main() {
+    int a, b, c;
+    readScores(a, b, c);
+    double avg = computeAverage(a, b, c);
+    char letter = letterGrade(avg);
+    printReport(avg, letter);
+}
+```
+
+Each helper is small and testable.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Exercise</div>
+  <div class="definition-shadebox">
+
+Design (no coding yet):
+
+- Pick a tiny program idea (converter, calculator, menu app)
+- Write **Level 0** and **Level 1** stepwise refinement
+   </div>
+</div>
+
+
+
+> Two design approaches: Top-down vs OO
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Top-down design</div>
+  <div class="definition-shadebox">
+
+- Top-down design: procedural view
+
+Focus on transforming input → output.
+
+- break into functional modules
+- hierarchy of tasks
+
+Good for “do this, then that” workflows.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Object-oriented design</div>
+  <div class="definition-shadebox">
+
+- Object-oriented design: OO view
+
+Focus on **objects** and their responsibilities.
+
+- find nouns (things)
+- find verbs (actions)
+- decide which class does what
+- objects collaborate
+
+<hr>
+
+A Note:  
+- underline verbs → procedural tasks  
+- circle nouns → OO candidates
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">OO example</div>
+  <div class="definition-shadebox">
+
+- OO example: “Fraction” as an object
+
+A fraction has:
+
+- data: numerator, denominator
+- behaviors: isZero, getNumerator, reduce, etc.
+
+This becomes a reusable type.
+
+   </div>
+</div>
+
+
+
+> Visual tools: UML & CRC
+
+- Use CRC (Class-Responsibility-Collaborator) early (brainstorming).  
+- Use UML to document the final class structure.
+
+
+
+<div class="definition-container">
+  <div class="definition-title">CRC example (Fraction)</div>
+  <div class="definition-shadebox">
+
+**Class:** Fraction  
+**Responsibilities (verbs):**
+- initialize
+- get numerator/denominator
+- check if zero
+- convert to proper (optional)
+
+**Collaborators:**
+- maybe “Math” helper (gcd)
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch3" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Verification & Testing</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="question-container">
+  <div class="question-title">An example</div>
+  <div class="question-shadebox">
+
+> Buying a <spanBYMix>Calculator</spanBYMix> for a Student
+   </div>
+</div>
+
+
+
+
+> # What is Verification? What is Testing?
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Verification — “Did we build the right thing?”</div>
+  <div class="question-shadebox">
+<div style="width: 950px;"></div>
+
+Before buying, the teacher checks the requirements:
+
+<spanBYMix>Requirements</spanBYMix> (Specification):
+
+- Must add, subtract, multiply, divide
+
+- Must show at least 8 digits
+
+- Must be allowed in exams
+   </div>
+</div>
+
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Verification — “Did we build the right thing?” (cont.)</div>
+  <div class="question-shadebox">
+<div style="width: 950px;"></div>
+
+Verification activity:
+
+- Read the calculator manual
+
+- Check the model specifications on the box
+
+- Confirm it is an approved exam calculator
+
+👉 <spanRED>No pressing buttons yet</spanRED>
+
+👉 Just checking that the calculator matches the requirements
+
+- This is verification.
+   </div>
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Testing — “Does it actually work?”</div>
+  <div class="question-shadebox">
+<div style="width: 800px;"></div>
+
+Now the student uses the calculator:
+
+Testing activity:
+
+- Press 2 + 3 → expects 5
+
+- Press 10 ÷ 2 → expects 5
+
+- Try a long number to see if it displays correctly
+
+👉 Running the product to see results
+
+✔️ This is testing.
+   </div>
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Comparison</div>
+  <div class="question-shadebox">
+<div style="width: 800px;"></div>
+
+```
+| Concept      | Question Answered                | Example                   |
+| ------------ | -------------------------------- | ------------------------- |
+| Verification | Are we building the right thing? | Check calculator features |
+| Testing      | Does it work correctly?          | Try calculations          |
+```
+   </div>
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Summary</div>
+  <div class="question-shadebox">
+<div style="width: 800px;"></div>
+
+- Verification = Check the plan
+
+- Testing = Try it out
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Verification & Testing</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Verification & Testing (errors, assertions, reviews, <spanGREEN>black/white-box</spanGREEN>, test plans, drivers) 
+   </div>
+</div>
+
+
+
+> # What are the differences between Testing and Debugging?
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Testing vs Debugging</div>
+  <div class="definition-shadebox">
+
+- **Testing**: run the program with chosen data to *discover* errors
+- **Debugging**: find and fix the cause of a known error
+
+After changes, repeat tests (**regression testing**).
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Verification vs Validation</div>
+  <div class="definition-shadebox">
+
+- **Verification**: “Are we building it right?” (meets spec)
+- **Validation**: “Are we building the right thing?” (solves real need)
+
+You can verify a wrong spec and still fail users (<spanRED>Why?</spanRED>)
+   </div>
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Verification vs Validation</div>
+  <div class="question-shadebox">
+
+- Verification only checks whether you built the system according to the specification — not whether the specification itself actually solves the user’s real problem.
+
+<hr>
+
+- Specification (wrong spec): “Build a door that opens only after entering a 12-character password.”
+
+   </div>
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Verification vs Validation</div>
+  <div class="question-shadebox">
+  
+Verification:
+
+- Door accepts exactly 12 characters ✔️
+
+- Rejects anything else ✔️
+
+- Locks and unlocks correctly ✔️
+
+The system is verified — it perfectly follows the spec.
+
+   </div>
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Verification vs Validation</div>
+  <div class="question-shadebox">
+
+
+But users fail:
+
+- People forget long passwords
+
+- Emergencies make typing impossible
+
+- Kids or elderly users can’t use it
+
+So even though the system is correct, it is useless or frustrating.
+   </div>
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Verification vs Validation</div>
+  <div class="question-shadebox">
+
+- Verification: Did we build it right?
+
+- Validation: Did we build the right thing?
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Types of errors</div>
+  <div class="definition-shadebox">
+
+- 1)Compile-time errors (syntax)
+
+Example: missing semicolon
+
+```cpp
+int x = 5
+std::cout << x;
+```
+
+The compiler stops you early (good!).
+
+Goal: get to “compiles cleanly” quickly.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Types of errors</div>
+  <div class="definition-shadebox">
+
+- 2)Run-time errors (crash / failure)
+
+Example: divide by zero
+
+```cpp
+int a = 10;
+int b = 0;
+int c = a / b; // undefined behavior / crash
+```
+
+Prevent with checks.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Types of errors</div>
+  <div class="definition-shadebox">
+
+- 3)Logic errors (wrong results)
+
+Example: `=` vs `==`
+
+```cpp
+int count = 0;
+if (count = 10) {  // assigns 10, condition is true
+    std::cout << "Always prints!\n";
+}
+```
+
+This compiles, runs, but is wrong.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Robustness</div>
+  <div class="definition-shadebox">
+
+A robust program:
+
+- detects bad input / unusual situations
+- stays in control
+- either recovers or fails gracefully (with a clear message)
+
+A program should <spanBYMix>not</spanBYMix> “just crash” if <spanGREEN>it can detect the problem</spanGREEN>.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">C++ stream failure</div>
+  <div class="definition-shadebox">
+
+```cpp
+int x;
+std::cin >> x;
+
+if (!std::cin) {
+    std::cout << "Invalid input (expected an integer).\n";
+    return 1;
+}
+```
+
+If a user types letters, `cin` enters a fail state.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Exception handling</div>
+  <div class="definition-shadebox">
+
+Division by zero is a logic error
+
+We detect it, then throw an exception
+
+The catch block handles the problem safely
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Exception handling</div>
+  <div class="definition-shadebox">
+
+
+```
+
+#include <iostream>
+#include <stdexcept>  // for std::runtime_error
+
+int divide(int a, int b)
+{
+    if (b == 0) {
+        throw std::runtime_error("Division by zero is not allowed");
+    }
+    return a / b;
+}
+
+int main()
+{
+    try {
+        int x = 10;
+        int y = 0;
+
+        int result = divide(x, y);
+        std::cout << "Result: " << result << std::endl;
+    }
+    catch (const std::runtime_error& e) {
+        std::cout << "Error: " << e.what() << std::endl;
+    }
+
+    return 0;
+}
+
+```
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+
+```
+int x = 1 / 0;  // Undefined behavior (no exception!)
+```
+   </div>
+</div>
+
+- C++ does not automatically throw for 1 / 0
+
+- This causes undefined behavior or a crash
+
+- You must check and throw yourself
+
+
+
+
+<div id="roundbox">
+
+Exceptions are used when a function cannot complete its task correctly, such as dividing by zero. We detect the error, throw an exception, and let the caller decide how to handle it.
+
+<hr>
+
+Users cause bad inputs. Programmers cause crashes. It’s caused by the user’s input, but it is still sometimes the programmer’s responsibility.
+</div>
+
+
+
+<div id="roundbox">
+
+The user provides the bad input, but handling it correctly is the programmer’s responsibility. If the program crashes, that is a programming error.
+</div>
+
+<hr>
+
+- Triggered by user
+
+- Handled by programmer
+
+- Exceptions represent failure of a function’s contract, not blame
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">File open check</div>
+  <div class="definition-shadebox">
+
+```cpp
+#include <fstream>
+
+std::ifstream in("data.txt");
+if (!in) {
+    std::cout << "Could not open data.txt\n";
+    return 1;
+}
+```
+
+Never assume the file exists.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Assertions</div>
+  <div class="definition-shadebox">
+
+An **assertion** is a statement that should be true at a point in the program.
+
+Example reasoning:
+
+```cpp
+sum = part + 1;
+// Assert: sum > part  (if no overflow)
+```
+
+This supports “designing for correctness.”
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Preconditions</div>
+  <div class="definition-shadebox">
+
+A **precondition** must be true *before* a function runs.
+
+If it’s false, the function’s promise is not guaranteed.
+
+Example precondition for division:
+
+- divisor ≠ 0
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Postconditions</div>
+  <div class="definition-shadebox">
+
+A **postcondition** must be true *after* the function finishes (if preconditions held).
+
+Example postcondition for safe division:
+
+- if divisor ≠ 0 then result = dividend / divisor
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">C++ example: precondition with assert</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+```cpp
+#include <cassert>
+#include <vector>
+
+int getLastAndRemove(std::vector<int>& v) {
+    assert(!v.empty()); // precondition: v is not empty
+    int last = v.back();
+    v.pop_back();
+    return last;        // postcondition: size is decreased by 1
+}
+```
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Deskchecking (paper execution)</div>
+  <div class="definition-shadebox">
+
+Before running code:
+
+- trace it by hand on paper
+- write key variable values step by step
+- look for common mistakes (loops, initialization, conditions)
+
+This is cheap and catches many logic errors early.
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+
+```cpp
+int sum = 0;
+for (int i = 1; i <= 4; i++) {
+    sum = sum + i;
+}
+std::cout << sum << "\n";
+```
+
+Create a table:
+
+| i | sum before | sum after |
+|---|------------|----------|
+| 1 | 0 | 1 |
+| 2 | 1 | 3 |
+| 3 | 3 | 6 |
+| 4 | 6 | 10 |
+
+Expected output: `10`.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Walkthroughs & inspections</div>
+  <div class="definition-shadebox">
+
+- **Walkthrough**: team manually simulates logic and checks design vs requirements
+- **Inspection**: line-by-line reading; peers point out defects
+
+Key idea: “egoless programming” — you’re reviewing the code, not the person.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Unit testing</div>
+  <div class="definition-shadebox">
+
+Test one function or class *by itself*.
+
+You choose test cases to cover:
+
+- normal cases
+- boundary cases
+- error cases
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Two testing views</div>
+  <div class="definition-shadebox">
+
+- **<spanGREEN>Black-box</spanGREEN> (data coverage)**: design tests from spec (inputs/outputs)
+- **<spanGREEN>White-box</spanGREEN> (code coverage)**: design tests from code paths/branches
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Functional domain</div>
+  <div class="definition-shadebox">
+
+- Functional domain = all valid inputs.
+
+	- Some domains are small (<spanBYMix>test all</spanBYMix>).  
+	- Some are huge (<spanBYMix>test representative</spanBYMix> + <spanBYMix>boundaries</spanBYMix>).
+
+<hr>
+ 
+Example:
+
+- `PrintBoolean(bool)` has 2 inputs → exhaustive possible  
+- `PrintInteger(int)` has billions → need strategy
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Branch & path idea</div>
+  <div class="definition-shadebox">
+
+- **Statement coverage**: every statement runs at least once  
+- **Branch coverage**: every branch (true/false) runs at least once  
+- **Path coverage**: every path runs (often impossible for large code)
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Function to test (spec-first)</div>
+  <div class="definition-shadebox">
+
+```cpp
+/*
+  Divide
+  Inputs: dividend, divisor
+  Outputs:
+    - sets error = true if divisor == 0
+    - otherwise sets error = false and result = dividend / divisor
+*/
+void Divide(int dividend, int divisor, bool& error, float& result);
+```
+
+We can design tests from spec (black-box) and from code (white-box).
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Minimal black-box test cases</div>
+  <div class="definition-shadebox">
+
+- 1.divisor = 0 (error case)
+- 2.divisor ≠ 0 (normal case)
+
+Example table:
+
+| dividend | divisor | expected error | expected result |
+|---------:|--------:|:--------------:|:---------------:|
+| 8 | 0 | true | undefined |
+| 8 | 2 | false | 4.0 |
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">What is a test driver?</div>
+  <div class="definition-shadebox">
+
+A **test driver** is a small program that calls a function/class with test inputs and checks results.
+
+The driver is “temporary scaffolding” used to test components.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Simple driver (prints results)</div>
+  <div class="definition-shadebox">
+
+```cpp
+#include <iostream>
+
+void Divide(int dividend, int divisor, bool& error, float& result) {
+    if (divisor == 0) { error = true; return; }
+    error = false;
+    result = static_cast<float>(dividend) / divisor;
+}
+
+int main() {
+    bool error;
+    float result;
+
+    Divide(8, 0, error, result);
+    std::cout << "Test 1 (8/0): error=" << error << "\n";
+
+    Divide(8, 2, error, result);
+    std::cout << "Test 2 (8/2): error=" << error << " result=" << result << "\n";
+}
+```
+
+- Note: print expected vs actual.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Better driver (checks automatically)</div>
+  <div class="definition-shadebox">
+
+```cpp
+#include <iostream>
+
+void assertEqual(bool actual, bool expected, const char* name) {
+    if (actual == expected) std::cout << "[PASS] " << name << "\n";
+    else std::cout << "[FAIL] " << name << "\n";
+}
+```
+
+Then add checks for each test.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Integration testing</div>
+  <div class="definition-shadebox">
+
+After unit tests, combine modules and test interactions.
+
+Two common strategies:
+
+- **Top-down integration**: start from the top; use **stubs** for missing lower modules
+- **Bottom-up integration**: start from the bottom; use **drivers** to call lower modules
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Stubs vs Drivers</div>
+  <div class="definition-shadebox">
+
+- **Stub**: fake “lower-level” function used during top-down integration  
+- **Driver**: program that calls a module during bottom-up integration  
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Test architecture idea</div>
+  <div class="definition-shadebox">
+
+Driver reads commands from a file:
+
+- easy to add/modify tests
+- repeatable
+- produces output file for checking
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Minimal file-driven idea</div>
+  <div class="definition-shadebox">
+
+Input file (`tests.txt`):
+
+```
+DIVIDE 8 0
+DIVIDE 8 2
+QUIT
+```
+
+Driver reads a command and executes.
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">C++ skeleton: command-driven driver</div>
+  <div class="definition-shadebox">
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+
+int main() {
+    std::ifstream in("tests.txt");
+    if (!in) { std::cout << "Missing tests.txt\n"; return 1; }
+
+    std::string cmd;
+    while (in >> cmd) {
+        if (cmd == "QUIT") break;
+
+        if (cmd == "DIVIDE") {
+            int a, b; in >> a >> b;
+            // call your function here
+            std::cout << "DIVIDE " << a << " " << b << "\n";
+        }
+    }
+}
+```
+
+Start simple: print what you read, then connect to real functions.
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Why Fraction</div>
+  <div class="definition-shadebox">
+
+- small data: numerator + denominator
+- clear behaviors: initialize, get, isZero
+- easy to test with a driver
+
+Goal: learn *design + testing* together.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Minimal Fraction class</div>
+  <div class="definition-shadebox">
+
+```cpp
+class Fraction {
+public:
+    void init(int n, int d) { num = n; denom = d; }
+    int getNum() const { return num; }
+    int getDenom() const { return denom; }
+    bool isZero() const { return num == 0; }
+
+private:
+    int num;
+    int denom;
+};
+```
+
+(Then add error checks: denom ≠ 0.)
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Mini-lab</div>
+  <div class="definition-shadebox">
+
+Tasks:
+
+- Enforce denom ≠ 0 in `init` (use `throw`)
+- Add `double toDouble() const`
+- Write **3 black-box test cases** for `toDouble()`
+
+Example tests:
+- 1/2 → 0.5
+- 2/1 → 2.0
+- 0/5 → 0.0
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Mini-lab</div>
+  <div class="definition-shadebox">
+
+An Answer:
+
+```
+#include <iostream>
+#include <stdexcept>
+
+class Fraction {
+private:
+    int numer;
+    int denom;
+
+public:
+    // Constructor
+    Fraction(int n, int d) : numer(n), denom(d)
+    {
+        if (denom == 0) {
+            throw std::invalid_argument("Denominator cannot be zero");
+        }
+    }
+
+    // Convert fraction to double
+    double toDouble() const
+    {
+        return static_cast<double>(numer) / denom;
+    }
+};
+
+```
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Mini-lab</div>
+  <div class="definition-shadebox">
+
+Test Driver:
+
+```
+int main()
+{
+    try {
+        // Test case 1
+        Fraction f1(1, 2);
+        std::cout << "1/2 = " << f1.toDouble() << std::endl;
+
+        // Test case 2
+        Fraction f2(2, 1);
+        std::cout << "2/1 = " << f2.toDouble() << std::endl;
+
+        // Test case 3
+        Fraction f3(0, 5);
+        std::cout << "0/5 = " << f3.toDouble() << std::endl;
+    }
+    catch (const std::exception& e) {
+        std::cout << "Error: " << e.what() << std::endl;
+    }
+
+    return 0;
+}
+
+```
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Mini-lab</div>
+  <div class="definition-shadebox">
+
+Expected output (black-box verification)
+
+```
+
+| Input | Expected Output |
+| ----- | --------------- |
+| `1/2` | `0.5`           |
+| `2/1` | `2.0`           |
+| `0/5` | `0.0`           |
+
+```
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Mini-lab</div>
+  <div class="definition-shadebox">
+
+- Test exception behavior
+
+```
+try {
+    Fraction bad(1, 0);
+}
+catch (const std::invalid_argument& e) {
+    std::cout << "Caught error: " << e.what() << std::endl;
+}
+```
+
+   </div>
+</div>
+
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch4" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Course Podcast</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<section>
+
+  <iframe
+    src="./Discussion1.html"
+    style="width:100%;max-width:1200px;height:620px;border:0;border-radius:14px;overflow:hidden;display:block;margin:30px auto;"
+    allow="autoplay"
+    sandbox="allow-scripts allow-same-origin">
+  </iframe>
+</section>
+
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch5" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Summary</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-container">
+  <div class="definition-title">Summary</div>
+  <div class="definition-shadebox">
+
+- Process helps manage complexity + change
+- Quality goals guide good design habits
+- Specs matter: define inputs/outputs/errors/tests
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Summary (Cont.)</div>
+  <div class="definition-shadebox">
+
+- Design principles:
+  - abstraction + information hiding
+  - high cohesion + loose coupling
+  - stepwise refinement
+  - OO thinking: responsibilities + collaboration
+- Verification isn’t only “run tests”:
+  - pre/postconditions, deskchecking, reviews
+  - black-box + white-box testing
+  - test plans + test drivers
+   </div>
+</div>
+
+
+
+<iframe
+  style="width:100%;max-width:1200px;height:700px;border:0;border-radius:16px;overflow:hidden;display:block;margin:0 auto;box-shadow:0 18px 50px rgba(0,0,0,.35);background:rgba(0,0,0,.06);"
+  src="./files/1_Software Engineering Principles.pdf#page=1&zoom=page-width"
+  allow="fullscreen"
+  loading="lazy">
+</iframe>
+
+
+
+
+<iframe
+  style="width:100%;max-width:1200px;height:700px;border:0;border-radius:12px;overflow:hidden;display:block;margin:0 auto;"
+  srcdoc='<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+  body{margin:0;padding:14px;font-family:Arial,Helvetica,sans-serif;background:#32a881;}
+  .wrap{width:100%;max-width:1200px;margin:0 auto;}
+  .bar{display:flex;gap:10px;align-items:center;margin-bottom:10px;}
+  button{padding:8px 12px;border:1px solid #ccc;border-radius:8px;background:#fff;cursor:pointer;}
+  .label{margin-left:auto;font-size:14px;color:#333;}
+  .box{width:100%;height:650px;border:1px solid rgba(0,0,0,.18);border-radius:12px;overflow:auto;background:#fafafa;box-shadow:0 10px 25px rgba(0,0,0,.10);}
+  img{display:block;width:auto;height:700px;max-width:none;max-height:none;transform-origin:top left;transform:scale(1);}
+</style>
+</head>
+<body>
+  <div class="wrap" id="root">
+    <div class="bar">
+      <button id="zin" type="button">Zoom +</button>
+      <button id="zout" type="button">Zoom -</button>
+      <button id="zreset" type="button">Reset (100%)</button>
+      <span class="label" id="zl">100%</span>
+    </div>
+
+    <div class="box" id="box">
+      <img id="img" src="./images/MindMap.png" alt="Large image" />
+    </div>
+  </div>
+
+<script>
+(function(){
+  var zoom=1, step=0.2, min=0.2, max=6;
+  var img=document.getElementById("img");
+  var label=document.getElementById("zl");
+  var box=document.getElementById("box");
+
+  function apply(){
+    img.style.transform="scale("+zoom+")";
+    label.textContent=Math.round(zoom*100)+"%";
+  }
+
+  document.getElementById("zin").addEventListener("click", function(){
+    zoom=Math.min(max, zoom+step); apply();
+  });
+  document.getElementById("zout").addEventListener("click", function(){
+    zoom=Math.max(min, zoom-step); apply();
+  });
+  document.getElementById("zreset").addEventListener("click", function(){
+    zoom=1; apply();
+  });
+
+  box.addEventListener("wheel", function(e){
+    if(!e.ctrlKey) return;
+    e.preventDefault();
+    zoom += (e.deltaY < 0) ? step : -step;
+    zoom = Math.max(min, Math.min(max, zoom));
+    apply();
+  }, {passive:false});
+
+  apply();
+})();
+</script>
+</body>
+</html>'>
+</iframe>
+
+
+
+## Review 
+
+<video controls>
+  <source src="./files/From_Chaos_to_Code.mp4" type="video/mp4">
+</video>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Exercise</div>
+  <div class="definition-shadebox">
+
+Write 3 bullets:
+
+- One principle you will apply next time you code  
+- One testing idea you didn’t use before  
+- One question you still have  
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Exercise (Cont.)</div>
+  <div class="definition-com-shadebox">
+
+1.One principle you will apply next time you code   <button type="button" class="reveal-btn" data-answer="answer-q1">Show Answer</button>
+<div id="answer-q1" class="answer-box">
+<b>Answer:</b>Principle I will apply next time I code: I will hide details that may change by keeping data private and providing small public functions (information hiding / encapsulation).
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+2.One testing idea you didn’t use before <button type="button" class="reveal-btn" data-answer="answer-q2">Show Answer</button>
+<div id="answer-q2" class="answer-box">
+<b>Answer:</b>Testing idea I didn’t use before: I will write a small test driver to call one function many times with planned inputs (including edge cases) and compare expected vs actual results (black-box testing).
+</div>
+
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+3.One question you still have  <button type="button" class="reveal-btn" data-answer="answer-q3">Show Answer</button>
+<div id="answer-q3" class="answer-box">
+<b>Answer:</b>One question I still have: When should I choose an iterative model (spiral) instead of a waterfall approach for a small student project, and how do I decide based on “risk”?
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Exercise (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+
+What fundamental activities and life cycle models define the modern software engineering process? <button type="button" class="reveal-btn" data-answer="answer-q4">Show Answer</button>
+<div id="answer-q4" class="answer-box">
+<b>Answer:</b><div style="max-width:900px;margin:0 auto;border:1px solid rgba(255,255,255,0.15);border-radius:14px;background:rgba(255,255,255,0.06);box-shadow:0 10px 30px rgba(0,0,0,0.35);overflow:hidden;font-family:Arial,Helvetica,sans-serif;color:#e8eef7;">
+
+  <div style="padding:16px 18px;background:rgba(0,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.12);font-size:18px;font-weight:700;">
+    Fundamental activities + life cycle models in the modern SE process
+  </div>
+
+  <div style="height:360px;overflow-y:auto;padding:16px 18px;line-height:1.5;background:rgba(0,0,0,0.12);">
+    
+Fundamental activities + life cycle models in the modern SE process
+
+1)Fundamental (life-cycle) activities described in the chapter include:
+
+Problem analysis (understand the problem)
+
+Requirements elicitation (determine exactly what the program/system must do)
+
+Requirements specification (write what the program must do, including constraints)
+
+High-level and low-level design (“big picture” → detailed design)
+
+Implementation (coding)
+
+Testing & verification (detect/fix errors; demonstrate correctness)
+
+Delivery (release to customer/user)
+
+Operation (actual use)
+
+Maintenance (fix errors + add/modify functionality)
+
+
+2)Life-cycle models highlighted:
+
+Waterfall model: stages flow in sequence; each stage produces documented output feeding the next stage (useful when requirements are well understood and unlikely to change).
+
+Spiral model: iterative, risk-driven cycles that repeat key activities (objectives, risk assessment, development/validation) as the product evolves.
+
+The Topic also frames a software process as an integrated set of SE tools/techniques used by an organization to create systems, helping manage size/complexity and coordinate development.
+
+  </div>
+</div>
+
+</div>
+ 
+   </div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Exercise (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+
+Which core principles and design tools help engineers manage complex software system development? <button type="button" class="reveal-btn" data-answer="answer-q5">Show Answer</button>
+<div id="answer-q5" class="answer-box">
+<b>Answer:</b><div style="max-width:900px;margin:0 auto;border:1px solid rgba(255,255,255,0.15);border-radius:14px;background:rgba(255,255,255,0.06);box-shadow:0 10px 30px rgba(0,0,0,0.35);overflow:hidden;font-family:Arial,Helvetica,sans-serif;color:#e8eef7;">
+
+  <div style="padding:16px 18px;background:rgba(0,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.12);font-size:18px;font-weight:700;">
+     Core principles + design tools for managing complexity
+  </div>
+
+  <div style="height:360px;overflow-y:auto;padding:16px 18px;line-height:1.5;background:rgba(0,0,0,0.12);">
+    
+1)Core principles (how engineers “tame” complexity)
+
+Abstraction: model a complex system by keeping only the essential details needed for a particular viewpoint/purpose.
+
+Information hiding (encapsulation idea): decompose into modules, and keep lower-level details hidden so higher-level design does not depend on details most likely to change. 
+
+Modules with strong cohesion + loose coupling: a module should have a clear single purpose, “stick together well,” and hide internal decisions so other modules don’t depend on them. 
+
+Stepwise refinement: conquer complexity by refining a solution progressively (e.g., top-down, bottom-up, functional decomposition). 
+
+2) Design tools (how engineers represent and plan designs)
+
+Top-down design and object-oriented design are explicitly listed as key methodologies in the “toolbox” discussion. 
+
+CRC cards (Class–Responsibility–Collaboration) and UML are called out as tools/methods for describing and communicating designs. 
+
+  </div>
+</div>
+
+</div>
+ 
+   </div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Exercise (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+
+How do developers define and achieve high quality throughout the software project lifecycle? <button type="button" class="reveal-btn" data-answer="answer-q6">Show Answer</button>
+<div id="answer-q6" class="answer-box">
+<b>Answer:</b><div style="max-width:900px;margin:0 auto;border:1px solid rgba(255,255,255,0.15);border-radius:14px;background:rgba(255,255,255,0.06);box-shadow:0 10px 30px rgba(0,0,0,0.35);overflow:hidden;font-family:Arial,Helvetica,sans-serif;color:#e8eef7;">
+
+  <div style="padding:16px 18px;background:rgba(0,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.12);font-size:18px;font-weight:700;">
+   Defining + achieving high quality across the project life cycle<button type="button" class="reveal-btn" data-answer="answer-q5">Show Answer</button>
+
+
+  </div>
+
+  <div style="height:360px;overflow-y:auto;padding:16px 18px;line-height:1.5;background:rgba(0,0,0,0.12);">
+    
+1)How “high quality” is defined in this topic
+
+The topi defines quality software as meeting these goals:
+
+It works
+
+It can be modified without excessive time/effort
+
+It is reusable
+
+It is completed on time and within budget
+
+It also connects “works” to having clear requirements and a usable software specification (a detailed description of function/inputs/processing/outputs/special requirements that provides what’s needed to design and implement).
+
+2)How developers achieve high quality throughout the life cycle
+
+A. Start quality early with requirements + specifications
+
+The chapter emphasizes writing a detailed specification (expected inputs/outputs, processing requirements, error conditions, assumptions, and sample I/O) so you can design and code correctly “from the start.” 
+
+B. Use design principles that support change + reuse
+
+Apply abstraction, information hiding, good module structure, and stepwise refinement so the system stays understandable and easier to modify/reuse over time. 
+
+C. Build quality into the process with verification/testing practices
+
+The chapter’s stated learning goals include practices that support quality across development: identifying error sources, specifying preconditions/postconditions, doing deskchecking, walkthroughs/inspections, and applying testing ideas (e.g., black-box and white-box testing, test drivers, integration strategies). 
+
+D. Treat quality as continuous across phases (not only “at the end”)
+
+The life-cycle activities explicitly include testing & verification, plus operation and maintenance, reflecting that quality continues after delivery as changes and fixes happen. 
+
+  </div>
+</div>
+
+</div>
+ 
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Exercise (Cont.)</div>
+  <div class="definition-shadebox">
+
+What is the key activity in the spiral model of software development that sets it apart from the classic waterfall model?
+
+A.It incorporates risk assessment and management as a recurring activity in each cycle.
+
+B.It is best suited for projects where requirements are well understood and unlikely to change from the start.
+
+C.It follows a strict, linear progression through predefined stages like analysis, design, and implementation.
+
+D.It postpones all testing and verification activities until after the implementation phase is fully complete. <button type="button" class="reveal-btn" data-answer="answer-q7">Show Answer</button>
+<div id="answer-q7" class="answer-box">
+<b>Answer:</b>A. The spiral model is defined by its iterative nature, with each loop involving activities like objective setting, risk assessment, and development.
+</div>
+ 
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Exercise (Cont.)</div>
+  <div class="definition-shadebox">
+
+Which of the following best defines the concept of 'information hiding' in software engineering?
+
+A.Breaking down a large, complex problem into a series of smaller, more manageable modules.
+
+B.Simplifying a complex system by ignoring irrelevant details and focusing only on essential characteristics.
+
+C.Concealing the internal implementation details of a module to control access and prevent dependency on those details.
+
+D.Ensuring that all program code is thoroughly documented so that every detail is visible to other programmers. <button type="button" class="reveal-btn" data-answer="answer-q8">Show Answer</button>
+<div id="answer-q8" class="answer-box">
+<b>Answer:</b>C. Information hiding protects the higher levels of a design from changes in the low-level details of a module, promoting modularity.
+</div>
+ 
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Exercise (Cont.)</div>
+  <div class="definition-shadebox">
+
+According to the textbook, what is the fundamental difference between program testing and debugging?
+
+A.Testing is designed to discover the existence of errors, while debugging is focused on locating and removing known errors.
+
+B.Testing is an automated process run by tools, while debugging is a manual process performed by programmers.
+
+C.Testing and debugging are interchangeable terms for the overall process of ensuring a program works correctly.
+
+D.Testing is performed on individual modules, whereas debugging is only performed on the fully integrated program. <button type="button" class="reveal-btn" data-answer="answer-q9">Show Answer</button>
+<div id="answer-q9" class="answer-box">
+<b>Answer:</b>A. The text clearly distinguishes the two: testing is for finding bugs, and debugging is for fixing the bugs that have been found.
+</div>
+ 
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Exercise (Cont.)</div>
+  <div class="definition-shadebox">
+
+A software tester develops test cases by examining the internal code structure, logic, and paths. What type of testing is being performed?
+
+A.Acceptance testing
+
+B.Regression testing
+
+C.White-box testing
+
+D.Black-box testing <button type="button" class="reveal-btn" data-answer="answer-q10">Show Answer</button>
+<div id="answer-q10" class="answer-box">
+<b>Answer:</b>C. This approach, also called clear-box testing, is based on knowledge of the internal workings of the module or program.
+</div>
+ 
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Exercise (Cont.)</div>
+  <div class="definition-shadebox">
+
+The text emphasizes that the cost of fixing an error changes throughout the software life cycle. According to Figure below, when is it most expensive to correct an error?
+
+A.During the detailed design phase.
+
+B.During the operation phase.
+
+C.During the code and debug phase.
+
+D.During the preliminary design phase. <button type="button" class="reveal-btn" data-answer="answer-q11">Show Answer</button>
+<div id="answer-q11" class="answer-box">
+<b>Answer:</b>B. The graph shows a dramatic, near-exponential increase in cost once the software is delivered and in use by the customer.
+
+</div>
+ 
+   </div>
+</div>
+
+
+
+<img src="images/fig5.png" width="750" />
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Exercise (Cont.)</div>
+  <div class="definition-shadebox">
+
+What is the primary distinguishing feature of top-down design?
+
+A.It focuses on identifying nouns in the problem specification to create a hierarchy of objects.
+
+B.It begins with a general, high-level solution and progressively breaks it down into more detailed tasks.
+
+C.It starts by implementing and testing the lowest-level, most detailed functions first.
+
+D.It requires the use of visual tools like UML diagrams to model system components before any decomposition. <button type="button" class="reveal-btn" data-answer="answer-q12">Show Answer</button>
+<div id="answer-q12" class="answer-box">
+<b>Answer:</b>B. This method moves from the 'big picture' to the specific, decomposing the problem into a hierarchy of functions.
+</div>
+ 
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Exercise (Cont.)</div>
+  <div class="definition-shadebox">
+
+In the context of software verification, what is the difference between verification and validation?
+
+A.Verification confirms the program meets performance goals, while validation confirms it has no run-time errors.
+
+B.Verification is done manually through inspections, while validation is done by running the program.
+
+C.Verification asks 'Are we doing the job right?', while validation asks 'Are we doing the right job?'.
+
+D.Verification is about finding bugs, while validation is about fixing them. <button type="button" class="reveal-btn" data-answer="answer-q13">Show Answer</button>
+<div id="answer-q13" class="answer-box">
+<b>Answer:</b>C. Verification ensures the product fulfills its specifications, while validation ensures the product meets the user's intended purpose.
+</div>
+ 
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Exercise (Cont.)</div>
+  <div class="definition-shadebox">
+
+When using a top-down approach for integration testing, what is the function of a 'stub'?
+
+A.A program that calls the module being tested and provides its inputs, primarily used in bottom-up testing.
+
+B.A debugging tool that traces the execution path through compiled code.
+
+C.A placeholder module that simulates a lower-level function that has not been implemented yet.
+
+D.The first fully coded and tested module that forms the base of the integration. <button type="button" class="reveal-btn" data-answer="answer-q14">Show Answer</button>
+<div id="answer-q14" class="answer-box">
+<b>Answer:</b>C. Stubs allow higher-level modules to be tested before the modules they depend on are fully coded.
+</div>
+ 
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Exercse (Cont.)</div>
+  <div class="definition-shadebox">
+
+A design walk-through/inspection are both team-based review activities. What is a key difference in how they are performed?
+
+A.The author of the design leads the inspection, while a neutral moderator leads the walk-through.
+
+B.Inspections are informal peer reviews, while walk-throughs are formal meetings with management.
+
+C.Walk-throughs can only be used to review code, while inspections are only for reviewing design documents.
+
+D.In an inspection, a reader presents design line-by-line, while in a walk-through, the team simulates the design's logic with test data.
+ <button type="button" class="reveal-btn" data-answer="answer-q15">Show Answer</button>
+<div id="answer-q15" class="answer-box">
+<b>Answer:</b>D. A walk-through involves a manual simulation of execution, whereas an inspection focuses on a line-by-line reading and analysis.
+</div>
+ 
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Exercise (Cont.)</div>
+  <div class="definition-shadebox">
+
+Which of these is NOT listed as one of the four primary goals of quality software?
+
+A.It utilizes the most current and powerful hardware.
+
+B.It can be modified without excessive time and effort.
+
+C.It is reusable in other projects.
+
+D.It is completed on time and within budget. <button type="button" class="reveal-btn" data-answer="answer-q16">Show Answer</button>
+<div id="answer-q16" class="answer-box">
+<b>Answer:</b>A. While software must run on some hardware, using the latest hardware is not a defining goal of the software's quality itself.
+</div>
+ 
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+</div>
+	
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/settings.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/effects.js"></script>
+<!--<script src="settings.js"></script>-->
+<!--<script src="effects.js"></script>-->
+</body>
+</html>
