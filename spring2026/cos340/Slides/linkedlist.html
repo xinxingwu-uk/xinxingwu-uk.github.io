@@ -1,0 +1,709 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Linked List Node Simulation (Light Theme)</title>
+  <style>
+    :root{
+      --bg1:#f7f9ff;
+      --bg2:#ffffff;
+      --ink:#0f172a;
+      --muted:rgba(15,23,42,.68);
+      --line:rgba(15,23,42,.12);
+
+      --nodeBg:#ffffff;
+      --nodeBorder:rgba(15,23,42,.14);
+      --nodeShadow: 0 14px 35px rgba(2,6,23,.10);
+
+      --blue:#2563eb;    /* link */
+      --blue2:#38bdf8;   /* link highlight */
+      --green:#16a34a;   /* active */
+      --violet:#7c3aed;  /* pointer text */
+      --amber:#f59e0b;
+      --red:#ef4444;
+    }
+
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--ink);
+      background:
+        radial-gradient(900px 520px at 20% 10%, rgba(56,189,248,.18), transparent 60%),
+        radial-gradient(900px 520px at 85% 18%, rgba(124,58,237,.14), transparent 62%),
+        radial-gradient(900px 520px at 55% 95%, rgba(22,163,74,.12), transparent 62%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+    }
+
+    .wrap{ max-width:1200px; margin:18px auto; padding:18px; }
+
+    .panel{
+      background: rgba(255,255,255,.78);
+      border: 1px solid rgba(15,23,42,.10);
+      border-radius: 18px;
+      box-shadow: 0 18px 60px rgba(2,6,23,.10);
+      overflow:hidden;
+      backdrop-filter: blur(6px);
+    }
+
+    .top{
+      padding:16px;
+      border-bottom:1px solid rgba(15,23,42,.10);
+      display:flex;
+      flex-wrap:wrap;
+      gap:14px;
+      align-items:flex-start;
+      justify-content:space-between;
+    }
+    .title{ font-weight:900; letter-spacing:.2px; font-size:18px; }
+    .subtitle{ margin-top:6px; color:var(--muted); font-size:13px; line-height:1.35; max-width: 860px; }
+
+    .dots{ display:flex; gap:8px; align-items:center; padding-top:2px; }
+    .dot{ width:10px; height:10px; border-radius:999px; }
+    .dot.r{ background:var(--red); box-shadow:0 0 0 3px rgba(239,68,68,.16); }
+    .dot.y{ background:var(--amber); box-shadow:0 0 0 3px rgba(245,158,11,.14); }
+    .dot.g{ background:var(--green); box-shadow:0 0 0 3px rgba(22,163,74,.14); }
+
+    .controls{
+      padding:14px 16px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+      border-bottom:1px solid rgba(15,23,42,.10);
+      background: rgba(255,255,255,.60);
+    }
+
+    .btn{
+      cursor:pointer;
+      border:1px solid rgba(15,23,42,.16);
+      background: rgba(255,255,255,.85);
+      color:var(--ink);
+      border-radius:12px;
+      padding:10px 12px;
+      font-weight:800;
+      font-size:13px;
+      transition: transform .05s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
+      user-select:none;
+      box-shadow: 0 10px 22px rgba(2,6,23,.08);
+    }
+    .btn:hover{
+      background:#fff;
+      border-color: rgba(15,23,42,.22);
+      box-shadow: 0 12px 26px rgba(2,6,23,.10);
+    }
+    .btn:active{ transform: translateY(1px); }
+
+    .btn.primary{
+      border-color: rgba(37,99,235,.30);
+      background: linear-gradient(180deg, rgba(37,99,235,.14), rgba(56,189,248,.12));
+    }
+    .btn.primary:hover{
+      border-color: rgba(37,99,235,.42);
+      background: linear-gradient(180deg, rgba(37,99,235,.18), rgba(56,189,248,.14));
+    }
+
+    .btn.danger{
+      border-color: rgba(239,68,68,.28);
+      background: rgba(239,68,68,.10);
+    }
+
+    .field{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border:1px solid rgba(15,23,42,.14);
+      border-radius:12px;
+      background: rgba(255,255,255,.78);
+      box-shadow: 0 10px 22px rgba(2,6,23,.06);
+    }
+    .field label{ font-size:12px; color:var(--muted); font-weight:900; }
+    .field input{
+      width:92px;
+      background: transparent;
+      border:0;
+      outline:none;
+      color:var(--ink);
+      font-weight:900;
+      font-size:13px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    }
+
+    .status{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      padding: 0 16px 14px 16px;
+    }
+    .pill{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      border:1px solid rgba(15,23,42,.12);
+      background: rgba(255,255,255,.70);
+      border-radius:999px;
+      padding:8px 10px;
+      font-size:12px;
+      color:var(--muted);
+      box-shadow: 0 10px 22px rgba(2,6,23,.06);
+    }
+    .pill b{
+      color:var(--ink);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-weight:1000;
+    }
+
+    .viz{
+      position:relative;
+      padding: 18px 16px 22px 16px;
+      overflow-x:auto;
+      overflow-y:hidden;
+      background: linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,.85));
+    }
+
+    .row{
+      position:relative;
+      display:flex;
+      align-items:flex-start;
+      gap: 22px;
+      padding: 8px 8px 16px 8px;
+      min-height: 150px;
+      width: fit-content;
+    }
+
+    svg.arrows{
+      position:absolute;
+      left:0; top:0;
+      width:100%;
+      height:100%;
+      pointer-events:none;
+      overflow:visible;
+    }
+
+    .node{
+      position:relative;
+      width: 260px;
+      border-radius:16px;
+      border:1px solid var(--nodeBorder);
+      background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,252,.98));
+      box-shadow: var(--nodeShadow);
+      overflow:hidden;
+      cursor:pointer;
+      transition: transform .08s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    .node:hover{
+      border-color: rgba(37,99,235,.24);
+      box-shadow: 0 18px 44px rgba(2,6,23,.12);
+      transform: translateY(-1px);
+    }
+
+    .addr{
+      padding:10px 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-size:12px;
+      color: rgba(15,23,42,.92);
+      border-bottom:1px solid rgba(15,23,42,.10);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      background: rgba(2,6,23,.02);
+    }
+
+    .badge{
+      font-size:11px;
+      font-weight:1000;
+      padding: 5px 8px;
+      border-radius:999px;
+      border:1px solid rgba(15,23,42,.12);
+      color: rgba(15,23,42,.88);
+      background: rgba(255,255,255,.85);
+    }
+
+    .body{
+      display:grid;
+      grid-template-columns: 1.25fr 1fr;
+      min-height: 88px;
+    }
+    .cell{ padding: 12px 12px 14px 12px; }
+    .cell + .cell{ border-left:1px solid rgba(15,23,42,.10); }
+
+    .label{
+      font-size:11px;
+      color: rgba(15,23,42,.70);
+      letter-spacing:.35px;
+      font-weight:1000;
+      text-transform: uppercase;
+    }
+    .value{
+      margin-top:8px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-weight:1000;
+      font-size:14px;
+      color: rgba(15,23,42,.94);
+      word-break: break-word;
+    }
+    .value .data{ color: var(--blue); }
+    .value .ptr{ color: var(--violet); }
+
+    .foot{
+      padding: 10px 12px;
+      border-top:1px solid rgba(15,23,42,.10);
+      color: rgba(15,23,42,.68);
+      font-size:12px;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      background: rgba(2,6,23,.02);
+    }
+
+    .node.current{
+      outline: 2px solid rgba(56,189,248,.55);
+      box-shadow: 0 0 0 6px rgba(56,189,248,.15), 0 18px 45px rgba(2,6,23,.14);
+    }
+    .node.head{
+      outline: 2px solid rgba(22,163,74,.55);
+      box-shadow: 0 0 0 6px rgba(22,163,74,.14), 0 18px 45px rgba(2,6,23,.12);
+    }
+
+    .nullBox{
+      width: 140px;
+      height: 92px;
+      border-radius:16px;
+      border:2px dashed rgba(15,23,42,.22);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color: rgba(15,23,42,.62);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      background: rgba(255,255,255,.72);
+      margin-top: 38px;
+      box-shadow: 0 12px 28px rgba(2,6,23,.06);
+    }
+
+    .codehint{
+      padding: 14px 16px 16px 16px;
+      border-top:1px solid rgba(15,23,42,.10);
+      color: rgba(15,23,42,.74);
+      font-size:13px;
+      line-height:1.5;
+      background: rgba(255,255,255,.70);
+    }
+    .codehint pre{
+      margin:10px 0 0 0;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid rgba(15,23,42,.12);
+      background: rgba(255,255,255,.85);
+      overflow:auto;
+      color: rgba(15,23,42,.92);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-size:12.5px;
+      line-height:1.6;
+      box-shadow: 0 10px 22px rgba(2,6,23,.06);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="panel">
+      <div class="top">
+        <div>
+          <div class="title">Linked List Simulation: <span style="color:var(--blue);">[info | next]</span></div>
+          <div class="subtitle">
+            <b>next</b> stores the <b>address</b> of the next node. Click a node to set <b>current</b>.
+            Press <b>Step</b> to do: <span style="font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:900;">current = current-&gt;next</span>.
+          </div>
+        </div>
+        <div class="dots" aria-hidden="true">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="btn primary" onclick="addNode()">+ Add node</button>
+
+        <div class="field">
+          <label>Delete index</label>
+          <input id="delIndex" value="0" />
+          <button class="btn danger" onclick="deleteAtIndex()">Delete</button>
+        </div>
+
+        <button class="btn" onclick="stepPointer()">▶ Step current = current-&gt;next</button>
+        <button class="btn" onclick="resetAll()">↺ Reset demo</button>
+      </div>
+
+      <div class="status">
+        <div class="pill">head points to: <b id="headAddr">null</b></div>
+        <div class="pill">current points to: <b id="curAddr">null</b></div>
+        <div class="pill">length: <b id="len">0</b></div>
+        <div class="pill">Tip: the <b>green</b> link is the current-&gt;next</div>
+      </div>
+
+      <div class="viz" id="viz">
+        <div class="row" id="row">
+          <svg class="arrows" id="arrows"></svg>
+        </div>
+      </div>
+
+      <div class="codehint">
+        Struct being visualized:
+        <pre>struct NodeType {
+    ItemType info;   // data
+    NodeType* next;  // pointer to next node (address)
+};
+
+// [data | next] → [data | next] → ... → null</pre>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ---------- Data model ----------
+    var nodes = [];
+    var currentIndex = -1;
+
+    function makeHexAddress(n) {
+      var base = 0x1000;
+      var step = 0x10;
+      var v = base + (n * step);
+      return "0x" + v.toString(16).toUpperCase();
+    }
+
+    function seedDemo() {
+      nodes = [
+        { info: "Amy",   addr: makeHexAddress(0) },
+        { info: "Becca", addr: makeHexAddress(1) },
+        { info: "Chris", addr: makeHexAddress(2) }
+      ];
+      currentIndex = 0;
+      render();
+    }
+
+    // ---------- Rendering ----------
+    function render() {
+      var row = document.getElementById("row");
+      var arrows = document.getElementById("arrows");
+
+      while (row.firstChild) row.removeChild(row.firstChild);
+      row.appendChild(arrows);
+
+      for (var i = 0; i < nodes.length; i++) {
+        var node = nodes[i];
+        var nextAddr = (i < nodes.length - 1) ? nodes[i + 1].addr : "null";
+
+        var nodeEl = document.createElement("div");
+        nodeEl.className = "node";
+        nodeEl.setAttribute("data-index", String(i));
+        nodeEl.onclick = (function(idx){
+          return function(){ setCurrent(idx); };
+        })(i);
+
+        if (i === 0) nodeEl.classList.add("head");
+        if (i === currentIndex) nodeEl.classList.add("current");
+
+        nodeEl.innerHTML =
+          '<div class="addr">' +
+            '<span><span class="badge">addr</span> ' + node.addr + '</span>' +
+            '<span class="badge">NodeType</span>' +
+          '</div>' +
+          '<div class="body">' +
+            '<div class="cell">' +
+              '<div class="label">info (data)</div>' +
+              '<div class="value"><span class="data">' + escapeHtml(node.info) + '</span></div>' +
+            '</div>' +
+            '<div class="cell nextCell">' +
+              '<div class="label">next (pointer)</div>' +
+              '<div class="value"><span class="ptr">' + nextAddr + '</span></div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="foot">' +
+            '<span>click to set <b>current</b></span>' +
+            '<span style="color:rgba(15,23,42,.55);font-family:ui-monospace,Menlo,Consolas,monospace;">index ' + i + '</span>' +
+          '</div>';
+
+        row.appendChild(nodeEl);
+      }
+
+      var nullEl = document.createElement("div");
+      nullEl.className = "nullBox";
+      nullEl.textContent = "null";
+      row.appendChild(nullEl);
+
+      updatePills();
+      drawArrows();
+    }
+
+    function updatePills() {
+      var headAddr = (nodes.length > 0) ? nodes[0].addr : "null";
+      var curAddr = (currentIndex >= 0 && currentIndex < nodes.length) ? nodes[currentIndex].addr : "null";
+
+      document.getElementById("headAddr").textContent = headAddr;
+      document.getElementById("curAddr").textContent = curAddr;
+      document.getElementById("len").textContent = String(nodes.length);
+    }
+
+    // ---------- Better arrows ----------
+    function drawArrows() {
+      var viz = document.getElementById("viz");
+      var row = document.getElementById("row");
+      var svg = document.getElementById("arrows");
+
+      while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+      var rowRect = row.getBoundingClientRect();
+      svg.setAttribute("width", String(rowRect.width));
+      svg.setAttribute("height", String(rowRect.height));
+      svg.setAttribute("viewBox", "0 0 " + rowRect.width + " " + rowRect.height);
+
+      // defs: gradients + shadow + arrowheads
+      var NS = "http://www.w3.org/2000/svg";
+      var defs = document.createElementNS(NS, "defs");
+
+      var filter = document.createElementNS(NS, "filter");
+      filter.setAttribute("id", "softShadow");
+      filter.setAttribute("x", "-30%");
+      filter.setAttribute("y", "-30%");
+      filter.setAttribute("width", "160%");
+      filter.setAttribute("height", "160%");
+      var feDrop = document.createElementNS(NS, "feDropShadow");
+      feDrop.setAttribute("dx", "0");
+      feDrop.setAttribute("dy", "3");
+      feDrop.setAttribute("stdDeviation", "3");
+      feDrop.setAttribute("flood-color", "rgba(2,6,23,.22)");
+      feDrop.setAttribute("flood-opacity", "1");
+      filter.appendChild(feDrop);
+      defs.appendChild(filter);
+
+      var grad = document.createElementNS(NS, "linearGradient");
+      grad.setAttribute("id", "linkGrad");
+      grad.setAttribute("x1", "0%");
+      grad.setAttribute("y1", "0%");
+      grad.setAttribute("x2", "100%");
+      grad.setAttribute("y2", "0%");
+      var s1 = document.createElementNS(NS, "stop");
+      s1.setAttribute("offset", "0%");
+      s1.setAttribute("stop-color", "rgba(37,99,235,.95)");
+      var s2 = document.createElementNS(NS, "stop");
+      s2.setAttribute("offset", "100%");
+      s2.setAttribute("stop-color", "rgba(56,189,248,.92)");
+      grad.appendChild(s1); grad.appendChild(s2);
+      defs.appendChild(grad);
+
+      var gradActive = document.createElementNS(NS, "linearGradient");
+      gradActive.setAttribute("id", "activeGrad");
+      gradActive.setAttribute("x1", "0%");
+      gradActive.setAttribute("y1", "0%");
+      gradActive.setAttribute("x2", "100%");
+      gradActive.setAttribute("y2", "0%");
+      var a1 = document.createElementNS(NS, "stop");
+      a1.setAttribute("offset", "0%");
+      a1.setAttribute("stop-color", "rgba(22,163,74,.96)");
+      var a2 = document.createElementNS(NS, "stop");
+      a2.setAttribute("offset", "100%");
+      a2.setAttribute("stop-color", "rgba(34,197,94,.92)");
+      gradActive.appendChild(a1); gradActive.appendChild(a2);
+      defs.appendChild(gradActive);
+
+      var marker = document.createElementNS(NS, "marker");
+      marker.setAttribute("id", "arrowHeadBlue");
+      marker.setAttribute("markerWidth", "12");
+      marker.setAttribute("markerHeight", "12");
+      marker.setAttribute("refX", "10");
+      marker.setAttribute("refY", "6");
+      marker.setAttribute("orient", "auto");
+      var mPath = document.createElementNS(NS, "path");
+      mPath.setAttribute("d", "M 0 1 L 11 6 L 0 11 Q 2 6 0 1 Z");
+      mPath.setAttribute("fill", "rgba(37,99,235,.95)");
+      marker.appendChild(mPath);
+      defs.appendChild(marker);
+
+      var marker2 = document.createElementNS(NS, "marker");
+      marker2.setAttribute("id", "arrowHeadGreen");
+      marker2.setAttribute("markerWidth", "12");
+      marker2.setAttribute("markerHeight", "12");
+      marker2.setAttribute("refX", "10");
+      marker2.setAttribute("refY", "6");
+      marker2.setAttribute("orient", "auto");
+      var mPath2 = document.createElementNS(NS, "path");
+      mPath2.setAttribute("d", "M 0 1 L 11 6 L 0 11 Q 2 6 0 1 Z");
+      mPath2.setAttribute("fill", "rgba(22,163,74,.96)");
+      marker2.appendChild(mPath2);
+      defs.appendChild(marker2);
+
+      svg.appendChild(defs);
+
+      var nodeEls = row.querySelectorAll(".node");
+
+      // helper to draw a single link
+      function drawLink(startX, startY, endX, endY, isActive) {
+        // make a nicer S-curve that "bows" upward slightly
+        var dx = Math.max(80, (endX - startX) * 0.55);
+        var lift = -Math.min(26, Math.abs(endX - startX) * 0.10); // slight upward curve
+
+        var c1X = startX + dx;
+        var c1Y = startY + lift;
+        var c2X = endX - dx;
+        var c2Y = endY + lift;
+
+        // wide soft under-stroke (glow-ish)
+        var under = document.createElementNS(NS, "path");
+        under.setAttribute("d",
+          "M " + startX + " " + startY +
+          " C " + c1X + " " + c1Y + ", " + c2X + " " + c2Y + ", " + endX + " " + endY
+        );
+        under.setAttribute("fill", "none");
+        under.setAttribute("stroke", isActive ? "rgba(22,163,74,.18)" : "rgba(37,99,235,.16)");
+        under.setAttribute("stroke-width", isActive ? "10" : "9");
+        under.setAttribute("stroke-linecap", "round");
+        under.setAttribute("filter", "url(#softShadow)");
+        svg.appendChild(under);
+
+        // main stroke
+        var curve = document.createElementNS(NS, "path");
+        curve.setAttribute("d", under.getAttribute("d"));
+        curve.setAttribute("fill", "none");
+        curve.setAttribute("stroke", isActive ? "url(#activeGrad)" : "url(#linkGrad)");
+        curve.setAttribute("stroke-width", isActive ? "4.5" : "4");
+        curve.setAttribute("stroke-linecap", "round");
+        curve.setAttribute("marker-end", isActive ? "url(#arrowHeadGreen)" : "url(#arrowHeadBlue)");
+        curve.setAttribute("filter", "url(#softShadow)");
+
+        // animated dash for active link
+        if (isActive) {
+          curve.setAttribute("stroke-dasharray", "10 9");
+          curve.style.animation = "dash 1.2s linear infinite";
+        }
+
+        svg.appendChild(curve);
+
+        // little “port” dot at the start (looks like a connector)
+        var dot = document.createElementNS(NS, "circle");
+        dot.setAttribute("cx", String(startX));
+        dot.setAttribute("cy", String(startY));
+        dot.setAttribute("r", "4.2");
+        dot.setAttribute("fill", isActive ? "rgba(22,163,74,.95)" : "rgba(37,99,235,.95)");
+        dot.setAttribute("filter", "url(#softShadow)");
+        svg.appendChild(dot);
+      }
+
+      // CSS animation injected via JS (keeps this single-file)
+      if (!document.getElementById("dashKeyframes")) {
+        var st = document.createElement("style");
+        st.id = "dashKeyframes";
+        st.textContent = "@keyframes dash{to{stroke-dashoffset:-19;}}";
+        document.head.appendChild(st);
+      }
+
+      // i -> i+1
+      for (var i = 0; i < nodeEls.length; i++) {
+        if (i >= nodes.length - 1) break;
+
+        var fromNode = nodeEls[i];
+        var toNode = nodeEls[i + 1];
+
+        var fromCell = fromNode.querySelector(".nextCell");
+        var toBody = toNode.querySelector(".body");
+
+        var a = fromCell.getBoundingClientRect();
+        var b = toBody.getBoundingClientRect();
+
+        // row-local coords
+        var startX = (a.right - rowRect.left) - 8; // slightly inside the next cell
+        var startY = (a.top + a.height / 2 - rowRect.top);
+        var endX   = (b.left - rowRect.left) + 8;  // slightly inside next node
+        var endY   = (b.top + b.height / 2 - rowRect.top);
+
+        var isActive = (i === currentIndex);
+        drawLink(startX, startY, endX, endY, isActive);
+      }
+
+      // last -> null
+      if (nodes.length > 0) {
+        var last = nodeEls[nodes.length - 1];
+        var nullBox = row.querySelector(".nullBox");
+        var fromCell2 = last.querySelector(".nextCell");
+
+        var a2 = fromCell2.getBoundingClientRect();
+        var n2 = nullBox.getBoundingClientRect();
+
+        var startX2 = (a2.right - rowRect.left) - 8;
+        var startY2 = (a2.top + a2.height / 2 - rowRect.top);
+        var endX2   = (n2.left - rowRect.left) + 10;
+        var endY2   = (n2.top + n2.height / 2 - rowRect.top);
+
+        var isActiveLast = (currentIndex === nodes.length - 1);
+        drawLink(startX2, startY2, endX2, endY2, isActiveLast);
+      }
+    }
+
+    // keep arrows aligned when scrolling/resizing
+    window.addEventListener("resize", function(){ drawArrows(); });
+    document.getElementById("viz").addEventListener("scroll", function(){ drawArrows(); });
+
+    // ---------- Interactions ----------
+    function setCurrent(idx) {
+      if (idx < 0 || idx >= nodes.length) return;
+      currentIndex = idx;
+      render();
+    }
+
+    function stepPointer() {
+      if (nodes.length === 0) { currentIndex = -1; render(); return; }
+      if (currentIndex < 0) { currentIndex = 0; render(); return; }
+      if (currentIndex >= nodes.length - 1) { currentIndex = -1; render(); return; }
+      currentIndex = currentIndex + 1;
+      render();
+    }
+
+    function addNode() {
+      var value = prompt("Enter info (data) for the new node:", "NewStudent");
+      if (value === null) return;
+
+      var newIndex = nodes.length;
+      nodes.push({ info: value.trim() === "" ? "Empty" : value.trim(), addr: makeHexAddress(newIndex) });
+
+      if (nodes.length === 1) currentIndex = 0;
+      render();
+
+      var viz = document.getElementById("viz");
+      viz.scrollLeft = viz.scrollWidth;
+    }
+
+    function deleteAtIndex() {
+      var raw = document.getElementById("delIndex").value;
+      var idx = parseInt(raw, 10);
+
+      if (isNaN(idx)) { alert("Please enter a valid index (0, 1, 2, ...)."); return; }
+      if (idx < 0 || idx >= nodes.length) { alert("Index out of range."); return; }
+
+      nodes.splice(idx, 1);
+
+      for (var i = 0; i < nodes.length; i++) nodes[i].addr = makeHexAddress(i);
+
+      if (nodes.length === 0) currentIndex = -1;
+      else if (currentIndex === -1) { /* keep null */ }
+      else if (currentIndex === idx) currentIndex = Math.min(idx, nodes.length - 1);
+      else if (currentIndex > idx) currentIndex = currentIndex - 1;
+
+      render();
+    }
+
+    function resetAll(){ seedDemo(); }
+
+    function escapeHtml(s) {
+      return String(s)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    // Start
+    seedDemo();
+  </script>
+</body>
+</html>
