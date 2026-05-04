@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Avatar Media Slides</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f7f5;
+      color: #222;
+    }
+
+    .slide {
+      min-height: 100vh;
+      padding: 40px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      page-break-after: always;
+    }
+
+    h1, h2 {
+      color: #1f6f43;
+      margin-bottom: 25px;
+    }
+
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 24px;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: white;
+      padding: 15px;
+      border-radius: 14px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+      text-align: center;
+    }
+
+    img, video {
+      border-radius: 10px;
+      object-fit: cover;
+      background: #ddd;
+    }
+
+    .name {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #1f6f43;
+    }
+
+    button {
+      background: #1f6f43;
+      color: white;
+      border: none;
+      padding: 12px 22px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #155232;
+    }
+
+    .note {
+      max-width: 850px;
+      background: #ffffff;
+      border-left: 5px solid #1f6f43;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 25px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Slide 1 -->
+  <section class="slide">
+    <h1>Demo 1: Speaking Avatars</h1>
+
+    <div class="grid">
+      <div class="card">
+        <img src="images/ancient.jpg" width="140" height="180">
+        <div class="name">Ancient</div>
+      </div>
+
+      <div class="card">
+        <img src="images/gaussian.jpg" width="140" height="180">
+        <div class="name">Gaussian</div>
+      </div>
+
+      <div class="card">
+        <img src="images/hilbert.jpg" width="220" height="180">
+        <div class="name">Hilbert</div>
+      </div>
+
+      <div class="card">
+        <img src="images/turing.jpg" width="140" height="180">
+        <div class="name">Turing</div>
+      </div>
+
+      <div class="card">
+        <img src="images/loki.jpg" width="200" height="180">
+        <div class="name">Loki</div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <video width="140" height="180" controls src="./videos/ancient.mp4"></video>
+      <video width="140" height="180" controls src="./videos/gaussian.mp4"></video>
+      <video width="220" height="250" controls src="./videos/hilbert.mp4"></video>
+      <video width="140" height="180" controls src="./videos/turing.mp4"></video>
+      <video width="200" height="230" controls src="./videos/loki.mp4"></video>
+    </div>
+  </section>
+
+
+  <!-- Slide 2 -->
+  <section class="slide">
+    <h2>Demo 2 (a): Swapping face</h2>
+
+    <div class="note">
+      From left to right: Jue, Alan Turing, Isaac Newton, and William Shakespeare.
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <img src="./images/not_found.jpg" width="140" height="180">
+        <div class="name">Jue</div>
+      </div>
+
+      <div class="card">
+        <img src="./images/turing.jpg" width="140" height="180">
+        <div class="name">Alan Turing</div>
+      </div>
+
+      <div class="card">
+        <img src="./images/Newton.jpg" width="220" height="180">
+        <div class="name">Isaac Newton</div>
+      </div>
+
+      <div class="card">
+        <img src="./images/shakespeare.jpeg" width="220" height="180">
+        <div class="name">Shakespeare</div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <video class="avatarVideo" width="140" height="220" controls src="./videos/jue.mp4"></video>
+      <video class="avatarVideo" width="140" height="220" controls src="./videos/TuringSwaping.mp4"></video>
+      <video class="avatarVideo" width="230" height="180" controls src="./videos/Newton.mp4"></video>
+      <video class="avatarVideo" width="230" height="180" controls src="./videos/Shakespeare.mp4"></video>
+    </div>
+
+    <button onclick="toggleGroup('.avatarVideo')">Play / Pause All Videos</button>
+  </section>
+
+
+  <!-- Slide 3 -->
+  <section class="slide">
+    <h2>Demo 2 (b): Swapping face</h2>
+
+    <div class="grid">
+      <div class="card">
+        <video class="demoVideo" width="350" height="290" controls src="./videos/hilbertVideo.mp4"></video>
+        <div class="name">Hilbert Demo</div>
+      </div>
+
+      <div class="card">
+        <video class="demoVideo" width="350" height="290" controls src="./videos/cantor.mp4"></video>
+        <div class="name">Cantor Demo</div>
+      </div>
+
+      <div class="card">
+        <video class="demoVideo" width="350" height="290" controls src="./videos/me.mp4"></video>
+        <div class="name">Instructor Demo</div>
+      </div>
+    </div>
+
+    <button onclick="toggleGroup('.demoVideo')">Play / Pause All Videos</button>
+  </section>
+
+
+  <script>
+    function toggleGroup(selector) {
+      var videos = document.querySelectorAll(selector);
+      var shouldPlay = false;
+
+      for (var i = 0; i < videos.length; i++) {
+        if (videos[i].paused) {
+          shouldPlay = true;
+          break;
+        }
+      }
+
+      for (var j = 0; j < videos.length; j++) {
+        if (shouldPlay) {
+          videos[j].play();
+        } else {
+          videos[j].pause();
+        }
+      }
+    }
+  </script>
+
+</body>
+</html>
