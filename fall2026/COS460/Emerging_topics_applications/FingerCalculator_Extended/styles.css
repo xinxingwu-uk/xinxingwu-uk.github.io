@@ -1,0 +1,362 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: Arial, Helvetica, sans-serif;
+  color: white;
+  background: #020617;
+}
+
+#app {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #020617;
+}
+
+#webcam {
+  display: none;
+}
+
+#canvas {
+  position: absolute;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  display: block;
+  background: #020617;
+  z-index: 1;
+}
+
+#screenShade {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at center, rgba(255, 255, 255, 0.04), rgba(0, 0, 0, 0.25)),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.65));
+}
+
+#hud {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 28px;
+  pointer-events: none;
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 24px;
+  background: rgba(15, 23, 42, 0.48);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+}
+
+.brandIcon {
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  font-size: 30px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.brand h2 {
+  margin: 0;
+  font-size: 24px;
+  letter-spacing: 0.3px;
+}
+
+.brand p {
+  margin: 4px 0 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 14px;
+}
+
+.topControls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  pointer-events: auto;
+}
+
+.smallBtn,
+.status {
+  min-height: 44px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 15px;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(15, 23, 42, 0.52);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 14px 38px rgba(0, 0, 0, 0.25);
+}
+
+.smallBtn {
+  cursor: pointer;
+}
+
+.smallBtn.active {
+  border-color: rgba(34, 197, 94, 0.65);
+  color: #bbf7d0;
+}
+
+.status.good {
+  color: #bbf7d0;
+  border-color: rgba(34, 197, 94, 0.65);
+}
+
+.status.waiting {
+  color: #fde68a;
+  border-color: rgba(234, 179, 8, 0.65);
+}
+
+.status.error {
+  color: #fecaca;
+  border-color: rgba(248, 113, 113, 0.7);
+}
+
+.centerStage {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.totalCircle {
+  width: clamp(180px, 24vw, 300px);
+  height: clamp(180px, 24vw, 300px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.08)),
+    rgba(15, 23, 42, 0.28);
+  backdrop-filter: blur(18px);
+  box-shadow:
+    0 30px 90px rgba(0, 0, 0, 0.36),
+    inset 0 0 50px rgba(255, 255, 255, 0.06);
+}
+
+.circleLabel {
+  font-size: clamp(18px, 2vw, 28px);
+  color: rgba(255, 255, 255, 0.72);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+#totalCount {
+  font-size: clamp(76px, 12vw, 150px);
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+}
+
+.bottomPanel {
+  width: min(980px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1.25fr 1fr;
+  gap: 16px;
+  pointer-events: none;
+}
+
+.countCard {
+  min-height: 150px;
+  padding: 20px;
+  text-align: center;
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(15, 23, 42, 0.52);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.32);
+}
+
+.cardLabel {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 16px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.cardNumber {
+  margin-top: 8px;
+  font-size: clamp(52px, 7vw, 82px);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.equationCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.equationText {
+  margin-top: 14px;
+  font-size: clamp(34px, 5vw, 62px);
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.handMessage {
+  margin-top: 12px;
+  min-height: 22px;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 15px;
+}
+
+.fingerDots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.fingerDots span {
+  width: 13px;
+  height: 13px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.fingerDots span.on {
+  background: #22c55e;
+  box-shadow: 0 0 16px rgba(34, 197, 94, 0.9);
+}
+
+#startOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: yellow;
+  transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+
+#startOverlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.startCard {
+  width: min(520px, 100%);
+  padding: 36px;
+  text-align: center;
+  border-radius: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: green;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.45);
+}
+
+.startIcon {
+  width: 86px;
+  height: 86px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 18px;
+  font-size: 48px;
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.startCard h1 {
+  margin: 0;
+  font-size: clamp(32px, 6vw, 52px);
+}
+
+.startCard p {
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.6;
+  font-size: 17px;
+}
+
+#startBtn {
+  margin-top: 12px;
+  padding: 16px 30px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #020617;
+  border: none;
+  border-radius: 18px;
+  cursor: pointer;
+  background: yellow;
+  box-shadow: 0 18px 45px rgba(96, 165, 250, 0.3);
+}
+
+#startBtn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.smallNote {
+  margin-top: 18px;
+  font-size: 14px !important;
+  color: rgba(255, 255, 255, 0.55) !important;
+}
+
+@media (max-width: 760px) {
+  #hud {
+    padding: 18px;
+  }
+
+  .topBar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .brand {
+    justify-content: center;
+  }
+
+  .topControls {
+    justify-content: center;
+  }
+
+  .bottomPanel {
+    grid-template-columns: 1fr;
+  }
+
+  .countCard {
+    min-height: 120px;
+  }
+
+  .totalCircle {
+    width: 170px;
+    height: 170px;
+  }
+}

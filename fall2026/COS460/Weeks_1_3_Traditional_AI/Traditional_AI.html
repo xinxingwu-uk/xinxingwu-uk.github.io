@@ -1,0 +1,2985 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Supervised & Unsupervised Machine Learning</title>
+    <meta name="description" content="A set of slides for Machine Learning">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/effectsGreen.css">
+	<!--<link rel="stylesheet" href="./css/style.css">-->
+	<!--<link rel="stylesheet" href="./css/effects.css">-->
+
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+
+		function startCountdown() {
+			const countdownBox = document.getElementById('classCountdown');
+			if (!countdownBox) return;
+
+			// Target: Last day of classes, Saturday, December 5, 2026.
+			const targetDate = new Date(2026, 11, 5, 0, 0, 0).getTime();
+
+			function updateCountdown() {
+				const now = new Date().getTime();
+				const distance = targetDate - now;
+
+				if (distance <= 0) {
+					const today = new Date();
+					if (today.getFullYear() === 2026 && today.getMonth() === 11 && today.getDate() === 5) {
+						countdownBox.innerHTML = '<span class="count-label">Last day of classes</span><span class="count-time">Today — Dec. 5, 2026</span>';
+					} else {
+						countdownBox.innerHTML = '<span class="count-label">Last day of classes</span><span class="count-time">Completed — Dec. 5, 2026</span>';
+					}
+					return;
+				}
+
+				const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+				const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+				const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+				const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+				countdownBox.innerHTML = '<span class="count-label">Last day of classes: Dec. 5, 2026</span>' +
+					'<span class="count-time">' + days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's</span>';
+			}
+
+			updateCountdown();
+			setInterval(updateCountdown, 1000);
+		}
+
+		function startBubbleAnimation() {
+			const bubbleLayer = document.getElementById('bubbleLayer');
+			if (!bubbleLayer) return;
+
+			function createBubble() {
+				const bubble = document.createElement('span');
+				const size = Math.floor(8 + Math.random() * 22);
+				const left = Math.random() * 100;
+				const duration = Math.floor(28 + Math.random() * 22);
+				const drift = Math.floor(-120 + Math.random() * 240);
+
+				bubble.className = 'floating-bubble';
+				bubble.style.width = size + 'px';
+				bubble.style.height = size + 'px';
+				bubble.style.left = left + 'vw';
+				bubble.style.animationDuration = duration + 's';
+				bubble.style.setProperty('--bubble-drift', drift + 'px');
+
+				bubbleLayer.appendChild(bubble);
+				setTimeout(function () {
+					bubble.remove();
+				}, duration * 1000 + 500);
+			}
+
+			function createBubbleBurst() {
+				const bubbleCount = 18 + Math.floor(Math.random() * 12);
+				for (let i = 0; i < bubbleCount; i++) {
+					setTimeout(createBubble, i * 260);
+				}
+			}
+
+			// Show one soft burst shortly after loading, then repeat every 3 minutes.
+			setTimeout(createBubbleBurst, 2500);
+			setInterval(createBubbleBurst, 180000);
+		}
+	</script>
+
+	<style>
+	    pre {
+            background-color: black;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+        }
+        code {
+            font-family: "Courier New", monospace;
+            color: #d63384; /* Python-style color */
+        }
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }
+        .top-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 8px 4px 0 4px;
+            gap: 12px;
+        }
+        .top-header-left,
+        .top-header-center,
+        .top-header-right {
+            flex: 1 1 0;
+            display: flex;
+            align-items: flex-start;
+        }
+        .top-header-left {
+            justify-content: flex-start;
+        }
+        .top-header-center {
+            justify-content: center;
+        }
+        .top-header-right {
+            justify-content: flex-end;
+        }
+        .header-badge {
+            color: #ffffff;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+            background: rgba(22, 163, 74, 0.38);
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(0,0,0,.22);
+            padding: 6px 12px;
+            line-height: 1.05;
+            white-space: nowrap;
+        }
+        #classCountdown {
+            display: inline-flex;
+            align-items: center;
+            min-width: 360px;
+            text-align: left;
+            letter-spacing: .2px;
+        }
+        #classCountdown .count-label {
+            display: inline-block;
+            font-size: 15px;
+            font-weight: 800;
+            margin-bottom: 0;
+            margin-right: 8px;
+        }
+        #classCountdown .count-time {
+            display: inline-block;
+            font-size: 15px;
+            font-weight: 800;
+        }
+        .header-email-link {
+            display: inline-block;
+            color: #ffffff !important;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+            font-size: 15px;
+            font-weight: 800;
+            line-height: 1;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .header-email-link:hover {
+            text-decoration: underline;
+        }
+        #realtimeclock {
+            display: inline-block;
+            font-size: 15px;
+            font-weight: 800;
+        }
+        #bubbleLayer {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 9999;
+            background: transparent !important;
+        }
+        #bubbleCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: transparent !important;
+        }
+        .floating-bubble {
+            position: absolute;
+            bottom: -60px;
+            display: block;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.10);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.14);
+            animation-name: floatBubbleUp;
+            animation-timing-function: linear;
+            animation-fill-mode: forwards;
+            opacity: 0;
+        }
+        @keyframes floatBubbleUp {
+            0% {
+                transform: translate3d(0, 0, 0) scale(.85);
+                opacity: 0;
+            }
+            12% {
+                opacity: .30;
+            }
+            88% {
+                opacity: .18;
+            }
+            100% {
+                transform: translate3d(var(--bubble-drift), -112vh, 0) scale(1.2);
+                opacity: 0;
+            }
+        }
+        .reveal {
+            position: relative;
+            z-index: 1;
+        }
+        .reveal .slides {
+            margin-top: 54px !important;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .floating-bubble {
+                animation: none;
+                display: none;
+            }
+        }	
+	</style>
+
+  </head>
+
+  <body onload="startTime(); startCountdown(); startBubbleAnimation();">
+    <div id="bubbleLayer" aria-hidden="true"><canvas id="bubbleCanvas"></canvas></div>
+    <div class="reveal" >
+      <div class="top-header">
+        <div class="top-header-left">
+          <span id="classCountdown" class="header-badge"><span class="count-label">Last day of classes: Dec. 5, 2026</span><span class="count-time">Loading...</span></span>
+        </div>
+        <div class="top-header-center">
+          <a href="mailto:Xinxing.Wu@kysu.edu" title="Email Xinxing Wu" class="header-email-link header-badge">Xinxing.Wu@kysu.edu</a>
+        </div>
+        <div class="top-header-right">
+          <div class="header-badge" id="realtimeclock"></div>
+        </div>
+      </div>
+      <div class="slides">
+
+  <div class="me">Xinxing Wu</div>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown id="cover"><textarea data-template>
+# Supervised & Unsupervised Machine Learning
+
+<hr>
+
+<br>
+
+Xinxing Wu
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline
+
+[<p class="hover-underline-animation">Introduction</p>](#/ch1)
+
+[<p class="hover-underline-animation">Supervised Learning</p>](#/ch2)
+
+[<p class="hover-underline-animation">Unsupervised learning</p>](#/ch3)
+
+[<p class="hover-underline-animation">Core algorithm</p>](#/ch4)
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline (Cont.)
+
+[<p class="hover-underline-animation">Application</p>](#/ch5)
+
+[<p class="hover-underline-animation">AI Research-Style Paper Project</p>](#/ch6)
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch1" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Introduction</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+<div class="definition-com-container">
+  <div class="definition-com-title">Google Colab</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+For more details, see <a href="../GoogleColab/Google_Colab.html">Introduction of Google Colab</a>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Recommended Colab Setup</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+```python
+!pip -q install scikit-learn pandas numpy matplotlib seaborn tensorflow keras \
+    datasets transformers evaluate accelerate ucimlrepo
+```
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Use</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+```python
+import numpy as np, pandas as pd, matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+```
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">GPU needed?</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Logistic Regression, K-NN, K-Means: CPU is enough.
+- CNN, RNN, BERT, Autoencoder: GPU recommended.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Datasets Used</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+<div style="font-size: 20px;">
+
+| Data Type | Dataset | Task | Typical Use |
+|---|---|---|---|
+| Numerical | UCI Heart Disease | Classification | Logistic Regression, K-NN |
+| Numerical | Breast Cancer Wisconsin | Classification | K-NN, tuning, NN |
+| Numerical | California Housing | Regression | NN regression |
+| Numerical | UCI Online Retail | Clustering | K-Means customer segmentation |
+| Image | Digits / MNIST | Classification or clustering | LR, K-NN, K-Means, AE |
+| Image | Fashion-MNIST | Clothing image classification | NN, CNN, AE |
+| Image | CIFAR-10 | Color image classification | CNN |
+| Text | IMDB reviews | Sentiment classification | RNN, BERT |
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Framework/Library</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- scikit-learn https://scikit-learn.org/stable/
+- Keras https://keras.io/
+- Tensorflow https://www.tensorflow.org/
+- Pytorch https://pytorch.org/
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">What Makes a Good ML Lab?</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- A strong Colab lab should include:
+	- **Problem statement**: Why does this task matter?
+	- **Data loading**: Real dataset, not toy-only data.
+	- **Preprocessing**: Missing values, scaling, train/test split.
+	- **Modeling**: Baseline + target model.
+	- **Evaluation**: Metrics, visualization, error analysis.
+	- **Reflection**: What worked? What failed? What would improve it?
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch2" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Supervised Learning</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+<div class="definition-com-container">
+  <div class="definition-com-title">A Note</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+Supervised learning learns a function:
+
+$$
+f_\theta(x) \rightarrow y
+$$
+
+where:
+
+- $x$: input features, such as patient measurements or image pixels
+- $y$: known label or target value
+- $\theta$: model parameters learned from data
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Typical tasks</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- **Classification**: disease/no disease, cat/dog, positive/negative
+- **Regression**: house price, risk score, demand forecast
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Supervised Workflow</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Collect labeled data
+- Split into training, validation, and test sets
+- Train model on training data
+- Tune model using validation data
+- Evaluate once on test data
+- Interpret errors and limitations
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Important rule</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+> Never tune on the final test set.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Logistic Regression</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Key Idea
+
+Logistic Regression is a **linear classifier** that predicts probability:
+
+$$
+P(y=1|x)=\sigma(w^Tx+b)
+$$
+
+where:
+
+$$
+\sigma(z)=\frac{1}{1+e^{-z}}
+$$
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Logistic Regression</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+It is useful when we need:
+
+- Fast baseline
+- Interpretable coefficients
+- Probability output
+- Binary or multiclass classification
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Logistic Regression: Strengths and Limits</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Strengths
+
+	- Simple and fast
+	- Good baseline for tabular data
+	- Coefficients can support interpretation
+	- Works well with standardized numerical features
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Logistic Regression: Strengths and Limits</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Limits
+
+	- Linear decision boundary
+	- Needs feature engineering for nonlinear patterns
+	- Not ideal for raw images unless pixels are flattened
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Logistic Regression Lab A: Numerical Data</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Project: Heart Disease Risk Classifier
+
+	- **Dataset:** UCI Heart Disease  
+	- **Question:** Can patient measurements predict heart disease presence?
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Logistic Regression Lab A: Numerical Data (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 900px;"></div>
+
+- Colab tasks:
+
+	- Load UCI Heart Disease data.
+	- Clean missing values.
+	- Convert target into binary label: disease vs. no disease.
+	- Standardize numerical features.
+	- Train Logistic Regression.
+	- Evaluate accuracy, precision, recall, F1, ROC-AUC.
+	- Interpret top positive/negative coefficients.
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Task</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+> A short report explaining which features increased predicted risk.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Logistic Regression Lab A: Starter Code</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+```
+from ucimlrepo import fetch_ucirepo
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report, ConfusionMatrixDisplay
+
+heart = fetch_ucirepo(id=45)
+X = heart.data.features
+y = (heart.data.targets.iloc[:, 0] > 0).astype(int)
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+pipe = Pipeline([
+    ("scaler", StandardScaler()),
+    ("model", LogisticRegression(max_iter=2000))
+])
+pipe.fit(X_train, y_train)
+pred = pipe.predict(X_test)
+print(classification_report(y_test, pred))
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Logistic Regression Lab B: Image Data</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Project: Handwritten Digit Classifier with Flattened Pixels
+
+	- **Dataset:** scikit-learn Digits or Keras MNIST  
+	- **Question:** Can a linear model classify handwritten digit images?
+
+- Colab tasks:
+
+	- Load digit images.
+	- Flatten each image into a vector.
+	- Scale pixel values.
+	- Train Logistic Regression.
+	- Compare correct and incorrect predictions.
+	- Visualize confusion matrix.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Teaching point</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+> Logistic Regression can use image pixels, but it does not understand spatial structure like CNNs do.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Logistic Regression Lab B: Starter Code</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+```
+from sklearn.datasets import load_digits
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import ConfusionMatrixDisplay
+
+X, y = load_digits(return_X_y=True)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+pipe = Pipeline([
+    ("scaler", StandardScaler()),
+    ("model", LogisticRegression(max_iter=3000))
+])
+pipe.fit(X_train, y_train)
+print("Accuracy:", pipe.score(X_test, y_test))
+ConfusionMatrixDisplay.from_estimator(pipe, X_test, y_test)
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">K-Nearest Neighbors</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Key Idea: K-NN predicts a new point using the labels of its **K closest training examples**.
+
+- For classification:
+
+$$
+\hat{y}=\text{majority vote among K nearest neighbors}
+$$
+
+- For regression:
+
+$$
+\hat{y}=\text{average of K nearest target values}
+$$
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">K-NN: What Matters Most?</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- K-NN is simple but sensitive to:
+
+	- Feature scaling
+	- Choice of K
+	- Distance metric
+	- Irrelevant features
+	- High-dimensional data
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Important intuition</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+> K-NN does not really “train” a model. It stores the data and compares new examples to old examples.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">K-NN Lab A: Numerical Data</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Project: Breast Cancer Diagnosis Support
+
+	- **Dataset:** Breast Cancer Wisconsin Diagnostic  
+	- **Question:** Can cell-measurement features predict malignant vs. benign diagnosis?
+
+- Colab tasks:
+	- Load dataset from scikit-learn.
+	- Standardize all 30 numerical features.
+	- Train K-NN with K = 1, 3, 5, 11, 21.
+	- Plot validation accuracy vs. K.
+	- Report confusion matrix.
+	- Discuss false positives vs. false negatives.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Task</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+> Recommend one K value and justify it using validation results.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">K-NN Lab A: Starter Code</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+```
+from sklearn.datasets import load_breast_cancer
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.pipeline import Pipeline
+
+X, y = load_breast_cancer(return_X_y=True)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+scores = []
+for k in [1, 3, 5, 11, 21]:
+    model = Pipeline([
+        ("scaler", StandardScaler()),
+        ("knn", KNeighborsClassifier(n_neighbors=k))
+    ])
+    model.fit(X_train, y_train)
+    scores.append((k, model.score(X_test, y_test)))
+
+pd.DataFrame(scores, columns=["K", "Test accuracy"])
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">K-NN Lab B: Image Data</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Project: Similar Digit Search
+
+	- **Dataset:** scikit-learn Digits  
+	- **Question:** For a handwritten digit image, which training images are most similar?
+
+- Colab tasks:
+
+	- Load digit images.
+	- Flatten and scale pixels.
+	- Train K-NN classifier.
+	- Pick a test digit.
+	- Show its nearest neighbors.
+	- Compare neighbor labels with predicted label.
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Teaching point</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+> K-NN can be used both for classification and similarity search.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">K-NN Lab B: Starter Code</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+```
+from sklearn.datasets import load_digits
+from sklearn.neighbors import NearestNeighbors, KNeighborsClassifier
+
+digits = load_digits()
+X, y = digits.data, digits.target
+X_scaled = StandardScaler().fit_transform(X)
+
+nn = NearestNeighbors(n_neighbors=6)
+nn.fit(X_scaled)
+idx = 100
+distances, neighbors = nn.kneighbors([X_scaled[idx]])
+
+plt.figure(figsize=(10, 2))
+for i, n in enumerate(neighbors[0]):
+    plt.subplot(1, 6, i+1)
+    plt.imshow(digits.images[n], cmap="gray")
+    plt.title(f"label={y[n]}")
+    plt.axis("off")
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Hyperparameter Tuning</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- A **parameter** is learned from data.
+	- Example: Logistic Regression weights.
+- A **hyperparameter** is chosen before training.
+
+- Examples:
+	- K in K-NN
+	- learning rate in neural networks
+	- regularization strength
+	- number of CNN filters
+	- dropout rate
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Why Tune Hyperparameters?</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+Bad hyperparameters can cause:
+
+- Underfitting
+- Overfitting
+- Slow training
+- Poor generalization
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Why Tune Hyperparameters? (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+Common strategies:
+
+- Manual search
+- Grid search
+- Random search
+- Bayesian optimization
+- Early stopping
+   </div>
+</div>
+
+
+
+Start with:
+
+> GridSearchCV and RandomizedSearchCV.
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Tuning Lab A: Numerical Data
+</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Project: Find the Best Classifier Settings
+	- **Dataset:** Breast Cancer Wisconsin  
+	- **Question:** Which model settings give the best validation performance?
+
+- Colab tasks:
+	- Build a pipeline: scaler + classifier.
+	- Tune K-NN hyperparameters.
+	- Tune Logistic Regression regularization.
+	- Compare cross-validation scores.
+	- Evaluate best model on test set.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Task</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+> A table comparing baseline vs. tuned model.
+
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Tuning Lab A: Starter Code</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+```
+from sklearn.model_selection import GridSearchCV
+from sklearn.neighbors import KNeighborsClassifier
+
+pipe = Pipeline([
+    ("scaler", StandardScaler()),
+    ("knn", KNeighborsClassifier())
+])
+
+param_grid = {
+    "knn__n_neighbors": [3, 5, 7, 11, 21],
+    "knn__weights": ["uniform", "distance"],
+    "knn__metric": ["euclidean", "manhattan"]
+}
+
+grid = GridSearchCV(pipe, param_grid, cv=5, scoring="accuracy")
+grid.fit(X_train, y_train)
+print(grid.best_params_)
+print(grid.best_score_)
+print(grid.score(X_test, y_test))
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Tuning Lab B: Image Data</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Project: Tune a CNN on Fashion-MNIST
+
+	- **Dataset:** Fashion-MNIST  
+	- **Question:** How do filters, dropout, and learning rate affect image classification?
+
+- Colab tasks:
+
+	- Load Fashion-MNIST.
+	- Train a small CNN baseline.
+	- Try 2–3 hyperparameter settings.
+	- Plot training/validation accuracy.
+	- Compare test accuracy and training time.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Task</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+> Recommend one CNN configuration with evidence.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Tuning Lab B: Starter Code</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+```
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+
+(x_train, y_train), (x_test, y_test) = keras.datasets.fashion_mnist.load_data()
+x_train, x_test = x_train[..., None] / 255.0, x_test[..., None] / 255.0
+
+def build_cnn(filters=32, dropout=0.2, lr=1e-3):
+    model = keras.Sequential([
+        layers.Conv2D(filters, 3, activation="relu", input_shape=(28, 28, 1)),
+        layers.MaxPooling2D(),
+        layers.Flatten(),
+        layers.Dropout(dropout),
+        layers.Dense(10, activation="softmax")
+    ])
+    model.compile(optimizer=keras.optimizers.Adam(lr),
+                  loss="sparse_categorical_crossentropy",
+                  metrics=["accuracy"])
+    return model
+```
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Neural Networks</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- A neural network learns layers of transformations:
+
+$$
+h_1 = \phi(W_1x+b_1)
+$$
+
+$$
+h_2 = \phi(W_2h_1+b_2)
+$$
+
+$$
+\hat{y} = g(W_3h_2+b_3)
+$$
+
+where $\phi$ is an activation function such as ReLU.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Why Neural Networks?</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+Neural networks are useful when:
+
+- Relationships are nonlinear
+- Features interact in complex ways
+- We have enough data
+- We need representation learning
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Why Neural Networks? (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+But they need:
+
+- Careful scaling
+- Validation data
+- Regularization
+- Enough compute
+- Careful interpretation
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">NN Lab A: Numerical Data</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Project: California Housing Price Prediction
+
+	- **Dataset:** California Housing  
+	- **Question:** Can a neural network predict median house value from district-level features?
+
+- Colab tasks:
+
+	- Load California Housing data.
+	- Split train/validation/test.
+	- Standardize features.
+	- Train a small dense neural network.
+	- Evaluate MAE and RMSE.
+	- Compare against Linear Regression or Random Forest.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Task</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+> Show whether the NN improves over a simpler baseline.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">NN Lab A: Starter Code</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+```
+from sklearn.datasets import fetch_california_housing
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import mean_absolute_error, mean_squared_error
+
+cal = fetch_california_housing(as_frame=True)
+X, y = cal.data, cal.target
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
+
+scaler = StandardScaler()
+X_train_s = scaler.fit_transform(X_train)
+X_test_s = scaler.transform(X_test)
+
+model = keras.Sequential([
+    layers.Dense(64, activation="relu", input_shape=(X_train_s.shape[1],)),
+    layers.Dense(32, activation="relu"),
+    layers.Dense(1)
+])
+model.compile(optimizer="adam", loss="mse", metrics=["mae"])
+history = model.fit(X_train_s, y_train, validation_split=0.2, epochs=30, verbose=0)
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">NN Lab B: Image Data</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Project: Fashion Image Classifier with MLP
+
+	- **Dataset:** Fashion-MNIST  
+	- **Question:** Can a fully connected neural network classify clothing images?
+
+- Colab tasks:
+
+	- Load Fashion-MNIST.
+	- Normalize pixels.
+	- Flatten images.
+	- Train dense neural network.
+	- Visualize wrong predictions.
+	- Compare with CNN later.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Teaching point</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+> MLPs can classify images, but they ignore local spatial patterns.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">NN Lab B: Starter Code</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+```
+(x_train, y_train), (x_test, y_test) = keras.datasets.fashion_mnist.load_data()
+x_train, x_test = x_train / 255.0, x_test / 255.0
+
+model = keras.Sequential([
+    layers.Flatten(input_shape=(28, 28)),
+    layers.Dense(128, activation="relu"),
+    layers.Dropout(0.2),
+    layers.Dense(10, activation="softmax")
+])
+model.compile(optimizer="adam",
+              loss="sparse_categorical_crossentropy",
+              metrics=["accuracy"])
+history = model.fit(x_train, y_train, validation_split=0.2, epochs=10)
+model.evaluate(x_test, y_test)
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Convolutional Neural Networks</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- CNNs are designed for image-like data.
+
+- They use:
+
+	- **Convolution filters** to detect local patterns
+	- **Pooling** to reduce spatial size
+	- **Feature maps** to represent learned visual features
+	- **Dense layers** for final classification
+   </div>
+</div>
+
+
+
+> CNN intuition: Early layers learn edges; later layers learn shapes and object parts.
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">CNN: Why Better for Images?</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- A dense network treats each pixel independently.
+
+- A CNN uses assumptions that match images:
+
+	- Nearby pixels are related.
+	- Patterns can appear anywhere.
+	- Local filters can be reused across the image.
+
+- This makes CNNs more efficient and usually more accurate for image classification.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">CNN Lab A: Image Data</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Project: CIFAR-10 Real-World Object Classifier
+
+	- **Dataset:** CIFAR-10  
+	- **Question:** Can a CNN classify small color images into 10 object categories?
+
+- Classes include:
+
+	- airplane, automobile, bird, cat, deer
+	- dog, frog, horse, ship, truck
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">CNN Lab A: Image Data (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Colab tasks:
+
+	- Load CIFAR-10.
+	- Normalize pixels.
+	- Build CNN with Conv2D + MaxPooling.
+	- Train with validation split.
+	- Evaluate confusion matrix.
+	- Show the most confusing classes.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">CNN Lab A: Starter Code</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+```
+(x_train, y_train), (x_test, y_test) = keras.datasets.cifar10.load_data()
+x_train, x_test = x_train / 255.0, x_test / 255.0
+
+model = keras.Sequential([
+    layers.Conv2D(32, 3, activation="relu", input_shape=(32, 32, 3)),
+    layers.MaxPooling2D(),
+    layers.Conv2D(64, 3, activation="relu"),
+    layers.MaxPooling2D(),
+    layers.Flatten(),
+    layers.Dense(64, activation="relu"),
+    layers.Dense(10, activation="softmax")
+])
+model.compile(optimizer="adam",
+              loss="sparse_categorical_crossentropy",
+              metrics=["accuracy"])
+model.fit(x_train, y_train, validation_split=0.2, epochs=15, batch_size=64)
+```
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">CNN Lab B: Numerical Data Variant</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Project: 1D CNN for Sequential Numerical Signals
+
+	- **Dataset idea:** UCI Human Activity Recognition or any sensor time-series dataset  
+	- **Question:** Can local temporal patterns classify activity?
+
+- Colab tasks:
+
+	- Load time-series/sensor data.
+	- Reshape data as `(samples, time_steps, channels)`.
+	- Train `Conv1D` model.
+	- Compare with Logistic Regression or K-NN.
+	- Discuss when CNNs apply beyond images.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Teaching point</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+> CNNs are not only for images; they can learn local patterns in any ordered data.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">CNN Lab B: Starter Model</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+```
+model = keras.Sequential([
+    layers.Conv1D(32, kernel_size=3, activation="relu", input_shape=(time_steps, channels)),
+    layers.MaxPooling1D(pool_size=2),
+    layers.Conv1D(64, kernel_size=3, activation="relu"),
+    layers.GlobalAveragePooling1D(),
+    layers.Dense(64, activation="relu"),
+    layers.Dense(num_classes, activation="softmax")
+])
+model.compile(optimizer="adam",
+              loss="sparse_categorical_crossentropy",
+              metrics=["accuracy"])
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Recurrent Neural Networks</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- RNNs process sequences one step at a time:
+
+$$
+h_t = f(W_xx_t + W_hh_{t-1}+b)
+$$
+
+- They are useful for:
+	- Text
+	- Speech
+	- Time series
+	- Sensor streams
+	- Any ordered sequence
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Recurrent Neural Networks (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Common variants:
+
+	- SimpleRNN
+	- LSTM
+	- GRU
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">RNN: Intuition</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- An RNN has a memory-like hidden state.
+
+- Example for sentence sentiment:
+
+> “The movie was not good.”
+
+- The model needs to remember “not” when reading “good.”
+
+- But simple RNNs can struggle with long-range dependencies.
+
+- LSTM and GRU were designed to handle longer context better.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">RNN Lab A: Text Data</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Project: IMDB Sentiment Classifier
+
+	- **Dataset:** IMDB movie reviews  
+	- **Question:** Can an RNN classify reviews as positive or negative?
+
+- Colab tasks:
+
+	- Load IMDB dataset.
+	- Tokenize and pad sequences.
+	- Train Embedding + LSTM/GRU model.
+	- Compare with simple dense baseline.
+	- Test on your own review sentences.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Task</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+> Error analysis: find 5 reviews the RNN classified incorrectly.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">RNN Lab A: Starter Code</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+```
+from tensorflow.keras.datasets import imdb
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+
+max_features = 10000
+max_len = 200
+(x_train, y_train), (x_test, y_test) = imdb.load_data(num_words=max_features)
+x_train = pad_sequences(x_train, maxlen=max_len)
+x_test = pad_sequences(x_test, maxlen=max_len)
+
+model = keras.Sequential([
+    layers.Embedding(max_features, 64),
+    layers.Bidirectional(layers.LSTM(64)),
+    layers.Dense(64, activation="relu"),
+    layers.Dense(1, activation="sigmoid")
+])
+model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
+model.fit(x_train, y_train, validation_split=0.2, epochs=3, batch_size=64)
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">RNN Lab B: Image-as-Sequence Data</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Project: Read MNIST Images Row by Row
+
+	- **Dataset:** MNIST  
+	- **Question:** Can an RNN classify an image by reading each image row as one sequence step?
+
+- Colab tasks:
+
+	- Load MNIST.
+	- Treat each 28x28 image as 28 time steps with 28 features each.
+	- Train LSTM/GRU classifier.
+	- Compare with MLP and CNN.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Teaching point</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+> RNNs can process images as sequences, but CNNs are usually more natural for images.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">RNN Lab B: Starter Code</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+```python
+(x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
+x_train, x_test = x_train / 255.0, x_test / 255.0
+
+model = keras.Sequential([
+    layers.LSTM(64, input_shape=(28, 28)),
+    layers.Dense(10, activation="softmax")
+])
+model.compile(optimizer="adam",
+              loss="sparse_categorical_crossentropy",
+              metrics=["accuracy"])
+model.fit(x_train, y_train, validation_split=0.2, epochs=5, batch_size=128)
+model.evaluate(x_test, y_test)
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">BERT</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- BERT is a Transformer-based language model.
+
+- It learns contextual word representations by reading text bidirectionally.
+
+- Example:
+
+	- “bank” in “river bank”
+	- “bank” in “open a bank account”
+
+- BERT can represent the same word differently depending on context.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">BERT vs. RNN</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+| Model | Processes | Strength |
+|---|---|---|
+| RNN/LSTM | Sequence step by step | Good for ordered sequence modeling |
+| BERT | Whole sequence with attention | Strong contextual text understanding |
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">BERT vs. RNN (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- BERT is commonly fine-tuned for:
+
+	- Sentiment classification
+	- Topic classification
+	- Question answering
+	- Named entity recognition
+	- Text similarity
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">BERT Lab A: Text Data</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Project: Sentiment Classifier with DistilBERT/BERT
+
+	- **Dataset:** IMDB or a small Hugging Face sentiment dataset  
+	- **Question:** Can fine-tuning a pretrained Transformer improve text classification?
+
+- Colab tasks:
+
+	- Load dataset using `datasets`.
+	- Tokenize text with Hugging Face tokenizer.
+	- Fine-tune DistilBERT or BERT.
+	- Evaluate accuracy and F1.
+	- Compare with RNN baseline.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Practical note</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+> Use DistilBERT in Colab for faster training.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">BERT Lab A: Starter Code</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+```
+!pip -q install transformers datasets evaluate accelerate
+from datasets import load_dataset
+from transformers import AutoTokenizer, AutoModelForSequenceClassification, TrainingArguments, Trainer
+import evaluate
+
+raw = load_dataset("imdb")
+small_train = raw["train"].shuffle(seed=42).select(range(2000))
+small_test = raw["test"].shuffle(seed=42).select(range(500))
+
+tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased")
+
+def tokenize(batch):
+    return tokenizer(batch["text"], truncation=True, padding="max_length", max_length=128)
+
+train_ds = small_train.map(tokenize, batched=True)
+test_ds = small_test.map(tokenize, batched=True)
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">BERT Lab A: Training Skeleton</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+```
+model = AutoModelForSequenceClassification.from_pretrained(
+    "distilbert-base-uncased", num_labels=2
+)
+
+args = TrainingArguments(
+    output_dir="bert_imdb_demo",
+    eval_strategy="epoch",
+    save_strategy="no",
+    learning_rate=2e-5,
+    per_device_train_batch_size=16,
+    per_device_eval_batch_size=16,
+    num_train_epochs=1,
+    report_to="none"
+)
+
+accuracy = evaluate.load("accuracy")
+
+def compute_metrics(eval_pred):
+    logits, labels = eval_pred
+    preds = np.argmax(logits, axis=-1)
+    return accuracy.compute(predictions=preds, references=labels)
+
+trainer = Trainer(model=model, args=args, train_dataset=train_ds,
+                  eval_dataset=test_ds, compute_metrics=compute_metrics)
+trainer.train()
+trainer.evaluate()
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">BERT Lab B: Image-Adjacent Data</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Project: Classify Image Captions or Product Descriptions
+
+	- BERT is a **text model**, not a direct image-pixel model.
+
+- But it can work with image-related text:
+
+	- Product descriptions attached to images
+	- Image captions
+	- OCR text from screenshots
+	- Alt text from web images
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">BERT Lab B: Image-Adjacent Data (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Colab project idea:
+
+	- Use a product/image dataset with captions or descriptions.
+	- Classify category from text description.
+	- Compare with CNN using image pixels.
+	- Discuss multimodal AI.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Teaching point</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+> Use BERT for language; use CNN/ViT/CLIP for direct image understanding.
+
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch3" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Unsupervised learning</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+<div class="definition-com-container">
+  <div class="definition-com-title">K-Means Clustering</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- K-Means is an unsupervised learning algorithm. It groups data into K clusters by minimizing within-cluster distance:
+
+$$
+\sum_{i=1}^{n} ||x_i - \mu_{c_i}||^2
+$$
+
+where:
+
+- $x_i$: data point
+- $\mu_{c_i}$: assigned cluster center
+- $K$: number of clusters
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">K-Means Algorithm</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Choose K cluster centers.
+- Assign each point to the nearest center.
+- Recompute centers using assigned points.
+- Repeat until assignments stabilize.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">K-Means Algorithm (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Important choices:
+
+	- K value
+	- scaling
+	- initialization
+	- distance metric
+
+- Common evaluation:
+
+	- inertia
+	- silhouette score
+	- cluster visualization
+	- domain interpretation
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">K-Means Lab A: Numerical Data</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Project: Online Retail Customer Segmentation
+
+	- **Dataset:** UCI Online Retail  
+	- **Question:** Can we identify customer groups from buying behavior?
+
+- Create RFM features:
+
+	- **Recency**: days since last purchase
+	- **Frequency**: number of purchases
+	- **Monetary**: total spending
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Colab tasks</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Load Online Retail data.
+- Clean cancellations and missing customer IDs.
+- Build RFM table.
+- Scale features.
+- Run K-Means for K = 2–8.
+- Use elbow and silhouette score.
+- Interpret clusters.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">K-Means Lab A: Starter Code</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+```
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+from sklearn.preprocessing import StandardScaler
+
+# After building an RFM dataframe with columns: Recency, Frequency, Monetary
+X = rfm[["Recency", "Frequency", "Monetary"]]
+X_scaled = StandardScaler().fit_transform(X)
+
+results = []
+for k in range(2, 9):
+    km = KMeans(n_clusters=k, random_state=42, n_init="auto")
+    labels = km.fit_predict(X_scaled)
+    results.append({
+        "K": k,
+        "inertia": km.inertia_,
+        "silhouette": silhouette_score(X_scaled, labels)
+    })
+
+pd.DataFrame(results)
+```
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">K-Means Lab B: Image Data</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Project: Cluster Handwritten Digits Without Labels
+
+	- **Dataset:** scikit-learn Digits  
+	- **Question:** Can K-Means discover digit-like groups without seeing labels?
+
+- Colab tasks:
+
+	- Load digit images.
+	- Flatten image pixels.
+	- Scale features.
+	- Run K-Means with K = 10.
+	- Compare clusters to true labels only after clustering.
+	- Visualize cluster centers as images.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Teaching point</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+> Unsupervised clusters may not perfectly match human labels.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">K-Means Lab B: Starter Code</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+```
+from sklearn.datasets import load_digits
+from sklearn.cluster import KMeans
+
+digits = load_digits()
+X = StandardScaler().fit_transform(digits.data)
+km = KMeans(n_clusters=10, random_state=42, n_init="auto")
+labels = km.fit_predict(X)
+
+centers = km.cluster_centers_
+plt.figure(figsize=(8, 3))
+for i, center in enumerate(centers):
+    plt.subplot(2, 5, i+1)
+    plt.imshow(center.reshape(8, 8), cmap="gray")
+    plt.axis("off")
+    plt.title(f"C{i}")
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Autoencoders</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- An autoencoder learns to reconstruct its input.
+
+$$
+x \rightarrow \text{Encoder} \rightarrow z \rightarrow \text{Decoder} \rightarrow \hat{x}
+$$
+
+where:
+
+- $x$: original input
+- $z$: compressed representation
+- $\hat{x}$: reconstructed input
+
+Training objective:
+
+$$
+\min ||x - \hat{x}||^2
+$$
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Why Autoencoders?</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Autoencoders are useful for:
+
+	- Dimensionality reduction
+	- Denoising
+	- Anomaly detection
+	- Feature learning
+	- Data compression
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Important idea</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+> If a model learns normal patterns well, abnormal examples may reconstruct poorly.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Autoencoder Lab A: Numerical Data</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Project: Tabular Anomaly Detection
+
+	- **Dataset:** Breast Cancer or Heart Disease numerical features  
+	- **Question:** Can reconstruction error identify unusual patient profiles?
+
+- Colab tasks:
+
+	- Load numerical dataset.
+	- Use only one “normal” class for training.
+	- Train autoencoder to reconstruct normal samples.
+	- Compute reconstruction error on all samples.
+	- Use error threshold to flag anomalies.
+	- Evaluate using known labels.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Task</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+> Plot reconstruction error distributions for normal vs. abnormal samples.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Autoencoder Lab A: Starter Code</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+```
+X, y = load_breast_cancer(return_X_y=True)
+X_scaled = StandardScaler().fit_transform(X)
+
+# Example: train on benign class only
+normal_class = 1
+X_normal = X_scaled[y == normal_class]
+X_train, X_test = train_test_split(X_normal, test_size=0.2, random_state=42)
+
+input_dim = X_train.shape[1]
+autoencoder = keras.Sequential([
+    layers.Dense(16, activation="relu", input_shape=(input_dim,)),
+    layers.Dense(4, activation="relu"),
+    layers.Dense(16, activation="relu"),
+    layers.Dense(input_dim)
+])
+autoencoder.compile(optimizer="adam", loss="mse")
+autoencoder.fit(X_train, X_train, validation_split=0.2, epochs=50, verbose=0)
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Autoencoder Lab B: Image Data</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Project: Image Denoising with MNIST or Fashion-MNIST
+
+	- **Dataset:** MNIST or Fashion-MNIST  
+	- **Question:** Can an autoencoder remove noise from images?
+
+- Colab tasks:
+
+	- Load image data.
+	- Add random noise.
+	- Train convolutional autoencoder.
+	- Compare noisy input vs. reconstructed image.
+	- Measure reconstruction loss.
+	- Reflect on failure cases.
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Task</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+> Show a 3-row image grid: clean, noisy, reconstructed.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Autoencoder Lab B: Starter Code</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+```
+(x_train, _), (x_test, _) = keras.datasets.mnist.load_data()
+x_train = x_train.astype("float32") / 255.0
+x_test = x_test.astype("float32") / 255.0
+x_train = x_train[..., None]
+x_test = x_test[..., None]
+
+noise = 0.4
+x_train_noisy = np.clip(x_train + noise*np.random.normal(size=x_train.shape), 0, 1)
+x_test_noisy = np.clip(x_test + noise*np.random.normal(size=x_test.shape), 0, 1)
+
+autoencoder = keras.Sequential([
+    layers.Input(shape=(28, 28, 1)),
+    layers.Conv2D(32, 3, activation="relu", padding="same"),
+    layers.MaxPooling2D(2, padding="same"),
+    layers.Conv2D(32, 3, activation="relu", padding="same"),
+    layers.UpSampling2D(2),
+    layers.Conv2D(1, 3, activation="sigmoid", padding="same")
+])
+autoencoder.compile(optimizer="adam", loss="binary_crossentropy")
+```
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch4" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Core algorithm</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+<div class="definition-com-container">
+  <div class="definition-com-title">Backpropagation Algorithm</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Why Backpropagation Matters
+
+	- Backpropagation is the core training algorithm behind neural networks.
+
+- It answers this question:
+
+> How should each weight change to reduce the loss?
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Backpropagation Algorithm (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Main ingredients:
+
+	- Forward pass
+	- Loss function
+	- Chain rule
+	- Gradients
+	- Optimizer update
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Backpropagation: Simple Network</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Consider one hidden layer:
+
+$$
+z_1 = W_1x+b_1
+$$
+
+$$
+a_1 = \phi(z_1)
+$$
+
+$$
+z_2 = W_2a_1+b_2
+$$
+
+$$
+\hat{y}=g(z_2)
+$$
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Backpropagation: Simple Network (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+Loss:
+
+$$
+L(y,\hat{y})
+$$
+
+Goal:
+
+$$
+\min_{W_1,b_1,W_2,b_2} L
+$$
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Forward Pass</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- The forward pass computes predictions. Example:
+
+	- Input data enters the network.
+	- Each layer applies weights, bias, and activation.
+	- Final layer outputs prediction.
+	- Loss compares prediction to true label.
+
+- In code:
+
+```
+with tf.GradientTape() as tape:
+    y_pred = model(X_batch)
+    loss = loss_fn(y_batch, y_pred)
+```
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Loss Function</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- The loss function measures prediction error.
+
+- Common losses:
+
+| Task | Loss |
+|---|---|
+| Binary classification | Binary cross-entropy |
+| Multiclass classification | Categorical or sparse categorical cross-entropy |
+| Regression | MSE or MAE |
+| Autoencoder | Reconstruction loss |
+
+- Training means reducing loss.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Chain Rule: The Heart of Backpropagation</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Backpropagation uses the chain rule.
+
+- If:
+
+$$
+L = L(a), \quad a = f(z), \quad z = wx+b
+$$
+
+then:
+
+$$
+\frac{\partial L}{\partial w}=\frac{\partial L}{\partial a}\cdot\frac{\partial a}{\partial z}\cdot\frac{\partial z}{\partial w}
+$$
+
+   </div>
+</div>
+
+
+
+> A weight gets credit or blame based on how it affected the final loss.
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Backward Pass</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- The backward pass computes gradients:
+
+$$
+\frac{\partial L}{\partial W_2}, \frac{\partial L}{\partial b_2},
+\frac{\partial L}{\partial W_1}, \frac{\partial L}{\partial b_1}
+$$
+
+- It starts at the loss and moves backward layer by layer.
+
+- Modern libraries such as TensorFlow and PyTorch compute these gradients automatically.
+
+   </div>
+</div>
+
+
+
+> Gradients tell the direction of steepest increase; we move in the opposite direction.
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Gradient Descent Update</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- After gradients are computed, weights are updated:
+
+$$
+W \leftarrow W - \eta \frac{\partial L}{\partial W}
+$$
+
+where:
+
+- $W$: weight
+- $\eta$: learning rate
+- $\frac{\partial L}{\partial W}$: gradient
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Gradient Descent Update (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- If learning rate is too large:
+
+	- Training may become unstable.
+
+- If learning rate is too small:
+
+	- Training may be very slow.
+
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Backpropagation Step-by-Step</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- One training iteration:
+
+	- Select a mini-batch of data.
+	- Run forward pass.
+	- Compute loss.
+	- Run backward pass to compute gradients.
+	- Update parameters using optimizer.
+	- Repeat for many mini-batches and epochs.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Backpropagation Step-by-Step (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+Pseudocode:
+
+```text
+for epoch in epochs:
+    for X_batch, y_batch in training_data:
+        y_pred = model(X_batch)
+        loss = loss_fn(y_batch, y_pred)
+        gradients = backprop(loss, model.parameters)
+        optimizer.update(model.parameters, gradients)
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Manual Backprop Mini Example</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Suppose:
+
+$$
+\hat{y}=wx+b
+$$
+
+- Loss:
+
+$$
+L=(\hat{y}-y)^2
+$$
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Manual Backprop Mini Example (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Gradients:
+
+$$
+\frac{\partial L}{\partial w}=2(\hat{y}-y)x
+$$
+6 . 17
+
+
+
+
+$$
+\frac{\partial L}{\partial b}=2(\hat{y}-y)
+$$
+
+- Update:
+
+$$
+w \leftarrow w - \eta 2(\hat{y}-y)x
+$$
+
+$$
+b \leftarrow b - \eta 2(\hat{y}-y)
+$$
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Backprop Lab A: Manual Numerical Gradient</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Project: Learn Linear Regression from Scratch
+
+	- **Dataset:** Small synthetic or California Housing subset  
+	- **Question:** Can we implement gradient descent manually?
+
+- Colab tasks:
+
+	- Use one numerical feature.
+	- Initialize weight and bias.
+	- Compute prediction.
+	- Compute MSE loss.
+	- Derive gradients.
+	- Update weight and bias.
+	- Plot loss over iterations.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Task</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+> Explain how changing learning rate changes convergence.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Backprop Lab A: Starter Code</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+
+```
+X = np.linspace(0, 10, 100).reshape(-1, 1)
+y = 3 * X.squeeze() + 2 + np.random.normal(0, 1, size=100)
+
+w, b = 0.0, 0.0
+lr = 0.01
+losses = []
+
+for step in range(500):
+    y_pred = w * X.squeeze() + b
+    error = y_pred - y
+    loss = np.mean(error ** 2)
+    losses.append(loss)
+
+    dw = 2 * np.mean(error * X.squeeze())
+    db = 2 * np.mean(error)
+
+    w -= lr * dw
+    b -= lr * db
+
+plt.plot(losses)
+plt.title("Loss decreases during gradient descent")
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Backprop Lab B: Autograd with TensorFlow</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Project: Train One Small Neural Network Manually
+
+- Colab tasks:
+
+	- Build a small neural network.
+	- Use `tf.GradientTape`.
+	- Compute gradients.
+	- Apply optimizer step manually.
+	- Compare with `model.fit()`.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Teaching point</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+> `model.fit()` hides the loop, but the same backprop process still happens.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Backprop Lab B: Starter Code</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+```
+import tensorflow as tf
+
+model = keras.Sequential([
+    layers.Dense(16, activation="relu", input_shape=(30,)),
+    layers.Dense(1, activation="sigmoid")
+])
+loss_fn = keras.losses.BinaryCrossentropy()
+optimizer = keras.optimizers.Adam(learning_rate=1e-3)
+
+for step in range(100):
+    with tf.GradientTape() as tape:
+        y_pred = model(X_train_s[:64], training=True)
+        loss = loss_fn(y_train[:64], y_pred)
+    grads = tape.gradient(loss, model.trainable_variables)
+    optimizer.apply_gradients(zip(grads, model.trainable_variables))
+
+    if step % 20 == 0:
+        print(step, float(loss))
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Common Backpropagation Problems</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+| Problem | Symptom | Fix |
+|---|---|---|
+| Learning rate too high | loss jumps or becomes NaN | reduce learning rate |
+| Learning rate too low | loss decreases very slowly | increase learning rate |
+| Vanishing gradients | early layers learn slowly | ReLU, normalization, residuals |
+| Exploding gradients | huge updates | gradient clipping |
+| Overfitting | train high, val low | dropout, regularization, more data |
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Summary</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Logistic Regression is a strong interpretable baseline.
+- K-NN is simple and intuitive but sensitive to scaling.
+- Hyperparameter tuning controls generalization.
+- Neural networks learn nonlinear representations.
+- CNNs are natural for images.
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Summary (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- RNNs handle sequences.
+- BERT is powerful for text understanding.
+- K-Means discovers groups without labels.
+- Autoencoders learn compressed representations.
+- Backpropagation is the engine of neural network learning.
+
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch5" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Application</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+<div class="definition-com-container">
+  <div class="definition-com-title">Application</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Assignment <a href="../Emerging_topics_applications/FingerCalculator/index.html">Finger Calculator</a>
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Extended Version</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Assignment <a href="../Emerging_topics_applications/FingerCalculator_Extended/index.html">Extended Finger Calculator</a>
+   </div>
+</div>
+
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch6" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">AI Research-Style Paper Project</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+<div class="definition-com-container">
+  <div class="definition-com-title">Project - AI paper</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Find a practical problem and use ML/AI knowledge to solve it
+- Assignment <a href="../Projects/AIProject/AI_Project.html">AI Research-Style Paper Project</a>
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+</div>
+	
+
+<script>
+(function () {
+  function initVisibleBubbles() {
+    if (window.__visibleCanvasBubblesStarted) return;
+    window.__visibleCanvasBubblesStarted = true;
+
+    const layer = document.getElementById('bubbleLayer');
+    if (!layer) return;
+
+    let canvas = document.getElementById('bubbleCanvas');
+    if (!canvas) {
+      canvas = document.createElement('canvas');
+      canvas.id = 'bubbleCanvas';
+      layer.appendChild(canvas);
+    }
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const colors = [
+      'rgba(255,255,255,0.38)',
+      'rgba(187,247,208,0.34)',
+      'rgba(191,219,254,0.34)',
+      'rgba(254,240,138,0.30)',
+      'rgba(252,231,243,0.32)',
+      'rgba(221,214,254,0.32)'
+    ];
+
+    let bubbles = [];
+
+    function resizeCanvas() {
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.ceil(window.innerWidth * dpr);
+      canvas.height = Math.ceil(window.innerHeight * dpr);
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function makeBubble(now, delay) {
+      const radius = 5 + Math.random() * 11;
+      return {
+        start: now + delay,
+        duration: 30000 + Math.random() * 15000,
+        x: Math.random() * window.innerWidth,
+        y: window.innerHeight + radius + Math.random() * 35,
+        radius: radius,
+        drift: -90 + Math.random() * 180,
+        wobble: 8 + Math.random() * 22,
+        color: colors[Math.floor(Math.random() * colors.length)]
+      };
+    }
+
+    function burst() {
+      const now = performance.now();
+      const count = 28 + Math.floor(Math.random() * 12);
+      for (let i = 0; i < count; i++) {
+        bubbles.push(makeBubble(now, i * 110));
+      }
+    }
+
+    function draw(now) {
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+      bubbles = bubbles.filter(function (b) {
+        const t = (now - b.start) / b.duration;
+        if (t < 0) return true;
+        if (t > 1) return false;
+
+        const ease = 1 - Math.pow(1 - t, 1.8);
+        const x = b.x + b.drift * ease + Math.sin(t * Math.PI * 4) * b.wobble;
+        const y = b.y - (window.innerHeight + 120) * ease;
+        const alpha = Math.sin(Math.PI * t);
+
+        ctx.globalAlpha = 0.55 * alpha;
+        ctx.beginPath();
+        ctx.arc(x, y, b.radius, 0, Math.PI * 2);
+        ctx.fillStyle = b.color;
+        ctx.fill();
+
+        ctx.globalAlpha = 0.45 * alpha;
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = 'rgba(255,255,255,0.42)';
+        ctx.stroke();
+
+        return true;
+      });
+
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(draw);
+    }
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    // Show once when opened, then every 3 minutes.
+    burst();
+    setInterval(burst, 180000);
+    requestAnimationFrame(draw);
+  }
+
+  window.startBubbleAnimation = initVisibleBubbles;
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initVisibleBubbles);
+  } else {
+    initVisibleBubbles();
+  }
+})();
+</script>
+
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/settings.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/effects.js"></script>
+<!--<script src="settings.js"></script>-->
+<!--<script src="effects.js"></script>-->
+</body>
+</html>

@@ -1,0 +1,903 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Your Movie, Your Face: An AI Face-Swap Project</title>
+    <meta name="description" content="A set of slides for Machine Learning">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/effectsGreen.css">
+	<!--<link rel="stylesheet" href="./css/style.css">-->
+	<!--<link rel="stylesheet" href="./css/effects.css">-->
+
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+
+		function startCountdown() {
+			const countdownBox = document.getElementById('classCountdown');
+			if (!countdownBox) return;
+
+			// Target: Last day of classes, Saturday, December 5, 2026.
+			const targetDate = new Date(2026, 11, 5, 0, 0, 0).getTime();
+
+			function updateCountdown() {
+				const now = new Date().getTime();
+				const distance = targetDate - now;
+
+				if (distance <= 0) {
+					const today = new Date();
+					if (today.getFullYear() === 2026 && today.getMonth() === 11 && today.getDate() === 5) {
+						countdownBox.innerHTML = '<span class="count-label">Last day of classes</span><span class="count-time">Today — Dec. 5, 2026</span>';
+					} else {
+						countdownBox.innerHTML = '<span class="count-label">Last day of classes</span><span class="count-time">Completed — Dec. 5, 2026</span>';
+					}
+					return;
+				}
+
+				const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+				const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+				const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+				const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+				countdownBox.innerHTML = '<span class="count-label">Last day of classes: Dec. 5, 2026</span>' +
+					'<span class="count-time">' + days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's</span>';
+			}
+
+			updateCountdown();
+			setInterval(updateCountdown, 1000);
+		}
+
+		function startBubbleAnimation() {
+			const bubbleLayer = document.getElementById('bubbleLayer');
+			if (!bubbleLayer) return;
+
+			function createBubble() {
+				const bubble = document.createElement('span');
+				const size = Math.floor(8 + Math.random() * 22);
+				const left = Math.random() * 100;
+				const duration = Math.floor(28 + Math.random() * 22);
+				const drift = Math.floor(-120 + Math.random() * 240);
+
+				bubble.className = 'floating-bubble';
+				bubble.style.width = size + 'px';
+				bubble.style.height = size + 'px';
+				bubble.style.left = left + 'vw';
+				bubble.style.animationDuration = duration + 's';
+				bubble.style.setProperty('--bubble-drift', drift + 'px');
+
+				bubbleLayer.appendChild(bubble);
+				setTimeout(function () {
+					bubble.remove();
+				}, duration * 1000 + 500);
+			}
+
+			function createBubbleBurst() {
+				const bubbleCount = 18 + Math.floor(Math.random() * 12);
+				for (let i = 0; i < bubbleCount; i++) {
+					setTimeout(createBubble, i * 260);
+				}
+			}
+
+			// Show one soft burst shortly after loading, then repeat every 3 minutes.
+			setTimeout(createBubbleBurst, 2500);
+			setInterval(createBubbleBurst, 180000);
+		}
+	</script>
+
+	<style>
+	    pre {
+            background-color: black;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+        }
+        code {
+            font-family: "Courier New", monospace;
+            color: #d63384; /* Python-style color */
+        }
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }
+        .top-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 8px 4px 0 4px;
+            gap: 12px;
+        }
+        .top-header-left,
+        .top-header-center,
+        .top-header-right {
+            flex: 1 1 0;
+            display: flex;
+            align-items: flex-start;
+        }
+        .top-header-left {
+            justify-content: flex-start;
+        }
+        .top-header-center {
+            justify-content: center;
+        }
+        .top-header-right {
+            justify-content: flex-end;
+        }
+        .header-badge {
+            color: #ffffff;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+            background: rgba(22, 163, 74, 0.38);
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(0,0,0,.22);
+            padding: 6px 12px;
+            line-height: 1.05;
+            white-space: nowrap;
+        }
+        #classCountdown {
+            display: inline-flex;
+            align-items: center;
+            min-width: 360px;
+            text-align: left;
+            letter-spacing: .2px;
+        }
+        #classCountdown .count-label {
+            display: inline-block;
+            font-size: 15px;
+            font-weight: 800;
+            margin-bottom: 0;
+            margin-right: 8px;
+        }
+        #classCountdown .count-time {
+            display: inline-block;
+            font-size: 15px;
+            font-weight: 800;
+        }
+        .header-email-link {
+            display: inline-block;
+            color: #ffffff !important;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+            font-size: 15px;
+            font-weight: 800;
+            line-height: 1;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .header-email-link:hover {
+            text-decoration: underline;
+        }
+        #realtimeclock {
+            display: inline-block;
+            font-size: 15px;
+            font-weight: 800;
+        }
+        #bubbleLayer {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 9999;
+            background: transparent !important;
+        }
+        #bubbleCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: transparent !important;
+        }
+        .floating-bubble {
+            position: absolute;
+            bottom: -60px;
+            display: block;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.10);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.14);
+            animation-name: floatBubbleUp;
+            animation-timing-function: linear;
+            animation-fill-mode: forwards;
+            opacity: 0;
+        }
+        @keyframes floatBubbleUp {
+            0% {
+                transform: translate3d(0, 0, 0) scale(.85);
+                opacity: 0;
+            }
+            12% {
+                opacity: .30;
+            }
+            88% {
+                opacity: .18;
+            }
+            100% {
+                transform: translate3d(var(--bubble-drift), -112vh, 0) scale(1.2);
+                opacity: 0;
+            }
+        }
+        .reveal {
+            position: relative;
+            z-index: 1;
+        }
+        .reveal .slides {
+            margin-top: 54px !important;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .floating-bubble {
+                animation: none;
+                display: none;
+            }
+        }	
+	</style>
+
+  </head>
+
+  <body onload="startTime(); startCountdown(); startBubbleAnimation();">
+    <div id="bubbleLayer" aria-hidden="true"><canvas id="bubbleCanvas"></canvas></div>
+    <div class="reveal" >
+      <div class="top-header">
+        <div class="top-header-left">
+          <span id="classCountdown" class="header-badge"><span class="count-label">Last day of classes: Dec. 5, 2026</span><span class="count-time">Loading...</span></span>
+        </div>
+        <div class="top-header-center">
+          <a href="mailto:Xinxing.Wu@kysu.edu" title="Email Xinxing Wu" class="header-email-link header-badge">Xinxing.Wu@kysu.edu</a>
+        </div>
+        <div class="top-header-right">
+          <div class="header-badge" id="realtimeclock"></div>
+        </div>
+      </div>
+      <div class="slides">
+
+  <div class="me">Xinxing Wu</div>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown id="cover"><textarea data-template>
+
+# Your Movie, Your Face: An AI Face-Swap Project
+
+
+<hr>
+
+<br>
+
+Xinxing Wu
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline
+
+[<p class="hover-underline-animation">Introduction</p>](#/ch1)
+
+[<p class="hover-underline-animation">Implementation</p>](#/ch2)
+
+[<p class="hover-underline-animation">Examples</p>](#/ch3)
+
+</textarea></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch1" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Introduction</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Deepfake</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- This deepfake software is designed to be a productive tool for the AI-generated media industry. It can assist artists in animating custom characters, creating engaging content, and even using models for clothing design. 
+
+- Link https://github.com/hacksider/deep-live-cam
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Deepfake (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+"We are aware of the potential for unethical applications and are committed to preventative measures. A built-in check prevents the program from processing inappropriate media (nudity, graphic content, sensitive material like war footage, etc.). We will continue to develop this project responsibly, adhering to the law and ethics. We may shut down the project or add watermarks if legally required." From https://github.com/hacksider/deep-live-cam
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Responsible and legal use</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- By using this software, you agree to these terms and commit to using it in a manner that respects the rights and dignity of others.
+
+- Users are expected to use this software responsibly and legally. If using a real person's face, obtain their consent and clearly label any output as a deepfake when sharing online. We are not responsible for end-user actions.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Responsible and legal use (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Ethical Use: Users are expected to use this software responsibly and legally. If using a real person's face, obtain their consent and clearly label any output as a deepfake when sharing online.
+
+- Content Restrictions: The software includes built-in checks to prevent processing inappropriate media, such as nudity, graphic content, or sensitive material.
+
+From https://github.com/hacksider/deep-live-cam
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Responsible and legal use (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Legal Compliance: We adhere to all relevant laws and ethical guidelines. If legally required, we may shut down the project or add watermarks to the output.
+
+- User Responsibility: We are not responsible for end-user actions. Users must ensure their use of the software aligns with ethical standards and legal requirements.
+
+From https://github.com/hacksider/deep-live-cam
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch2" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Implementation</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Step 1</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Download 
+
+	- You can get from <a href="./files/Deep-Live-Cam-main.zip">Deep-Live-Cam-main.zip</a> or from https://github.com/hacksider/deep-live-cam
+
+   </div>
+</div>
+
+
+
+<img src="images/fig1.png"  align="left" height="550px" width="900px"/>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Step 2</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+Unzip
+
+   </div>
+</div>
+
+
+
+<img src="images/fig2.png"  align="left" height="550px" width="900px"/>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Step 3</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 900px;"></div>
+
+- Set up Your Platform
+
+	- Python (3.14 recommended; 3.11-3.14 supported) - We will use a Python virtual environment, which is an isolated directory that contains its own Python installation and independent set of packages to prevent version conflicts between projects - You do not need to install at this moment, we will do it in Step 5
+	- install ffmpeg - iex (irm ffmpeg.tc.ht) https://www.youtube.com/watch?v=OlNWCpFdVMA (Install it now) 
+	- Visual Studio 2022 Runtimes (Windows) https://visualstudio.microsoft.com/visual-cpp-build-tools/ (Install it now)
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Step 4</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Download the Models
+
+	- GFPGANv1.4 <a href="./files/GFPGANv1.4.onnx">GFPGANv1.4.onnx</a>
+	- inswapper_128_fp16.onnx <a href="./files/inswapper_128_fp16.onnx">inswapper_128_fp16.onnx</a>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Step 4 (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Place these files in the "models" folder.
+
+   </div>
+</div>
+
+
+
+<img src="images/fig3.png"  align="left" height="550px" width="900px"/>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Step 5</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Install Dependencies
+
+- Take Windows as an example (for macOS or Linux, see https://github.com/hacksider/deep-live-cam)
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Step 5 (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Open Terminal on Windows
+- Go to the unzipped folder
+
+   </div>
+</div>
+
+
+
+<img src="images/fig4.png"  align="left" height="550px" width="900px"/>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Step 5 (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Run 
+
+```
+python -m venv venv
+```
+
+   </div>
+</div>
+
+
+
+A new folder will be created, that is, venv
+
+<img src="images/fig5.png"  align="left" height="550px" width="900px"/>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Step 5 (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+
+- Run 
+
+```
+venv\Scripts\activate
+```
+
+   </div>
+</div>
+
+
+
+- Activate the environment
+
+<img src="images/fig6.png"  align="left" height="550px" width="900px"/>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Step 5 (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Install dependencies
+
+```
+pip install -r requirements.txt
+```
+
+   </div>
+</div>
+
+
+
+<img src="images/fig7.png"  align="left" height="550px" width="900px"/>
+
+
+
+- Need to wait for at least 5 - 10 minutes depending on Internet
+
+<img src="images/fig8.png"  align="left" height="450px" width="900px"/>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">A Note</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+Run: If you don't have a GPU, you can run Deep-Live-Cam using python run.py. Note that initial execution will download models (~300MB).
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Usage - Option 1</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Image/Video Mode
+
+	- Execute `python run.py`.
+	- Choose a source face image and a target image/video.
+	- Click "Start".
+	- The output will be saved in a directory named after the target video.
+   </div>
+</div>
+
+
+
+- In the unzipped folder, run `python run.py`
+
+<img src="images/fig9.png"  align="left" height="550px" width="900px"/>
+
+
+
+- Again, wait for several minutes
+
+<img src="images/fig10.png"  align="left" height="550px" width="900px"/>
+
+
+
+- Then you will see the interface as follows. Prepare a source face image and a target video to implement.
+
+<img src="images/fig11.png"  align="left" height="450px" width="600px"/>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Usage - Option 2</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Webcam Mode
+
+	- Execute `python run.py`.
+	- Select a source face image.
+	- Click "Live".
+	- Wait for the preview to appear (10-30 seconds).
+	- Use a screen capture tool like OBS to stream.
+	- To change the face, select a new source image.
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch3" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Examples</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Example 1</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+<table style="width:100%;border-collapse:collapse;text-align:center;font-size:22px;"><tr><th style="width:50%;padding:8px;border:1px solid #999;font-size:28px;font-weight:bold;">Original</th><th style="width:50%;padding:8px;border:1px solid #999;font-size:28px;font-weight:bold;">AI Modified</th></tr><tr><td style="width:50%;padding:8px;border:1px solid #999;"><video src="./images/Iron.mp4" controls preload="metadata" style="display:block;width:100%;max-width:480px;max-height:400px;margin:0 auto;object-fit:contain;"></video></td><td style="width:50%;padding:8px;border:1px solid #999;"><video src="./images/output6.mp4" controls preload="metadata" style="display:block;width:100%;max-width:480px;max-height:400px;margin:0 auto;object-fit:contain;"></video></td></tr></table>
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Example 2</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+<table style="width:100%;border-collapse:collapse;text-align:center;font-size:22px;"><tr><th style="width:50%;padding:8px;border:1px solid #999;font-size:28px;font-weight:bold;">Original</th><th style="width:50%;padding:8px;border:1px solid #999;font-size:28px;font-weight:bold;">AI Modified</th></tr><tr><td style="width:50%;padding:8px;border:1px solid #999;"><video src="./images/FirstFly.mp4" controls preload="metadata" style="display:block;width:100%;max-width:480px;max-height:400px;margin:0 auto;object-fit:contain;"></video></td><td style="width:50%;padding:8px;border:1px solid #999;"><video src="./images/output5.mp4" controls preload="metadata" style="display:block;width:100%;max-width:480px;max-height:400px;margin:0 auto;object-fit:contain;"></video></td></tr></table>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Example 3</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+<table style="width:100%;border-collapse:collapse;text-align:center;font-size:22px;"><tr><th style="width:50%;padding:8px;border:1px solid #999;font-size:28px;font-weight:bold;">Original</th><th style="width:50%;padding:8px;border:1px solid #999;font-size:28px;font-weight:bold;">AI Modified</th></tr><tr><td style="width:50%;padding:8px;border:1px solid #999;"><img src="./images/hilbert.jpg" alt="Original Hilbert Image" style="display:block;width:100%;max-width:480px;max-height:450px;margin:0 auto;object-fit:contain;"></td><td style="width:50%;padding:8px;border:1px solid #999;"><video src="./images/hilbertVideo.mp4" controls preload="metadata" style="display:block;width:100%;max-width:480px;max-height:400px;margin:0 auto;object-fit:contain;"></video></td></tr></table>
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Example 4</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 850px;"></div>
+
+<table style="width:100%;border-collapse:collapse;text-align:center;font-size:22px;"><tr><th style="width:40%;padding:8px;border:1px solid #999;font-size:28px;font-weight:bold;">Hilbert Demo</th><th style="width:40%;padding:8px;border:1px solid #999;font-size:28px;font-weight:bold;">Cantor Demo</th><th style="width:20%;padding:8px;border:1px solid #999;font-size:28px;font-weight:bold;">Instructor Demo</th></tr>
+
+<tr><td style="width:40%;padding:8px;border:1px solid #999;"><video class="demoVideo" src="./images/hilbertVideo.mp4" controls preload="metadata" style="display:block;width:100%;max-width:480px;max-height:400px;margin:0 auto;object-fit:contain;"></video></td><td style="width:40%;padding:8px;border:1px solid #999;"><video class="demoVideo" src="./images/cantor.mp4" controls preload="metadata" style="display:block;width:100%;max-width:480px;max-height:400px;margin:0 auto;object-fit:contain;"></video></td><td style="width:20%;padding:8px;border:1px solid #999;"><video class="demoVideo" src="./images/me.mp4" controls preload="metadata" style="display:block;width:100%;max-width:480px;max-height:400px;margin:0 auto;object-fit:contain;"></video></td></tr></table>
+
+<button onclick="toggleGroup('.demoVideo')">Play / Pause All Videos</button>
+ 
+   </div>
+</div>
+
+
+   
+  </section>
+
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+</div>
+	
+
+<script>
+    function toggleGroup(selector) {
+      var videos = document.querySelectorAll(selector);
+      var shouldPlay = false;
+
+      for (var i = 0; i < videos.length; i++) {
+        if (videos[i].paused) {
+          shouldPlay = true;
+          break;
+        }
+      }
+
+      for (var j = 0; j < videos.length; j++) {
+        if (shouldPlay) {
+          videos[j].play();
+        } else {
+          videos[j].pause();
+        }
+      }
+    }
+	
+(function () {
+  function initVisibleBubbles() {
+    if (window.__visibleCanvasBubblesStarted) return;
+    window.__visibleCanvasBubblesStarted = true;
+
+    const layer = document.getElementById('bubbleLayer');
+    if (!layer) return;
+
+    let canvas = document.getElementById('bubbleCanvas');
+    if (!canvas) {
+      canvas = document.createElement('canvas');
+      canvas.id = 'bubbleCanvas';
+      layer.appendChild(canvas);
+    }
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const colors = [
+      'rgba(255,255,255,0.38)',
+      'rgba(187,247,208,0.34)',
+      'rgba(191,219,254,0.34)',
+      'rgba(254,240,138,0.30)',
+      'rgba(252,231,243,0.32)',
+      'rgba(221,214,254,0.32)'
+    ];
+
+    let bubbles = [];
+
+    function resizeCanvas() {
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.ceil(window.innerWidth * dpr);
+      canvas.height = Math.ceil(window.innerHeight * dpr);
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function makeBubble(now, delay) {
+      const radius = 5 + Math.random() * 11;
+      return {
+        start: now + delay,
+        duration: 30000 + Math.random() * 15000,
+        x: Math.random() * window.innerWidth,
+        y: window.innerHeight + radius + Math.random() * 35,
+        radius: radius,
+        drift: -90 + Math.random() * 180,
+        wobble: 8 + Math.random() * 22,
+        color: colors[Math.floor(Math.random() * colors.length)]
+      };
+    }
+
+    function burst() {
+      const now = performance.now();
+      const count = 28 + Math.floor(Math.random() * 12);
+      for (let i = 0; i < count; i++) {
+        bubbles.push(makeBubble(now, i * 110));
+      }
+    }
+
+    function draw(now) {
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+      bubbles = bubbles.filter(function (b) {
+        const t = (now - b.start) / b.duration;
+        if (t < 0) return true;
+        if (t > 1) return false;
+
+        const ease = 1 - Math.pow(1 - t, 1.8);
+        const x = b.x + b.drift * ease + Math.sin(t * Math.PI * 4) * b.wobble;
+        const y = b.y - (window.innerHeight + 120) * ease;
+        const alpha = Math.sin(Math.PI * t);
+
+        ctx.globalAlpha = 0.55 * alpha;
+        ctx.beginPath();
+        ctx.arc(x, y, b.radius, 0, Math.PI * 2);
+        ctx.fillStyle = b.color;
+        ctx.fill();
+
+        ctx.globalAlpha = 0.45 * alpha;
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = 'rgba(255,255,255,0.42)';
+        ctx.stroke();
+
+        return true;
+      });
+
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(draw);
+    }
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    // Show once when opened, then every 3 minutes.
+    burst();
+    setInterval(burst, 180000);
+    requestAnimationFrame(draw);
+  }
+
+  window.startBubbleAnimation = initVisibleBubbles;
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initVisibleBubbles);
+  } else {
+    initVisibleBubbles();
+  }
+})();
+</script>
+
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/settings.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/effects.js"></script>
+<!--<script src="settings.js"></script>-->
+<!--<script src="effects.js"></script>-->
+</body>
+</html>

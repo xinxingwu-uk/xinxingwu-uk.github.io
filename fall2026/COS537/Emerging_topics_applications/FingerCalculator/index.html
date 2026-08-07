@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Left and Right Hand Finger Counting with Addition</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <!-- Webcam video for capturing hand movements -->
+    <video id="webcam" width="640" height="480" autoplay muted playsinline></video>
+    
+    <!-- Canvas to display hand landmarks -->
+    <canvas id="canvas" width="640" height="480"></canvas>
+    
+    <!-- Result section to display finger count and sum -->
+    <div id="result">Waiting...</div>
+
+    <!-- Importing required JavaScript libraries, from a CDN (Content Delivery Network) -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+	<!-- For real-time hand tracking and gesture recognition. Provides 21 landmark points for each hand, enabling gesture recognition, finger tracking. 
+	
+	MediaPipe Hands uses a deep learning model trained on a large dataset of hand images and poses.
+	
+	The model is a Convolutional Neural Network (CNN) that processes input frames and detects 21 hand landmarks (such as fingertips and knuckles).
+	
+	Hand detection: Locates hands in the video frame.
+
+	Landmark estimation: Predicts precise positions of key hand points.
+
+	Gesture classification (optional): Recognizes different hand gestures.
+
+	The model is pre-trained on millions of images with labeled hand landmarks to ensure high accuracy in real-time tracking.
+	-->
+	
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+	<!-- No AI/ML Model Involved: draw landmarks, connections, and other visualization elements. -->
+	
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+	<!-- No AI/ML Model Involved: helps manage the device's camera and provides video frames to MediaPipe modules.-->
+	
+    <!-- Main JavaScript functionality -->
+    <script src="script.js"></script>
+</body>
+</html>

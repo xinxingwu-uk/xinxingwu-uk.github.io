@@ -1,0 +1,58 @@
+AI AGENT FUNDAMENTALS: STUDY NOTES
+1. LARGE LANGUAGE MODELS AND AI AGENTS
+A large language model, or LLM, primarily generates text based on a user’s prompt and the context available to it. An AI agent goes beyond generating text. It works toward a goal, makes decisions, may use tools or knowledge sources, and can adjust its approach based on results.
+A simple way to remember the difference is:
+LLMs respond. AI agents act toward a goal.
+2. FOUR CHARACTERISTICS OF AI AGENTS
+AI agents are commonly described as:
+Autonomous: They can perform some actions without continuous human direction.
+Goal-oriented: Their actions are directed toward a defined objective.
+Tool-using: They may interact with databases, APIs, software, search systems, or knowledge bases.
+Adaptive: They may change their plan or response based on feedback, observations, or changing conditions.
+3. SIMPLE AGENT WORKFLOW
+A simple AI-agent workflow includes five stages:
+Understand: Interpret the user’s request and identify the goal.
+Plan: Determine the steps needed to address the request.
+Identify resources: Determine which tools, files, data, or knowledge sources are needed.
+Execute: Use the selected resources to complete the task.
+Handle obstacles: Ask for clarification, correct errors, try another approach, or explain a limitation.
+4. WHEN AN AI AGENT MAY BE USEFUL
+An agent may be useful when a task requires:
+- Multiple steps
+- Dynamic decision-making
+- Changing or current information
+- Knowledge retrieval
+- Tool use
+- Adjustment based on feedback
+5. WHEN AN AI AGENT MAY NOT BE NECESSARY
+An agent may be unnecessary when:
+- The task has a simple fixed answer
+- The task can be completed using deterministic rules
+- A basic prompt is sufficient
+- Incorrect or inconsistent output would create unacceptable risk
+6. RESPONSIBLE AI
+Responsible agent design should consider:
+- Fairness
+- Explainability
+- Privacy
+- Security
+- Safety
+- Human control
+- Accuracy
+- Robustness
+- Governance
+- Transparency
+Higher-risk actions require stronger safeguards and more human oversight.
+7. HUMAN IN THE LOOP
+Human-in-the-loop means that a person reviews, approves, corrects, or stops an AI system’s actions.
+Human review is especially important when:
+- An action cannot easily be reversed
+- A decision has serious consequences
+- The AI system is uncertain
+- A law or policy requires human approval
+8. AGENT EVALUATION
+Agent evaluation may occur at three levels:
+System level: Measures overall speed, reliability, efficiency, and resource use.
+Task level: Measures whether the agent successfully completes its assigned goal.
+Tool level: Measures whether the agent selects and uses an appropriate tool or knowledge source.
+A useful evaluation should consider accuracy, task success, transparency, safety, and the need for human correction.

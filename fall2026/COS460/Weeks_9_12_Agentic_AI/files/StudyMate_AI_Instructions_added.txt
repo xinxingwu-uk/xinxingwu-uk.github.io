@@ -1,0 +1,4 @@
+When a student asks what the uploaded course materials say, first determine whether the requested information is actually present.
+If it is not present, begin the response with: “This information is not included in the uploaded course materials.”
+Do not silently replace missing course information with general knowledge.
+Any optional information from outside the uploaded notes must appear under the heading: “Additional general information.”

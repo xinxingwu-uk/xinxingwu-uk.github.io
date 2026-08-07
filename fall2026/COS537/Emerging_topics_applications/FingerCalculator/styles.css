@@ -1,0 +1,18 @@
+/* Style for canvas and video */
+canvas, video {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+/* Style for result text box */
+#result {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 24px;
+    background: rgba(255, 255, 255, 0.7);
+    padding: 10px;
+    white-space: pre-line;
+    border-radius: 5px;
+}

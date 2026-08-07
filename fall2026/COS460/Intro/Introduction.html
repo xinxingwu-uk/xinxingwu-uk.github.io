@@ -1,0 +1,1355 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Introduction</title>
+    <meta name="description" content="A set of slides for Machine Learning">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/effectsGreen.css">
+	<!--<link rel="stylesheet" href="./css/style.css">-->
+	<!--<link rel="stylesheet" href="./css/effects.css">-->
+
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+
+		function startCountdown() {
+			const countdownBox = document.getElementById('classCountdown');
+			if (!countdownBox) return;
+
+			// Target: Last day of classes, Saturday, December 5, 2026.
+			const targetDate = new Date(2026, 11, 5, 0, 0, 0).getTime();
+
+			function updateCountdown() {
+				const now = new Date().getTime();
+				const distance = targetDate - now;
+
+				if (distance <= 0) {
+					const today = new Date();
+					if (today.getFullYear() === 2026 && today.getMonth() === 11 && today.getDate() === 5) {
+						countdownBox.innerHTML = '<span class="count-label">Last day of classes</span><span class="count-time">Today — Dec. 5, 2026</span>';
+					} else {
+						countdownBox.innerHTML = '<span class="count-label">Last day of classes</span><span class="count-time">Completed — Dec. 5, 2026</span>';
+					}
+					return;
+				}
+
+				const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+				const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+				const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+				const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+				countdownBox.innerHTML = '<span class="count-label">Last day of classes: Dec. 5, 2026</span>' +
+					'<span class="count-time">' + days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's</span>';
+			}
+
+			updateCountdown();
+			setInterval(updateCountdown, 1000);
+		}
+
+		function startBubbleAnimation() {
+			const bubbleLayer = document.getElementById('bubbleLayer');
+			if (!bubbleLayer) return;
+
+			function createBubble() {
+				const bubble = document.createElement('span');
+				const size = Math.floor(8 + Math.random() * 22);
+				const left = Math.random() * 100;
+				const duration = Math.floor(28 + Math.random() * 22);
+				const drift = Math.floor(-120 + Math.random() * 240);
+
+				bubble.className = 'floating-bubble';
+				bubble.style.width = size + 'px';
+				bubble.style.height = size + 'px';
+				bubble.style.left = left + 'vw';
+				bubble.style.animationDuration = duration + 's';
+				bubble.style.setProperty('--bubble-drift', drift + 'px');
+
+				bubbleLayer.appendChild(bubble);
+				setTimeout(function () {
+					bubble.remove();
+				}, duration * 1000 + 500);
+			}
+
+			function createBubbleBurst() {
+				const bubbleCount = 18 + Math.floor(Math.random() * 12);
+				for (let i = 0; i < bubbleCount; i++) {
+					setTimeout(createBubble, i * 260);
+				}
+			}
+
+			// Show one soft burst shortly after loading, then repeat every 3 minutes.
+			setTimeout(createBubbleBurst, 2500);
+			setInterval(createBubbleBurst, 180000);
+		}
+	</script>
+
+	<style>
+	    pre {
+            background-color: black;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+        }
+        code {
+            font-family: "Courier New", monospace;
+            color: #d63384; /* Python-style color */
+        }
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }
+        .top-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 8px 4px 0 4px;
+            gap: 12px;
+        }
+        .top-header-left,
+        .top-header-center,
+        .top-header-right {
+            flex: 1 1 0;
+            display: flex;
+            align-items: flex-start;
+        }
+        .top-header-left {
+            justify-content: flex-start;
+        }
+        .top-header-center {
+            justify-content: center;
+        }
+        .top-header-right {
+            justify-content: flex-end;
+        }
+        .header-badge {
+            color: #ffffff;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+            background: rgba(22, 163, 74, 0.38);
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(0,0,0,.22);
+            padding: 6px 12px;
+            line-height: 1.05;
+            white-space: nowrap;
+        }
+        #classCountdown {
+            display: inline-flex;
+            align-items: center;
+            min-width: 360px;
+            text-align: left;
+            letter-spacing: .2px;
+        }
+        #classCountdown .count-label {
+            display: inline-block;
+            font-size: 15px;
+            font-weight: 800;
+            margin-bottom: 0;
+            margin-right: 8px;
+        }
+        #classCountdown .count-time {
+            display: inline-block;
+            font-size: 15px;
+            font-weight: 800;
+        }
+        .header-email-link {
+            display: inline-block;
+            color: #ffffff !important;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+            font-size: 15px;
+            font-weight: 800;
+            line-height: 1;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .header-email-link:hover {
+            text-decoration: underline;
+        }
+        #realtimeclock {
+            display: inline-block;
+            font-size: 15px;
+            font-weight: 800;
+        }
+        #bubbleLayer {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 9999;
+            background: transparent !important;
+        }
+        #bubbleCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: transparent !important;
+        }
+        .floating-bubble {
+            position: absolute;
+            bottom: -60px;
+            display: block;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.10);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.14);
+            animation-name: floatBubbleUp;
+            animation-timing-function: linear;
+            animation-fill-mode: forwards;
+            opacity: 0;
+        }
+        @keyframes floatBubbleUp {
+            0% {
+                transform: translate3d(0, 0, 0) scale(.85);
+                opacity: 0;
+            }
+            12% {
+                opacity: .30;
+            }
+            88% {
+                opacity: .18;
+            }
+            100% {
+                transform: translate3d(var(--bubble-drift), -112vh, 0) scale(1.2);
+                opacity: 0;
+            }
+        }
+        .reveal {
+            position: relative;
+            z-index: 1;
+        }
+        .reveal .slides {
+            margin-top: 54px !important;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .floating-bubble {
+                animation: none;
+                display: none;
+            }
+        }	
+
+    /* Animated KYSU green-and-gold flyer dragonfly: circles around the visible webpage */
+    .flying-flyer {
+      --green-deep: #003527;
+      --gold: #f2c94c;
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 10000;
+      width: 136px;
+      height: 70px;
+      display: block;
+      color: var(--green-deep);
+      cursor: pointer;
+      filter: drop-shadow(0 10px 12px rgba(0, 53, 39, 0.28));
+      will-change: transform;
+      transform: translate3d(24px, 84px, 0);
+      touch-action: manipulation;
+    }
+
+    .flying-flyer:focus-visible {
+      outline: 3px solid var(--gold);
+      outline-offset: 5px;
+      border-radius: 22px;
+    }
+
+    .flyer-bird-bob {
+      display: block;
+      width: 100%;
+      height: 100%;
+      animation: flyerBob 1.15s ease-in-out infinite;
+    }
+
+    .flyer-bird-art {
+      position: relative;
+      display: block;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.18s ease, filter 0.18s ease;
+      transform-origin: center;
+    }
+
+    .flying-flyer:hover .flyer-bird-art,
+    .flying-flyer:focus-visible .flyer-bird-art {
+      transform: scale(1.08);
+      filter: brightness(1.06);
+    }
+
+    .flyer-bird-svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      display: block;
+      transform-origin: center;
+      transition: transform 0.12s linear;
+    }
+
+    .dragon-wing {
+      transform-box: view-box;
+      transform-origin: 100px 50px;
+      will-change: transform, opacity, filter;
+      pointer-events: none;
+    }
+
+    .dragonfly-body {
+      transform-box: view-box;
+      transform-origin: 100px 50px;
+      will-change: transform;
+    }
+
+    .flyer-tail {
+      transform-box: fill-box;
+      transform-origin: right center;
+      animation: flyerTail 0.9s ease-in-out infinite alternate;
+    }
+
+    .flyer-bird-label {
+      position: absolute;
+      left: 50%;
+      bottom: -1px;
+      transform: translateX(-50%);
+      min-width: 66px;
+      padding: 4px 13px 5px;
+      border: 2px solid rgba(255, 255, 255, 0.92);
+      border-radius: 999px;
+      background: var(--gold);
+      color: var(--green-deep);
+      box-shadow: 0 5px 12px rgba(0, 53, 39, 0.26);
+      text-align: center;
+      font-size: 0.82rem;
+      font-weight: 950;
+      letter-spacing: 0.04em;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .flying-flyer:hover .flyer-bird-label,
+    .flying-flyer:focus-visible .flyer-bird-label {
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(242, 201, 76, 0.35), 0 7px 16px rgba(0, 53, 39, 0.3);
+    }
+
+    @keyframes flyerBob {
+      0%, 100% { transform: translateY(0.4px) rotate(-0.18deg); }
+      50% { transform: translateY(-0.9px) rotate(0.18deg); }
+    }
+
+    @keyframes flyerWingBack {
+      0%, 100% { transform: rotate(18deg) scaleY(0.84); }
+      50% { transform: rotate(-38deg) scaleY(1.12); }
+    }
+
+    @keyframes flyerWingFront {
+      0%, 100% { transform: rotate(12deg) scaleY(0.88); }
+      50% { transform: rotate(-31deg) scaleY(1.08); }
+    }
+
+    @keyframes flyerTail {
+      from { transform: rotate(-0.14deg); }
+      to { transform: rotate(0.14deg); }
+    }
+
+    @media (max-width: 620px) {
+      .flying-flyer {
+        width: 118px;
+        height: 62px;
+      }
+
+      .flyer-bird-label {
+        min-width: 60px;
+        font-size: 0.76rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .flyer-bird-bob,
+      .dragon-wing,
+      .flyer-tail {
+        animation: none;
+      }
+    }
+
+	</style>
+
+  </head>
+
+  <body onload="startTime(); startCountdown(); startBubbleAnimation();">
+
+    <a aria-label="Open the flyer" class="flying-flyer" href="https://xinxingwu-ksu.github.io/schedule/wu.html" rel="noopener" target="_blank" title="Open Flyer">
+    <span class="flyer-bird-bob">
+    <span class="flyer-bird-art">
+    <svg aria-hidden="true" class="flyer-bird-svg" viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="dragonAbdomen" x1="18" y1="50" x2="115" y2="50" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stop-color="#012a20"/>
+        <stop offset="0.35" stop-color="#0a5a42"/>
+        <stop offset="0.75" stop-color="#10926a"/>
+        <stop offset="1" stop-color="#034a35"/>
+      </linearGradient>
+      <linearGradient id="dragonThorax" x1="89" y1="35" x2="117" y2="65" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stop-color="#1da176"/>
+        <stop offset="0.52" stop-color="#0a7755"/>
+        <stop offset="1" stop-color="#003527"/>
+      </linearGradient>
+      <linearGradient id="wingEdgeTop" x1="102" y1="47" x2="102" y2="4" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stop-color="#3f9078"/>
+        <stop offset="0.72" stop-color="#80b9aa"/>
+        <stop offset="1" stop-color="#efd97c"/>
+      </linearGradient>
+      <linearGradient id="wingEdgeBottom" x1="102" y1="53" x2="102" y2="96" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stop-color="#3f9078"/>
+        <stop offset="0.72" stop-color="#80b9aa"/>
+        <stop offset="1" stop-color="#efd97c"/>
+      </linearGradient>
+      <linearGradient id="wingMembrane" x1="101" y1="49" x2="101" y2="5" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stop-color="#eefcf7" stop-opacity="0.32"/>
+        <stop offset="0.55" stop-color="#faffff" stop-opacity="0.20"/>
+        <stop offset="1" stop-color="#fff8ca" stop-opacity="0.48"/>
+      </linearGradient>
+      <radialGradient id="dragonEye" cx="0.35" cy="0.3" r="0.82">
+        <stop offset="0" stop-color="#fffbd2"/>
+        <stop offset="0.34" stop-color="#f2c94c"/>
+        <stop offset="0.72" stop-color="#78810b"/>
+        <stop offset="1" stop-color="#273400"/>
+      </radialGradient>
+    </defs>
+
+    <!-- Four wings attached to the thorax and extending almost perpendicular to the body. -->
+    <g class="dragon-wing wing-top-fore">
+      <path d="M106 45C109 34 112 22 116 11 119 4 122 2 124 4 127 7 124 14 121 21 117 32 112 40 107 47Z" fill="url(#wingMembrane)" stroke="url(#wingEdgeTop)" stroke-width="1.18" stroke-linejoin="round"/>
+      <path d="M108 45 122 6M112 35 121 13M115 26 119 16M117 19 123 9M110 40 116 23" fill="none" stroke="#4f9f89" stroke-width="0.54" opacity=".76"/>
+      <path d="M120 5h5" stroke="#9a7e10" stroke-width="1.5" stroke-linecap="round" opacity=".72"/>
+    </g>
+
+    <g class="dragon-wing wing-top-hind">
+      <path d="M99 45C96 34 93 22 89 11 86 4 83 2 81 4 78 7 81 14 84 21 88 32 93 40 99 47Z" fill="url(#wingMembrane)" stroke="url(#wingEdgeTop)" stroke-width="1.24" stroke-linejoin="round"/>
+      <path d="M97 45 83 6M93 35 84 13M90 26 86 16M88 19 82 9M95 40 89 23" fill="none" stroke="#4f9f89" stroke-width="0.56" opacity=".76"/>
+      <path d="M80 5h5" stroke="#9a7e10" stroke-width="1.5" stroke-linecap="round" opacity=".72"/>
+    </g>
+
+    <g class="dragon-wing wing-bottom-fore">
+      <path d="M106 55C109 66 112 78 116 89 119 96 122 98 124 96 127 93 124 86 121 79 117 68 112 60 107 53Z" fill="url(#wingMembrane)" stroke="url(#wingEdgeBottom)" stroke-width="1.18" stroke-linejoin="round"/>
+      <path d="M108 55 122 94M112 65 121 87M115 74 119 84M117 81 123 91M110 60 116 77" fill="none" stroke="#4f9f89" stroke-width="0.54" opacity=".76"/>
+      <path d="M120 95h5" stroke="#9a7e10" stroke-width="1.5" stroke-linecap="round" opacity=".72"/>
+    </g>
+
+    <g class="dragon-wing wing-bottom-hind">
+      <path d="M99 55C96 66 93 78 89 89 86 96 83 98 81 96 78 93 81 86 84 79 88 68 93 60 99 53Z" fill="url(#wingMembrane)" stroke="url(#wingEdgeBottom)" stroke-width="1.24" stroke-linejoin="round"/>
+      <path d="M97 55 83 94M93 65 84 87M90 74 86 84M88 81 82 91M95 60 89 77" fill="none" stroke="#4f9f89" stroke-width="0.56" opacity=".76"/>
+      <path d="M80 95h5" stroke="#9a7e10" stroke-width="1.5" stroke-linecap="round" opacity=".72"/>
+    </g>
+
+    <g class="dragonfly-body">
+      <g class="flyer-tail">
+        <path d="M98 50C83 50 67 50 52 50 39 50 28 50 18 49" fill="none" stroke="#002b20" stroke-width="7.8" stroke-linecap="round"/>
+        <path d="M98 50C83 50 67 50 52 50 39 50 28 50 18 50" fill="none" stroke="url(#dragonAbdomen)" stroke-width="4.8" stroke-linecap="round"/>
+        <path d="M86 46v7M74 46v7M62 46v7M50 46v7M38 46v7M27 46v6" stroke="#f2c94c" stroke-width="1.6" stroke-linecap="round" opacity=".88"/>
+        <path d="M18 48 11 45M18 52 11 55" fill="none" stroke="#003527" stroke-width="1.9" stroke-linecap="round"/>
+      </g>
+
+      <ellipse cx="104" cy="50" rx="10.6" ry="9.1" fill="url(#dragonThorax)" stroke="#003527" stroke-width="2.3"/>
+      <path d="M98 43c3 3 4 8 3 13M104 41c3 4 4 10 2 16" fill="none" stroke="#f2c94c" stroke-width="1.4" stroke-linecap="round" opacity=".78"/>
+
+      <ellipse cx="117" cy="50" rx="8.4" ry="7.5" fill="#0a6a4a" stroke="#003527" stroke-width="2.1"/>
+      <ellipse cx="122.5" cy="45.6" rx="5.4" ry="6.3" fill="url(#dragonEye)" stroke="#003527" stroke-width="1.4"/>
+      <ellipse cx="122.5" cy="54.4" rx="5.4" ry="6.3" fill="url(#dragonEye)" stroke="#003527" stroke-width="1.4"/>
+      <ellipse cx="124.2" cy="43.6" rx="1.6" ry="2.1" fill="#ffffff" opacity=".85"/>
+      <ellipse cx="124.2" cy="52.3" rx="1.6" ry="2.1" fill="#ffffff" opacity=".85"/>
+
+      <path d="M113 43 109 35M116 42 116 34" fill="none" stroke="#003527" stroke-width="1.3" stroke-linecap="round"/>
+      <path d="M129 50c5 0 9 1.4 12 3" fill="none" stroke="#003527" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M99 58 92 64 85 66M104 59 102 67 96 70M109 58 112 66 118 69" fill="none" stroke="#003527" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round" opacity=".92"/>
+    </g>
+    </svg>
+    <span class="flyer-bird-label">My Schedule</span>
+    </span>
+    </span>
+    </a>
+
+    <div id="bubbleLayer" aria-hidden="true"><canvas id="bubbleCanvas"></canvas></div>
+    <div class="reveal" >
+      <div class="top-header">
+        <div class="top-header-left">
+          <span id="classCountdown" class="header-badge"><span class="count-label">Last day of classes: Dec. 5, 2026</span><span class="count-time">Loading...</span></span>
+        </div>
+        <div class="top-header-center">
+          <a href="mailto:Xinxing.Wu@kysu.edu" title="Email Xinxing Wu" class="header-email-link header-badge">Xinxing.Wu@kysu.edu</a>
+        </div>
+        <div class="top-header-right">
+          <div class="header-badge" id="realtimeclock"></div>
+        </div>
+      </div>
+      <div class="slides">
+
+  <div class="me">Xinxing Wu</div>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown id="cover"><textarea data-template>
+<p class='titlep'>&nbsp;</p>
+
+# COS 460
+
+
+<hr>
+
+<br>
+
+Xinxing Wu
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline
+
+[<p class="hover-underline-animation">Introduction</p>](#/ch1)
+
+[<p class="hover-underline-animation">Topics</p>](#/ch2)
+
+[<p class="hover-underline-animation">Points</p>](#/ch3)
+
+</textarea></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline (Cont.)
+
+[<p class="hover-underline-animation">Grading Scale</p>](#/ch4)
+
+[<p class="hover-underline-animation">Course Policies</p>](#/ch5)
+
+[<p class="hover-underline-animation">Course Canvas Link</p>](#/ch6)
+
+[<p class="hover-underline-animation">How to fail in a course</p>](#/ch7)
+
+</textarea></section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch1" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Introduction</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="question-container">
+  <div class="question-title">Me</div>
+  <div class="question-shadebox">
+
+- <a href="https://github.com/xinxingwu-uk" target="_blank">Instructor</a>
+
+- <spanGREEN>Email</spanGREEN> xinxing.wu@kysu.edu (Best way to reach out)     Office Hathaway Hall 307
+
+- My Fall 2026 Schedule (Class time, meeting time, classroom ect.) https://xinxingwu-ksu.github.io/schedule/wu.html
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">You</div>
+  <div class="question-shadebox">
+  <div style="width: 800px;"></div>
+
+<div id="roundbox" >
+
+<h1 style="color: black;"> Introducn yourself </h1>
+
+</div>
+
+   </div>
+</div>
+
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch2" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Topics</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Topics</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Weeks 1-3: Traditional AI 
+- Weeks 4-8: Generative AI
+- Weeks 9-12: Agentic AI
+- Weeks 13-14: Building with Generative AI by PartyRock
+- Week 15: Prompt Engineering to Loop and Graph Engineering
+- Week 16: Final Project Presentation + Demo
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch3" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Points</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Points</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+<div style="font-size:18px;">
+There are eight optional challenges, each worth 2.5 extra-credit points. Teamwork and participation in discussions are also encouraged and may earn up to 5 additional points. Therefore, it may earn up to 25 extra-credit points, for a maximum possible total of 125 points in the course.
+</div>
+
+<table class="tbl" style="width:100%; border-collapse:collapse; font-size:20px;">
+  <thead>
+    <tr>
+      <th style="border:1px solid #999; padding:10px; text-align:left;">
+        Course Item
+      </th>
+      <th style="width:160px; border:1px solid #999; padding:10px; text-align:center;">
+        Total Points
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td style="border:1px solid #999; padding:10px;">Syllabus Acknowledgement</td>
+      <td style="border:1px solid #999; padding:10px; text-align:center;">3</td>
+    </tr>
+    <tr>
+      <td style="border:1px solid #999; padding:10px;">Attendance</td>
+      <td style="border:1px solid #999; padding:10px; text-align:center;">10</td>
+    </tr>
+    <tr>
+      <td style="border:1px solid #999; padding:10px;">Exercise (4 exercises, each worth 4 points, for a total of 16 points)</td>
+      <td style="border:1px solid #999; padding:10px; text-align:center;">16</td>
+    </tr>
+    <tr>
+      <td style="border:1px solid #999; padding:10px;">Lab (7 labs, each worth 4 points, for a total of 28 points)</td>
+      <td style="border:1px solid #999; padding:10px; text-align:center;">28</td>
+    </tr>
+    <tr>
+      <td style="border:1px solid #999; padding:10px;">Project (4 projects, each worth 7 points, for a total of 28 points)</td>
+      <td style="border:1px solid #999; padding:10px; text-align:center;">28</td>
+    </tr>
+    <tr>
+      <td style="border:1px solid #999; padding:10px;">Final Presentation</td>
+      <td style="border:1px solid #999; padding:10px; text-align:center;">15</td>
+    </tr>
+  </tbody>
+
+  <tfoot>
+    <tr>
+      <td style="border:1px solid #999; padding:10px;">
+        <strong>Total Points</strong>
+      </td>
+      <td style="border:1px solid #999; padding:10px; text-align:center;">
+        <strong>100</strong>
+      </td>
+    </tr>
+  </tfoot>
+</table>
+
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch4" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Grading Scale</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Grading Scale</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+This grading scale outlines how final grades are determined based on the total points earned in the course. Each letter grade corresponds to a specific range of percentages or points.
+
+<table class="tbl" style="width:100%; border-collapse:collapse; font-size:22px;">
+  <thead>
+    <tr>
+      <th style="width:120px; border:1px solid #999; padding:10px; text-align:center;">
+        Grade
+      </th>
+      <th style="border:1px solid #999; padding:10px; text-align:center;">
+        Points
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td style="border:1px solid #999; padding:10px; text-align:center;">
+        <strong>A</strong>
+      </td>
+      <td style="border:1px solid #999; padding:10px; text-align:center;">
+        &ge; 90
+      </td>
+    </tr>
+    <tr>
+      <td style="border:1px solid #999; padding:10px; text-align:center;">
+        <strong>B</strong>
+      </td>
+      <td style="border:1px solid #999; padding:10px; text-align:center;">
+        80&ndash;89
+      </td>
+    </tr>
+    <tr>
+      <td style="border:1px solid #999; padding:10px; text-align:center;">
+        <strong>C</strong>
+      </td>
+      <td style="border:1px solid #999; padding:10px; text-align:center;">
+        70&ndash;79
+      </td>
+    </tr>
+    <tr>
+      <td style="border:1px solid #999; padding:10px; text-align:center;">
+        <strong>D</strong>
+      </td>
+      <td style="border:1px solid #999; padding:10px; text-align:center;">
+        60&ndash;69
+      </td>
+    </tr>
+    <tr>
+      <td style="border:1px solid #999; padding:10px; text-align:center;">
+        <strong>F</strong>
+      </td>
+      <td style="border:1px solid #999; padding:10px; text-align:center;">
+        Below 60
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch5" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Course Policies</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Assignments and exams</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+<div id="roundbox">
+
+- Review and grade your submissions every <spanBYMix>Saturday or Sunday</spanBYMix>
+
+- Teams to do class recording
+
+- Team work (<spanGREEN>Discussions - pts will be given in related assignments</spanGREEN>)  or Come to discuss with me (Fall 2026 Schedule https://xinxingwu-ksu.github.io/schedule/wu.html)
+
+- Exercise attempt: <spanRED>1</spanRED>; Lab/project attempt: <spanRED>3</spanRED>.
+
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Assignments and exams (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+<div id="roundbox">
+
+
+- Mid-term (Exam/Project): try to complete before  October 2; Final-term (Exam/Project): try to complete before December 5.
+
+- Mid/final-term grade: Canvas announcement, then after 1 day or half day, submit to KYSU WIRED system.
+
+</div>
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Important</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+Regular attendance is required for success in this course.
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-shakeflash-container">
+  <div class="definition-shakeflash-title">Class Attendance</div>
+  <div class="definition-shakeflash-shadebox">
+
+- Unexcused absences: To help maintain a smooth learning environment, students who arrive more than five (5) minutes late to start of class AND OR leaving class early will be marked as ‘Absent’. Each three (3) unexcused absences will be a drop in a letter grade for the course. If you have any form of note or excuse IT must be submitted to Student Services for review and dispersion! No exceptions!
+
+- More detail, see Syllabus and Course Canvas
+   </div>
+</div>
+
+
+
+<div class="definition-shakeflash-container">
+  <div class="definition-shakeflash-title">Assignments</div>
+  <div class="definition-shakeflash-shadebox">
+
+- ... To support meaningful learning, students are expected to come to class prepared and engaged, with the goal of developing a thorough understanding of the course material. A due date will be provided on Canvas or announced in class for each weekly homework assignment... Please pay close attention to assignment and exam deadlines. In general, deadlines will not be extended, and late submissions are not accepted.
+
+- Generally, assignments are required to be submitted to Canvas. Do not use KSU email to email/submit your work.
+
+- More detail, see Syllabus and Course Canvas
+   </div>
+</div>
+
+
+
+<div class="definition-shakeflash-container">
+  <div class="definition-shakeflash-title">Cell Phone</div>
+  <div class="definition-shakeflash-shadebox">
+
+- To create a focused and respectful learning environment, all cell phones, PDAs, beepers, and similar electronic devices must be turned off and put away during class. Texting is not permitted at any time during class. Failure to follow this policy will result in an unexcused absence for that day.
+
+- Headphones, earbuds, and music-playing devices may not be worn or used during class. During exams, no cell phones may be on desks or visible at any time; the presence of a cell phone during a test will result in a zero for that exam.
+
+- More detail, see Syllabus and Course Canvas
+   </div>
+</div>
+
+
+
+<div class="definition-shakeflash-container">
+  <div class="definition-shakeflash-title">Academic Honesty</div>
+  <div class="definition-shakeflash-shadebox">
+
+- Cheating may result in an F in the class. It may also result in expulsion from the university.
+
+- More detail, see Syllabus and Course Canvas
+   </div>
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Artificial Intelligence</div>
+  <div class="question-shadebox">
+
+Artificial Intelligence (AI) Tool Usage - If you use any AI tool at any point in your work, you must clearly and fully disclose its use in your assignment, report, project submission, or any other deliverable. Your disclosure must be specific and detailed, including 📢
+
+
+<hr>
+
+<spanRED>First 8 weeks, suggesting not use AI tools in your submissions.</spanRED>
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Artificial Intelligence (cont.)</div>
+  <div class="question-shadebox">
+
+- <spanGREEN>Where</spanGREEN> AI was used (e.g., summarizing readings, generating ideas, code assistance, debugging, data analysis, data visualization, outlining, editing).
+- <spanGREEN>What</spanGREEN> tool(s) were used (tool name and, when available, version/model, plus platform/app).
+- <spanBYMix>Why</spanBYMix> you chose to use the tool (e.g., brainstorming, translation, grammar checking, accelerating coding, improving clarity).
+- <spanBYMix>How</spanBYMix> you used the output (e.g., modified/edited, cited/quoted, directly included, used only as a reference, used to compare against your own work).
+- Other details as needed. 😊 The instructor reserves the right to impose additional disclosure requirements as necessary.
+   </div>
+</div>
+
+
+
+<div class="definition-shakeflash-container">
+  <div class="definition-shakeflash-title">Artificial Intelligence (cont.)</div>
+  <div class="definition-shakeflash-shadebox">
+
+- 🚨Important: Failure to <spanBYMix>disclose</spanBYMix> AI use—or presenting AI-generated work as entirely your own without clear clarification—may be considered a violation of academic integrity.
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">🚨Responsible and Legal Use</div>
+  <div class="question-shadebox">
+
+- Some software, tools, and programs used in this course may involve privacy, security, ethical, or legal risks if they are misused. Students are expected to use all course technologies responsibly, ethically, and in compliance with applicable laws, university policies, and course instructions.
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">🚨Responsible and Legal Use (Cont.)</div>
+  <div class="question-shadebox">
+
+- All materials, demonstrations, and activities are provided for educational purposes only. Do not use them to access systems without permission, harm others, violate privacy, disrupt services, or engage in any unauthorized or illegal activity. You are responsible for how you use the knowledge and tools introduced in this course.
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">🚨Responsible and Legal Use (Cont.)</div>
+  <div class="question-shadebox">
+
+- The materials provided on Canvas are intended for educational use only. Please do not share, upload, or distribute these materials on the internet or to others outside this course.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Notes</div>
+  <div class="definition-shadebox">
+
+- Based on practical class needs, 😄 the instructor reserves the right to make changes or impose additional requirements as necessary.
+   </div>
+</div>
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch6" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Course Canvas Link</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Canvas Link</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Canvs Link https://kysu.instructure.com/courses/8118
+
+- Canvas course structure introdctuion: homepage, syllabus, assignments, exams, projects, etc.
+
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch7" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">How to fail in a course</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">how to fail in a course</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+<h1 style="color: black;"> ?</h1>
+
+- No-Show
+- Never Submit Assignments
+- $\ldots$
+
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+</div>
+	
+
+<script>
+(function () {
+  function initVisibleBubbles() {
+    if (window.__visibleCanvasBubblesStarted) return;
+    window.__visibleCanvasBubblesStarted = true;
+
+    const layer = document.getElementById('bubbleLayer');
+    if (!layer) return;
+
+    let canvas = document.getElementById('bubbleCanvas');
+    if (!canvas) {
+      canvas = document.createElement('canvas');
+      canvas.id = 'bubbleCanvas';
+      layer.appendChild(canvas);
+    }
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const colors = [
+      'rgba(255,255,255,0.38)',
+      'rgba(187,247,208,0.34)',
+      'rgba(191,219,254,0.34)',
+      'rgba(254,240,138,0.30)',
+      'rgba(252,231,243,0.32)',
+      'rgba(221,214,254,0.32)'
+    ];
+
+    let bubbles = [];
+
+    function resizeCanvas() {
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.ceil(window.innerWidth * dpr);
+      canvas.height = Math.ceil(window.innerHeight * dpr);
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function makeBubble(now, delay) {
+      const radius = 5 + Math.random() * 11;
+      return {
+        start: now + delay,
+        duration: 30000 + Math.random() * 15000,
+        x: Math.random() * window.innerWidth,
+        y: window.innerHeight + radius + Math.random() * 35,
+        radius: radius,
+        drift: -90 + Math.random() * 180,
+        wobble: 8 + Math.random() * 22,
+        color: colors[Math.floor(Math.random() * colors.length)]
+      };
+    }
+
+    function burst() {
+      const now = performance.now();
+      const count = 28 + Math.floor(Math.random() * 12);
+      for (let i = 0; i < count; i++) {
+        bubbles.push(makeBubble(now, i * 110));
+      }
+    }
+
+    function draw(now) {
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+      bubbles = bubbles.filter(function (b) {
+        const t = (now - b.start) / b.duration;
+        if (t < 0) return true;
+        if (t > 1) return false;
+
+        const ease = 1 - Math.pow(1 - t, 1.8);
+        const x = b.x + b.drift * ease + Math.sin(t * Math.PI * 4) * b.wobble;
+        const y = b.y - (window.innerHeight + 120) * ease;
+        const alpha = Math.sin(Math.PI * t);
+
+        ctx.globalAlpha = 0.55 * alpha;
+        ctx.beginPath();
+        ctx.arc(x, y, b.radius, 0, Math.PI * 2);
+        ctx.fillStyle = b.color;
+        ctx.fill();
+
+        ctx.globalAlpha = 0.45 * alpha;
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = 'rgba(255,255,255,0.42)';
+        ctx.stroke();
+
+        return true;
+      });
+
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(draw);
+    }
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    // Show once when opened, then every 3 minutes.
+    burst();
+    setInterval(burst, 180000);
+    requestAnimationFrame(draw);
+  }
+
+  window.startBubbleAnimation = initVisibleBubbles;
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initVisibleBubbles);
+  } else {
+    initVisibleBubbles();
+  }
+})();
+</script>
+
+
+  <script>
+    /* Fly the clickable dragonfly around a smooth loop over the visible webpage. */
+    (function animateFlyerDragonfly() {
+      const bird = document.querySelector(".flying-flyer");
+      if (!bird) return;
+
+      const birdSvg = bird.querySelector(".flyer-bird-svg");
+      const wingTopFore = bird.querySelector(".wing-top-fore");
+      const wingTopHind = bird.querySelector(".wing-top-hind");
+      const wingBottomFore = bird.querySelector(".wing-bottom-fore");
+      const wingBottomHind = bird.querySelector(".wing-bottom-hind");
+      const dragonflyBody = bird.querySelector(".dragonfly-body");
+      const loopDuration = 24000;
+      const points = [
+        [0.08, 0.10],
+        [0.48, 0.035],
+        [0.88, 0.11],
+        [0.955, 0.46],
+        [0.88, 0.88],
+        [0.50, 0.955],
+        [0.11, 0.88],
+        [0.035, 0.50]
+      ];
+
+      let phase = 0;
+      let lastTime = 0;
+      let paused = false;
+
+      function catmullRom(p0, p1, p2, p3, t) {
+        const t2 = t * t;
+        const t3 = t2 * t;
+        return 0.5 * (
+          2 * p1 +
+          (-p0 + p2) * t +
+          (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 +
+          (-p0 + 3 * p1 - 3 * p2 + p3) * t3
+        );
+      }
+
+      function getLoopPoint(progress) {
+        const count = points.length;
+        const scaled = ((progress % 1) + 1) % 1 * count;
+        const index = Math.floor(scaled);
+        const localT = scaled - index;
+        const p0 = points[(index - 1 + count) % count];
+        const p1 = points[index % count];
+        const p2 = points[(index + 1) % count];
+        const p3 = points[(index + 2) % count];
+
+        return {
+          x: catmullRom(p0[0], p1[0], p2[0], p3[0], localT),
+          y: catmullRom(p0[1], p1[1], p2[1], p3[1], localT)
+        };
+      }
+
+      function placeBird(progress) {
+        const rect = bird.getBoundingClientRect();
+        const margin = 12;
+        const availableWidth = Math.max(0, window.innerWidth - rect.width - margin * 2);
+        const availableHeight = Math.max(0, window.innerHeight - rect.height - margin * 2);
+        const current = getLoopPoint(progress);
+        const next = getLoopPoint(progress + 0.0015);
+        const x = margin + current.x * availableWidth;
+        const y = margin + current.y * availableHeight;
+
+        bird.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+
+        if (birdSvg) {
+          birdSvg.style.transform = next.x >= current.x ? "scaleX(1)" : "scaleX(-1)";
+        }
+      }
+
+      function poseWing(wing, rootX, rootY, angle, lengthScale, widthScale, opacity, blur) {
+        if (!wing) return;
+        wing.setAttribute(
+          "transform",
+          `translate(${rootX} ${rootY}) rotate(${angle.toFixed(2)}) scale(${widthScale.toFixed(3)} ${lengthScale.toFixed(3)}) translate(${-rootX} ${-rootY})`
+        );
+        wing.style.opacity = opacity.toFixed(3);
+        wing.style.filter = `blur(${blur.toFixed(2)}px)`;
+      }
+
+      function flapWings(now) {
+        // Real dragonfly wings move mostly out of the viewing plane. In a top view,
+        // that appears as rapid shortening/lengthening rather than broad paddle-like rotation.
+        const cycle = now * 0.155;
+        const foreTopWave = Math.sin(cycle);
+        const foreBottomWave = Math.sin(cycle + 0.10);
+        const hindTopWave = Math.sin(cycle + 0.72);
+        const hindBottomWave = Math.sin(cycle + 0.82);
+
+        function wingValues(wave, baseAngle, angleSwing) {
+          const edge = Math.abs(wave);
+          return {
+            angle: baseAngle + wave * angleSwing,
+            length: 0.54 + edge * 0.46,
+            width: 0.90 + edge * 0.10,
+            opacity: 0.34 + edge * 0.52,
+            blur: 0.10 + (1 - edge) * 0.42
+          };
+        }
+
+        const topFore = wingValues(foreTopWave, 0.8, 3.2);
+        const bottomFore = wingValues(foreBottomWave, -0.5, -2.2);
+        const topHind = wingValues(hindTopWave, -0.4, 1.8);
+        const bottomHind = wingValues(hindBottomWave, 0.4, -1.8);
+
+        poseWing(wingTopFore, 106, 46, topFore.angle, topFore.length, topFore.width, topFore.opacity, topFore.blur);
+        poseWing(wingBottomFore, 106, 54, bottomFore.angle, bottomFore.length, bottomFore.width, bottomFore.opacity, bottomFore.blur);
+        poseWing(wingTopHind, 99, 46, topHind.angle, topHind.length, topHind.width, topHind.opacity, topHind.blur);
+        poseWing(wingBottomHind, 99, 54, bottomHind.angle, bottomHind.length, bottomHind.width, bottomHind.opacity, bottomHind.blur);
+
+        if (dragonflyBody) {
+          const recoil = Math.sin(cycle * 0.25) * 0.08;
+          dragonflyBody.setAttribute(
+            "transform",
+            `translate(0 ${recoil.toFixed(2)}) rotate(${(recoil * 0.12).toFixed(2)} 100 50)`
+          );
+        }
+      }
+
+      function frame(now) {
+        if (!lastTime) lastTime = now;
+        const elapsed = Math.min(now - lastTime, 64);
+        lastTime = now;
+
+        if (!paused) {
+          phase = (phase + elapsed / loopDuration) % 1;
+        }
+
+        placeBird(phase);
+        flapWings(now);
+        window.requestAnimationFrame(frame);
+      }
+
+      function pauseFlight() { paused = true; }
+      function resumeFlight() { paused = false; }
+
+      bird.addEventListener("pointerenter", pauseFlight);
+      bird.addEventListener("pointerleave", resumeFlight);
+      bird.addEventListener("focus", pauseFlight);
+      bird.addEventListener("blur", resumeFlight);
+      bird.addEventListener("click", function () {
+        paused = false;
+        bird.blur();
+        lastTime = performance.now();
+      });
+      window.addEventListener("resize", function () { placeBird(phase); });
+
+      placeBird(phase);
+      window.requestAnimationFrame(frame);
+    })();
+  </script>
+
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/settings.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/effects.js"></script>
+<!--<script src="settings.js"></script>-->
+<!--<script src="effects.js"></script>-->
+</body>
+</html>

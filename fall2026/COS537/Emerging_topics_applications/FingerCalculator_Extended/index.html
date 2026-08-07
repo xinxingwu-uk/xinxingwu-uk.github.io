@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Full Screen Hand Counting Math Demo</title>
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div id="app">
+    <!-- Hidden webcam video. The canvas will show the full-screen camera. -->
+    <video id="webcam" autoplay muted playsinline></video>
+
+    <!-- Full-screen canvas -->
+    <canvas id="canvas"></canvas>
+
+    <!-- Dark overlay to make the interface easier to read -->
+    <div id="screenShade"></div>
+
+    <!-- Start screen -->
+    <div id="startOverlay">
+      <div class="startCard">
+        <div class="startIcon">✋</div>
+        <h1>Hand Counting Math</h1>
+        <p>
+          Use your left and right hands in front of the camera.
+          The app will count your fingers and add them together.
+        </p>
+
+        <button id="startBtn" type="button">Start Camera</button>
+
+        <p class="smallNote">
+          Please allow camera access when your browser asks.
+        </p>
+      </div>
+    </div>
+
+    <!-- Main interface -->
+    <div id="hud">
+      <header class="topBar">
+        <div class="brand">
+          <div class="brandIcon">🖐️</div>
+
+          <div>
+            <h2>Hand Counting Math</h2>
+            <p>Show fingers with one or two hands</p>
+          </div>
+        </div>
+
+        <div class="topControls">
+          <button id="landmarkBtn" class="smallBtn active" type="button">
+            Landmarks On
+          </button>
+
+          <div id="statusPill" class="status waiting">
+            Ready
+          </div>
+        </div>
+      </header>
+
+      <main class="centerStage">
+        <div class="totalCircle">
+          <span class="circleLabel">Total</span>
+          <span id="totalCount">0</span>
+        </div>
+      </main>
+
+      <section class="bottomPanel">
+        <div class="countCard">
+          <div class="cardLabel">Left Hand</div>
+          <div id="leftCount" class="cardNumber">0</div>
+          <div id="leftDots" class="fingerDots"></div>
+        </div>
+
+        <div class="countCard equationCard">
+          <div class="cardLabel">Equation</div>
+          <div id="equationText" class="equationText">0 + 0 = 0</div>
+          <div id="handMessage" class="handMessage">No hand detected yet</div>
+        </div>
+
+        <div class="countCard">
+          <div class="cardLabel">Right Hand</div>
+          <div id="rightCount" class="cardNumber">0</div>
+          <div id="rightDots" class="fingerDots"></div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- MediaPipe libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+
+  <!-- Main JavaScript file -->
+  <script src="script.js"></script>
+</body>
+</html>

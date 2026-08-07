@@ -1,0 +1,1678 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>From Prompt Engineering to Loop and Graph Engineering</title>
+    <meta name="description" content="A set of slides for Machine Learning">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/effectsGreen.css">
+	<!--<link rel="stylesheet" href="./css/style.css">-->
+	<!--<link rel="stylesheet" href="./css/effects.css">-->
+
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+
+		function startCountdown() {
+			const countdownBox = document.getElementById('classCountdown');
+			if (!countdownBox) return;
+
+			// Target: Last day of classes, Saturday, December 5, 2026.
+			const targetDate = new Date(2026, 11, 5, 0, 0, 0).getTime();
+
+			function updateCountdown() {
+				const now = new Date().getTime();
+				const distance = targetDate - now;
+
+				if (distance <= 0) {
+					const today = new Date();
+					if (today.getFullYear() === 2026 && today.getMonth() === 11 && today.getDate() === 5) {
+						countdownBox.innerHTML = '<span class="count-label">Last day of classes</span><span class="count-time">Today — Dec. 5, 2026</span>';
+					} else {
+						countdownBox.innerHTML = '<span class="count-label">Last day of classes</span><span class="count-time">Completed — Dec. 5, 2026</span>';
+					}
+					return;
+				}
+
+				const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+				const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+				const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+				const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+				countdownBox.innerHTML = '<span class="count-label">Last day of classes: Dec. 5, 2026</span>' +
+					'<span class="count-time">' + days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's</span>';
+			}
+
+			updateCountdown();
+			setInterval(updateCountdown, 1000);
+		}
+
+		function startBubbleAnimation() {
+			const bubbleLayer = document.getElementById('bubbleLayer');
+			if (!bubbleLayer) return;
+
+			function createBubble() {
+				const bubble = document.createElement('span');
+				const size = Math.floor(8 + Math.random() * 22);
+				const left = Math.random() * 100;
+				const duration = Math.floor(28 + Math.random() * 22);
+				const drift = Math.floor(-120 + Math.random() * 240);
+
+				bubble.className = 'floating-bubble';
+				bubble.style.width = size + 'px';
+				bubble.style.height = size + 'px';
+				bubble.style.left = left + 'vw';
+				bubble.style.animationDuration = duration + 's';
+				bubble.style.setProperty('--bubble-drift', drift + 'px');
+
+				bubbleLayer.appendChild(bubble);
+				setTimeout(function () {
+					bubble.remove();
+				}, duration * 1000 + 500);
+			}
+
+			function createBubbleBurst() {
+				const bubbleCount = 18 + Math.floor(Math.random() * 12);
+				for (let i = 0; i < bubbleCount; i++) {
+					setTimeout(createBubble, i * 260);
+				}
+			}
+
+			// Show one soft burst shortly after loading, then repeat every 3 minutes.
+			setTimeout(createBubbleBurst, 2500);
+			setInterval(createBubbleBurst, 180000);
+		}
+	</script>
+
+	<style>
+	    pre {
+            background-color: black;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+        }
+        code {
+            font-family: "Courier New", monospace;
+            color: #d63384; /* Python-style color */
+        }
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }
+        .top-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 8px 4px 0 4px;
+            gap: 12px;
+        }
+        .top-header-left,
+        .top-header-center,
+        .top-header-right {
+            flex: 1 1 0;
+            display: flex;
+            align-items: flex-start;
+        }
+        .top-header-left {
+            justify-content: flex-start;
+        }
+        .top-header-center {
+            justify-content: center;
+        }
+        .top-header-right {
+            justify-content: flex-end;
+        }
+        .header-badge {
+            color: #ffffff;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+            background: rgba(22, 163, 74, 0.38);
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(0,0,0,.22);
+            padding: 6px 12px;
+            line-height: 1.05;
+            white-space: nowrap;
+        }
+        #classCountdown {
+            display: inline-flex;
+            align-items: center;
+            min-width: 360px;
+            text-align: left;
+            letter-spacing: .2px;
+        }
+        #classCountdown .count-label {
+            display: inline-block;
+            font-size: 15px;
+            font-weight: 800;
+            margin-bottom: 0;
+            margin-right: 8px;
+        }
+        #classCountdown .count-time {
+            display: inline-block;
+            font-size: 15px;
+            font-weight: 800;
+        }
+        .header-email-link {
+            display: inline-block;
+            color: #ffffff !important;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+            font-size: 15px;
+            font-weight: 800;
+            line-height: 1;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .header-email-link:hover {
+            text-decoration: underline;
+        }
+        #realtimeclock {
+            display: inline-block;
+            font-size: 15px;
+            font-weight: 800;
+        }
+        #bubbleLayer {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 9999;
+            background: transparent !important;
+        }
+        #bubbleCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: transparent !important;
+        }
+        .floating-bubble {
+            position: absolute;
+            bottom: -60px;
+            display: block;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.10);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.14);
+            animation-name: floatBubbleUp;
+            animation-timing-function: linear;
+            animation-fill-mode: forwards;
+            opacity: 0;
+        }
+        @keyframes floatBubbleUp {
+            0% {
+                transform: translate3d(0, 0, 0) scale(.85);
+                opacity: 0;
+            }
+            12% {
+                opacity: .30;
+            }
+            88% {
+                opacity: .18;
+            }
+            100% {
+                transform: translate3d(var(--bubble-drift), -112vh, 0) scale(1.2);
+                opacity: 0;
+            }
+        }
+        .reveal {
+            position: relative;
+            z-index: 1;
+        }
+        .reveal .slides {
+            margin-top: 54px !important;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .floating-bubble {
+                animation: none;
+                display: none;
+            }
+        }	
+	</style>
+
+  </head>
+
+  <body onload="startTime(); startCountdown(); startBubbleAnimation();">
+    <div id="bubbleLayer" aria-hidden="true"><canvas id="bubbleCanvas"></canvas></div>
+    <div class="reveal" >
+      <div class="top-header">
+        <div class="top-header-left">
+          <span id="classCountdown" class="header-badge"><span class="count-label">Last day of classes: Dec. 5, 2026</span><span class="count-time">Loading...</span></span>
+        </div>
+        <div class="top-header-center">
+          <a href="mailto:Xinxing.Wu@kysu.edu" title="Email Xinxing Wu" class="header-email-link header-badge">Xinxing.Wu@kysu.edu</a>
+        </div>
+        <div class="top-header-right">
+          <div class="header-badge" id="realtimeclock"></div>
+        </div>
+      </div>
+      <div class="slides">
+
+  <div class="me">Xinxing Wu</div>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown id="cover"><textarea data-template>
+
+# From Prompt Engineering to Loop and Graph Engineering
+
+<hr>
+
+Xinxing Wu
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline
+
+[<p class="hover-underline-animation">Introduction</p>](#/ch1)
+
+[<p class="hover-underline-animation">Modern LLM Agent Engineering</p>](#/ch2)
+
+</textarea></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch1" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Introduction</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Topics</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- **Prompt Engineering** — control one model call.
+- **Loop Engineering** — control repeated agent runs.
+- **Graph-Structured Agent Engineering** — control dependencies, state, and recovery.
+- **Context Engineering** — manage what the model sees.
+- **Tool / MCP Engineering** — design safe agent-computer interfaces.
+- **Evaluation, Observability, and Safety Engineering** — measure before trusting.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Learning outcomes</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Design clear prompts with outputs that can be checked.
+- Build retrieval and memory to manage context.
+- Expose tools safely through schemas and permissions.
+- Build simple agent loops with state, limits, and verification.
+- Convert loops into graph workflows when dependencies matter.
+- Evaluate agent systems with success, accuracy, safety, and cost metrics.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Tools for the labs</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- All labs can run in **Google Colab** with free or open-source tools.
+
+- Recommended stack:
+
+```bash
+pip install -q transformers accelerate sentence-transformers faiss-cpu langgraph networkx pandas matplotlib
+```
+
+- Suggested model options:
+
+	- Fast and simple: `google/flan-t5-base`
+	- Better instruction model: `Qwen/Qwen2.5-0.5B-Instruct`
+	- Optional stronger model if GPU is available: `Qwen/Qwen2.5-1.5B-Instruct`
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch2" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Modern LLM Agent Engineering</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+> Topic 1 - Prompt Engineering
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Prompt Engineering</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Designing a single model call so the model knows:
+
+- **what to do, what context to use, how to reason, and how to format the answer.**
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Prompt engineering is still the foundation</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+Prompt engineering is not obsolete.
+
+It is still needed for:
+
+- System instructions
+- Task instructions
+- Few-shot examples
+- Output schemas
+- Tool descriptions
+- Evaluation prompts
+- Agent role prompts
+
+But it is no longer enough for long-running agents.
+
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Anatomy of a useful prompt</div>
+  <div class="question-shadebox">
+  <div style="width: 800px;"></div>
+
+A strong prompt usually contains:
+
+```text
+Role: What perspective should the model take?
+Task: What exactly should it produce?
+Context: What information should it use?
+Constraints: What should it avoid?
+Output format: What structure should the answer follow?
+Check: How can we know whether it succeeded?
+```
+
+The last line is very important: **a prompt should produce something checkable.**
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Prompt patterns should know</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+| Pattern | Purpose |
+|---|---|
+| Clear instruction | Reduce ambiguity |
+| Few-shot examples | Show expected behavior |
+| Structured output | Make results parseable |
+| Decomposition | Break a hard task into smaller parts |
+| Rubric-guided generation | Align output with grading criteria |
+| Self-check or external check | Detect mistakes |
+
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Prompt engineering failure modes</div>
+  <div class="question-shadebox">
+  <div style="width: 800px;"></div>
+
+Common problems:
+
+- Vague task definition
+- Hidden assumptions
+- Too many unrelated instructions
+- No output format
+- No success criteria
+- Asking the same model to both create and approve its own work
+
+   </div>
+</div>
+
+
+
+> If the answer cannot be checked, the prompt is not finished.
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Lab: Prompt Engineering Evaluation Lab</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+- **Goal:** Compare weak, improved, and structured prompts.
+
+- **Colab task:** Build a small prompt benchmark for suspicious-message classification.
+
+- Dataset idea:
+
+```python
+examples = [
+    {"message": "Reset your password here: http://fake-login.example", "label": "phishing"},
+    {"message": "Your professor posted grades in Blackboard.", "label": "safe"},
+    {"message": "Urgent: send your student ID and password now.", "label": "phishing"},
+]
+```
+
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Lab steps</div>
+  <div class="question-shadebox">
+  <div style="width: 800px;"></div>
+
+Create three prompt versions:
+
+- **Baseline prompt**: “Is this message phishing?”
+- **Improved prompt**: includes criteria.
+- **Structured prompt**: returns JSON.
+
+Example output:
+
+```json
+{
+  "label": "phishing",
+  "confidence": 0.86,
+  "evidence": ["asks for password", "uses urgent language"],
+  "safe_action": "Do not click; report to IT."
+}
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Task</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+Accuracy table + short reflection.
+
+   </div>
+</div>
+
+
+
+> Topic 2 - Context Engineering
+
+
+
+<div class="question-container">
+  <div class="question-title">Context Engineering</div>
+  <div class="question-shadebox">
+  <div style="width: 800px;"></div>
+
+Prompt engineering asks:
+
+> What words should I type?
+
+Context engineering asks:
+
+> What information should the model see at this moment?
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Why context engineering is newer/important</div>
+  <div class="definition-shadebox">
+  <div style="width: 900px;"></div>
+
+Modern agents use more than a prompt:
+
+- System instructions
+- User request
+- Retrieved documents
+- Tool outputs
+- Memory
+- Message history
+- File paths
+- Logs
+- Policies
+- Previous decisions
+   </div>
+</div>
+
+
+
+> The challenge is not “add everything.”  
+> The challenge is **choose the smallest useful context.**
+
+
+
+<div class="question-container">
+  <div class="question-title">Context is a finite resource</div>
+  <div class="question-shadebox">
+  <div style="width: 800px;"></div>
+
+Too much context can hurt:
+
+- More tokens
+- Higher cost
+- Slower responses
+- More distraction
+- More irrelevant evidence
+- More chance of missing the key fact
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Context engineering components</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+```text
+User request
+   ↓
+Query understanding
+   ↓
+Retrieve useful documents / memory
+   ↓
+Compress or rank context
+   ↓
+Prompt model with only high-signal context
+   ↓
+Store useful result for future runs
+```
+
+Good context systems are selective, not maximal.
+
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Context design checklist</div>
+  <div class="question-shadebox">
+  <div style="width: 800px;"></div>
+
+Before sending context to the model, ask:
+
+- Is this relevant to the current task?
+- Is it enough to answer safely?
+- Is the source clear?
+- Is old information separated from new information?
+- Can the model cite or explain where the information came from?
+- Can irrelevant context be removed?
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Lab: Mini-RAG Context Engineering Lab</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+**Goal:** Build a simple retrieval-augmented assistant.
+
+**Colab task:** create a small knowledge base for university cybersecurity guidance.
+
+Example documents:
+
+```python
+docs = [
+    "KYSU IT will never ask for your password by email.",
+    "Report suspicious emails to the IT helpdesk.",
+    "Do not open attachments from unknown senders.",
+]
+```
+
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Lab steps</div>
+  <div class="question-shadebox">
+  <div style="width: 800px;"></div>
+
+- Embed the documents using `sentence-transformers`.
+- Retrieve top-k passages for each student question.
+- Generate an answer using only retrieved context.
+- Add citation-like evidence.
+- Compare:
+   - Prompt-only answer
+   - RAG answer
+   - RAG with irrelevant context removed
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Lab steps (Cont.)</div>
+  <div class="question-shadebox">
+  <div style="width: 800px;"></div>
+
+Metrics:
+
+- Grounded accuracy
+- Hallucination rate
+- Evidence quality
+- Token length
+
+
+   </div>
+</div>
+
+
+
+> Topic 3 - Tool / MCP Engineering
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Tool / MCP Engineering</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+Agents become useful when they can act through tools.
+
+Tool engineering means designing the interface between the model and the outside world.
+
+MCP-style thinking asks:
+
+> What data, tools, and workflows should be safely exposed to the agent?
+
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">A tool is a contract</div>
+  <div class="question-shadebox">
+  <div style="width: 800px;"></div>
+
+A tool should have:
+
+- Clear name
+- Clear purpose
+- Clear input schema
+- Clear output schema
+- Error messages the model can understand
+- Permissions and safety limits
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">A tool is a contract (Cont.)</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+Bad tool:
+
+```text
+do_stuff(input)
+```
+
+Better tool:
+
+```text
+check_url_safety(url: str) -> {risk_level, reasons, recommended_action}
+```
+
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Tool engineering principles</div>
+  <div class="question-shadebox">
+  <div style="width: 800px;"></div>
+
+Good agent tools are:
+
+- Small
+- Specific
+- Hard to misuse
+- Well documented
+- Testable without the model
+- Safe by default
+- Limited by permissions
+   </div>
+</div>
+
+
+
+> If a human cannot tell which tool should be used, the model probably cannot either.
+
+
+
+<div class="definition-container">
+  <div class="definition-title">MCP</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+- **Model Context Protocol (MCP)** is an open standard for connecting AI applications to external systems such as files, databases, tools, and workflows.
+- Do not need to build a full MCP server at first.
+
+- Start with the idea:
+
+```text
+Agent → tool schema → tool call → tool result → next decision
+```
+
+- Then later connect this idea to MCP servers and clients.
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Lab: Safe Tool-Using Agent Lab</div>
+  <div class="question-shadebox">
+  <div style="width: 800px;"></div>
+
+**Goal:** Build an agent that can use tools but cannot take unsafe actions.
+
+**Colab tools:**
+
+```python
+def check_url_safety(url):
+    ...
+
+def summarize_policy(text):
+    ...
+
+def report_to_human(message, reason):
+    ...
+```
+
+The agent must choose the right tool and produce a structured decision.
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Lab steps</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+- Tool schemas as Python dictionaries.
+- A simple tool router.
+- A tool result parser.
+- Safety rules:
+   - Never click links.
+   - Never request passwords.
+   - Escalate high-risk cases.
+- Evaluation examples where wrong tool use causes failure.
+
+   </div>
+</div>
+
+
+
+> Topic 4 - Loop Engineering
+
+
+
+<div class="question-container">
+  <div class="question-title">Loop Engineering</div>
+  <div class="question-shadebox">
+  <div style="width: 800px;"></div>
+
+Loop engineering means designing systems that prompt agents for you.
+
+Instead of:
+
+```text
+Human → prompt → answer → human decides next prompt
+```
+
+A loop does:
+
+```text
+Trigger → discover work → act → verify → update state → repeat or stop
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Why loop engineering is different from prompting</div>
+  <div class="definition-shadebox">
+  <div style="width: 900px;"></div>
+
+Prompting:
+
+- You start every turn.
+- You decide what happens next.
+- Work stops when you stop typing.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Why loop engineering is different from prompting</div>
+  <div class="definition-shadebox">
+  <div style="width: 900px;"></div>
+
+Looping:
+
+- A schedule or event starts the run.
+- A checker decides whether the result passes.
+- State is saved between runs.
+- Human attention is used only at important gates.
+
+Looping gives leverage, but also makes mistakes repeat automatically.
+
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Anatomy of a loop</div>
+  <div class="question-shadebox">
+  <div style="width: 800px;"></div>
+
+A safe loop needs:
+
+```text
+Heartbeat      schedule, event, or condition
+Body           what happens on each run
+State/spine    memory outside the model
+Tools          controlled actions
+Checker        separate verification
+Human gate     escalation for risky decisions
+Ceiling        max tries, time, or budget
+Log            visible record of what happened
+```
+
+No state = the loop forgets.  
+No ceiling = the loop can run away.
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Maker-checker pattern</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+The agent that creates the work should not be the only agent that approves it.
+
+```text
+Maker
+  ↓ creates draft / fix / answer
+Checker
+  ↓ tests, critiques, or verifies
+Gate
+  ↓ pass, fail, or escalate
+```
+
+The checker should be stricter, read-only when possible, and grounded in tests or rubrics.
+
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Safe loop checklist</div>
+  <div class="question-shadebox">
+  <div style="width: 800px;"></div>
+
+Before a loop runs unattended, it needs:
+
+- Success condition
+- Maximum tries, time, or spend
+- Isolated workspace
+- Read-only checker
+- Persistent state file
+- Human approval gate
+- Log or notification
+
+A loop that runs automatically must also fail visibly.
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Lab: Daily Triage Loop Lab</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+**Goal:** Build a small loop that runs through tasks and updates memory.
+
+**Colab task:** Simulate a daily AI assistant for course management.
+
+Input files:
+
+```python
+issues = [
+    "Student asks if assignment deadline changed",
+    "Notebook cell failed with import error",
+    "Suspicious email reported by student",
+]
+```
+
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Lab steps</div>
+  <div class="question-shadebox">
+  <div style="width: 800px;"></div>
+
+Build this loop:
+
+```text
+read progress.md
+find up to 3 open items
+classify each item
+draft a response or action
+checker reviews output
+PASS → save draft
+RISKY → needs_human.md
+update progress.md
+stop
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Lab steps (Cont.)</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+Required safety features:
+
+- Max 3 items per run
+- Max 2 retries per item
+- Checker cannot modify the draft
+- Risky cybersecurity cases must escalate
+
+   </div>
+</div>
+
+
+
+> Topic 5 - Graph-Structured Agent Engineering
+
+
+
+<div class="question-container">
+  <div class="question-title">Graph-Structured Agent Engineering</div>
+  <div class="question-shadebox">
+  <div style="width: 800px;"></div>
+
+- “Graph Engineering” can mean many things: graph databases, GNNs, knowledge graphs, or network science.
+
+> **Graph-Structured Agent Engineering**
+
+It means designing agent workflows as nodes, edges, state, dependencies, and recovery rules.
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">From loops to graphs</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+A simple loop is often linear:
+
+```text
+observe → reason → act → observe → reason → act
+```
+
+A graph makes dependencies explicit:
+
+```text
+retrieve policy  ─┐
+                  ├→ analyze → draft → check → final
+retrieve examples ┘
+```
+
+Graphs are useful when tasks have parallel steps, branches, or checkable dependencies.
+
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Core graph concepts</div>
+  <div class="question-shadebox">
+  <div style="width: 800px;"></div>
+
+| Concept | Meaning |
+|---|---|
+| Node | One computation or agent step |
+| Edge | What can happen next |
+| State | Shared data passed through the graph |
+| Conditional edge | Route based on result |
+| Checkpoint | Save progress |
+| Human-in-the-loop | Pause for approval |
+| Recovery rule | Retry, patch, replan, or escalate |
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">When graphs help</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+Use a graph when:
+
+- Steps have clear dependencies.
+- Some steps can run in parallel.
+- You need auditability.
+- You need bounded recovery.
+- You need human approval at specific points.
+- You need to resume after failure.
+
+   </div>
+</div>
+
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">When graphs help (Cont.)</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+Use a loop when:
+
+- The task is exploratory.
+- The next step cannot be known in advance.
+- Flexibility matters more than auditability.
+
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Static vs dynamic graphs</div>
+  <div class="question-shadebox">
+  <div style="width: 800px;"></div>
+
+**Dynamic graph systems** are flexible.  
+Good for exploration, research, creative work, and unknown task structure.
+
+**Static DAG systems** are more controllable.  
+Good for engineering tasks with known dependencies and checkable outcomes.
+
+A good course should teach both trade-offs:
+
+```text
+Flexibility ← dynamic loops/graphs
+Control     ← static DAGs / explicit schedulers
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Lab: LangGraph / NetworkX Workflow Lab</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+**Goal:** Convert a loop into a graph workflow.
+
+**Colab task:** Build a graph-based cybersecurity assistant.
+
+Graph:
+
+```text
+START
+  ↓
+retrieve_policy
+  ↓
+analyze_message
+  ↓
+route_risk
+  ├── low → draft_safe_reply → END
+  └── high → escalate_to_human → END
+```
+
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Lab steps</div>
+  <div class="question-shadebox">
+  <div style="width: 800px;"></div>
+
+Implement one of two versions:
+
+**Version A: NetworkX scheduler**
+
+- Build a DAG.
+- Topologically sort nodes.
+- Execute each node.
+- Save state after each node.
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Lab steps (Cont.)</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+**Version B: LangGraph**
+
+- Define `State`.
+- Add nodes.
+- Add edges and conditional edges.
+- Invoke the graph.
+- Log the state transitions.
+
+   </div>
+</div>
+
+
+
+> Topic 6 - Evaluation, Observability, and Safety Engineering
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Evaluation, Observability, and Safety Engineering</div>
+  <div class="definition-shadebox">
+  <div style="width: 900px;"></div>
+
+This should be included because agent systems can look impressive while failing silently.
+
+Modern agent engineering needs:
+
+- Evals
+- Traces
+- Logs
+- Cost tracking
+- Safety gates
+- Human review
+- Regression tests
+
+No evaluation = no engineering.
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">What to measure</div>
+  <div class="question-shadebox">
+  <div style="width: 800px;"></div>
+
+| Metric | What it asks |
+|---|---|
+| Task success | Did it complete the goal? |
+| Grounded accuracy | Is the answer supported by evidence? |
+| Tool accuracy | Did it choose the right tool? |
+| Safety compliance | Did it avoid unsafe action? |
+| Correct abstention | Did it refuse or escalate when needed? |
+| Latency | How long did it take? |
+| Cost / token use | How expensive is it? |
+| Human intervention rate | How often did it need help? |
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Observability for agents</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+A useful trace records:
+
+```text
+input
+selected context
+tool calls
+tool results
+model outputs
+checker verdicts
+state updates
+human-gate decisions
+final output
+```
+   </div>
+</div>
+
+
+
+> Should learn to debug the system, not only the prompt.
+
+
+
+<div class="question-container">
+  <div class="question-title">Safety patterns</div>
+  <div class="question-shadebox">
+  <div style="width: 800px;"></div>
+
+Important safety controls:
+
+- Sandboxed execution
+- Read-only tools for checkers
+- Permission tiers
+- Escalation rules
+- Stopping conditions
+- Human approval for risky actions
+- Logs that cannot be silently rewritten
+- Clear ownership: humans remain accountable
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Lab: Agent Evaluation Harness Project</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+**Goal:** Compare four systems on the same task set.
+
+Systems:
+
+1. Prompt-only baseline
+2. RAG/context-engineered assistant
+3. Loop-based assistant
+4. Graph-based assistant
+
+Evaluate all four using the same dataset.
+
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Lab steps</div>
+  <div class="question-shadebox">
+  <div style="width: 800px;"></div>
+
+Create a results table:
+
+<table style="font-size: 18px;">
+  <thead>
+    <tr>
+      <th>System</th>
+      <th>Task Success</th>
+      <th>Grounded Accuracy</th>
+      <th>Safety</th>
+      <th>Tool Accuracy</th>
+      <th>Latency</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Prompt-Only</strong></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>N/A</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><strong>RAG</strong></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>N/A</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><strong>Loop</strong></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><strong>Graph</strong></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Task</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+- Colab notebook
+- Results table
+- One chart
+- Short discussion: when is each architecture worth it?
+
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Build an agentic AI system for a practical problem</div>
+  <div class="question-shadebox">
+  <div style="width: 900px;"></div>
+
+Possible domains:
+
+- Cybersecurity message triage
+- Course Q&A assistant
+- Research-paper assistant
+- Resume feedback assistant
+- Code debugging assistant
+- Campus service assistant
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Build an agentic AI system for a practical problem (Cont.)</div>
+  <div class="definition-shadebox">
+  <div style="width: 1000px;"></div>
+
+Required components:
+
+- Prompt design
+- Context/RAG or memory
+- At least two tools
+- Loop or graph workflow
+- Checker or evaluator
+- Safety/human gate
+- Evaluation table and chart
+
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Summary</div>
+  <div class="question-shadebox">
+  <div style="width: 800px;"></div>
+
+- Prompt engineering is the foundation.
+- Context engineering is now essential for agents.
+- Tool design is part of prompting because tool schemas guide behavior.
+- Loop engineering adds automation, state, checkers, and gates.
+- Graph-structured workflows add explicit dependencies and recovery.
+- Evaluation and safety turn demos into engineering.
+
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+</div>
+	
+
+<script>
+(function () {
+  function initVisibleBubbles() {
+    if (window.__visibleCanvasBubblesStarted) return;
+    window.__visibleCanvasBubblesStarted = true;
+
+    const layer = document.getElementById('bubbleLayer');
+    if (!layer) return;
+
+    let canvas = document.getElementById('bubbleCanvas');
+    if (!canvas) {
+      canvas = document.createElement('canvas');
+      canvas.id = 'bubbleCanvas';
+      layer.appendChild(canvas);
+    }
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const colors = [
+      'rgba(255,255,255,0.38)',
+      'rgba(187,247,208,0.34)',
+      'rgba(191,219,254,0.34)',
+      'rgba(254,240,138,0.30)',
+      'rgba(252,231,243,0.32)',
+      'rgba(221,214,254,0.32)'
+    ];
+
+    let bubbles = [];
+
+    function resizeCanvas() {
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.ceil(window.innerWidth * dpr);
+      canvas.height = Math.ceil(window.innerHeight * dpr);
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function makeBubble(now, delay) {
+      const radius = 5 + Math.random() * 11;
+      return {
+        start: now + delay,
+        duration: 30000 + Math.random() * 15000,
+        x: Math.random() * window.innerWidth,
+        y: window.innerHeight + radius + Math.random() * 35,
+        radius: radius,
+        drift: -90 + Math.random() * 180,
+        wobble: 8 + Math.random() * 22,
+        color: colors[Math.floor(Math.random() * colors.length)]
+      };
+    }
+
+    function burst() {
+      const now = performance.now();
+      const count = 28 + Math.floor(Math.random() * 12);
+      for (let i = 0; i < count; i++) {
+        bubbles.push(makeBubble(now, i * 110));
+      }
+    }
+
+    function draw(now) {
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+      bubbles = bubbles.filter(function (b) {
+        const t = (now - b.start) / b.duration;
+        if (t < 0) return true;
+        if (t > 1) return false;
+
+        const ease = 1 - Math.pow(1 - t, 1.8);
+        const x = b.x + b.drift * ease + Math.sin(t * Math.PI * 4) * b.wobble;
+        const y = b.y - (window.innerHeight + 120) * ease;
+        const alpha = Math.sin(Math.PI * t);
+
+        ctx.globalAlpha = 0.55 * alpha;
+        ctx.beginPath();
+        ctx.arc(x, y, b.radius, 0, Math.PI * 2);
+        ctx.fillStyle = b.color;
+        ctx.fill();
+
+        ctx.globalAlpha = 0.45 * alpha;
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = 'rgba(255,255,255,0.42)';
+        ctx.stroke();
+
+        return true;
+      });
+
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(draw);
+    }
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    // Show once when opened, then every 3 minutes.
+    burst();
+    setInterval(burst, 180000);
+    requestAnimationFrame(draw);
+  }
+
+  window.startBubbleAnimation = initVisibleBubbles;
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initVisibleBubbles);
+  } else {
+    initVisibleBubbles();
+  }
+})();
+</script>
+
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/settings.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/effects.js"></script>
+<!--<script src="settings.js"></script>-->
+<!--<script src="effects.js"></script>-->
+</body>
+</html>
