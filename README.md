@@ -1,7 +1,9 @@
-## License & Usage
+## Use and Licensing
 
-This repository is **not open-source**.
+Unless otherwise indicated, original instructor-developed materials in this repository are provided for personal, non-commercial, educational, and evaluation purposes only.
 
-Viewing the code is permitted for personal, non-commercial, educational, or evaluation purposes only.
+Parts of this repository incorporate or adapt materials from AWS Machine Learning University (AWS MLU). Those materials and any adaptations are governed by their applicable licenses, including CC BY-SA 4.0 for documentation and MIT-0 for sample code. Nothing in the above restriction is intended to limit rights granted under those third-party licenses.
 
-Any use of this code requires prior written permission from the author. See the [LICENSE](https://github.com/xinxingwu-uk/xinxingwu-uk.github.io/blob/main/LICENSE) file for details.
+Please refer to the relevant files and source repositories for specific licensing and attribution information.
+
+Some use of this repository may require prior written permission from the author.
