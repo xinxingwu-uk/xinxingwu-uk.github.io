@@ -1,0 +1,2785 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>References and Points</title>
+    <meta name="description" content="A set of slides for Machine Learning">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/effectsGreen.css">
+	<!--<link rel="stylesheet" href="./css/style.css">-->
+	<!--<link rel="stylesheet" href="./css/effects.css">-->
+	
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+	</script>
+
+	<style>
+	    pre {
+            background-color: black;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+        }
+        code {
+            font-family: "Courier New", monospace;
+            color: #d63384; /* Python-style color */
+        }
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }	
+	</style>
+
+  </head>
+
+  <body onload="startTime()">
+    <div class="reveal" >
+	  <p><img src="images/midwaylogo.png"  align="left" height="6%" width="6%" style="vertical-align:left;margin:-15px 5px"><img src="images/mueagle.png"  color="white" align="left" height="4%" width="4%" style="vertical-align:center;margin:-1% 45%">
+		<div style="color:white;font-size: 20px; vertical-align:left;margin:-1% 0%" align="right" id="realtimeclock"></div></p>
+      <div class="slides">
+
+  <div class="me">Xinxing Wu</div>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown id="cover"><textarea data-template>
+<p class='titlep'>&nbsp;</p>
+
+# References and Pointers
+
+<hr>
+
+<br>
+
+Xinxing Wu
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline
+
+[<p class="hover-underline-animation">References</p>](#/ch1)
+
+[<p class="hover-underline-animation">Pointers</p>](#/ch2)
+
+[<p class="hover-underline-animation">Memory Management</p>](#/ch3)
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline (Cont.)
+
+[<p class="hover-underline-animation">Functions</p>](#/ch4)
+
+[<p class="hover-underline-animation">Summary</p>](#/ch5)
+
+[<p class="hover-underline-animation">Mini Case Study</p>](#/ch6)
+
+</textarea></section>
+
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+
+## Goal
+
+<div id="shadebox-neon" class="shadebox neon">
+
+Understand how C++ <spanGREEN>stores data in memory</spanGREEN>, <spanGREEN>use references and pointers</spanGREEN> to access and modify values through memory addresses, <spanGREEN>apply new/delete to safely manage dynamic memory</spanGREEN> when needed, and write functions that pass data correctly (by value or by reference) to build clean, efficient, and reusable programs.
+</div>
+
+</textarea></section>
+
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch1" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">References</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Creating References</div>
+  <div class="definition-pro-Y-shadebox">
+  
+A reference variable is an alias for an existing variable. It is created using the & operator:
+
+<div id="shadebox-glass" class="shadebox glass">
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+string food = "Pizza"; 
+// food variable
+
+string &meal = food;    
+// reference to food
+```
+</div>
+
+</div>
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+- Both food and meal refer to the same memory location. Changing one affects the other.
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+  string food = "Pizza";
+  string &meal = food;
+
+  cout << food << "\n";
+  cout << meal << "\n";
+  return 0;
+}
+
+```
+
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Updating Through References</div>
+  <div class="question-shadebox">
+
+If you change the value of a reference variable, the original variable will also change (and vice versa), because they both refer to the same memory location:
+
+<hr style="border: none; border-top: 2px dashed green;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+  string food = "Pizza";       // food variable
+  string &meal = food;         // reference to food
+
+  meal = "Burger";             // change the reference
+
+  cout << food << "\n";        // Outputs Burger
+  cout << meal << "\n";        // Outputs Burger
+  return 0;
+}
+```
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Memory Address</div>
+  <div class="definition-shadebox">
+
+- <spanBYMix>The & operator was used to create a reference variable</spanBYMix>. But it can also be used to get the memory address of a variable; which is the location of where the variable is stored on the computer.
+
+- When a variable is created in C++, a memory address is assigned to the variable. And <spanBYMix>when we assign a value to the variable, it is stored in this memory address<spanBYMix>.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Memory Address</div>
+  <div class="definition-shadebox">
+
+- Reference (&) and address-of operator (&)
+	- std::string& meal = food; means meal is a reference to food.
+	- & can also mean address : std::cout << &food; &food means the memory address of food.
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Memory Address</div>
+  <div class="definition-shadebox">
+
+- To access it, use the & operator, and the result will represent where the variable is stored:
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+  string food = "Pizza";
+
+  cout << &food;
+  return 0;
+}
+
+```
+   </div>
+</div>
+
+- The memory address is in hexadecimal form (0x..). Note that you may not get the same result in your program.
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+<div  style="font-size: 1.0em; line-height: 1.5;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+	string food = "Pizza";
+	string& meal = food;
+	int* p = &food;
+
+	meal = "Burger";
+
+	cout << food << "\n"; 
+	cout << meal << "\n";
+	cout << *p<< "\n";
+	return 0;
+}
+```
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+<div  style="font-size: 1.2em; line-height: 1.5;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+	string food = "Pizza";
+	string& meal = food;
+	string* p = &food;
+
+	meal = "Burger";
+
+	cout << food << "\n"; 
+	cout << meal << "\n";
+	cout << *p<< "\n";
+	return 0;
+}
+```
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+- food is a string, so &food is a pointer to string, which means its type is:
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+string*
+```
+</div>
+
+So this is correct:
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+string* p = &food;
+```
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+- But this is wrong:
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+int* p = &food;
+```
+</div>
+
+- because int* means “<spanBYMix>pointer to an int</spanBYMix>,” while &food is the address of a string.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+int* p
+
+```
+</div>
+
+- <spanGREEN>p</spanGREEN> is a pointer variable, so it stores an address of <spanRED>?</spanRED>.
+<br>
+<br>
+<br>
+- <spanBYMix>*p</spanBYMix> means: “go to the address stored in p, and get the value there.”
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+int x = 5;
+int* p = &x;
+
+```
+</div>
+
+- x is 5
+
+- &x is the address of x
+
+- p stores that address
+
+- *p means the value at that address
+
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+
+- p is address
+
+- *p is value inside that address
+
+   </div>
+</div>
+
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Question</div>
+  <div class="definition-shadebox">
+
+What does it mean?
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+*p = 10;
+```
+</div>
+
+- *p = 10 means “put 10 into the place that p points to,” so now x becomes 10.
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+int x = 5;
+int* p = &x;
+```
+</div>
+   </div>
+</div>
+
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Question</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+What is the output of x?
+
+```
+#include <iostream>
+using namespace std;
+
+int main() {
+    int x = 5;
+    int* p = &x;
+
+    cout << x << endl;
+    cout << p << endl; 
+    cout << *p << endl;
+
+    *p = 10;
+    cout << x << endl;
+}
+```
+
+   </div>
+</div>
+
+
+
+> *p is the value pointed to by p.
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Memory address</div>
+  <div class="definition-com-shadebox">
+
+> And why is it useful to know the memory address?
+
+- ❗References and Pointers are important in C++, because they give you the ability to manipulate the data in the computer's memory - which can reduce the code and improve the performance.
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+- ❗These two features are one of the things that make C++ stand out from other programming languages, like Python and Java.
+
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch2" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Pointers</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Creating Pointers</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- We can get the memory address of a variable by using the & operator:
+
+<div id="shadebox-glass" class="shadebox glass">
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+  string food = "Pizza";
+
+  cout << food << "\n";
+  cout << &food << "\n";
+  return 0;
+}
+```
+</div>
+</div>
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Creating Pointers</div>
+  <div class="question-shadebox">
+
+- A pointer however, is a <spanGREEN>variable</spanGREEN> that stores the <spanGREEN>memory address</spanGREEN> as <spanGREEN>its value</spanGREEN>.
+
+- ❗❗❗A pointer variable points to a data type (like int or string) of the same type, and is created with the * operator. 
+
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+- The address of the variable you're working with is assigned to the pointer:
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+  string food = "Pizza";  // A string variable
+  string* ptr = &food;  // A pointer variable that stores the address of food
+
+  // Output the value of food
+  cout << food << "\n";
+
+  // Output the memory address of food
+  cout << &food << "\n";
+
+  // Output the memory address of food with the pointer
+  cout << ptr << "\n";
+  return 0;
+}
+```
+
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example explained</div>
+  <div class="definition-shadebox">
+
+- Create a pointer variable with the name ptr, that points to a string variable, by using the asterisk sign * (string* ptr). Note that the type of the pointer has to match the type of the variable you're working with.
+
+- Use the & operator to store the memory address of the variable called food, and assign it to the pointer.
+
+- Now, ptr holds the value of food's memory address.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Address and Value</div>
+  <div class="definition-com-shadebox">
+
+- There are <spanGREEN>three</spanGREEN> ways to declare pointer variables, but the first way is preferred:
+
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+string *mystring;
+string * mystring;
+string* mystring; is often the cleanest
+```
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+What does it mean?
+
+```
+string* a, b;
+```
+
+</div>
+</div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Note</div>
+  <div class="definition-com-shadebox">
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+string* a, b;
+```
+</div>
+
+- A safer way is:
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+string *a;
+string b;
+```
+</div>
+</div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Note</div>
+  <div class="definition-com-shadebox">
+
+- Never write confusing declarations like 
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+string* a, b;
+```
+</div>
+
+- avoid confusion, then
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+string *a, b;
+```
+</div>
+</div>
+</div>
+
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Pointers</div>
+  <div class="definition-com-shadebox">
+
+-  We used the pointer variable to get the memory address of a variable (used together with the & reference operator). However, you can also use the pointer to get the value of the variable, by using the * operator (the <spanGREEN>dereference</spanGREEN> operator)
+
+<div  style="font-size: 1.2em; line-height: 1.5;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+  string food = "Pizza";  // Variable declaration
+  string* ptr = &food;    // Pointer declaration
+
+  // Reference: Output the memory address of food with the pointer
+  cout << ptr << "\n";
+
+  // Dereference: Output the value of food with the pointer
+  cout << *ptr << "\n";
+  return 0;
+}
+
+```
+
+</div>
+</div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Pointers</div>
+  <div class="definition-com-shadebox">
+
+-  The * sign can be confusing here, as it does two different things in our code:
+
+	- When used in declaration (string* ptr), it creates <spanGREEN>a pointer variable</spanGREEN>.
+	<br>
+	<br>
+	<br>
+	- When <spanRED>not</spanRED> used in declaration, it act as <spanGREEN>a dereference operator</spanGREEN>.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Pointers</div>
+  <div class="definition-com-shadebox">
+
+-  You can also change the pointer's value. But note that this will also change the value of the original variable:
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+  string food = "Pizza";
+  string* ptr = &food;
+
+  // Output the value of food
+  cout << food << "\n";
+
+  // Output the memory address of food
+  cout << &food << "\n";
+
+  // Access the memory address of food and output its value
+  cout << *ptr << "\n";
+  
+  // Change the value of the pointer
+  *ptr = "Hamburger";
+  
+  // Output the new value of the pointer
+  cout << *ptr << "\n";
+  
+  // Output the new value of the food variable
+  cout << food << "\n";
+  return 0;
+}
+```
+
+</div>
+</div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Questions</div>
+  <div class="definition-com-shadebox">
+
+- string name; ?
+
+- string* ptr; ?
+
+- string& ref; ?
+</div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Note</div>
+  <div class="definition-com-shadebox">
+
+- string name → the real object
+
+- string* ptr → stores the object’s address
+
+- string& ref → another name for the same object
+</div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Example</div>
+  <div class="definition-com-shadebox">
+<div style="width: 800px;"></div>
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string name = "Alice";
+    string* ptr = &name;
+    string& ref = name;
+
+    cout << "name: " << name << endl;
+    cout << "ptr: " << *ptr << endl;
+    cout << "ref: " << ref << endl;
+
+    ref = "Bob";
+
+    cout << "After changing ref:" << endl;
+    cout << "name: " << name << endl;
+    cout << "ptr: " << *ptr << endl;
+    cout << "ref: " << ref << endl;
+
+    return 0;
+}
+```
+
+</div>
+</div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Built-in data type vs Reference type</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+A basic type is like:
+
+- “I directly store the value 5.”
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+A reference/pointer is like:
+
+- “I do not directly store the real thing; I <spanBYMix>point to</spanBYMix> where it is.”
+
+</div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Built-in data type vs Reference type</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+- A basic data type stores the actual value directly.
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+int a = 5;
+double b = 3.14;
+char c = 'A';
+bool d = true;
+
+```
+</div>
+
+- The variable itself holds the value.
+</div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Built-in data type vs Reference type</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+- A reference type usually means a variable does <spanRED>not</spanRED> hold the real object itself, but instead <spanGREEN>refers to</spanGREEN> another object or memory location.
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+- Reference
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+int x = 10;
+int& r = x;
+```
+</div>
+
+- x is an int. r is a reference to x
+</div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Built-in data type vs Pointer type</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+- Pointer
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+int x = 10;
+int* p = &x;
+```
+</div>
+
+- p stores the address of x; *p gives the value of x.
+- So a pointer also <spanGREEN>refers</spanGREEN> to another place in memory.
+
+</div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Built-in data type vs class type</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+int a = 5;
+string s = "Hello";
+```
+</div>
+
+- int is a basic built-in type
+
+- string is not a basic built-in type in C++; it is a class type from the standard library
+
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+So in C++:
+
+- int = basic / primitive / built-in type
+
+- string = object type (class type)
+
+</div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Built-in type vs Reference type</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+- In Java/C#, people often say:
+
+	- int = value type / primitive type
+
+	- String, arrays, objects = reference types
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+- But in C++, we more often say:
+
+	- built-in types
+
+	- class types
+
+	- reference
+
+	- pointer
+
+rather than using “reference type” the same way Java does.
+</div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+
+- (int) int x = 5; <spanGREEN> x directly stores 5</spanGREEN>
+
+- (reference) int& r = x; <spanGREEN> r is another name for x</spanGREEN>
+
+- (pointer) int* p = &x; <spanGREEN> p stores the address of x</spanGREEN>
+</div>
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch3" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Memory Management</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Memory Management</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Memory management is the process of controlling <spanGREEN>how much memory your program uses - and how it is used</spanGREEN>.
+
+- This includes <spanBYMix>creating</spanBYMix>, <spanBYMix>using</spanBYMix>, and <spanBYMix>releasing memory</spanBYMix> when it's <spanRED>no</spanRED> longer needed.
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Memory</div>
+  <div class="question-shadebox">
+
+- When you create a variable in C++, the compiler automatically <spanBYMix>reserves</spanBYMix> space in memory for it.
+
+<hr style="border: none; border-top: 2px dashed green;">
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+int myNumber = 10;
+```
+</div>
+
+- The line above tells the program: "<spanGREEN>I need space to store an integer</spanGREEN>."
+
+- C++ handles this memory automatically, so in this case, <spanGREEN>you don't have to worry about managing memory</spanGREEN>.
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Get Memory Size</div>
+  <div class="definition-shadebox">
+
+- You can check how much memory a variable type uses with the sizeof operator:
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+using namespace std;
+
+int main() {
+  int myInt;
+  float myFloat;
+  double myDouble;
+  char myChar;
+
+  cout << sizeof(myInt) << "\n";     // 4 bytes (typically)
+  cout << sizeof(myFloat) << "\n";   // 4 bytes
+  cout << sizeof(myDouble) << "\n";  // 8 bytes
+  cout << sizeof(myChar) << "\n";    // 1 byte
+  return 0;
+}
+
+```
+</div>
+</div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Memory</div>
+  <div class="definition-com-shadebox">
+
+- For normal variables (like int x = 10;), C++ takes care of the memory for you.
+- But when you want to create memory manually while the program is running (for example: <spanRED>based on user input</spanRED>), <spanGREEN>you need to manage it yourself and clean it up when you're done</spanGREEN>.
+
+<br>
+<br>
+
+<div id="shadebox">
+
+- If your program uses too much memory, or forgets to clean up memory it no longer needs, it can lead to slow performance or even crashes.
+
+- That's why understanding memory is important. It gives you more control and helps avoid common bugs.
+</div>
+</div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Notes</div>
+  <div class="definition-com-shadebox">
+
+- In C++, you can use pointers to <spanBYMix>access</spanBYMix> and <spanBYMix>change memory</spanBYMix> directly.
+
+> This is powerful, but also risky.
+
+- If you use a pointer the wrong way, you could accidentally change or damage other parts of your program's memory.
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">new</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- The <spanBYMix>new</spanBYMix> keyword lets you manage memory yourself.
+
+- In the example below, we create memory space for an integer using new, store the value 35 in it, and print it using a pointer:
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">new</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+<div id="shadebox-glass" class="shadebox glass">
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+using namespace std;
+
+int main() {
+  int* ptr = new int;
+  *ptr = 35;
+  cout << *ptr;
+  return 0;
+}
+```
+</div>
+</div>
+   </div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Explanation</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- new int <spanBYMix>creates</spanBYMix> memory space for one integer
+- ptr <spanBYMix>stores</spanBYMix> the address of that space
+- *ptr = 35; <spanBYMix>stores</spanBYMix> the number 35
+- cout << *ptr; prints the value
+
+So <spanGREEN> we can use new to create memory, and ptr to access it</spanGREEN>.
+
+</div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+int ptr = 5;
+``` 
+</div>
+
+- Ptr is a normal integer variable.
+
+	- type: int
+
+	- value stored directly: 5
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+ptr --> 5
+```
+</div>
+</div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+<div  style="font-size: 1.6em; line-height: 1.5;">
+ 
+```
+int* ptr = new int;
+*ptr = 35;
+```
+</div>
+
+- ptr is a pointer to int.
+
+	- type: int*
+
+	- new int creates an integer in dynamic memory
+
+	- ptr stores the address of that integer
+
+	- *ptr = 35 puts 35 into that memory location
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+ptr --> address ----> 35
+```
+</div>
+
+</div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Differences - Type</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+int ptr = 5;      // ptr is an int
+int* ptr = ...;   // ptr is a pointer to int
+
+```
+</div>
+
+</div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Differences - What is stored</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+int ptr = 5;
+```
+</div>
+
+- the variable stores the number directly.
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+int* ptr = new int;
+```
+</div>
+
+- the variable stores an address, not the actual integer value.
+
+</div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Differences - How you access the value</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+- Normal int:
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+cout << ptr;
+
+```
+</div>
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+- Pointer:
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+cout << *ptr;
+```
+</div>
+
+</div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Differences - Memory location</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+int ptr = 5;
+```
+</div>
+
+- usually creates a regular local variable.
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+int* ptr = new int;
+```
+</div>
+
+- creates memory dynamically, and that memory must later be released:
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+delete ptr;
+```
+</div>
+
+Otherwise, you get a memory leak. 
+</div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+  
+> A memory leak happens when a program asks for memory, uses it, but never gives it back. In another word, A memory leak is memory that your program allocated but forgot to release.
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+int* p = new int;
+*p = 35;
+```
+</div>
+
+Memory is created dynamically. If you do <spanRED>not</spanRED> write:
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+delete p;
+```
+</div>
+
+</div>
+</div>
+
+
+
+> Memory stays allocated even after you are done with it. That is a memory leak
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+  
+> ptr is an address, and the value stored at that address is 35
+
+</div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+  
+- Use int ptr = 5; in most simple cases.
+
+- Use int* ptr = new int; only when you really <spanBYMix>need dynamic memory</spanBYMix> (Use this only when the memory must live beyond the current scope or you need dynamic data structures), and in modern C++, usually prefer std::unique_ptr<int> instead of raw new.
+
+</div>
+</div>
+
+
+
+> Start with normal variables first, then learn pointers, then use dynamic memory mainly for linked lists, trees, and advanced structures.
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">delete</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- When you create something with new, it's your job to remove it when you're done. To do that, use delete:
+
+<div id="shadebox-glass" class="shadebox glass">
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+using namespace std;
+
+int main() {
+  int* ptr = new int; // Create memory
+  *ptr = 35;  // Store a value
+  cout << *ptr; // Print the value
+  delete ptr; // Free the memory
+  return 0;
+}
+```
+</div>
+</div>
+   </div>
+</div>
+
+
+
+> This tells C++: "I'm done with this memory, you can clean it up now."
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+
+- int x = 35;
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+int x = 35;
+cout << x;
+```
+</div>
+
+<div id="shadebox">
+
+- x directly stores the value 35
+
+- memory is managed automatically
+
+- when the function ends, x disappears <spanBYMix>automatically</spanBYMix>
+
+- simpler and safer
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+  
+- int* ptr = new int;
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+int* ptr = new int; // allocate memory for one int
+*ptr = 35;         // put 35 into that memory
+cout << *ptr;
+delete ptr;        // must free it manually
+```
+</div>
+
+
+<div id="shadebox">
+
+- ptr is a pointer variable
+
+- new int creates an int somewhere in heap memory
+
+- ptr stores the address of that heap memory
+
+- *ptr accesses the real value stored there
+
+- you must use delete ptr yourself
+</div>
+   </div>
+</div>
+
+
+
+> A heap is a large, often messy, disorderly pile or accumulation of objects (e.g., a "heap of laundry"). It also refers to a large quantity ("heaps of time") or, in computer science, a specialized tree-based data structure. 
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+
+- int x = 35;
+
+	- You work with the value directly.
+
+- int* ptr = new int;
+
+	- You work with an address that points to the value.
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Note</div>
+  <div class="definition-shadebox">
+
+<div id="shadebox">
+
+int* ptr = new int; does not mean “better control” in most beginner cases.
+It means you are creating the integer in dynamic memory (heap), 
+</div>
+
+<div id="shadebox">
+while int x = 35; creates it as a normal local variable, usually on the stack.
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">delete</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- What Happens If You <spanRED>Forget</spanRED> delete?
+
+	- If you forget to delete memory, your program will still run, but it may use more and more memory over time.
+
+- This is called a <spanRED>memory leak</spanRED>, and it can slow down or crash your program over time.
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">delete </div>
+  <div class="definition-pro-Y-shadebox">
+  
+- You can also use the new keyword to create <spanGREEN>dynamic arrays</spanGREEN>.
+
+<div id="shadebox">
+
+For arrays, <spanBYMix>use new[]</spanBYMix> and <spanBYMix>delete[]</spanBYMix>.
+
+<br>
+
+For single variables, use <spanBYMix>new</spanBYMix> and <spanBYMix>delete</spanBYMix>.
+
+</div>
+
+<br>
+
+- Dynamic arrays are useful when you <spanBYMix>don't know the size</spanBYMix> of the array in advance - like when the size depends on user input or other values that are not known at the start of the program.
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+<div  style="font-size: 1.2em; line-height: 1.5;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+  int numGuests;
+  cout << "How many guests? ";
+  cin >> numGuests;
+
+  // Check for invalid input
+  if (numGuests <= 0) {
+    cout << "Number of guests must be at least 1.\n";
+    return 0;
+  }
+
+  // Create memory space for up to 10 guests
+  string* guests = new string[numGuests];
+
+  // Ignore the leftover newline character after reading numGuests
+  cin.ignore();  
+
+  // Enter guest names
+  for (int i = 0; i < numGuests; i++) {
+    cout << "Enter name for guest " << (i + 1) << ": ";
+    getline(cin, guests[i]);  // Read the full name (including spaces)
+  }
+
+  // Show all guests
+  cout << "\nGuests checked in:\n";
+  for (int i = 0; i < numGuests; i++) {
+    cout << guests[i] << "\n";
+  }
+
+  delete[] guests; // Clean up memory
+  return 0;
+}
+```
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+
+- cin.ignore(); means: throw away the leftover Enter key character ('\n') that is still in the input buffer.
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+When you do:
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+cin >> numGuests;
+```
+</div>
+
+and the user types:
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+3
+```
+</div>
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+
+What actually happens is:
+
+- cin >> numGuests reads the 3
+
+- but the newline from pressing Enter is still left behind
+
+So the input buffer still contains:
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+\n
+```
+</div>
+
+Then the next line is: getline(cin, guests[i]); getline() reads until it sees a newline.
+
+- If that leftover newline is still there, getline() will read it immediately and think the user entered an empty line.
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+
+So: removes that leftover newline before getline() starts reading names.
+
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+cin.ignore();
+```
+<div>
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+
+- Without cin.ignore();, this line: getline(cin, guests[0]);  may read an empty string right away.
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">new</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- In most cases, you don't need to use new. C++ will automatically handle memory for normal variables like:
+
+<div id="shadebox-glass" class="shadebox glass">
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+int age = 35;
+string name = "John";
+```
+
+</div>
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">new</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- You have to manage memory yourself - especially when:
+
+	- You don't know how much memory you'll need in advance (like how many guests or scores)
+	- You want to create memory while the program is running, based on user input
+	- You need to store large or flexible amounts of data
+	- You want full manual control over memory (e.g., performance-critical code)
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">new</div>
+  <div class="definition-pro-Y-shadebox">
+
+<div id="shadebox-glass" class="shadebox glass">
+
+- new helps you <spanBYMix>create</spanBYMix> memory, and <spanBYMix>delete</spanBYMix> helps you clean it up when you're done.
+
+- If you use new, always <spanRED>remember</spanRED> to use delete (or delete[] for arrays) to avoid memory leaks.
+
+</div>
+</div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch4" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Functions</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Functions</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- To create (often referred to as declare) a function, specify the name of the function, followed by parentheses ():
+
+<div id="shadebox-glass" class="shadebox glass">
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+void myFunction() {
+  // code to be executed
+}
+```
+</div>
+</div>
+
+- <spanBYMix>myFunction()</spanBYMix> is the name of the function
+- <spanBYMix>void</spanBYMix> means that the function does <spanRED>not</spanRED> have a return value. You will learn more about return values
+- inside the function (the body), add code that defines what the function should do
+
+</div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+- Inside main, call myFunction():
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+using namespace std;
+
+void myFunction() {
+  cout << "I just got executed!";
+}
+
+int main() {
+  myFunction();
+  return 0;
+}
+```
+
+</div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Parameters and Arguments</div>
+  <div class="question-shadebox">
+
+- Parameters are specified after the function name, inside the parentheses. You can add as many parameters as you want, just separate them with a comma:
+
+<hr style="border: none; border-top: 2px dashed green;">
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+void functionName(parameter1, parameter2, parameter3) {
+  // code to be executed
+}
+```
+
+</div>
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+void myFunction(string fname) {
+  cout << fname << " Refsnes\n";
+}
+
+int main() {
+  myFunction("Liam");
+  myFunction("Jenny");
+  myFunction("Anja");
+  return 0;
+}
+```
+</div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Default Parameter Value</div>
+  <div class="definition-shadebox">
+
+- You can also use a default parameter value, by using the <spanGREEN>equals sign (=)</spanGREEN>. If we call the function without an argument, it uses the default value ("Norway"):
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+void myFunction(string country = "Norway") {
+  cout << country << "\n";
+}
+
+int main() {
+  myFunction("Sweden");
+  myFunction("India");
+  myFunction();
+  myFunction("USA");
+  return 0;
+}
+
+```
+</div>
+   </div>
+</div>
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+<div id="roundbox">
+A parameter with a default value, is often known as an "optional parameter"
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Return</div>
+  <div class="definition-com-shadebox">
+  
+- The void keyword, used in the previous examples, indicates the function should not return a value. If you want the function to return a value, you can use a data type (such as int, string, etc.) instead of void, and use the return keyword inside the function:
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+using namespace std;
+
+int myFunction(int x) {
+  return 5 + x;
+}
+
+int main() {
+  cout << myFunction(3);
+  return 0;
+}
+
+```
+
+</div>
+   </div>
+</div>
+
+
+
+
+<div id="shadebox">
+
+### Example 1 code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+using namespace std;
+
+int myFunction(int x, int y) {
+  return x + y;
+}
+
+int main() {
+  cout << myFunction(5, 3);
+  return 0;
+}
+```
+</div>
+
+
+
+<div id="shadebox">
+
+### Example 2 code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+using namespace std;
+
+int myFunction(int x, int y) {
+  return x + y;
+}
+
+int main() {
+  int z = myFunction(5, 3);
+  cout << z;
+  return 0;
+}
+```
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Pass By Reference</div>
+  <div class="definition-com-shadebox">
+<div style="width: 800px;"></div>
+
+We used normal variables when we <spanRED>passed parameters</spanRED> to a function.
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+void changeValue(int &num) {
+  num = 50;
+}
+
+int main() {
+  int value = 10;
+  changeValue(value);  // Change value to 50
+  cout << value;
+  return 0;
+}
+```
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example 1 code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+using namespace std;
+
+void swapNums(int &x, int &y) {
+  int z = x;
+  x = y;
+  y = z;
+}
+
+int main() {
+  int firstNum = 10;
+  int secondNum = 20;
+
+  cout << "Before swap: " << "\n";
+  cout << firstNum << secondNum << "\n";
+
+  swapNums(firstNum, secondNum);
+
+  cout << "After swap: " << "\n";
+  cout << firstNum << secondNum << "\n";
+
+  return 0;
+}
+
+```
+</div>
+
+
+
+<div id="shadebox">
+
+### Example 2 code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+void modifyStr(string &str) {
+  str += " World!";
+}
+
+int main() {
+  string greeting = "Hello";
+  modifyStr(greeting);
+  cout << greeting;
+  return 0;
+}
+
+```
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Pass Arrays</div>
+  <div class="definition-com-shadebox">
+<div style="width: 800px;"></div>
+
+- You can also pass <spanGREEN>arrays</spanGREEN> to a function:
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+```
+#include <iostream>  
+using namespace std;  
+
+void myFunction(int myNumbers[5]) {
+  for (int i = 0; i < 5; i++) {  
+    cout << myNumbers[i] << "\n";    
+  } 
+}
+
+int main() {  
+  int myNumbers[5] = {10, 20, 30, 40, 50};  
+  myFunction(myNumbers);
+  return 0;
+}  
+```
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Explnation</div>
+  <div class="definition-com-shadebox">
+
+- The function (myFunction) takes an array as its parameter (int myNumbers[5]), and loops through the array elements with the for loop.
+
+- When the function is called inside main(), we pass along the myNumbers array, which outputs the array elements.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Explnation</div>
+  <div class="definition-com-shadebox">
+
+- Note that when you call the function, you only need to use the name of the array when passing it as an argument myFunction(myNumbers). 
+
+- However, <spanGREEN>the full declaration of the array is needed in the function parameter (int myNumbers[5])</spanGREEN>.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Pass Structure </div>
+  <div class="definition-com-shadebox">
+<div style="width: 800px;"></div>
+
+- You can also pass a structure to a function.
+
+```
+#include <iostream>
+using namespace std;
+
+struct Car {
+  string brand;
+  int year;
+};
+
+void myFunction(Car c) {
+  cout << "Brand: " << c.brand << ", Year: " << c.year << "\n";
+}
+
+int main() {
+  Car myCar = {"Toyota", 2020};
+  myFunction(myCar);
+  return 0;
+}
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Pass by Reference</div>
+  <div class="definition-com-shadebox">
+
+- You can also pass a structure by reference, using &. This allows the function to modify the original data:
+
+```
+#include <iostream>
+using namespace std;
+
+struct Car {
+  string brand;
+  int year;
+};
+
+void updateYear(Car& c) { // c is another name for the original car object
+// means c is a reference to the original object, not a copy.
+  c.year++;
+}
+
+int main() {
+  Car myCar = {"Toyota", 2020};
+  updateYear(myCar);
+  cout << "The " << myCar.brand << " is now from year " << myCar.year << ".\n";
+  return 0;
+}
+```
+   </div>
+</div>
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+<div id="roundbox">
+
+- Pass by value → function gets a copy
+
+- Pass by reference → function gets the real object
+</div>
+ 
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+<div id="roundbox">
+
+Use reference if you want the function to change the structure's data, or to avoid copying large structures.
+ </div>
+
+
+
+ <div class="definition-com-container">
+  <div class="definition-com-title">Reference version vs Pointer version</div>
+  <div class="definition-com-shadebox">
+<div style="width: 800px;"></div>
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+void updateYear(Car& c) {
+    c.year++;
+}
+```
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+```
+void updateYear(Car* c) {
+    c->year++;
+}
+```
+
+</div>
+</div>
+</div>
+
+
+
+ <div class="definition-com-container">
+  <div class="definition-com-title">Note</div>
+  <div class="definition-com-shadebox">
+<div style="width: 800px;"></div>
+
+```
+void updateYear(Car& c) {
+    c.year++;}
+```
+
+- c is a reference to a Car.
+
+	- c is just another name for the original object
+
+	- you use it like a normal object: c.year
+
+	- it cannot be null
+
+	- you do not need * or ->
+
+- Call it
+
+```
+updateYear(myCar);
+```
+</div>
+</div>
+
+
+
+ <div class="definition-com-container">
+  <div class="definition-com-title">Note</div>
+  <div class="definition-com-shadebox">
+<div style="width: 800px;"></div>
+
+```
+void updateYear(Car* c) {
+    c->year++;}
+```
+
+- c is a pointer to a Car.
+
+	- c stores the memory address of a Car
+
+	- you must use -> to access members
+
+	- it can be nullptr
+
+	- you pass the address of the object
+
+- Call it
+
+```
+updateYear(&myCar);
+```
+</div>
+</div>
+
+
+
+ <div class="definition-com-container">
+  <div class="definition-com-title">Why . for reference but -> for pointer?</div>
+  <div class="definition-com-shadebox">
+<div style="width: 800px;"></div>
+
+Because:
+
+- c in Car& c is treated like the actual object
+
+- c in Car* c is only an address
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+So:
+
+- reference: c.year
+
+- pointer: c->year // <spanGREEN>it means (*c).year</spanGREEN>
+</div>
+</div>
+
+
+
+ <div class="definition-com-container">
+  <div class="definition-com-title">Example</div>
+  <div class="definition-com-shadebox">
+<div style="width: 800px;"></div>
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+using namespace std;
+
+struct Car {
+    string brand;
+    int year;
+};
+
+void updateYearRef(Car& c) {
+    c.year++;
+}
+
+void updateYearPtr(Car* c) {
+    c->year++;
+}
+
+int main() {
+    Car myCar = {"Toyota", 2020};
+
+    updateYearRef(myCar);   // pass object directly
+    cout << myCar.year << endl;   // 2021
+
+    updateYearPtr(&myCar);  // pass address
+    cout << myCar.year << endl;   // 2022
+
+    return 0;
+}
+```
+</div>
+</div>
+</div>
+
+
+
+> nullptr means “this pointer points to nothing.”
+
+<hr>
+
+```
+Car* c = nullptr;
+```
+
+- This means there is currently no Car for c to point to.
+
+
+
+ <div class="definition-com-container">
+  <div class="definition-com-title">Why do we need it?</div>
+  <div class="definition-com-shadebox">
+<div style="width: 800px;"></div>
+
+- It is useful when:
+
+	- a pointer has not been assigned yet
+
+	- a function may fail to find something
+
+	- you want to say “no object exists”
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">null pointer</div>
+  <div class="definition-pro-Y-shadebox">
+  <div style="width: 800px;"></div>
+
+Sir Tony Hoare (11 January 1934 – 5 March 2026) introduced the null reference (null pointer) in 1965 while designing the ALGOL W programming language, aiming to create a simple way to represent the absence of an object. 
+
+He later famously referred to this invention as his "billion-dollar mistake" due to the countless bugs and crashes it caused.
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch5" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Summary</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div id="rainbow-type"> Summary </div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">References and pointers allow direct access to memory</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">References act as aliases to existing variables, while pointers store memory addresses. Both make it possible to access and modify the same data in memory, which is powerful and efficient but requires careful use.</p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Understanding memory addresses explains how data is stored and shared</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Every variable occupies a specific memory location. Using the & operator reveals where data lives, helping students understand how references and pointers connect variables to memory.</p>
+</div>
+
+</div>
+
+
+
+
+<div id="rainbow-type"> Summary (Cont.)</div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap; margin-bottom:-32px;">
+
+<div class="liquid-glass">
+
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Manual memory management gives control but adds responsibility</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">C++ can automatically manage memory for normal variables, but new and delete allow dynamic memory allocation when sizes are unknown at runtime. Forgetting to release memory leads to memory leaks and performance problems.</p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Functions organize code and control how data is passed</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Functions improve readability and reuse. Parameters can be passed by value or by reference, allowing functions to either work on copies or directly modify original data, including arrays and structures.</p>
+</div>
+
+
+</div>
+
+</textarea></section>
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch6" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Mini Case Study</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Lab: Guest Check-In System</div>
+  <div class="definition-com-shadebox">
+
+- Guest Check-In System (Dynamic Memory + Pointers + References + Functions): Create a C++ console program that lets a user check in guests for an event.
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Requirement 1:  Ask the user: How many guests? (must be >= 1)
+
+- Requirement 2:  Dynamically allocate memory for the guest names using:
+
+```
+string* guests = new string[numGuests];
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Requirement 3: Input each guest name using getline.
+
+- Requirement 4: Provide a simple menu loop (repeat until quit):
+
+	- 1)Show all guests
+	- 2)Update a guest name (by index)
+	- 3)Show a guest’s memory address (by index)
+	- 4)Quit
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Requirement 5: Use functions:
+
+	- void showGuests(string* guests, int n);
+	- void updateGuest(string& nameRef); (must use reference to modify)
+	- void showAddress(string* guests, int index); (must use & operator)
+
+- Requirement 6: Before the program ends, free memory with:
+
+```
+delete[] guests;
+```
+	
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### An answer
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+void showGuests(string* guests, int n) {
+    cout << "\nGuest List:\n";
+    for (int i = 0; i < n; i++) {
+        cout << i << ") " << guests[i] << "\n";
+    }
+}
+
+void updateGuest(string& nameRef) {
+    cout << "Enter the new name: ";
+    string newName;
+    getline(cin, newName);
+    nameRef = newName; // reference updates the original element
+}
+
+void showAddress(string* guests, int index) {
+    cout << "Memory address of guests[" << index << "] is: " << &guests[index] << "\n";
+}
+
+int main() {
+    int numGuests;
+    cout << "How many guests? ";
+    cin >> numGuests;
+
+    if (numGuests <= 0) {
+        cout << "Number of guests must be at least 1.\n";
+        return 0;
+    }
+
+    // Create dynamic array
+    string* guests = new string[numGuests];
+
+    // Clear newline after cin
+    cin.ignore();
+
+    // Input guest names
+    for (int i = 0; i < numGuests; i++) {
+        cout << "Enter name for guest " << (i + 1) << ": ";
+        getline(cin, guests[i]);
+    }
+
+    // Menu loop
+    int choice = 0;
+    while (choice != 4) {
+        cout << "\nMenu:\n";
+        cout << "1) Show all guests\n";
+        cout << "2) Update a guest name\n";
+        cout << "3) Show a guest's memory address\n";
+        cout << "4) Quit\n";
+        cout << "Choose: ";
+        cin >> choice;
+        cin.ignore(); // clear newline
+
+        if (choice == 1) {
+            showGuests(guests, numGuests);
+        }
+        else if (choice == 2) {
+            int index;
+            cout << "Enter guest index to update (0 to " << (numGuests - 1) << "): ";
+            cin >> index;
+            cin.ignore();
+
+            if (index < 0 || index >= numGuests) {
+                cout << "Invalid index.\n";
+            } else {
+                updateGuest(guests[index]); // pass by reference
+                cout << "Updated!\n";
+            }
+        }
+        else if (choice == 3) {
+            int index;
+            cout << "Enter guest index (0 to " << (numGuests - 1) << "): ";
+            cin >> index;
+            cin.ignore();
+
+            if (index < 0 || index >= numGuests) {
+                cout << "Invalid index.\n";
+            } else {
+                showAddress(guests, index);
+            }
+        }
+        else if (choice == 4) {
+            cout << "Goodbye!\n";
+        }
+        else {
+            cout << "Invalid choice.\n";
+        }
+    }
+
+    // Clean up
+    delete[] guests;
+    return 0;
+}
+
+```
+
+</div>
+
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+</div>
+	
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/settings.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/effects.js"></script>
+<!--<script src="settings.js"></script>-->
+<!--<script src="effects.js"></script>-->
+</body>
+</html>

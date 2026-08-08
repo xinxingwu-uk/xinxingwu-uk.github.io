@@ -1,0 +1,1653 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Week 13: Graphs</title>
+    <meta name="description" content="A set of slides for Machine Learning">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/effectsGreen.css">
+	<!--<link rel="stylesheet" href="./css/style.css">-->
+	<!--<link rel="stylesheet" href="./css/effects.css">-->
+	<link rel="stylesheet" href="../css/no-copy.css">
+
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+
+		function startCountdown() {
+			const countdownBox = document.getElementById('classCountdown');
+			if (!countdownBox) return;
+
+			// Target: Last day of classes, Saturday, December 5, 2026.
+			const targetDate = new Date(2026, 11, 5, 0, 0, 0).getTime();
+
+			function updateCountdown() {
+				const now = new Date().getTime();
+				const distance = targetDate - now;
+
+				if (distance <= 0) {
+					const today = new Date();
+					if (today.getFullYear() === 2026 && today.getMonth() === 11 && today.getDate() === 5) {
+						countdownBox.innerHTML = '<span class="count-label">Last day of classes</span><span class="count-time">Today — Dec. 5, 2026</span>';
+					} else {
+						countdownBox.innerHTML = '<span class="count-label">Last day of classes</span><span class="count-time">Completed — Dec. 5, 2026</span>';
+					}
+					return;
+				}
+
+				const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+				const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+				const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+				const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+				countdownBox.innerHTML = '<span class="count-label">Last day of classes: Dec. 5, 2026</span>' +
+					'<span class="count-time">' + days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's</span>';
+			}
+
+			updateCountdown();
+			setInterval(updateCountdown, 1000);
+		}
+
+		function startBubbleAnimation() {
+			const bubbleLayer = document.getElementById('bubbleLayer');
+			if (!bubbleLayer) return;
+
+			function createBubble() {
+				const bubble = document.createElement('span');
+				const size = Math.floor(8 + Math.random() * 22);
+				const left = Math.random() * 100;
+				const duration = Math.floor(28 + Math.random() * 22);
+				const drift = Math.floor(-120 + Math.random() * 240);
+
+				bubble.className = 'floating-bubble';
+				bubble.style.width = size + 'px';
+				bubble.style.height = size + 'px';
+				bubble.style.left = left + 'vw';
+				bubble.style.animationDuration = duration + 's';
+				bubble.style.setProperty('--bubble-drift', drift + 'px');
+
+				bubbleLayer.appendChild(bubble);
+				setTimeout(function () {
+					bubble.remove();
+				}, duration * 1000 + 500);
+			}
+
+			function createBubbleBurst() {
+				const bubbleCount = 18 + Math.floor(Math.random() * 12);
+				for (let i = 0; i < bubbleCount; i++) {
+					setTimeout(createBubble, i * 260);
+				}
+			}
+
+			// Show one soft burst shortly after loading, then repeat every 3 minutes.
+			setTimeout(createBubbleBurst, 2500);
+			setInterval(createBubbleBurst, 180000);
+		}
+	</script>
+
+	<style>
+	    pre {
+            background-color: black;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+        }
+        code {
+            font-family: "Courier New", monospace;
+            color: #d63384; /* Python-style color */
+        }
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }
+        .top-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 8px 4px 0 4px;
+            gap: 12px;
+        }
+        .top-header-left,
+        .top-header-center,
+        .top-header-right {
+            flex: 1 1 0;
+            display: flex;
+            align-items: flex-start;
+        }
+        .top-header-left {
+            justify-content: flex-start;
+        }
+        .top-header-center {
+            justify-content: center;
+        }
+        .top-header-right {
+            justify-content: flex-end;
+        }
+        .header-badge {
+            color: #ffffff;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+            background: rgba(22, 163, 74, 0.38);
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(0,0,0,.22);
+            padding: 6px 12px;
+            line-height: 1.05;
+            white-space: nowrap;
+        }
+        #classCountdown {
+            display: inline-flex;
+            align-items: center;
+            min-width: 360px;
+            text-align: left;
+            letter-spacing: .2px;
+        }
+        #classCountdown .count-label {
+            display: inline-block;
+            font-size: 15px;
+            font-weight: 800;
+            margin-bottom: 0;
+            margin-right: 8px;
+        }
+        #classCountdown .count-time {
+            display: inline-block;
+            font-size: 15px;
+            font-weight: 800;
+        }
+        .header-email-link {
+            display: inline-block;
+            color: #ffffff !important;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+            font-size: 15px;
+            font-weight: 800;
+            line-height: 1;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .header-email-link:hover {
+            text-decoration: underline;
+        }
+        #realtimeclock {
+            display: inline-block;
+            font-size: 15px;
+            font-weight: 800;
+        }
+        #bubbleLayer {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 9999;
+            background: transparent !important;
+        }
+        #bubbleCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: transparent !important;
+        }
+        .floating-bubble {
+            position: absolute;
+            bottom: -60px;
+            display: block;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.10);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.14);
+            animation-name: floatBubbleUp;
+            animation-timing-function: linear;
+            animation-fill-mode: forwards;
+            opacity: 0;
+        }
+        @keyframes floatBubbleUp {
+            0% {
+                transform: translate3d(0, 0, 0) scale(.85);
+                opacity: 0;
+            }
+            12% {
+                opacity: .30;
+            }
+            88% {
+                opacity: .18;
+            }
+            100% {
+                transform: translate3d(var(--bubble-drift), -112vh, 0) scale(1.2);
+                opacity: 0;
+            }
+        }
+        .reveal {
+            position: relative;
+            z-index: 1;
+        }
+        .reveal .slides {
+            margin-top: 54px !important;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .floating-bubble {
+                animation: none;
+                display: none;
+            }
+        }	
+	</style>
+
+  </head>
+
+  <body onload="startTime(); startCountdown(); startBubbleAnimation();">
+    <div id="bubbleLayer" aria-hidden="true"><canvas id="bubbleCanvas"></canvas></div>
+    <div class="reveal" >
+      <div class="top-header">
+        <div class="top-header-left">
+          <span id="classCountdown" class="header-badge"><span class="count-label">Last day of classes: Dec. 5, 2026</span><span class="count-time">Loading...</span></span>
+        </div>
+        <div class="top-header-center">
+          <a href="mailto:Xinxing.Wu@kysu.edu" title="Email Xinxing Wu" class="header-email-link header-badge">Xinxing.Wu@kysu.edu</a>
+        </div>
+        <div class="top-header-right">
+          <div class="header-badge" id="realtimeclock"></div>
+        </div>
+      </div>
+      <div class="slides">
+
+  <div class="me">Xinxing Wu</div>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown id="cover"><textarea data-template>
+<p class='titlep'>&nbsp;</p>
+
+# Week 13: Graphs
+
+
+<hr>
+
+Xinxing Wu
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline
+
+[<p class="hover-underline-animation">Introduction</p>](#/ch1)
+
+[<p class="hover-underline-animation">Basic knowledge</p>](#/ch2)
+
+[<p class="hover-underline-animation">Basic examples</p>](#/ch3)
+
+[<p class="hover-underline-animation">Basic real-world applications</p>](#/ch4)
+
+</textarea></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline (Cont.)
+
+[<p class="hover-underline-animation">Advanced knowledge</p>](#/ch5)
+
+[<p class="hover-underline-animation">Advanced examples</p>](#/ch6)
+
+[<p class="hover-underline-animation">Advanced real-world applications</p>](#/ch7)
+
+[<p class="hover-underline-animation">Task</p>](#/ch8)
+
+</textarea></section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline (Cont.)
+
+[<p class="hover-underline-animation">Summary</p>](#/ch9)
+
+</textarea></section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch1" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Introduction</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Learning Goals</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Define vertices, edges, degree, paths, circuits, and connectivity.
+- Represent graphs using diagrams, adjacency lists, and matrices.
+- Identify Euler and Hamilton path ideas.
+- Apply shortest path and graph coloring concepts.
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch2" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Basic knowledge</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">A Note</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- A graph consists of vertices and edges. Vertices represent objects; edges represent relationships.
+
+- Graphs may be directed or undirected, weighted or unweighted, simple or multigraphs.
+
+- Connectivity asks whether there is a path between vertices.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Key Ideas</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Identify the objects in the problem.
+- Choose notation that makes relationships clear.
+- Work on a small example before solving the general case.
+- Explain the answer in plain English after the calculation.
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch3" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Basic examples</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Example 1: Campus walking graph</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- **Problem.** Vertices are buildings; edges are sidewalks.
+
+- **Step-by-step solution.** A path is a sequence of connected buildings. A shortest path minimizes distance or time.
+
+- **Check.** A graph turns a map into a problem we can compute on.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Example 2: Degree count</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- **Problem.** In an undirected graph, vertex degree is the number of incident edges.
+
+- **Step-by-step solution.** If A is connected to B, C, and D, degree(A)=3. The sum of all degrees equals twice the number of edges.
+
+- **Check.** Every edge contributes 1 degree to each endpoint.
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch4" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Basic real-world applications</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Application 1: Social networks</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- People are vertices and friendships or follows are edges. Connectivity reveals communities and influence paths.
+
+- **Discussion prompt:** What data or assumptions would we need to use this model responsibly?
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Application 2: Transportation and routing</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Roads, flights, and internet links are graph structures used for routing and optimization.
+
+- **Discussion prompt:** What data or assumptions would we need to use this model responsibly?
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch5" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Advanced knowledge</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">A Note</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Euler paths use every edge exactly once; Hamilton paths visit every vertex exactly once. They answer different questions.
+
+- Shortest-path algorithms find minimum-cost routes in weighted graphs.
+
+- Graph coloring assigns labels so adjacent vertices differ; it models conflict avoidance.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">How to Think</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Ask what structure is hidden in the problem.
+- Look for an invariant, equivalence, ordering, recurrence, or optimization goal.
+- Use the simplest representation that preserves the important information.
+- Check whether the method scales when the input becomes large.
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch6" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Advanced examples</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Example 1: Euler path criterion</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- **Problem.** A connected undirected graph has an Euler circuit if every vertex has even degree. It has an Euler path but not circuit if exactly two vertices have odd degree.
+
+- **Step-by-step solution.** Check vertex degrees before trying to draw the route.
+
+- **Why it matters.** Degree structure predicts route possibility.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Example 2: Color a conflict graph</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- **Problem.** Courses are vertices; an edge connects courses with shared students.
+
+- **Step-by-step solution.** A coloring assigns exam slots so connected courses have different slots. The number of colors is the number of time slots.
+
+- **Why it matters.** Graph coloring turns scheduling into a mathematical model.
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch7" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Advanced real-world applications</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Application 1: AI knowledge graphs</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Concepts and relationships form graphs that support search, reasoning, and semantic connections.
+
+- **Extension question:** How would the model change with more realistic constraints?
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Application 2: Network resilience</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Connectivity and paths help analyze whether communication continues after failures.
+
+- **Extension question:** How would the model change with more realistic constraints?
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch8" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Task</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Task</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- **Task.** Create a graph for a campus, social, or course-scheduling problem. List vertices and edges, compute degrees, find one path, and explain whether coloring or shortest path is useful.
+
+- **Deliverable.** One clear model, one worked example, and a short explanation of the result.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Problem Model</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- A university wants to help students find efficient walking routes between important campus buildings.
+
+- Represent the campus as a weighted, undirected graph
+
+$$
+G=(V,E).
+$$
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Problem Model (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+In this model:
+
+- Each vertex represents a campus building.
+- Each edge represents a direct walking path.
+- Each edge weight represents the walking distance in meters.
+- Because students can walk in either direction, the graph is undirected.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Vertices</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Let the set of vertices be
+
+$$
+V=
+\lbrace
+L,S,C,D,G
+\rbrace,
+$$
+
+where:
+
+| Vertex | Campus location |
+|:---:|:---|
+| L | Library |
+| S | Science Building |
+| C | Student Center |
+| D | Dormitory |
+| G | Gymnasium |
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Edges and Distances</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Let the weighted edge set be
+
+$$
+\begin{aligned}
+E=\lbrace
+&(L,S,200),\newline
+&(L,C,150),\newline
+&(S,C,100),\newline
+&(S,G,250),\newline
+&(C,D,300),\newline
+&(C,G,180),\newline
+&(D,G,120)
+\rbrace.
+\end{aligned}
+$$
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Edges and Distances (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- For example,
+
+$$
+(L,S,200)
+$$
+
+means that a direct walking path of 200 meters connects the Library and the Science Building.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Campus Graph</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+```
+                    200 m
+          Library ---------- Science
+             |                 |
+       150 m |                 | 250 m
+             |      100 m      |
+       Student Center ---------+
+             |  \
+       300 m |   \ 180 m
+             |    \
+        Dormitory ---- Gymnasium
+               120 m
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Campus Graph (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- A more precise edge view is:
+
+```
+Library --------200-------- Science
+   |                           |
+  150                         250
+   |                           |
+Student Center ----100---- Science
+   |       \
+  300      180
+   |          \
+Dormitory ----120---- Gymnasium
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Adjacency List</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- The same graph can be represented by an adjacency list.
+
+```
+Library:
+    Science, 200 m
+    Student Center, 150 m
+
+Science:
+    Library, 200 m
+    Student Center, 100 m
+    Gymnasium, 250 m
+
+Student Center:
+    Library, 150 m
+    Science, 100 m
+    Dormitory, 300 m
+    Gymnasium, 180 m
+
+Dormitory:
+    Student Center, 300 m
+    Gymnasium, 120 m
+
+Gymnasium:
+    Science, 250 m
+    Student Center, 180 m
+    Dormitory, 120 m
+```
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Degree of a Vertex</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- The degree of a vertex is the number of edges connected to it.
+
+- The degree does not depend on the edge weights.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Degree of a Vertex (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- For example, the Library is connected to:
+
+	- Science Building
+	- Student Center
+
+Therefore,
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+  deg(L)=2.
+  </div>
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Compute All Degrees</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- **Library**
+
+- The Library is connected to S and C.
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+  deg(L)=2.
+  </div>
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Compute All Degrees (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- **Science Building**
+
+- The Science Building is connected to L, C, and G.
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+  deg(S)=3.
+  </div>
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Compute All Degrees (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- **Student Center**
+
+- The Student Center is connected to L, S, D, and G.
+
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+  deg(C)=4.
+  </div>
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Compute All Degrees (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- **Dormitory**
+
+- The Dormitory is connected to C and G.
+
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+  deg(D)=2.
+  </div>
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Compute All Degrees (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- **Gymnasium**
+
+- The Gymnasium is connected to S, C, and D.
+
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+  deg(G)=3.
+  </div>
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Degree Summary</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+| Vertex | Location         | Adjacent vertices | Degree |
+| :----: | :--------------- | :---------------- | :----: |
+|   L  | Library          | (S,C)             |    2   |
+|   S  | Science Building | (L,C,G)           |    3   |
+|   C  | Student Center   | (L,S,D,G)         |    4   |
+|   D  | Dormitory        | (C,G)             |    2   |
+|   G  | Gymnasium        | (S,C,D)           |    3   |
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Degree Summary (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- The Student Center has the largest degree:
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+  deg(C)=4.
+  </div>
+</div>
+
+- This means that the Student Center has the most direct connections.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Check Using the Handshaking Theorem</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- For an undirected graph,
+
+$$
+\sum_{v\in V}deg(v)=2|E|.
+$$
+	​
+
+$$deg(v)=2∣E∣.$$
+
+- Add the degrees:
+
+$$2+3+4+2+3=14.$$
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Check Using the Handshaking Theorem (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 900px;"></div>
+
+The graph has seven edges:
+
+$$∣E∣=7.$$
+
+- Therefore,
+
+$$2∣E∣=2(7)=14.$$
+
+- Since
+
+$$14=14,$$
+
+the degree calculations are consistent.
+   </div>
+</div>
+
+
+
+> Worked Example
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Find a Path</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Suppose a student wants to walk from the Library to the Dormitory.
+
+- One possible path is
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+   L→C→D.
+  </div>
+</div>
+
+- In words:
+
+```
+Library → Student Center → Dormitory
+```
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Find a Path (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- The distance is
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+   150+300=450 meters.
+  </div>
+</div>
+
+- Therefore, this path has a total length of
+	​
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+   450 meters.
+  </div>
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Test Another Path</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Another possible path is
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    L→C→G→D.
+  </div>
+</div>
+
+- In words:
+
+```
+Library → Student Center → Gymnasium → Dormitory
+```
+
+- Its total distance is
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    150+180+120.
+  </div>
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Test Another Path (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+Therefore,
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    150+180+120=450 meters.
+  </div>
+</div>
+
+- This path also has a total length of
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    450 meters.
+  </div>
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Test a Third Path</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Consider the path
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    L→S→G→D.
+  </div>
+</div>
+
+- Its total distance is
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    200+250+120.
+  </div>
+</div>
+
+- Therefore,
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    200+250+120=570 meters.
+  </div>
+</div>
+
+- This route is longer than the previous two routes.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Compare the Paths</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+| Route                                      | Distance |
+| :----------------------------------------- | -------: |
+| L$\rightarrow$ C$\rightarrow$ D              |    450 m |
+| L$\rightarrow$ C$\rightarrow$ G$\rightarrow$ D |    450 m |
+| L$\rightarrow$ S$\rightarrow$ G$\rightarrow$ D |    570 m |
+| L$\rightarrow$ S$\rightarrow$ C$\rightarrow$ D |    600 m |
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Compare the Paths (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- The smallest distance found is
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    450 meters.
+  </div>
+</div>
+
+- There are two shortest paths:
+
+L→C→D
+
+and
+
+L→C→G→D.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Shortest-Path Calculation</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Let the starting vertex be the Library.
+
+- Initial distances are:
+
+| Vertex | Initial distance from (L) |
+| :----: | :-----------------------: |
+|   (L)  |             0             |
+|   (S)  |          $\infty$         |
+|   (C)  |          $\infty$         |
+|   (D)  |          $\infty$         |
+|   (G)  |          $\infty$         |
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Shortest-Path Calculation (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- From the Library:
+
+d(S)=200
+
+and
+
+d(C)=150.
+
+---
+
+- From the Student Center:
+
+d(D)=150+300=450
+
+and
+
+d(G)=150+180=330.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Shortest-Path Calculation (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- From the Gymnasium:
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    d(D)=330+120=450.
+  </div>
+</div>
+
+
+- Therefore, the shortest distance from the Library to the Dormitory is
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    d(L,D)=450 meters.
+  </div>
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Why Shortest Path Is Useful</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- A shortest-path algorithm is useful for this campus problem because students often need to find the fastest or shortest route between buildings.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Why Shortest Path Is Useful (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- It could be used in:
+	- A campus navigation application
+	- Accessibility route planning
+	- Emergency evacuation planning
+	- Campus shuttle routing
+	- Delivery-robot navigation
+	- Estimating walking time between classes
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Why Shortest Path Is Useful (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- For example, if a student has only ten minutes to travel from the Library to the Dormitory, the system can recommend a 450-meter route rather than the 570-meter route.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Is Graph Coloring Useful?</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Graph coloring is less important for this particular navigation problem, but it could still support related campus tasks.
+
+  </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Is Graph Coloring Useful? (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- For example, graph coloring could be used to:
+	- Assign different maintenance times to connected walkways
+	- Schedule events in nearby buildings without conflicts
+	- Assign radio frequencies to nearby campus devices
+	- Schedule exams for courses that share students
+	- Divide campus zones among security teams
+   </div>
+</div>
+
+
+
+> For the walking-route problem, however, shortest path is more directly useful than coloring.
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Explanation of the Result</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- The graph gives a mathematical model of the campus.
+
+- The vertices represent buildings, while the weighted edges represent direct walking paths and their distances. The degree of each vertex shows how well connected a building is.
+
+- The Student Center has degree four, so it is the most connected building in this model. It acts as an important campus hub.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Explanation of the Result (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- The shortest distance from the Library to the Dormitory is
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    450 meters.
+  </div>
+</div>
+
+- Two different routes achieve this distance. Therefore, a navigation system could choose either route or use additional information, such as construction, weather, accessibility, or crowding, to select the better route.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Summary</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- The campus graph is
+
+G=(V,E),
+
+with
+
+V={L,S,C,D,G}.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Summary (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- The vertex degrees are
+
+	- deg(L)=2,
+	- deg(S)=3,
+	- deg(C)=4,
+	- deg(D)=2,
+
+and
+
+- deg(G)=3.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Summary (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- One path from the Library to the Dormitory is
+
+L→C→D.
+
+- Its total distance is
+
+150+300=450 meters.
+
+- The shortest-path method is useful because it helps students and campus systems find efficient routes between buildings.
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch9" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Summary</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Common Mistakes</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Using notation without defining it.
+- Solving one example but claiming a general proof.
+- Forgetting assumptions or constraints.
+- Skipping the final interpretation in words.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Summary</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Graphs model pairwise relationships.
+- Paths and connectivity explain movement through a network.
+- Euler, Hamilton, shortest path, and coloring ask different graph questions.
+- Graph thinking appears in AI, transportation, scheduling, and communication.
+
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+</div>
+	
+
+<script>
+(function () {
+  function initVisibleBubbles() {
+    if (window.__visibleCanvasBubblesStarted) return;
+    window.__visibleCanvasBubblesStarted = true;
+
+    const layer = document.getElementById('bubbleLayer');
+    if (!layer) return;
+
+    let canvas = document.getElementById('bubbleCanvas');
+    if (!canvas) {
+      canvas = document.createElement('canvas');
+      canvas.id = 'bubbleCanvas';
+      layer.appendChild(canvas);
+    }
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const colors = [
+      'rgba(255,255,255,0.38)',
+      'rgba(187,247,208,0.34)',
+      'rgba(191,219,254,0.34)',
+      'rgba(254,240,138,0.30)',
+      'rgba(252,231,243,0.32)',
+      'rgba(221,214,254,0.32)'
+    ];
+
+    let bubbles = [];
+
+    function resizeCanvas() {
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.ceil(window.innerWidth * dpr);
+      canvas.height = Math.ceil(window.innerHeight * dpr);
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function makeBubble(now, delay) {
+      const radius = 5 + Math.random() * 11;
+      return {
+        start: now + delay,
+        duration: 30000 + Math.random() * 15000,
+        x: Math.random() * window.innerWidth,
+        y: window.innerHeight + radius + Math.random() * 35,
+        radius: radius,
+        drift: -90 + Math.random() * 180,
+        wobble: 8 + Math.random() * 22,
+        color: colors[Math.floor(Math.random() * colors.length)]
+      };
+    }
+
+    function burst() {
+      const now = performance.now();
+      const count = 28 + Math.floor(Math.random() * 12);
+      for (let i = 0; i < count; i++) {
+        bubbles.push(makeBubble(now, i * 110));
+      }
+    }
+
+    function draw(now) {
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+      bubbles = bubbles.filter(function (b) {
+        const t = (now - b.start) / b.duration;
+        if (t < 0) return true;
+        if (t > 1) return false;
+
+        const ease = 1 - Math.pow(1 - t, 1.8);
+        const x = b.x + b.drift * ease + Math.sin(t * Math.PI * 4) * b.wobble;
+        const y = b.y - (window.innerHeight + 120) * ease;
+        const alpha = Math.sin(Math.PI * t);
+
+        ctx.globalAlpha = 0.55 * alpha;
+        ctx.beginPath();
+        ctx.arc(x, y, b.radius, 0, Math.PI * 2);
+        ctx.fillStyle = b.color;
+        ctx.fill();
+
+        ctx.globalAlpha = 0.45 * alpha;
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = 'rgba(255,255,255,0.42)';
+        ctx.stroke();
+
+        return true;
+      });
+
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(draw);
+    }
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    // Show once when opened, then every 3 minutes.
+    burst();
+    setInterval(burst, 180000);
+    requestAnimationFrame(draw);
+  }
+
+  window.startBubbleAnimation = initVisibleBubbles;
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initVisibleBubbles);
+  } else {
+    initVisibleBubbles();
+  }
+})();
+</script>
+
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/settings.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/effects.js"></script>
+<script src="../js/no-copy.js"></script>
+<!--<script src="settings.js"></script>-->
+<!--<script src="effects.js"></script>-->
+</body>
+</html>

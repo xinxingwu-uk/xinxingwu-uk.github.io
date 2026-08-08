@@ -1,0 +1,1485 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Week 7: Recursion II</title>
+    <meta name="description" content="A set of slides for Machine Learning">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/effectsGreen.css">
+	<!--<link rel="stylesheet" href="./css/style.css">-->
+	<!--<link rel="stylesheet" href="./css/effects.css">-->
+	<link rel="stylesheet" href="../css/no-copy.css">
+
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+
+		function startCountdown() {
+			const countdownBox = document.getElementById('classCountdown');
+			if (!countdownBox) return;
+
+			// Target: Last day of classes, Saturday, December 5, 2026.
+			const targetDate = new Date(2026, 11, 5, 0, 0, 0).getTime();
+
+			function updateCountdown() {
+				const now = new Date().getTime();
+				const distance = targetDate - now;
+
+				if (distance <= 0) {
+					const today = new Date();
+					if (today.getFullYear() === 2026 && today.getMonth() === 11 && today.getDate() === 5) {
+						countdownBox.innerHTML = '<span class="count-label">Last day of classes</span><span class="count-time">Today — Dec. 5, 2026</span>';
+					} else {
+						countdownBox.innerHTML = '<span class="count-label">Last day of classes</span><span class="count-time">Completed — Dec. 5, 2026</span>';
+					}
+					return;
+				}
+
+				const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+				const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+				const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+				const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+				countdownBox.innerHTML = '<span class="count-label">Last day of classes: Dec. 5, 2026</span>' +
+					'<span class="count-time">' + days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's</span>';
+			}
+
+			updateCountdown();
+			setInterval(updateCountdown, 1000);
+		}
+
+		function startBubbleAnimation() {
+			const bubbleLayer = document.getElementById('bubbleLayer');
+			if (!bubbleLayer) return;
+
+			function createBubble() {
+				const bubble = document.createElement('span');
+				const size = Math.floor(8 + Math.random() * 22);
+				const left = Math.random() * 100;
+				const duration = Math.floor(28 + Math.random() * 22);
+				const drift = Math.floor(-120 + Math.random() * 240);
+
+				bubble.className = 'floating-bubble';
+				bubble.style.width = size + 'px';
+				bubble.style.height = size + 'px';
+				bubble.style.left = left + 'vw';
+				bubble.style.animationDuration = duration + 's';
+				bubble.style.setProperty('--bubble-drift', drift + 'px');
+
+				bubbleLayer.appendChild(bubble);
+				setTimeout(function () {
+					bubble.remove();
+				}, duration * 1000 + 500);
+			}
+
+			function createBubbleBurst() {
+				const bubbleCount = 18 + Math.floor(Math.random() * 12);
+				for (let i = 0; i < bubbleCount; i++) {
+					setTimeout(createBubble, i * 260);
+				}
+			}
+
+			// Show one soft burst shortly after loading, then repeat every 3 minutes.
+			setTimeout(createBubbleBurst, 2500);
+			setInterval(createBubbleBurst, 180000);
+		}
+	</script>
+
+	<style>
+	    pre {
+            background-color: black;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+        }
+        code {
+            font-family: "Courier New", monospace;
+            color: #d63384; /* Python-style color */
+        }
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }
+        .top-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 8px 4px 0 4px;
+            gap: 12px;
+        }
+        .top-header-left,
+        .top-header-center,
+        .top-header-right {
+            flex: 1 1 0;
+            display: flex;
+            align-items: flex-start;
+        }
+        .top-header-left {
+            justify-content: flex-start;
+        }
+        .top-header-center {
+            justify-content: center;
+        }
+        .top-header-right {
+            justify-content: flex-end;
+        }
+        .header-badge {
+            color: #ffffff;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+            background: rgba(22, 163, 74, 0.38);
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(0,0,0,.22);
+            padding: 6px 12px;
+            line-height: 1.05;
+            white-space: nowrap;
+        }
+        #classCountdown {
+            display: inline-flex;
+            align-items: center;
+            min-width: 360px;
+            text-align: left;
+            letter-spacing: .2px;
+        }
+        #classCountdown .count-label {
+            display: inline-block;
+            font-size: 15px;
+            font-weight: 800;
+            margin-bottom: 0;
+            margin-right: 8px;
+        }
+        #classCountdown .count-time {
+            display: inline-block;
+            font-size: 15px;
+            font-weight: 800;
+        }
+        .header-email-link {
+            display: inline-block;
+            color: #ffffff !important;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+            font-size: 15px;
+            font-weight: 800;
+            line-height: 1;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .header-email-link:hover {
+            text-decoration: underline;
+        }
+        #realtimeclock {
+            display: inline-block;
+            font-size: 15px;
+            font-weight: 800;
+        }
+        #bubbleLayer {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 9999;
+            background: transparent !important;
+        }
+        #bubbleCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: transparent !important;
+        }
+        .floating-bubble {
+            position: absolute;
+            bottom: -60px;
+            display: block;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.10);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.14);
+            animation-name: floatBubbleUp;
+            animation-timing-function: linear;
+            animation-fill-mode: forwards;
+            opacity: 0;
+        }
+        @keyframes floatBubbleUp {
+            0% {
+                transform: translate3d(0, 0, 0) scale(.85);
+                opacity: 0;
+            }
+            12% {
+                opacity: .30;
+            }
+            88% {
+                opacity: .18;
+            }
+            100% {
+                transform: translate3d(var(--bubble-drift), -112vh, 0) scale(1.2);
+                opacity: 0;
+            }
+        }
+        .reveal {
+            position: relative;
+            z-index: 1;
+        }
+        .reveal .slides {
+            margin-top: 54px !important;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .floating-bubble {
+                animation: none;
+                display: none;
+            }
+        }	
+	</style>
+
+  </head>
+
+  <body onload="startTime(); startCountdown(); startBubbleAnimation();">
+    <div id="bubbleLayer" aria-hidden="true"><canvas id="bubbleCanvas"></canvas></div>
+    <div class="reveal" >
+      <div class="top-header">
+        <div class="top-header-left">
+          <span id="classCountdown" class="header-badge"><span class="count-label">Last day of classes: Dec. 5, 2026</span><span class="count-time">Loading...</span></span>
+        </div>
+        <div class="top-header-center">
+          <a href="mailto:Xinxing.Wu@kysu.edu" title="Email Xinxing Wu" class="header-email-link header-badge">Xinxing.Wu@kysu.edu</a>
+        </div>
+        <div class="top-header-right">
+          <div class="header-badge" id="realtimeclock"></div>
+        </div>
+      </div>
+      <div class="slides">
+
+  <div class="me">Xinxing Wu</div>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown id="cover"><textarea data-template>
+<p class='titlep'>&nbsp;</p>
+
+# Week 7: Recursion II
+
+
+<hr>
+
+<br>
+
+Xinxing Wu
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline
+
+[<p class="hover-underline-animation">Introduction</p>](#/ch1)
+
+[<p class="hover-underline-animation">Basic knowledge</p>](#/ch2)
+
+[<p class="hover-underline-animation">Basic examples</p>](#/ch3)
+
+[<p class="hover-underline-animation">Basic real-world applications</p>](#/ch4)
+
+</textarea></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline (Cont.)
+
+[<p class="hover-underline-animation">Advanced knowledge</p>](#/ch5)
+
+[<p class="hover-underline-animation">Advanced examples</p>](#/ch6)
+
+[<p class="hover-underline-animation">Advanced real-world applications</p>](#/ch7)
+
+[<p class="hover-underline-animation">Task</p>](#/ch8)
+
+</textarea></section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline (Cont.)
+
+[<p class="hover-underline-animation">Summary</p>](#/ch9)
+
+</textarea></section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch1" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Introduction</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Learning Goals</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Write recursive definitions for sequences and sets.
+- Trace recursive algorithms.
+- Compare recursive and iterative solutions.
+- Analyze simple recurrence behavior.
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch2" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Basic knowledge</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">A Note</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- A recursive definition has base cases and rules for building larger objects from smaller ones.
+
+- A recursive algorithm solves a problem by calling itself on smaller inputs.
+
+- A good recursive solution must make progress toward a base case; otherwise it never stops.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Key Ideas</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Identify the objects in the problem.
+- Choose notation that makes relationships clear.
+- Work on a small example before solving the general case.
+- Explain the answer in plain English after the calculation.
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch3" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Basic examples</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Example 1: Factorial definition</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- **Problem.** Define n! recursively.
+
+- **Step-by-step solution.** Base: $0!=1$. Recursive rule: $n!=n·(n−1)!$ for $n\geqslant 1$. For 4!, compute $4·3·2·1·0!=24$.
+
+- **Check.** The problem shrinks by one each call.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Example 2: Fibonacci sequence</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- **Problem.** Define $F_0=0, F_1=1$, and $F_n=F_{n-1}+F_{n-2}$ for $n\geqslant 2$.
+
+- **Step-by-step solution.** $F_2=1, F_3=2, F_4=3, F_5=5$.
+
+- **Check.** Each term depends on two previous terms.
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch4" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Basic real-world applications</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Application 1: File systems</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Folders contain files and other folders, so recursive traversal naturally visits every item.
+
+- **Discussion prompt:** What data or assumptions would we need to use this model responsibly?
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Application 2: Fractals and graphics</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Recursive rules generate trees, snowflakes, and repeated visual patterns.
+
+- **Discussion prompt:** What data or assumptions would we need to use this model responsibly?
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch5" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Advanced knowledge</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">A Note</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Recursive algorithms can be elegant but expensive if they recompute the same subproblems.
+
+- Recurrence relations describe running time, such as $T(n)=T(n−1)+1$ or $T(n)=2T(n/2)+n$.
+
+- Memoization stores solved subproblems to avoid repeated work.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">How to Think</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Ask what structure is hidden in the problem.
+- Look for an invariant, equivalence, ordering, recurrence, or optimization goal.
+- Use the simplest representation that preserves the important information.
+- Check whether the method scales when the input becomes large.
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch6" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Advanced examples</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Example 1: Naive vs memoized Fibonacci</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- **Problem.** Naive $fib(5)$ computes $fib(3)$ multiple times. Memoized fib stores each result.
+
+- **Step-by-step solution.** Naive recursion grows exponentially; memoization reduces the number of distinct subproblems to $n+1$.
+
+- **Why it matters.** This is the core idea behind dynamic programming.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Example 2: Recursive binary search recurrence</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- **Problem.** Binary search satisfies $T(n)=T(n/2)+1$.
+
+- **Step-by-step solution.** After k steps the size is $n/2^k$. Stop when $n/2^k\approx 1$, so $k\approx\log_₂ n$.
+
+- **Why it matters.** This gives $\mathcal{O}(\log n)$ time.
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch7" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Advanced real-world applications</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Application 1: Parsing expressions</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Compilers parse expressions recursively: an expression may contain smaller expressions in parentheses.
+
+- **Extension question:** How would the model change with more realistic constraints?
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Application 2: AI search trees</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Game-playing agents recursively explore possible moves and countermoves.
+
+- **Extension question:** How would the model change with more realistic constraints?
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch8" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Task</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Task</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- **Task.** Trace a recursive folder-size algorithm on a small folder tree. Then identify the base case, recursive call, and stopping condition.
+
+- **Deliverable.** One clear model, one worked example, and a short explanation of the result.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Problem Model</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- A folder may contain:
+
+	- Files, each with a known size.
+	- Other folders, which may contain additional files and folders.
+
+- The total size of a folder is the sum of the sizes of every file stored inside it, including files inside its subfolders.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Problem Model (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+Define
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    FolderSize(x)
+  </div>
+</div>
+
+as the total size of item $x$.
+
+- When $x$ is a file, return the file's size.
+- When $x$ is a folder, recursively calculate the size of every item inside it and add the results.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Recursive Pseudocode</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+```
+PROCEDURE FolderSize(item)
+
+    IF item is a file THEN
+        RETURN item.size
+    END IF
+
+    totalSize ← 0
+
+    FOR each child in item
+
+        totalSize ← totalSize + FolderSize(child)
+
+    END FOR
+
+    RETURN totalSize
+
+END PROCEDURE
+```
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Small Folder Tree</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Consider the following folder tree. File sizes are measured in megabytes.
+
+```
+CourseFiles/
+│
+├── syllabus.pdf              2 MB
+│
+├── Lectures/
+│   ├── week1.pdf             5 MB
+│   └── week2.pdf             7 MB
+│
+└── Labs/
+    ├── lab1.py               3 MB
+    └── Data/
+        └── sample.csv        4 MB
+```
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Small Folder Tree (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+The goal is to calculate
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    FolderSize(CourseFiles).
+  </div>
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Base Case</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- The base case occurs when the current item is a file.
+
+- For a file, the algorithm does not make another recursive call. It simply returns the file size.
+
+- For example,
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    FolderSize(week1.pdf)=5.
+  </div>
+</div>
+
+- Similarly,
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    FolderSize(sample.csv)=4.
+  </div>
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Base Case (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+In pseudocode, the base case is:
+
+```
+IF item is a file THEN
+    RETURN item.size
+END IF
+```
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Recursive Call</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+The recursive call occurs when the current item is a folder.
+
+For every child inside the folder, the algorithm calls itself:
+
+```
+FolderSize(child)
+```
+
+The results are added to totalSize:
+
+```
+totalSize ← totalSize + FolderSize(child)
+```
+
+For example, the Lectures folder contains two files, so the algorithm evaluates
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    FolderSize(Lectures)=FolderSize(week1.pdf)+FolderSize(week2.pdf).
+  </div>
+</div>
+   </div>
+</div>
+
+
+
+> Worked Example
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Step 1: Start with the Main Folder</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+Call
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    FolderSize(CourseFiles).
+  </div>
+</div>
+
+- Because CourseFiles is a folder, begin with
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    totalSize=0.
+  </div>
+</div>
+
+- The folder contains:
+
+	- syllabus.pdf
+	- Lectures
+	- Labs
+
+- The algorithm processes each item.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Step 2: Process syllabus.pdf</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- The first item is a file:
+
+```
+syllabus.pdf = 2 MB
+```
+
+- Because it is a file, apply the base case:
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    FolderSize(syllabus.pdf)=2.
+  </div>
+</div>
+
+- Update the total:
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    totalSize=0+2=2.
+  </div>
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Step 3: Process the Lectures Folder</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+The next item is the Lectures folder.
+
+Call
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    FolderSize(Lectures).
+  </div>
+</div>
+
+- The folder contains:
+
+	- week1.pdf = 5 MB
+	- week2.pdf = 7 MB
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Step 3: Process the Lectures Folder (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- For week1.pdf:
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    FolderSize(week1.pdf)=5.
+  </div>
+</div>
+
+<br>
+
+- For week2.pdf:
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    FolderSize(week2.pdf)=7.
+  </div>
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Step 3: Process the Lectures Folder (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Therefore,
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    FolderSize(Lectures)=5+7=12.
+  </div>
+</div>
+
+- Return 12 to the original call.
+
+- Update the size of CourseFiles:
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    totalSize=2+12=14.
+  </div>
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Step 4: Process the Labs Folder</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+Call
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    FolderSize(Labs).
+  </div>
+</div>
+
+- The Labs folder contains:
+
+	- lab1.py
+	- The Data folder
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Step 4: Process the Labs Folder (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- First, process lab1.py:
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    FolderSize(lab1.py)=3.
+  </div>
+</div>
+
+
+- The current size of Labs is
+
+$$3.$$
+
+- Next, process the Data folder.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Step 5: Process the Data Folder</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+Call
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    FolderSize(Data).
+  </div>
+</div>
+
+- The Data folder contains one file:
+
+```
+sample.csv = 4 MB
+```
+
+- Apply the base case:
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    FolderSize(sample.csv)=4.
+  </div>
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Step 5: Process the Data Folder (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Therefore,
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    FolderSize(Data)=4.
+  </div>
+</div>
+
+- Return 4 to the Labs call.
+
+- The total size of Labs is
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    FolderSize(Labs)=3+4=7.
+  </div>
+</div>
+
+-  Return 7 to the CourseFiles call.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Step 6: Calculate the Final Size</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- The main folder receives the following results:
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    FolderSize(syllabus.pdf)=2,
+  </div>
+</div>
+
+<br>
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    FolderSize(Lectures)=12,
+  </div>
+</div>
+
+and
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    FolderSize(Labs)=7.
+  </div>
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Step 6: Calculate the Final Size (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Therefore,
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    FolderSize(CourseFiles)=2+12+7=21.
+  </div>
+</div>
+
+
+- The final result is
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    FolderSize(CourseFiles)=21 MB
+  </div>
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Complete Trace Table</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+<div style="font-size: 22px;">
+
+| Call                       | Item type | Work performed  | Returned size |
+| :------------------------- | :-------: | :-------------- | ------------: |
+| `FolderSize(syllabus.pdf)` |    File   | Return its size |          2 MB |
+| `FolderSize(week1.pdf)`    |    File   | Return its size |          5 MB |
+| `FolderSize(week2.pdf)`    |    File   | Return its size |          7 MB |
+| `FolderSize(Lectures)`     |   Folder  | (5+7)           |         12 MB |
+| `FolderSize(lab1.py)`      |    File   | Return its size |          3 MB |
+| `FolderSize(sample.csv)`   |    File   | Return its size |          4 MB |
+| `FolderSize(Data)`         |   Folder  | (4)             |          4 MB |
+| `FolderSize(Labs)`         |   Folder  | (3+4)           |          7 MB |
+| `FolderSize(CourseFiles)`  |   Folder  | (2+12+7)        |         21 MB |
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Recursive Call Structure</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- The recursive calls can be visualized as follows:
+
+```
+FolderSize(CourseFiles)
+│
+├── FolderSize(syllabus.pdf) → 2
+│
+├── FolderSize(Lectures)
+│   ├── FolderSize(week1.pdf) → 5
+│   └── FolderSize(week2.pdf) → 7
+│   └── Return 12
+│
+└── FolderSize(Labs)
+    ├── FolderSize(lab1.py) → 3
+    └── FolderSize(Data)
+        └── FolderSize(sample.csv) → 4
+        └── Return 4
+    └── Return 7
+
+Return 21
+
+```
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Stopping Condition</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- The recursion stops along a branch when the algorithm reaches a file.
+
+- A file cannot contain another file or folder, so no additional recursive call is needed.
+
+- Therefore, the primary stopping condition is:
+
+```
+item is a file
+```
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Stopping Condition (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- At that point, the algorithm returns
+
+```
+item.size
+```
+
+- An empty folder also stops naturally. Because it has no children, the loop runs zero times and the folder returns
+$$0.$$
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Explanation of the Result</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- The algorithm calculates the total folder size by breaking the problem into smaller versions of the same problem.
+
+- Each folder asks:
+
+> What is the total size of each item inside me?
+
+- Files provide direct answers through the base case. Subfolders use recursive calls to calculate their own totals. These values are returned upward and added together.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Explanation of the Result (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+
+- For the example folder tree, the five files have sizes
+
+$$2, 5, 7, 3, {\rm and}\quad 4\quad {\rm MB}.$$
+
+- Their total is
+
+$$2+5+7+3+4=21\quad MB.$$
+
+- Thus, the recursive algorithm correctly determines that CourseFiles occupies
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    21 MB.
+  </div>
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Summary</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Model: A folder's size is the sum of the sizes of all items inside it.
+- Base case: When the item is a file, return its size.
+- Recursive call: Call FolderSize(child) for each item inside a folder.
+- Stopping condition: Stop when a file is reached or when a folder is empty.
+- Worked result:
+
+<div style="text-align:center;">
+  <div style="border:2px solid #333; padding:12px 20px; display:inline-block; border-radius:6px;">
+    PFolderSize(CourseFiles)=21 MB
+  </div>
+</div>
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch9" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Summary</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Common Mistakes</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Using notation without defining it.
+- Solving one example but claiming a general proof.
+- Forgetting assumptions or constraints.
+- Skipping the final interpretation in words.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Summary</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Recursion solves a problem using smaller versions of itself.
+- Every recursion needs base cases and progress.
+- Recurrences describe recursive cost.
+- Memoization can turn repeated recursion into efficient computation.
+
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+</div>
+	
+
+<script>
+(function () {
+  function initVisibleBubbles() {
+    if (window.__visibleCanvasBubblesStarted) return;
+    window.__visibleCanvasBubblesStarted = true;
+
+    const layer = document.getElementById('bubbleLayer');
+    if (!layer) return;
+
+    let canvas = document.getElementById('bubbleCanvas');
+    if (!canvas) {
+      canvas = document.createElement('canvas');
+      canvas.id = 'bubbleCanvas';
+      layer.appendChild(canvas);
+    }
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const colors = [
+      'rgba(255,255,255,0.38)',
+      'rgba(187,247,208,0.34)',
+      'rgba(191,219,254,0.34)',
+      'rgba(254,240,138,0.30)',
+      'rgba(252,231,243,0.32)',
+      'rgba(221,214,254,0.32)'
+    ];
+
+    let bubbles = [];
+
+    function resizeCanvas() {
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.ceil(window.innerWidth * dpr);
+      canvas.height = Math.ceil(window.innerHeight * dpr);
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function makeBubble(now, delay) {
+      const radius = 5 + Math.random() * 11;
+      return {
+        start: now + delay,
+        duration: 30000 + Math.random() * 15000,
+        x: Math.random() * window.innerWidth,
+        y: window.innerHeight + radius + Math.random() * 35,
+        radius: radius,
+        drift: -90 + Math.random() * 180,
+        wobble: 8 + Math.random() * 22,
+        color: colors[Math.floor(Math.random() * colors.length)]
+      };
+    }
+
+    function burst() {
+      const now = performance.now();
+      const count = 28 + Math.floor(Math.random() * 12);
+      for (let i = 0; i < count; i++) {
+        bubbles.push(makeBubble(now, i * 110));
+      }
+    }
+
+    function draw(now) {
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+      bubbles = bubbles.filter(function (b) {
+        const t = (now - b.start) / b.duration;
+        if (t < 0) return true;
+        if (t > 1) return false;
+
+        const ease = 1 - Math.pow(1 - t, 1.8);
+        const x = b.x + b.drift * ease + Math.sin(t * Math.PI * 4) * b.wobble;
+        const y = b.y - (window.innerHeight + 120) * ease;
+        const alpha = Math.sin(Math.PI * t);
+
+        ctx.globalAlpha = 0.55 * alpha;
+        ctx.beginPath();
+        ctx.arc(x, y, b.radius, 0, Math.PI * 2);
+        ctx.fillStyle = b.color;
+        ctx.fill();
+
+        ctx.globalAlpha = 0.45 * alpha;
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = 'rgba(255,255,255,0.42)';
+        ctx.stroke();
+
+        return true;
+      });
+
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(draw);
+    }
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    // Show once when opened, then every 3 minutes.
+    burst();
+    setInterval(burst, 180000);
+    requestAnimationFrame(draw);
+  }
+
+  window.startBubbleAnimation = initVisibleBubbles;
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initVisibleBubbles);
+  } else {
+    initVisibleBubbles();
+  }
+})();
+</script>
+
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/settings.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/effects.js"></script>
+<script src="../js/no-copy.js"></script>
+<!--<script src="settings.js"></script>-->
+<!--<script src="effects.js"></script>-->
+</body>
+</html>

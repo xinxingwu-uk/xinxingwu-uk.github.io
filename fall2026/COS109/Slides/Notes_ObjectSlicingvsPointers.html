@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Object Slicing vs Polymorphism in C++</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 40px;
+      background-color: #f9f9f9;
+      color: #222;
+    }
+    h1, h2 {
+      color: #003366;
+    }
+    .box {
+      background: white;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-left: 6px solid #003366;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 12px;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+    code {
+      font-family: Consolas, monospace;
+    }
+    .highlight {
+      color: darkred;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Object Slicing vs Polymorphism in C++</h1>
+
+  <div class="box">
+    <h2>Why is the output different?</h2>
+    <p>
+      The two versions of code produce different output because they work in different ways.
+    </p>
+  </div>
+
+  <div class="box">
+    <h2>1. Object Version</h2>
+    <pre><code>Person per = Person("John", 30);
+Person stu = Students("Oscar", 20, "12334");
+Person teacher = Teachers("JaSun", 21, "COS201");</code></pre>
+
+    <p>
+      In this version, <code>stu</code> and <code>teacher</code> are declared as
+      <code>Person</code> objects.
+    </p>
+
+    <p>
+      Even though the right side creates a <code>Students</code> or <code>Teachers</code> object,
+      only the <code>Person</code> part is kept.
+    </p>
+
+    <p>
+      The extra derived-class data, such as <code>StudentID</code> or <code>subject</code>,
+      is removed.
+    </p>
+
+    <p class="highlight">This is called object slicing.</p>
+
+    <p>
+      So later:
+    </p>
+
+    <pre><code>stu.showInfo();
+teacher.showInfo();</code></pre>
+
+    <p>
+      both call <code>Person::showInfo()</code>, because both are now only <code>Person</code> objects.
+    </p>
+  </div>
+
+  <div class="box">
+    <h2>2. Pointer Version</h2>
+    <pre><code>Person* per = new Person("John", 30);
+Person* stu = new Students("Oscar", 20, "12334");
+Person* teacher = new Teachers("JaSun", 21, "COS201");</code></pre>
+
+    <p>
+      In this version, <code>stu</code> and <code>teacher</code> are pointers of type
+      <code>Person*</code>, but they point to real <code>Students</code> and <code>Teachers</code> objects.
+    </p>
+
+    <p>
+      Since <code>showInfo()</code> is declared as <code>virtual</code> in the base class,
+      C++ uses <span class="highlight">runtime polymorphism</span>.
+    </p>
+
+    <pre><code>stu-&gt;showInfo();
+teacher-&gt;showInfo();</code></pre>
+
+    <p>
+      So:
+    </p>
+    <ul>
+      <li><code>stu-&gt;showInfo()</code> calls <code>Students::showInfo()</code></li>
+      <li><code>teacher-&gt;showInfo()</code> calls <code>Teachers::showInfo()</code></li>
+    </ul>
+  </div>
+
+  <div class="box">
+    <h2>Main Difference</h2>
+    <p><strong>Object version:</strong> causes object slicing</p>
+    <p><strong>Pointer version:</strong> keeps the full derived object and allows polymorphism</p>
+  </div>
+
+  <div class="box">
+    <h2>Simple Summary</h2>
+    <p>
+      When you write:
+    </p>
+    <pre><code>Person stu = Students(...);</code></pre>
+    <p>
+      only the <code>Person</code> part is stored.
+    </p>
+
+    <p>
+      But when you write:
+    </p>
+    <pre><code>Person* stu = new Students(...);</code></pre>
+    <p>
+      the whole <code>Students</code> object is still there, and the virtual function works correctly.
+    </p>
+  </div>
+
+  <div class="box">
+    <h2>Expected Output</h2>
+    <p><strong>Object version:</strong></p>
+    <pre><code>Person info:
+Name: John
+Age: 30
+--------------------------------
+Person info:
+Name: Oscar
+Age: 20
+--------------------------------
+Person info:
+Name: JaSun
+Age: 21</code></pre>
+
+    <p><strong>Pointer version:</strong></p>
+    <pre><code>Person info:
+Name: John
+Age: 30
+--------------------------------
+Students info:
+Name: Oscar
+Age: 20
+ID: 12334
+--------------------------------
+Teachers info:
+Name: JaSun
+Age: 21
+Subject: COS201</code></pre>
+  </div>
+
+  <div class="box">
+    <h2>Conclusion</h2>
+    <p>
+      The output is different because the first version uses
+      <span class="highlight">object slicing</span>, while the second version uses
+      <span class="highlight">polymorphism with virtual functions</span>.
+    </p>
+  </div>
+
+</body>
+</html>

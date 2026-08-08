@@ -1,0 +1,2615 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Strings</title>
+    <meta name="description" content="A set of slides for Machine Learning">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/effectsGreen.css">
+	<!--<link rel="stylesheet" href="./css/style.css">-->
+	<!--<link rel="stylesheet" href="./css/effects.css">-->
+	
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+	</script>
+
+	<style>
+	    pre {
+            background-color: black;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+        }
+        code {
+            font-family: "Courier New", monospace;
+            color: #d63384; /* Python-style color */
+        }
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }	
+	</style>
+
+  </head>
+
+  <body onload="startTime()">
+    <div class="reveal" >
+	  <p><img src="images/midwaylogo.png"  align="left" height="6%" width="6%" style="vertical-align:left;margin:-15px 5px"><img src="images/mueagle.png"  color="white" align="left" height="4%" width="4%" style="vertical-align:center;margin:-1% 45%">
+		<div style="color:white;font-size: 20px; vertical-align:left;margin:-1% 0%" align="right" id="realtimeclock"></div></p>
+      <div class="slides">
+
+  <div class="me">Xinxing Wu</div>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown id="cover"><textarea data-template>
+<p class='titlep'>&nbsp;</p>
+
+# Strings
+
+<hr>
+
+<br>
+
+Xinxing Wu
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline
+
+[<p class="hover-underline-animation">Motivation</p>](#/ch1)
+
+[<p class="hover-underline-animation">Definition and Syntax</p>](#/ch2)
+
+[<p class="hover-underline-animation">Application</p>](#/ch3)
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline (Cont.)
+
+[<p class="hover-underline-animation">Common Mistakes and Best Practices</p>](#/ch4)
+
+[<p class="hover-underline-animation">Summary</p>](#/ch5)
+
+[<p class="hover-underline-animation">Mini Case Study</p>](#/ch6)
+
+</textarea></section>
+
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+
+## Goal
+
+<div id="shadebox-neon" class="shadebox neon">
+
+Store and manipulate text using <spanGREEN>std::string</spanGREEN>, read user input correctly (including spaces with getline()), combine strings using concatenation or append(), access and modify characters safely, use common string operations such as length()/size() and find(), and avoid common mistakes that occur with C-style char[] strings and input handling.
+
+</div>
+
+</textarea></section>
+
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch1" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Motivation</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+
+```
+| Feature           | `char[]` (C-style string) | `std::string` (C++ string)  |
+| ----------------- | ------------------------- | --------------------------- |
+| Memory type       | Raw array                 | Class (object)              |
+| Stored as         | Characters + `'\0'`       | Managed dynamic buffer      |
+| Size              | Fixed at compile time     | Dynamic (grows/shrinks)     |
+| Null terminator   | Required (`'\0'`)         | Hidden internally           |
+| Overflow risk     | HIGH ⚠️                   | Very low                    |
+| Assignment        | ❌ cannot use `=`          | ✅ allowed                   |
+| Copying           | `strcpy()` needed         | automatic                   |
+| Memory management | manual thinking required  | automatic                   |
+| Safer?            | ❌ no                      | ✅ yes                       |
+| Speed control     | Maximum low-level control | Slight abstraction overhead |
+| Teaching use      | memory & pointers         | modern programming          |
+
+```
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+
+```
+char a[20] = "Hello";
+```
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+Memory layout:
+
+```
+Address →
++----+----+----+----+----+----+----+----+
+| H  | e  | l  | l  | o  | \0 | ?  | ?  |
++----+----+----+----+----+----+----+----+
+
+```
+
+Note: each char = 1 byte; string ends at '\0'; remaining memory unused; Computer only sees bytes.
+   </div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+
+```
+char grade = 'A';
+```
+
+1 byte = 8 bits
+
+```
+
+Address → 0x1234 (example)
+
++--------+
+| 01000001 |
++--------+
+```
+
+```
+cout << (int)grade;
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+
+```
+| Type                 | Memory                  |
+| -------------------- | ----------------------- |
+| `char grade = 'A';`  | 1 byte                  |
+| `char name[] = "A";` | 2 bytes (`A` + `\0`)    |
+| `string s = "A";`    | object + dynamic memory |
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+
+```
+string s = "Hello";
+```
+
+- std::string is NOT the characters directly.
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+```
+string object (stack)
+
++-------------+
+| pointer ----|----→ dynamic memory
+| size = 5    |
+| capacity    |
++-------------+
+```
+
+```
++----+----+----+----+----+----+
+| H  | e  | l  | l  | o  | \0 |
++----+----+----+----+----+----+
+```
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+
+char array
+
+```
+[characters directly in variable]
+
+```
+
+string
+
+```
+[object] → points to characters elsewhere
+
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Motivation</div>
+  <div class="definition-pro-Y-shadebox">
+  <div style="width: 800px;"></div>
+
+- Fixed size:  You must guess the array size ahead of time.
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+using namespace std;
+
+int main() {
+    char name[5] = "Alice"; // needs 6: A l i c e \0
+    cout << name << "\n";
+}
+```
+
+❓
+
+</div>
+</div>
+</div>
+
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Why it’s bad</div>
+  <div class="definition-shadebox">
+
+- "Alice" is <spanGREEN>5 letters</spanGREEN> but C-strings also need the <spanGREEN>null terminator '\0'</spanGREEN>
+
+- So this is too small → compile error or undefined behavior depending on compiler/settings
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+char name[100];
+```
+</div>
+
+- Now you might <spanRED>waste</spanRED> memory, and you still have to ensure you never exceed <spanGREEN>99</spanGREEN> characters.
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Question</div>
+  <div class="definition-pro-Y-shadebox">
+  <div style="width: 800px;"></div>
+
+❓
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+using namespace std;
+
+int main() {
+    char a[20] = "Hello";
+    char b[20];
+
+    b = a;
+    cout << b << "\n";
+}
+```
+
+</div>
+</div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Motivation</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- No safe “=” assignment after creation: You can’t assign one C-string to another with = like normal variables.
+
+```
+#include <iostream>
+using namespace std;
+
+int main() {
+    char a[20] = "Hello";
+    char b[20];
+
+    // b = a;   // ❌ ERROR: arrays cannot be assigned
+    cout << a << "\n";
+}
+```
+   </div>
+</div>
+
+- To copy you must use functions like <spanGREEN>strcpy</spanGREEN>, and they can be unsafe if you’re not careful.
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Try codes by https://www.onlinegdb.com/online_c++_compiler 
+
+```
+#include <iostream>
+#include <cstring>   //for strcpy
+using namespace std;
+
+int main() {
+    char a[20] = "Hello";
+    char b[3];
+    
+    strcpy(b, a);    //copy a into b
+    
+    cout << "a = " << a << "\n";
+    cout << "b = " << b << "\n";
+
+}
+```
+   </div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+
+```
+#include <iostream>
+#include <cstring>   //for strcpy
+using namespace std;
+
+int main() {
+    char a[20] = "Hello";
+    char b[3];
+    strcpy(b, a);    //copy a into b
+    cout << "a = " << a << "\n";
+    cout << "b = " << b << "\n";
+}
+```
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+a = lo
+b = Hello
+...Program finished with exit code 0 Press ENTER to exit console.
+```
+
+</div>
+</div>
+</div>
+
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+
+```
+#include <iostream>
+#include <cstring>   //for strcpy
+using namespace std;
+
+int main() {
+    char a[20] = "Hello";
+    char b[2];
+    strcpy(b, a);    //copy a into b
+    cout << "a = " << a << "\n";
+    cout << "b = " << b << "\n";
+}
+```
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+a = llo
+b = Hello
+...Program finished with exit code 0 Press ENTER to exit console.
+```
+
+</div>
+ </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+
+```
+#include <iostream>
+#include <cstring>   //for strcpy
+using namespace std;
+
+int main() {
+    char a[20] = "Hello";
+    char b[1];
+    strcpy(b, a);    //copy a into b
+    cout << "a = " << a << "\n";
+    cout << "b = " << b << "\n";
+}
+
+```
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+a = ello
+b = Hello
+...Program finished with exit code 0 Press ENTER to exit console.
+```
+
+</div>
+</div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+
+> Overflow affects whatever memory comes after b, because memory is <spanGREEN>continuous</spanGREEN>.
+
+Little man computer https://www.101computing.net/lmc/ 
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+
+- Arrays are just blocks of memory
+
+```
+char a[20];
+char b[3];
+```
+
+
+> Give me two chunks of memory.
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+- The compiler puts them on the stack (local memory).
+
+```
+Memory addresses increasing ↓
+
+| b[0] |
+| b[1] |
+| b[2] |
+| a[0] |
+| a[1] |
+| a[2] |
+| a[3] |
+| ...  |
+
+```
+
+   </div>
+</div>
+
+
+
+<iframe src="stack.html" style="height:600px;width:800px;" title="Iframe Example"></iframe>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+- strcpy does NOT know boundaries
+
+strcpy only does this:
+
+```
+copy character
+copy character
+copy character
+...
+until '\0'
+
+```
+
+- It does <spanRED>NOT</spanRED> know: size of b; where b ends; where a starts
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+- You copy:
+
+```
+Hello\0   (6 bytes)
+```
+
+into:
+
+```
+b[3]
+
+```
+
+Copy sequence:
+
+```
+b[0] = H
+b[1] = e
+b[2] = l
+
+```
+
+Then b is FULL.
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+But <spanRED>strcpy keeps going</spanRED>:
+
+```
+overflow →
+a[0] = l
+a[1] = o
+a[2] = '\0'
+```
+
+<spanBYMix>So overflow continues into the next memory area — which happens to be a.</spanBYMix>
+   </div>
+</div>
+
+
+
+> ❗ Memory does NOT know variable boundaries.
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+Memory only sees:
+
+```
+byte after byte after byte
+
+```
+
+Variables are just labels the compiler gives us. The CPU doesn’t protect:
+
+```
+this belongs to b
+this belongs to a
+
+```
+
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Example</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+Imagine two apartments:
+
+```
+Apartment B | Apartment A
+
+```
+
+
+If someone paints beyond B’s wall: they start painting A’s apartment.
+
+<spanRED>The paint doesn’t know property lines</spanRED>
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+> strcpy is unsafe for one simple reason: it does not know how big the destination array is.
+
+- Overflow
+
+```
+char a[] = "This is a very long string";
+char b[10];
+strcpy(b, a); // ❌ b is too small -> overflow
+```
+
+ </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 950px;"></div>
+
+Try it in Visual Studio
+
+```
+#include <iostream>
+#include <cstring>   //for strcpy
+using namespace std;
+
+int main() {
+    char a[20] = "Hello";
+    char b[3];
+
+    strcpy(b, a);    //copy a into b
+
+    cout << "a = " << a << "\n";
+    cout << "b = " << b << "\n";
+
+}
+
+```
+
+- 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+
+ </div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+> strcpy_s forces you to provide the destination buffer size (Checking source codes of strcpy_s)
+
+```
+errno_t strcpy_s(char* dest, rsize_t destsz, const char* src);
+
+```
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+```
+#include <iostream>
+#include <cstring>   //for strcpy
+using namespace std;
+
+int main() {
+    char a[20] = "Hello";
+    char b[20];
+    
+    strcpy_s(b,sizeof(b), a);   //copy a into b
+
+    cout << "a = " << a << "\n";
+    cout << "b = " << b << "\n";
+}
+
+```
+   </div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+  <div style="width: 800px;"></div>
+
+❓ If using Visual Studio
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+#include <cstring>   //for strcpy
+using namespace std;
+
+int main() {
+    char a[20] = "Hello";
+    char b[20];
+    
+    strcpy_s(b, a);    //❓copy a into b
+
+    cout << "a = " << a << "\n";
+    cout << "b = " << b << "\n";
+}
+
+```
+</div>
+</div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+- In Microsoft Visual Stduio, there’s an extension that allows: `strcpy_s(dest, src);
+`
+
+- When dest is a real array (like char b[20]). <spanGREEN>The compiler can deduce the array size at compile time</spanGREEN>, so it calls a checked version internally.
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+- Code::Blocks https://www.codeblocks.org/#google_vignette 
+
+- Visual Studio https://visualstudio.microsoft.com/ 
+
+- CLion https://www.jetbrains.com/clion/
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+Try it in Visual Studio 
+
+```
+#include <iostream>
+#include <cstring>   //for strcpy
+using namespace std;
+
+int main() {
+    char a[20] = "Hello";
+    char b[20];
+    
+    strcpy_s(b,sizeof(b), a);    //copy a into b
+
+    a[0] = 'C';
+    cout << "a = " << a << "\n";
+    cout << "b = " << b << "\n";
+    cout << sizeof(a) << "\n";
+    cout << &a<<"\n";
+    cout << &b;
+}
+```
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+If using https://www.onlinegdb.com/online_c++_compiler, please try the following codes
+
+```
+#include <iostream>
+#include <cstring>   //for strcpy
+using namespace std;
+
+int main() {
+    char a[20] = "Hello";
+    char b[20];
+    
+    strcpy(b, a);    //copy a into b
+
+    a[0] = 'C';
+    cout << "a = " << a << "\n";
+    cout << "b = " << b << "\n";
+    cout << sizeof(a) << "\n";
+    cout << &a<<"\n";
+    cout << &b;
+}
+```
+   </div>
+</div>
+
+
+
+<div class="roundbox">
+
+```
+#include <iostream>
+#include <cstring>   //for strcpy
+using namespace std;
+int main() {
+    char a[20] = "Hello";
+    char b[20];
+    strcpy(b, a);    //copy a into b
+    a[0] = 'C';
+    cout << "a = " << a << "\n";
+    cout << "b = " << b << "\n";
+    cout << sizeof(a) << "\n";
+    cout << &a<<"\n";
+    cout << &b;
+}
+```
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+```
+a = Cello
+b = Hello
+20
+0x7ffdadf78c40
+0x7ffdadf78c20
+```
+
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+
+- &a = address of the whole array a (type: char (*)[20])
+
+- &b = address of the whole array b (type: char (*)[20])
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+Why is &a larger than &b here?
+
+```
+0x...8c40 - 0x...8c20 = 0x20 = 32 bytes
+```
+
+
+But each array is only 20 bytes, the extra 12 bytes is likely due to:
+
+- alignment/padding
+
+- space for other bookkeeping/locals
+
+<spanRED> Address spacing is NOT guaranteed to equal sizeof </spanRED>
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Motivation</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Concatenation is not simple with +: You can’t do "Hello" + "World" style joining.
+
+```
+#include <iostream>
+using namespace std;
+
+int main() {
+    char first[20] = "Hello";
+    char last[20]  = "World";
+
+    // char full[40] = first + last;  // ❌ doesn't work
+    cout << first << " " << last << "\n";
+}
+
+```
+
+   </div>
+</div>
+
+- To combine you must use functions like strcat, and you must ensure the destination is large enough.
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Motivation</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Input with spaces is awkward / risky: Using cin >> stops at spaces.
+
+```
+#include <iostream>
+using namespace std;
+
+int main() {
+    char fullName[20];
+    cout << "Enter full name: ";
+    cin >> fullName; // reads only until first space
+    cout << fullName << "\n";
+}
+```
+
+   </div>
+</div>
+
+- Typing John Smith prints just John. Using cin.getline(fullName, 20) works, but you must always handle the buffer size manually.
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Motivation</div>
+  <div class="definition-pro-Y-shadebox">
+
+- Many useful operations require C library functions: Length, compare, find, copy, etc. are not built-in as methods.
+
+```
+#include <iostream>
+#include <cstring> // needed for strlen, strcmp, strcpy, strcat
+using namespace std;
+
+int main() {
+    char s[20] = "hello";
+    cout << strlen(s) << "\n"; // need <cstring>
+}
+
+```
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Why it’s annoying:</div>
+  <div class="definition-shadebox">
+  
+- You need extra headers (<cstring>)
+
+- You must know which function to use
+
+- Many functions don’t protect you from overflow unless you choose safer variants carefully
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Motivation</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- “Null terminator” bugs are common
+
+	- C-style strings rely on '\0' to know where the string ends.
+	- If it’s missing (or overwritten), printing and functions can run past the array → garbage output or crashes.
+
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Scenario 1</div>
+  <div class="question-shadebox">
+
+Names and text are not single characters
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    char grade = 'A';          // one character
+    string name = "Alice";     // many characters
+
+    cout << "Grade: " << grade << "\n";
+    cout << "Name: " << name << "\n";
+}
+```
+
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Secnario 2</div>
+  <div class="question-shadebox">
+
+User input is often words or sentences (spaces included)
+
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string fullName;
+
+    cout << "Enter your full name: ";
+    getline(cin, fullName);   // reads the whole line (including spaces)
+
+    cout << "Hello, " << fullName << "!\n";
+}
+
+```
+
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Secnario 3</div>
+  <div class="question-shadebox">
+
+Building messages is easier than printing many pieces
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string first = "John";
+    string last  = "Smith";
+
+    string message = "Welcome, " + first + " " + last + "!";
+    cout << message << "\n";
+}
+```
+
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Secnario 4</div>
+  <div class="question-shadebox">
+
+Searching text (emails, keywords, commands)
+
+
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string email = "student@midway.edu";
+
+    if (email.find("@") != string::npos) {
+        cout << "Looks like a valid email format.\n";
+    } else {
+        cout << "Missing '@'.\n";
+    }
+}
+```
+
+</div>
+
+
+
+> string::npos is a special constant meaning. If find() cannot locate the character, it returns: string::npos
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Secnario 5</div>
+  <div class="question-shadebox">
+
+Comparing text (login, menu choices, yes/no)
+
+   </div>
+</div>
+
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string password;
+    cout << "Enter password: ";
+    cin >> password;
+
+    if (password == "abc123") cout << "Access granted.\n";
+    else cout << "Access denied.\n";
+}
+```
+
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Secnario 6</div>
+  <div class="question-shadebox">
+
+Editing text (fixing input, formatting, cleaning data)
+   </div>
+</div>
+
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string file = "report";
+    file += ".pdf";  // append
+    cout << file << "\n"; // report.pdf
+}
+```
+
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch2" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Definition and Syntax</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Strings</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Strings are used for storing text/characters.
+
+	- For example, "Hello World" is a string.
+
+- A string variable contains a collection of characters surrounded by double quotes (""):
+
+<div id="shadebox-glass" class="shadebox glass">
+
+```
+// Include the string library
+#include <string>
+
+// Create a string variable
+string greeting = "Hello";
+
+// Print the string
+cout << greeting;
+```
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Concatenation</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- The + operator can be used between strings to add them together to make a new string. This is called concatenation:
+
+<div id="shadebox-glass" class="shadebox glass">
+
+```
+string firstName = "John ";
+string lastName = "Doe";
+string fullName = firstName + lastName;
+cout << fullName;
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Append</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- A string in C++ is actually an object, which contain functions that can perform certain operations on strings. For example, you can also concatenate strings with the append() function:
+
+<div id="shadebox-glass" class="shadebox glass">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+ 
+int main () {
+  string firstName = "John ";
+  string lastName = "Doe";
+  string fullName = firstName.append(lastName);
+  cout << fullName;
+  return 0;
+}
+
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-shakeflash-container">
+  <div class="definition-shakeflash-title">WARNING</div>
+  <div class="definition-shakeflash-shadebox">
+
+- C++ uses the + operator for both addition and concatenation.
+
+- Numbers are added. Strings are concatenated.
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+```
+int x = 10;
+int y = 20;
+int z = x + y;      // z will be 30 (an integer)
+```
+   </div>
+</div>
+
+
+
+<div class="definition-shakeflash-container">
+  <div class="definition-shakeflash-title">WARNING</div>
+  <div class="definition-shakeflash-shadebox">
+
+- If you try to add a number to a string, an error occurs:
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+```
+string x = "10";
+int y = 20;
+string z = x + y;
+```
+   </div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Length</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- To get the length of a string, use the length() function:
+
+<div id="shadebox-glass" class="shadebox glass">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+  string txt = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  cout << "The length of the txt string is: " << txt.length();
+  return 0;
+}
+
+```
+</div>
+   </div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Size</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- You might see some C++ programs that use the size() function to get the length of a string. This is just an alias of length(). It is completely up to you if you want to use length() or size():
+
+<div id="shadebox-glass" class="shadebox glass">
+
+```
+string txt = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+cout << "The length of the txt string is: " << txt.size();
+```
+</div>
+   </div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Access Strings</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- You can access the characters in a string by referring to its index number inside square brackets []. This example prints the first character in myString:
+
+<div id="shadebox-glass" class="shadebox glass">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+  string myString = "Hello";
+  cout << myString[0];
+  return 0;
+}
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Access Strings</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- To print the last character of a string, you can use the following code:
+
+<div id="shadebox-glass" class="shadebox glass">
+
+```
+
+#include <iostream>
+#include <string>
+using namespace std;
+​
+int main() {
+  string myString = "Hello";
+  cout << myString[myString.length() - 1];
+  return 0;
+}
+```
+
+</div>
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Change String Characters</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- To change the value of a specific character in a string, refer to the index number, and use single quotes:
+
+<div id="shadebox-glass" class="shadebox glass">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+  string myString = "Hello";
+  myString[0] = 'J';
+  cout << myString;
+  return 0;
+}
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">at()</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- The <string> library also has an at() function that can be used to access characters in a string:
+
+<div id="shadebox-glass" class="shadebox glass">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+  string myString = "Hello";
+  cout << "Original string: " << myString << "\n";
+  
+  cout << "First character: " << myString.at(0) << "\n";
+  cout << "Second character: " << myString.at(1) << "\n";
+  cout << "Last character: " << myString.at(myString.length() - 1) << "\n";
+  
+  myString.at(0) = 'J';
+  cout << "Changed string: " << myString;
+  return 0;
+}
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Special Characters</div>
+  <div class="definition-pro-Y-shadebox">
+
+<div id="shadebox-glass" class="shadebox glass">
+
+```
+#include <iostream>
+using namespace std;
+
+int main() {
+  string txt = "We are the so-called \"Vikings\" from the north.";
+  cout << txt;
+  return 0;
+}
+```
+</div>
+   </div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">User Input Strings</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- It is possible to use the extraction operator >> on cin to store a string entered by a user:
+
+<div id="shadebox-glass" class="shadebox glass">
+
+```
+string firstName;
+cout << "Type your first name: ";
+cin >> firstName; // get user input from the keyboard
+cout << "Your name is: " << firstName;
+
+// Type your first name: John
+// Your name is: John
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-shakeflash-container">
+  <div class="definition-shakeflash-title">Error</div>
+  <div class="definition-shakeflash-shadebox">
+
+- cin considers a space (whitespace, tabs, etc) as a terminating character, which means that it can only store a single word (even if you type many words):
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+```
+string fullName;
+cout << "Type your full name: ";
+cin >> fullName;
+cout << "Your name is: " << fullName;
+
+// Type your full name: John Doe
+// Your name is: John
+```
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Fix</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- That's why, when working with strings, we often use the getline() function to read a line of text. It takes cin as the first parameter, and the string variable as second:
+
+<div id="shadebox-glass" class="shadebox glass">
+
+```
+string fullName;
+cout << "Type your full name: ";
+getline (cin, fullName);
+cout << "Your name is: " << fullName;
+
+// Type your full name: John Doe
+// Your name is: John Doe
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">String Namespace</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- You might see some C++ programs that run without the standard namespace library. The using namespace std line can be omitted and replaced with the std keyword, followed by the :: operator for string (and cout) objects:
+
+<div id="shadebox-glass" class="shadebox glass">
+
+```
+#include <iostream>
+#include <string>
+// using namespace std; - Remove this line
+
+int main() {
+  std::string greeting = "Hello";
+  std::cout << greeting;
+  return 0;
+}
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">C-Style Strings</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- As C++ was developed as an extension of C, it continued to support this way of creating strings in C++:
+
+Example
+
+<div id="shadebox-glass" class="shadebox glass">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+  string greeting1 = "Hello";  // Regular String
+  char greeting2[] = "Hello";  // C-Style String (an array of characters)
+  cout << greeting1 << "\n";
+  cout << greeting2;
+  return 0;
+}
+```
+</div>
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch3" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Application</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Example 1</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Simple Login Check (String comparison): Use a string to store a username and password, then compare with expected values.
+</div>
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string username, password;
+
+    cout << "Username: ";
+    cin >> username;
+
+    cout << "Password: ";
+    cin >> password;
+
+    if (username == "student" && password == "abc123") {
+        cout << "Login success!\n";
+    } else {
+        cout << "Login failed!\n";
+    }
+
+    return 0;
+}
+```
+
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Notes</div>
+  <div class="definition-pro-Y-shadebox">
+  <div style="width: 800px;"></div>
+
+- Uses user input with cin >> (single word)
+
+- Uses string comparison with ==
+
+- Shows a real scenario: login/authentication
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Example 2</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Full Name Formatter (getline + concatenation + length): Read a full name (with spaces), then build a welcome message and show name length.
+</div>
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string fullName;
+
+    cout << "Type your full name: ";
+    getline(cin, fullName);           // reads the whole line (spaces included)
+
+    string message = "Welcome, " + fullName + "!";
+    cout << message << "\n";
+
+    cout << "Your name has " << fullName.length() << " characters.\n";
+
+    return 0;
+}
+```
+
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Notes</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Uses getline() to handle spaces
+
+- Uses + to concatenate strings
+
+- Uses .length() to get string size
+
+- Very practical: building a message + basic text processing
+</div>
+</div>
+
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch4" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Common Mistakes and Best Practices</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Example 1</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+- Task - input: john barron 
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string fullName;
+
+    cout << "Type your full name: ";
+    cin>>fullName;
+
+    string message = "Welcome, " + fullName + "!";
+    cout << message << "\n";
+
+    cout << "Your name has " << fullName.length() << " characters.\n";
+
+    return 0;
+}
+```
+
+</div>
+</div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Example 2</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+- Task - give some inputs.
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    int age;
+    string name;
+
+    cout << "Age: ";
+    cin >> age;
+
+    cout << "Full name: ";
+    getline(cin, name);
+    cout << "Name: " << name << "\n";
+    return 0;
+}
+```
+</div>
+</div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Common Mistake 1</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- cin >> stops at whitespace, so it only reads the first word.
+
+<div id="shadebox-glass" class="shadebox glass">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string fullName;
+    cout << "Enter your full name: ";
+    cin >> fullName;                 // ❌ only reads first word
+    cout << "You typed: " << fullName << "\n";
+    return 0;
+}
+```
+</div>
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Best practice
+
+- use getline() for full lines (spaces included).
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+string fullName;
+getline(cin, fullName);             // ✅ reads whole line
+```
+
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Common Mistake 2</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- After cin >>, the newline \n stays in the input buffer. Then getline() reads it immediately.
+
+<div id="shadebox-glass" class="shadebox glass">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    int age;
+    string name;
+
+    cout << "Age: ";
+    cin >> age;
+
+    cout << "Full name: ";
+    getline(cin, name);             // ❌ reads empty line
+    cout << "Name: " << name << "\n";
+    return 0;
+}
+```
+</div>
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Best practice
+
+- clear the leftover newline before getline().
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+cin.ignore();                       // ✅ ignores one character (often the '\n')
+getline(cin, name);
+```
+
+More robust version:
+
+```
+#include <limits>
+// ...
+cin.ignore(numeric_limits<streamsize>::max(), '\n');
+getline(cin, name);
+```
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Common Mistake 3</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Trying to do string + int: You can’t directly add an int to a string.
+
+<div id="shadebox-glass" class="shadebox glass">
+
+```
+string label = "Score: ";
+int score = 90;
+string msg = label + score;         // ❌ ERROR
+
+```
+</div>
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Best practice
+
+- convert the number to string first.
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+string msg = label + to_string(score);  // ✅
+```
+
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Common Mistake 4</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Forgetting string comparisons are case-sensitive: "Yes" is different from "yes".
+
+<div id="shadebox-glass" class="shadebox glass">
+
+```
+string ans;
+cin >> ans;
+
+if (ans == "yes") cout << "OK\n";   // user types "Yes" → not matched
+```
+</div>
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Best practice
+
+- normalize case before comparing.
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <cctype>
+// ...
+for (char &c : ans) c = (char)tolower((unsigned char)c);
+if (ans == "yes") cout << "OK\n";
+```
+
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Common Mistake 5</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Using == with C-style strings (char[]): With char[], == compares addresses, not the text content.
+
+<div id="shadebox-glass" class="shadebox glass">
+
+```
+char a[] = "hi";
+char b[] = "hi";
+
+if (a == b) cout << "same\n";       // ❌ compares memory addresses
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    char a[] = "hi";
+    char b[] = "hi";
+
+    if (a == b) { cout << "same\n"; }
+
+    cout << "Address " << &a << "\n";
+
+    cout << "Address " << &b << "\n";
+
+    return 0;
+}
+```
+</div>
+</div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+Address-of operator (gets an address)
+
+Used in expressions to get the memory address of a variable.
+
+```
+
+int x = 10;
+int* p = &x;   // p stores the address of x
+
+```
+
+</div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+- int* p means: “p is a pointer to an int.”
+
+	- int = the type of value it will point to (an integer)
+
+	- `*` = “pointer to”
+
+	- p = the variable name
+	
+```
+int x = 10;
+int* p = &x;   // p stores x’s address
+```
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+
+- &x = “the address of x”
+
+- p holds that address
+
+- *p = “the int value at that address” (so *p is 10)
+
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+int x = 10;
+int* p = &x;
+
+cout << x << "\n";   // 10
+cout << *p << "\n";  // 10 (value p points to)
+
+*p = 25;             // change x through the pointer
+cout << x << "\n";   // 25
+```
+</div>
+</div>
+</div>
+
+
+
+
+<div id="shadebox">
+
+### Best practice
+
+- use std::string
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+string a = "hi", b = "hi";
+if (a == b) cout << "same\n";       // ✅ compares content
+```
+
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Common Mistake 6</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Going out of bounds with indexing: Accessing myString[myString.length()] is out of range (last index is length()-1).
+
+<div id="shadebox-glass" class="shadebox glass">
+
+```
+string s = "Hello";
+cout << s[s.length()] << "\n";      // ❌ out of bounds
+```
+</div>
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Best practice
+
+```
+cout << s[s.length() - 1] << "\n";  // ✅ last character
+
+```
+
+Even safe
+
+```
+cout << s.at(s.length() - 1) << "\n"; // ✅ throws error if invalid
+```
+
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch5" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Summary</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div id="rainbow-type"> Summary </div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">What strings are</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">std::string is used to store and work with text (a sequence of characters) using double quotes, and it’s safer/easier than char[].</p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">How to combine and build text</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Use + (concatenation) or .append() to join strings and create messages (e.g., "Hello, " + name).</p>
+</div>
+
+<div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">How to read input correctly</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Use cin >> for a single word, but use getline(cin, text) when input may include spaces (like full names or sentences).?</p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Common useful operations</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Use .length() / .size() to get string length, use indexing s[i] or .at(i) to access/change characters, and use .find() to search inside text.</p>
+</div>
+
+</div>
+</div>
+
+</textarea></section>
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch6" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Mini Case Study</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Lab: Student Welcome Card Generator</div>
+  <div class="definition-com-shadebox">
+
+Scenario - Build a console program that collects a student’s info and generates a formatted “welcome card” using std::string.
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Requirement 1: Ask the user for
+
+	- First name (single word)
+
+	- Last name (single word)
+
+	- Age (integer)
+
+	- Favorite quote (a full line with spaces)
+
+	- Email (single word is fine)
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Requirement 2: Build and print
+
+	- Full name using concatenation (+) and also use .append() at least once
+
+	- The length of the full name and quote using .length() or .size()
+
+	- The first character and last character of the last name (use indexing [] or .at())
+
+	- A simple email check: confirm the email contains '@' using .find()
+
+	- A generated “username” like: first initial + last name + age (example: jsmith20)
+   </div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Requirement 3: Show a final welcome card output that includes all results.
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### An answer
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <string>
+#include <cctype>   // tolower
+using namespace std;
+
+int main() {
+    string firstName, lastName, quote, email;
+    int age;
+
+    cout << "First name (one word): ";
+    cin >> firstName;
+
+    cout << "Last name (one word): ";
+    cin >> lastName;
+
+    cout << "Age: ";
+    cin >> age;
+
+    // Clear the leftover newline before using getline
+    cin.ignore();
+
+    cout << "Favorite quote (a full sentence): ";
+    getline(cin, quote);
+
+    cout << "Email: ";
+    cin >> email;
+
+    // Build full name using +
+    string fullName = firstName + " " + lastName;
+
+    // Also demonstrate append()
+    string greeting = "Welcome, ";
+    greeting.append(fullName);  // append full name
+    greeting.append("!");
+
+    // Length checks
+    int nameLen = (int)fullName.length();
+    int quoteLen = (int)quote.size();
+
+    // First/last character of last name (safe check)
+    char firstChar = '?';
+    char lastChar = '?';
+    if (lastName.length() > 0) {
+        firstChar = lastName[0];
+        lastChar = lastName[lastName.length() - 1];
+        // You could also do: lastName.at(0) and lastName.at(lastName.length() - 1)
+    }
+
+    // Email contains '@'?
+    bool hasAt = (email.find('@') != string::npos);
+
+    // Create username: first initial + lowercase last name + age
+    string lowerLast = lastName;
+    for (int i = 0; i < (int)lowerLast.length(); i++) {
+        lowerLast[i] = (char)tolower((unsigned char)lowerLast[i]);
+    }
+
+    char initial = (firstName.length() > 0) ? (char)tolower((unsigned char)firstName[0]) : 'x';
+    string username = "";
+    username += initial;
+    username += lowerLast;
+    username += to_string(age);
+
+    // Output
+    cout << "\n==============================\n";
+    cout << greeting << "\n";
+    cout << "==============================\n";
+    cout << "Full Name: " << fullName << "\n";
+    cout << "Name Length: " << nameLen << "\n";
+    cout << "Quote Length: " << quoteLen << "\n";
+    cout << "Last Name First Char: " << firstChar << "\n";
+    cout << "Last Name Last Char: " << lastChar << "\n";
+    cout << "Email contains '@': " << (hasAt ? "Yes" : "No") << "\n";
+    cout << "Generated Username: " << username << "\n";
+    cout << "Favorite Quote: \"" << quote << "\"\n";
+    cout << "==============================\n";
+
+    return 0;
+}
+
+```
+
+</div>
+
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+</div>
+	
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/settings.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/effects.js"></script>
+<!--<script src="settings.js"></script>-->
+<!--<script src="effects.js"></script>-->
+</body>
+</html>

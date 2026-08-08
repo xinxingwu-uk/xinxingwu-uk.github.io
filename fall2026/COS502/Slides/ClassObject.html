@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>C++ Notes: Class, Object, and Instance</title>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #ffffff;
+      color: #222;
+      line-height: 1.7;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 32px 20px 60px;
+    }
+
+    h1, h2, h3 {
+      color: #111;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #555;
+      margin-bottom: 30px;
+    }
+
+    .section {
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 24px;
+      background: #fafafa;
+    }
+
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 14px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+
+    code {
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 15px;
+    }
+
+    ul {
+      margin-top: 8px;
+    }
+
+    .highlight {
+      background: #fff8cc;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .summary-box {
+      background: #eef6ff;
+      border-left: 5px solid #4a90e2;
+      padding: 14px 16px;
+      border-radius: 8px;
+      margin-top: 12px;
+    }
+
+    .mini-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+    }
+
+    .mini-table th,
+    .mini-table td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+    }
+
+    .mini-table th {
+      background: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>C++ Notes: Class, Object, and Instance</h1>
+    <p class="subtitle">An explanation based on <code>MyClass</code></p>
+
+    <div class="section">
+      <h2>Original Code</h2>
+      <pre><code>class MyClass {       // The class
+  public:             // Access specifier
+    int myNum;        // Attribute (int variable)
+    string myString;  // Attribute (string variable)
+};</code></pre>
+    </div>
+
+    <div class="section">
+      <h2>1. Class</h2>
+      <p>A <span class="highlight">class</span> is like a <strong>blueprint</strong> or <strong>template</strong>.</p>
+      <p>It tells C++ what kind of data something should have.</p>
+
+      <pre><code>class MyClass {
+  public:
+    int myNum;
+    string myString;
+};</code></pre>
+
+      <p><code>MyClass</code> is the class.</p>
+      <p>It says: “Anything made from this class will have:”</p>
+      <ul>
+        <li>one integer: <code>myNum</code></li>
+        <li>one string: <code>myString</code></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>2. Object</h2>
+      <p>An <span class="highlight">object</span> is a real thing created from the class.</p>
+
+      <h3>Example</h3>
+      <pre><code>MyClass obj1;</code></pre>
+
+      <p>Now <code>obj1</code> is an object of class <code>MyClass</code>.</p>
+      <p>You can put values into it:</p>
+
+      <pre><code>obj1.myNum = 10;
+obj1.myString = "Hello";</code></pre>
+
+      <p>So <code>obj1</code> now stores real data.</p>
+    </div>
+
+    <div class="section">
+      <h2>3. Instance</h2>
+      <p>An <span class="highlight">instance</span> means the same thing as an object in most beginner C++ explanations.</p>
+
+      <pre><code>MyClass obj1;</code></pre>
+
+      <p><code>obj1</code> is:</p>
+      <ul>
+        <li>an object</li>
+        <li>an instance of <code>MyClass</code></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Full Example</h2>
+      <pre><code>#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+class MyClass {       
+  public:             
+    int myNum;        
+    string myString;  
+};
+
+int main() {
+    MyClass obj1;   // obj1 is an object (instance) of MyClass
+    MyClass obj2;   // obj2 is another object (instance)
+
+    obj1.myNum = 10;
+    obj1.myString = "Apple";
+
+    obj2.myNum = 20;
+    obj2.myString = "Banana";
+
+    cout &lt;&lt; obj1.myNum &lt;&lt; " " &lt;&lt; obj1.myString &lt;&lt; endl;
+    cout &lt;&lt; obj2.myNum &lt;&lt; " " &lt;&lt; obj2.myString &lt;&lt; endl;
+
+    return 0;
+}</code></pre>
+
+      <h3>Output</h3>
+      <pre><code>10 Apple
+20 Banana</code></pre>
+    </div>
+
+    <div class="section">
+      <h2>Real-Life Example</h2>
+      <p>Think about a class like a house blueprint.</p>
+
+      <table class="mini-table">
+        <tr>
+          <th>Programming Term</th>
+          <th>Real-Life Meaning</th>
+        </tr>
+        <tr>
+          <td>Class</td>
+          <td>Blueprint of a house</td>
+        </tr>
+        <tr>
+          <td>Object / Instance</td>
+          <td>An actual house built from that blueprint</td>
+        </tr>
+      </table>
+
+      <p>If you build two houses from the same blueprint:</p>
+      <pre><code>MyClass obj1;
+MyClass obj2;</code></pre>
+
+      <p>Then <code>obj1</code> and <code>obj2</code> both follow the same design, but they can hold different values.</p>
+    </div>
+
+    <div class="section">
+      <h2>Class vs. Struct</h2>
+      <p><code>class</code> and <code>struct</code> are very similar in C++, but they are <strong>not exactly the same</strong>.</p>
+
+      <h3>Main Difference</h3>
+      <table class="mini-table">
+        <tr>
+          <th>Keyword</th>
+          <th>Default Access</th>
+        </tr>
+        <tr>
+          <td><code>class</code></td>
+          <td>private</td>
+        </tr>
+        <tr>
+          <td><code>struct</code></td>
+          <td>public</td>
+        </tr>
+      </table>
+
+      <h3>Example with class</h3>
+      <pre><code>class MyClass {
+    int myNum;
+    string myString;
+};</code></pre>
+
+      <p>Here, <code>myNum</code> and <code>myString</code> are <strong>private by default</strong>.</p>
+      <p>So this would cause an error:</p>
+      <pre><code>MyClass obj;
+obj.myNum = 10;   // error</code></pre>
+
+      <p>That is why our earlier example used <code>public:</code></p>
+      <pre><code>class MyClass {
+  public:
+    int myNum;
+    string myString;
+};</code></pre>
+
+      <h3>Example with struct</h3>
+      <pre><code>struct MyStruct {
+    int myNum;
+    string myString;
+};</code></pre>
+
+      <p>Here, the members are <strong>public by default</strong>, so this works:</p>
+      <pre><code>MyStruct obj;
+obj.myNum = 10;
+obj.myString = "Hello";</code></pre>
+
+      <h3>Important Idea</h3>
+      <p>So the code:</p>
+      <pre><code>class MyClass {
+  public:
+    int myNum;
+    string myString;
+};</code></pre>
+
+      <p>is very similar to:</p>
+      <pre><code>struct MyStruct {
+    int myNum;
+    string myString;
+};</code></pre>
+
+      <p>because both make the data members accessible from outside.</p>
+
+      <div class="summary-box">
+        <strong>Easy rule to remember:</strong><br>
+        <code>class</code> defaults to private, while <code>struct</code> defaults to public.
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>In Code</h2>
+      <ul>
+        <li><code>MyClass</code> → class</li>
+        <li><code>obj1</code>, <code>obj2</code> → objects</li>
+        <li><code>obj1</code>, <code>obj2</code> are also instances of <code>MyClass</code></li>
+      </ul>
+
+      <div class="summary-box">
+        <strong>Note:</strong><br>
+        Class defines the architecture, object is the actual thing created from it, and instance is another word for that object.
+      </div>
+    </div>
+  </div>
+</body>
+</html>

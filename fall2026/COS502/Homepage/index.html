@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" /><base target="_blank">
+    <meta name="description" content="This is where your description goes" />
+    <meta name="keywords" content="one, two, three" />
+
+    <title>COS 502 - Computer Science Foundation I </title>
+
+    <!-- external CSS link -->
+	<script
+      src="https://kit.fontawesome.com/a2f02755e4.js"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="icon" href="img/tablet-screen-button-solid.svg" />
+    
+	<link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.9/css/weather-icons.min.css"
+    />
+    <link rel="stylesheet" href="css/normalize.css" />
+    <link rel="stylesheet" href="css/style.css" />
+	
+	
+    <style>
+        bodyDanceText {
+            display: flex;
+            justify-content: right;
+            align-items: right;
+            height: 60vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .dance-text {
+            font-size: 2.5em;
+			font-weight: 700;
+            color: #ff6347;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            animation: dance 4s infinite ease-in-out;
+        }
+        @keyframes dance {
+            0% {
+                transform: rotate(0deg) scale(1);
+                color: #ff6347;
+            }
+            10% {
+                transform: rotate(15deg) scale(1.1);
+                color: #ffa07a;
+            }
+            20% {
+                transform: rotate(-15deg) scale(1.2);
+                color: #ff6347;
+            }
+            30% {
+                transform: rotate(10deg) scale(1.1);
+                color: #ff4500;
+            }
+            40% {
+                transform: rotate(-10deg) scale(1.2);
+                color: #ff6347;
+            }
+            50% {
+                transform: rotate(5deg) scale(1.1);
+                color: #ff8c00;
+            }
+            60% {
+                transform: rotate(-5deg) scale(1.2);
+                color: #ff6347;
+            }
+            70% {
+                transform: rotate(10deg) scale(1.3);
+                color: #ff4500;
+            }
+            80% {
+                transform: rotate(-10deg) scale(1.2);
+                color: #ff6347;
+            }
+            90% {
+                transform: rotate(5deg) scale(1.1);
+                color: #ffa07a;
+            }
+            100% {
+                transform: rotate(0deg) scale(1);
+                color: #ff6347;
+            }
+        }
+    </style>
+	
+	
+  </head>
+  <body>
+    <!-- ipad container section -->
+    <main class="ipadBorderOuter">
+      <!-- ipad Login display section -->
+      <section class="ipadLoginDisplay outer">
+        <div class="loginDisplayContent">
+          <ul class="dateTimeHead">
+            <i class="fa-solid fa-lock"></i>
+            <h1 class="timeInsert2">9:43</h1>
+            <h4 class="dateInsert2">Sunday, March 6</h4>
+          </ul>
+          <div id="dragBarContainer">
+            <div class="dragBarDescriptor">
+              <span class="dragBarText"
+                >Click to open
+                <div class="dragBarMain"></div
+              ></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="ipadBorderInner hidden">
+        <!-- ipad display section and content-->
+        <section class="ipadDisplay">
+          <!-- Status Bar content -->
+          <div class="statusBar">
+            <ul class="statusListLeft">
+              <li class="timeInsert1">00:00 AM</li>
+              <li class="dateInsert1">Sun Mar 6</li>
+            </ul>
+            <ul class="statusListRight">
+              <li><i class="fa-solid fa-wifi"></i></li>
+              <li><i class="fa-solid fa-headphones"></i></li>
+              <li class="batteryLevel">79%</li>
+              <li><i class="fa-solid fa-battery-half"></i></li>
+            </ul>
+          </div>
+
+          <!-- ipad Main Display area content -->
+          <div class="ipadContentArea">
+            <!-- Notificaton center (widget space) to the left with widgets -->
+            <div class="notificationCenterArea">
+              <!-- Widget 1 - Date/time -->
+              <div class="widgetSmall widget1 iconHover">
+                <h1 class="timeInsert3">9:43</h1>
+                <h4 class="dateInsert3">Sunday, March 6</h4>
+              </div>
+
+              <!-- Widget 2 - Weather -->
+              <div class="widgetSmall widget2 iconHover">
+                <a href="https://www.bbc.com/weather/4292188" target="_blank">
+                  <div id="location"><h5>Frankfort, KY</h5></div>
+                </a>
+                <div><h2 id="temp" class="inline"></h2></div>
+                <a href="https://www.bbc.com/weather/4292188" target="_blank"
+                  ><i id="weather-icon" class="inline wi"></i
+                ></a>
+              </div>
+
+              <!-- Widget 3 - TBD -->
+              <div class="widgetSmall widget3 iconHover">
+                <div id="currentSongContainer">
+                  <img
+                    src="./img/kysu.png"
+                    alt="album cover art image"
+					width=120%
+					height=50%
+                  />
+                </div>
+                <div id="currentSongInfo">
+				<br>
+				<br>
+				<h3 id="songTitleWidget"><a href="https://www.kysu.edu/academics/college-bet/school-of-math-cs/cs-undergraduate-programs.php/#BSCS"><font color="green">Computer Science</font></a></h3>
+				<hr color="green">
+				<br>
+				<p id="songAuthorWidget"><a href="https://kysu.instructure.com/courses/8440"><font color="blue"><b> COS 502 Canvas</b></font></a></p>
+                </div>
+              </div>
+			  
+			  <bodyDanceText>
+				<div class="dance-text">Welcome to COS 502</div>
+			  </bodyDanceText>
+
+            </div>
+
+            <!-- Space for extra apps and app open areas -->
+            <div class="appArea">
+              <!-- Apps - Click on app dock will open these apps -->
+              <!-- Safari App content -->
+              <div id="safari" class="app hidden">
+                <div id="safariNav">
+                  <div class="dragBar"></div>
+                  <div class="searchBar" aria-label="Current page"><a href="../COS502.html" target="_blank">COS 502 Syllabus</a></div>
+                </div>
+                <div id="safariBody">
+                  <iframe
+                    id="browserFrame"
+                    src="../COS502.html?embed=panel"
+                    title="COS 502 syllabus"
+                  ></iframe>
+                </div>
+              </div>
+
+              <!-- Messenger App content -->
+              <div id="messenger" class="app hidden">
+                <div id="messengerNav">
+                  <i class="fa-solid fa-angle-left"></i>
+                  <div class="messageUser">
+                    <img
+                      class="headshot"
+                      src="./img/headshot.jpg"
+                      alt="headshot"
+                    />
+                    <div class="messageUserName">
+                      <span>Xinxing Wu</span>
+                      <!-- <i class="fa-solid fa-angle-right"> -->
+                    </div>
+                  </div>
+                  <i class="fa-solid fa-video"></i>
+                </div>
+                <div id="messageBody" aria-live="polite"></div>
+
+                <div id="textbox">
+                  <i class="fa-solid fa-camera"></i>
+                  <i class="fa-brands fa-app-store"></i>
+                  <input
+                    class="messageBox"
+                    type="text"
+                    value=""
+                    placeholder="iMessage"
+                    aria-label="Message"
+                  />
+                  <button class="messageSendBtn" type="button" aria-label="Send message">
+                    <i class="fa-solid fa-arrow-up"></i>
+                  </button>
+                </div>
+              </div>
+			  
+  <!-- Apple Music App content -->
+  <div id="music" class="app hidden">
+    <div id="backgroundImgBlur"></div>
+    <div id="musicNav">
+      <div class="dragBar"></div>
+    </div>
+    <div id="albumCoverContainer">
+
+
+	<div style="
+		width:198px;
+		height:176px;
+		overflow:hidden;
+		position:relative;
+	">
+	<video 
+			class="albumCoverImg"
+			id="videoPlayer"
+			style="
+				position:absolute;
+				width:240px;
+				height:210px;
+				left:50%;
+				top:50%;
+				transform:translate(-50%, -50%);
+				object-fit:cover;"
+			src="./videos/video1.mp4">
+	</video>
+	</div>	
+	
+      <!--<video class="albumCoverImg" id="videoPlayer" src="./videos/video1.mp4"></video>-->
+
+    </div>
+    <div id="songInfoContainer">
+      <div id="songInfo">
+        <p class="songTitle">Course Structure</p>
+        <p class="songAuthor">Introduction</p>
+      </div>
+      <i id="moreInfoBtn" class="fas fa-ellipsis"></i>
+    </div>
+    <div id="songLength">
+      <input type="range" min="1" max="100" value="0" class="songLengthSlider" id="seekSlider" />
+      <div id="songlengthIndicators">
+        <span id="currentTime">0:00</span>
+        <span id="remainingTime">-0:00</span>
+      </div>
+    </div>
+    <div id="songController">
+      <i class="fas fa-backward-step songControllerButtons prevSongBtnApp"></i>
+      <i class="fas fa-play songControllerButtons" id="playPauseBtn"></i>
+      <i class="fas fa-forward-step songControllerButtons nextSongBtnApp"></i>
+    </div>
+    <div id="volumeLength">
+      <i class="fas fa-volume-off volumeIndicator"></i>
+      <input type="range" min="1" max="100" value="50" id="volSlider" class="songLengthSlider" />
+      <i class="fas fa-volume-high volumeIndicator"></i>
+    </div>
+    <div id="extraBtnsContainer">
+      <i class="fas fa-share-from-square extraBtn"></i>
+      <i class="fab fa-slideshare extraBtn"></i>
+      <i class="fas fa-list extraBtn"></i>
+    </div>
+  </div>
+
+  <script>
+    const videoPlayer = document.getElementById('videoPlayer');
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const seekSlider = document.getElementById('seekSlider');
+    const currentTimeEl = document.getElementById('currentTime');
+    const remainingTimeEl = document.getElementById('remainingTime');
+    const volSlider = document.getElementById('volSlider');
+
+    // Play or pause the video
+    playPauseBtn.addEventListener('click', () => {
+      if (videoPlayer.paused) {
+        videoPlayer.play();
+        playPauseBtn.classList.remove('fa-play');
+        playPauseBtn.classList.add('fa-pause');
+      } else {
+        videoPlayer.pause();
+        playPauseBtn.classList.remove('fa-pause');
+        playPauseBtn.classList.add('fa-play');
+      }
+    });
+
+    // Update seek slider and time indicators
+    videoPlayer.addEventListener('timeupdate', () => {
+      const currentTime = videoPlayer.currentTime;
+      const duration = videoPlayer.duration;
+      seekSlider.value = (currentTime / duration) * 100;
+
+      const currentMinutes = Math.floor(currentTime / 60);
+      const currentSeconds = Math.floor(currentTime % 60);
+      currentTimeEl.textContent = `${currentMinutes}:${currentSeconds < 10 ? '0' : ''}${currentSeconds}`;
+
+      const remainingTime = duration - currentTime;
+      const remainingMinutes = Math.floor(remainingTime / 60);
+      const remainingSeconds = Math.floor(remainingTime % 60);
+      remainingTimeEl.textContent = `-${remainingMinutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+    });
+
+    // Seek functionality
+    seekSlider.addEventListener('input', () => {
+      const seekTime = (seekSlider.value / 100) * videoPlayer.duration;
+      videoPlayer.currentTime = seekTime;
+    });
+
+    // Volume control
+    volSlider.addEventListener('input', () => {
+      videoPlayer.volume = volSlider.value / 100;
+    });
+  </script>
+  
+
+              <!-- Mail App content -->
+              <div id="mail" class="app hidden">
+                <div class="mailNav">
+                  <span class="mailNavBtns blueBtn">Points of COS 502</span>
+                </div>
+
+                <div id="mailBoxContainer">
+                  <div class="mailItemContainer">
+                    <div class="mailItemTags">
+                      <i class="fa-solid fa-circle unreadMailIcon"></i>
+                    </div>
+                    <div class="mailItemDesc">
+                      <div class="mailTopLine">
+                        <span class="mailSender">Syllabus Acknowledgement</span>
+
+                      </div>
+                      <p class="mailHeader" style="color: red">3 pts</p>
+                    </div>
+                  </div>
+				  
+                  <div class="mailItemContainer">
+                    <div class="mailItemTags">
+                      <i class="fa-solid fa-circle unreadMailIcon"></i>
+                    </div>
+                    <div class="mailItemDesc">
+                      <div class="mailTopLine">
+                        <span class="mailSender">Attendance</span>
+
+                      </div>
+                      <p class="mailHeader" style="color: red">10 pts</p>
+                      <p class="mailBodyPreview">
+                        A reasonable excuse, count attendance
+                      </p>
+                    </div>
+                  </div>
+				  
+                  <div class="mailItemContainer">
+                    <div class="mailItemTags">
+                      <i class="fa-solid fa-circle unreadMailIcon"></i>
+                    </div>
+                    <div class="mailItemDesc">
+                      <div class="mailTopLine">
+                        <span class="mailSender">Exercise</span>
+                      </div>
+                      <p class="mailHeader" style="color: red">8 pts</p>
+                    </div>
+                  </div>
+				  
+                  <div class="mailItemContainer">
+                    <div class="mailItemTags">
+                      <i class="fa-solid fa-circle unreadMailIcon"></i>
+                    </div>
+                    <div class="mailItemDesc">
+                      <div class="mailTopLine">
+                        <span class="mailSender">Lab</span>
+                      </div>
+                      <p class="mailHeader" style="color: red">25 pts</p>
+                      <p class="mailBodyPreview">
+                        Catch up with missed ones, let me know
+                      </p>
+                    </div>
+                  </div>
+				  
+                  <div class="mailItemContainer">
+                    <div class="mailItemTags">
+                      <i class="fa-solid fa-circle unreadMailIcon"></i>
+                    </div>
+                    <div class="mailItemDesc">
+                      <div class="mailTopLine">
+                        <span class="mailSender">Project</span>
+                      </div>
+                      <p class="mailHeader" style="color: red">12 pts</p>
+                    </div>
+                  </div>
+
+                  <div class="mailItemContainer">
+                    <div class="mailItemTags">
+                      <i class="fa-solid fa-circle unreadMailIcon"></i>
+                    </div>
+                    <div class="mailItemDesc">
+                      <div class="mailTopLine">
+                        <span class="mailSender">Team work (Discussions)</span>
+                      </div>
+                      <p class="mailHeader" style="color: red">12 pts</p>
+                    </div>
+                  </div>
+				  
+                  <div class="mailItemContainer">
+                    <div class="mailItemTags">
+                      <i class="fa-solid fa-circle unreadMailIcon"></i>
+                    </div>
+                    <div class="mailItemDesc">
+                      <div class="mailTopLine">
+                        <span class="mailSender">Final Presentation</span>
+                      </div>
+                      <p class="mailHeader" style="color: red">8 pts</p>
+                    </div>
+                  </div>
+				  
+				  
+                  <div class="mailItemContainer">
+                    <div class="mailItemTags">
+                      <i class="fa-solid fa-circle unreadMailIcon"></i>
+                    </div>
+                    <div class="mailItemDesc">
+                      <div class="mailTopLine">
+                        <span class="mailSender">Midterm Exam</span>
+                      </div>
+                      <p class="mailHeader" style="color: red">10 pts</p>
+                    </div>
+                  </div>
+				  
+                  <div class="mailItemContainer">
+                    <div class="mailItemTags">
+                      <i class="fa-solid fa-circle unreadMailIcon"></i>
+                    </div>
+                    <div class="mailItemDesc">
+                      <div class="mailTopLine">
+                        <span class="mailSender">Final Exam</span>
+                      </div>
+                      <p class="mailHeader" style="color: red">12 pts</p>
+                    </div>
+                  </div>
+				  
+				  
+                  <div class="mailItemContainer">
+                    <div class="mailItemTags">
+                      <i class="fa-solid fa-circle unreadMailIcon"></i>
+                    </div>
+                    <div class="mailItemDesc">
+                      <div class="mailTopLine">
+                        <span class="mailSender">Other extra pts</span>
+                      </div>
+                      <p class="mailHeader" style="color: red">0~20 pts</p>
+
+                    </div>
+                  </div>	
+
+
+                  <div class="mailItemContainer">
+                    <div class="mailItemTags">
+                      <i class="fa-solid fa-circle unreadMailIcon"></i>
+                    </div>
+                    <div class="mailItemDesc">
+                      <div class="mailTopLine">
+                        <span class="mailSender">Last day of classes</span>
+						<span class="mailSentInfo"
+                          >Around 12/05/2026 <i class="fa-solid fa-angle-right"></i
+                        ></span>
+                      </div>
+                      <p class="mailBodyPreview">
+                        Please check Academic Calendars below
+                      </p>
+                    </div>
+                  </div>				  
+				  <br>
+
+				  
+				<div class="mailItemContainer policyNote">
+				<p>
+				<b>😊 I reserve the right to adjust the percentages/pts based on the number of assignments and quizzes, and other factors.</b>
+				</p>
+				</div>
+                </div>
+
+                <div class="mailNav bottom">
+                  <div id="filterInfoContainer">
+                    <p id="filterSelection" style="font-size:17px"><a href="https://www.kysu.edu/student-affairs/registrar/academic-calendar/index.php"><font color="blue"><b>Academic Calendars </b></font></a></p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Settings App content -->
+              <div id="settings" class="app hidden">
+                <div id="settingsNav">
+				<span align="left" style="font-size:13px">&copy; 2026 <img align="right"
+                    src="./img/kysu.png"
+                    alt="kysu logo"
+					width=35%
+					height=20%
+                  /></span>
+
+                </div>
+                <a
+                  href="https://kysu.instructure.com/courses/8440"
+                  target="_blank"
+                >
+                  <div id="aboutMeSection">
+                    <img class="headshot" src="img/stru.gif" alt="headshot" />
+                    <div id="aboutMeTextArea">
+                      <h3>COS 502: Computer Science Foundation I </h3>
+                      <p>Topic Outline</p>
+                    </div>
+                    <i class="fa-solid fa-angle-right"></i>
+                  </div>
+                </a>
+				
+				
+                <div id="settingsSection">
+				
+                  <a href="../Slides/Intro.html" target="_blank">
+                    <div class="settingsItem last">
+                      <div class="settingsItemLeft">
+                        <i class="fa-solid fa-code-compare settingIcon"></i>
+                        <span >Introduction</span>
+                      </div>
+                      <i class="fa-solid fa-angle-right"></i>
+                    </div>
+                  </a>
+				  
+                  <a href="../Slides/Week1.html" target="_blank">
+                    <div class="settingsItem">
+                      <div class="settingsItemLeft">
+                        <i class="fa-solid fa-globe settingIcon"></i>
+                        <span>Week 1</span>
+                      </div>
+                      <i class="fa-solid fa-angle-right"></i>
+                    </div>
+                  </a>
+				  
+                  <a href="../Slides/Week2.html" target="_blank">
+                    <div class="settingsItem">
+                      <div class="settingsItemLeft">
+                        <i class="fa-solid fa-globe settingIcon"></i>
+                        <span>Week 2</span>
+                      </div>
+                      <i class="fa-solid fa-angle-right"></i>
+                    </div>
+                  </a>
+				  
+                   <a href="../Slides/Week3.html" target="_blank">
+                    <div class="settingsItem">
+                      <div class="settingsItemLeft">
+                        <i class="fa-solid fa-globe settingIcon"></i>
+                        <span>Week 3</span>
+                      </div>
+                      <i class="fa-solid fa-angle-right"></i>
+                    </div>
+                  </a>
+				  
+                  <a href="../Slides/Week4.html" target="_blank">
+                    <div class="settingsItem">
+                      <div class="settingsItemLeft">
+                        <i class="fa-solid fa-globe settingIcon"></i>
+                        <span>Week 4</span>
+                      </div>
+                      <i class="fa-solid fa-angle-right"></i>
+                    </div>
+                  </a>	
+				  
+                  <a href="../Slides/Week5.html" target="_blank">
+                    <div class="settingsItem">
+                      <div class="settingsItemLeft">
+                        <i class="fa-solid fa-globe settingIcon"></i>
+                        <span>Week 5</span>
+                      </div>
+                      <i class="fa-solid fa-angle-right"></i>
+                    </div>
+                  </a>
+				  
+                  <a href="../Slides/Week6.html" target="_blank">
+                    <div class="settingsItem">
+                      <div class="settingsItemLeft">
+                        <i class="fa-solid fa-globe settingIcon"></i>
+                        <span>Week 6</span>
+                      </div>
+                      <i class="fa-solid fa-angle-right"></i>
+                    </div>
+                  </a>
+				  
+                   <a href="../Slides/Week7.html" target="_blank">
+                    <div class="settingsItem">
+                      <div class="settingsItemLeft">
+                        <i class="fa-solid fa-globe settingIcon"></i>
+                        <span>Week 7</span>
+                      </div>
+                      <i class="fa-solid fa-angle-right"></i>
+                    </div>
+                  </a>
+				  
+                  <a href="../Slides/Week8.html" target="_blank">
+                    <div class="settingsItem">
+                      <div class="settingsItemLeft">
+                        <i class="fa-solid fa-globe settingIcon"></i>
+                        <span>Week 8</span>
+                      </div>
+                      <i class="fa-solid fa-angle-right"></i>
+                    </div>
+                  </a>
+				  
+                  <a href="../Slides/Week10.html" target="_blank">
+                    <div class="settingsItem">
+                      <div class="settingsItemLeft">
+                        <i class="fa-solid fa-globe settingIcon"></i>
+                        <span>Week 9</span>
+                      </div>
+                      <i class="fa-solid fa-angle-right"></i>
+                    </div>
+                  </a>
+				  
+                  <a href="../Slides/Week10.html" target="_blank">
+                    <div class="settingsItem">
+                      <div class="settingsItemLeft">
+                        <i class="fa-solid fa-globe settingIcon"></i>
+                        <span>Week 10</span>
+                      </div>
+                      <i class="fa-solid fa-angle-right"></i>
+                    </div>
+                  </a>
+				  
+                   <a href="../Slides/Week11.html" target="_blank">
+                    <div class="settingsItem">
+                      <div class="settingsItemLeft">
+                        <i class="fa-solid fa-globe settingIcon"></i>
+                        <span>Week 11</span>
+                      </div>
+                      <i class="fa-solid fa-angle-right"></i>
+                    </div>
+                  </a>
+				  
+                  <a href="../Slides/Week12.html" target="_blank">
+                    <div class="settingsItem">
+                      <div class="settingsItemLeft">
+                        <i class="fa-solid fa-globe settingIcon"></i>
+                        <span>Week 12</span>
+                      </div>
+                      <i class="fa-solid fa-angle-right"></i>
+                    </div>
+                  </a>
+				  
+                  <a href="../Slides/Week13.html" target="_blank">
+                    <div class="settingsItem">
+                      <div class="settingsItemLeft">
+                        <i class="fa-solid fa-globe settingIcon"></i>
+                        <span>Week 13</span>
+                      </div>
+                      <i class="fa-solid fa-angle-right"></i>
+                    </div>
+                  </a>
+				  
+                  <a href="../Slides/Week14.html" target="_blank">
+                    <div class="settingsItem">
+                      <div class="settingsItemLeft">
+                        <i class="fa-solid fa-globe settingIcon"></i>
+                        <span>Week 14</span>
+                      </div>
+                      <i class="fa-solid fa-angle-right"></i>
+                    </div>
+                  </a>
+				  
+                   <a href="../Slides/Week15.html" target="_blank">
+                    <div class="settingsItem">
+                      <div class="settingsItemLeft">
+                        <i class="fa-solid fa-globe settingIcon"></i>
+                        <span>Week 15</span>
+                      </div>
+                      <i class="fa-solid fa-angle-right"></i>
+                    </div>
+                  </a>
+				  
+                  <a href="../Slides/Week16.html" target="_blank">
+                    <div class="settingsItem">
+                      <div class="settingsItemLeft">
+                        <i class="fa-solid fa-globe settingIcon"></i>
+                        <span>Week 16</span>
+                      </div>
+                      <i class="fa-solid fa-angle-right"></i>
+                    </div>
+                  </a>
+				  <!--
+                  <a href="https://midway.instructure.com/courses/6068/assignments" target="_blank">
+                    <div class="settingsItem">
+                      <div class="settingsItemLeft">
+                        <i class="fa-solid fa-comment settingIcon"></i>
+                        <span>Assignments</span>
+                      </div>
+                      <i class="fa-solid fa-angle-right"></i>
+                    </div>
+                  </a>
+				  
+                  <a
+                    href="https://midway.instructure.com/courses/6068/gradebook"
+                    target="_blank"
+                  >
+                    <div class="settingsItem">
+                      <div class="settingsItemLeft">
+                        <i class="fa-solid fa-circle-user settingIcon"></i>
+                        <span>Grades</span>
+                      </div>
+                      <i class="fa-solid fa-angle-right"></i>
+                    </div>
+                  </a>
+				  -->
+				  
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dock content -->
+          <div class="ipadDockArea">
+            <div class="dock">
+              <img
+                class="appIcon appHover appSafari"
+                src="img/icon-pack-basic/safari.png"
+                alt=""
+              />
+              <img
+                class="appIcon appHover appMessenger"
+                src="img/icon-pack-basic/facebook-messenger.png"
+                alt=""
+              />
+              <img
+                class="appIcon appHover appMusic"
+                src="img/icon-pack-basic/music-sign.png"
+                alt=""
+              />
+              <img
+                class="appIcon appHover appMail"
+                src="img/icon-pack-basic/gmail.png"
+                alt=""
+              />
+              <img
+                class="appIcon appHover appSettings"
+                src="img/icon-pack-basic/setting-cog.png"
+                alt=""
+              />
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <!-- Ipad OS cursor test -->
+    <div id="cursor" class="cursor">
+      <div class="cursorIcon"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="text/javascript" src="js/config.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,1101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Week 4: Number Theory</title>
+    <meta name="description" content="A set of slides for Machine Learning">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/effectsGreen.css">
+	<!--<link rel="stylesheet" href="./css/style.css">-->
+	<!--<link rel="stylesheet" href="./css/effects.css">-->
+	<link rel="stylesheet" href="../css/no-copy.css">
+
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+
+		function startCountdown() {
+			const countdownBox = document.getElementById('classCountdown');
+			if (!countdownBox) return;
+
+			// Target: Last day of classes, Saturday, December 5, 2026.
+			const targetDate = new Date(2026, 11, 5, 0, 0, 0).getTime();
+
+			function updateCountdown() {
+				const now = new Date().getTime();
+				const distance = targetDate - now;
+
+				if (distance <= 0) {
+					const today = new Date();
+					if (today.getFullYear() === 2026 && today.getMonth() === 11 && today.getDate() === 5) {
+						countdownBox.innerHTML = '<span class="count-label">Last day of classes</span><span class="count-time">Today — Dec. 5, 2026</span>';
+					} else {
+						countdownBox.innerHTML = '<span class="count-label">Last day of classes</span><span class="count-time">Completed — Dec. 5, 2026</span>';
+					}
+					return;
+				}
+
+				const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+				const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+				const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+				const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+				countdownBox.innerHTML = '<span class="count-label">Last day of classes: Dec. 5, 2026</span>' +
+					'<span class="count-time">' + days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's</span>';
+			}
+
+			updateCountdown();
+			setInterval(updateCountdown, 1000);
+		}
+
+		function startBubbleAnimation() {
+			const bubbleLayer = document.getElementById('bubbleLayer');
+			if (!bubbleLayer) return;
+
+			function createBubble() {
+				const bubble = document.createElement('span');
+				const size = Math.floor(8 + Math.random() * 22);
+				const left = Math.random() * 100;
+				const duration = Math.floor(28 + Math.random() * 22);
+				const drift = Math.floor(-120 + Math.random() * 240);
+
+				bubble.className = 'floating-bubble';
+				bubble.style.width = size + 'px';
+				bubble.style.height = size + 'px';
+				bubble.style.left = left + 'vw';
+				bubble.style.animationDuration = duration + 's';
+				bubble.style.setProperty('--bubble-drift', drift + 'px');
+
+				bubbleLayer.appendChild(bubble);
+				setTimeout(function () {
+					bubble.remove();
+				}, duration * 1000 + 500);
+			}
+
+			function createBubbleBurst() {
+				const bubbleCount = 18 + Math.floor(Math.random() * 12);
+				for (let i = 0; i < bubbleCount; i++) {
+					setTimeout(createBubble, i * 260);
+				}
+			}
+
+			// Show one soft burst shortly after loading, then repeat every 3 minutes.
+			setTimeout(createBubbleBurst, 2500);
+			setInterval(createBubbleBurst, 180000);
+		}
+	</script>
+
+	<style>
+	    pre {
+            background-color: black;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+        }
+        code {
+            font-family: "Courier New", monospace;
+            color: #d63384; /* Python-style color */
+        }
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }
+        .top-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 8px 4px 0 4px;
+            gap: 12px;
+        }
+        .top-header-left,
+        .top-header-center,
+        .top-header-right {
+            flex: 1 1 0;
+            display: flex;
+            align-items: flex-start;
+        }
+        .top-header-left {
+            justify-content: flex-start;
+        }
+        .top-header-center {
+            justify-content: center;
+        }
+        .top-header-right {
+            justify-content: flex-end;
+        }
+        .header-badge {
+            color: #ffffff;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+            background: rgba(22, 163, 74, 0.38);
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(0,0,0,.22);
+            padding: 6px 12px;
+            line-height: 1.05;
+            white-space: nowrap;
+        }
+        #classCountdown {
+            display: inline-flex;
+            align-items: center;
+            min-width: 360px;
+            text-align: left;
+            letter-spacing: .2px;
+        }
+        #classCountdown .count-label {
+            display: inline-block;
+            font-size: 15px;
+            font-weight: 800;
+            margin-bottom: 0;
+            margin-right: 8px;
+        }
+        #classCountdown .count-time {
+            display: inline-block;
+            font-size: 15px;
+            font-weight: 800;
+        }
+        .header-email-link {
+            display: inline-block;
+            color: #ffffff !important;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+            font-size: 15px;
+            font-weight: 800;
+            line-height: 1;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .header-email-link:hover {
+            text-decoration: underline;
+        }
+        #realtimeclock {
+            display: inline-block;
+            font-size: 15px;
+            font-weight: 800;
+        }
+        #bubbleLayer {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 9999;
+            background: transparent !important;
+        }
+        #bubbleCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: transparent !important;
+        }
+        .floating-bubble {
+            position: absolute;
+            bottom: -60px;
+            display: block;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.10);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.14);
+            animation-name: floatBubbleUp;
+            animation-timing-function: linear;
+            animation-fill-mode: forwards;
+            opacity: 0;
+        }
+        @keyframes floatBubbleUp {
+            0% {
+                transform: translate3d(0, 0, 0) scale(.85);
+                opacity: 0;
+            }
+            12% {
+                opacity: .30;
+            }
+            88% {
+                opacity: .18;
+            }
+            100% {
+                transform: translate3d(var(--bubble-drift), -112vh, 0) scale(1.2);
+                opacity: 0;
+            }
+        }
+        .reveal {
+            position: relative;
+            z-index: 1;
+        }
+        .reveal .slides {
+            margin-top: 54px !important;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .floating-bubble {
+                animation: none;
+                display: none;
+            }
+        }	
+	</style>
+
+  </head>
+
+  <body onload="startTime(); startCountdown(); startBubbleAnimation();">
+    <div id="bubbleLayer" aria-hidden="true"><canvas id="bubbleCanvas"></canvas></div>
+    <div class="reveal" >
+      <div class="top-header">
+        <div class="top-header-left">
+          <span id="classCountdown" class="header-badge"><span class="count-label">Last day of classes: Dec. 5, 2026</span><span class="count-time">Loading...</span></span>
+        </div>
+        <div class="top-header-center">
+          <a href="mailto:Xinxing.Wu@kysu.edu" title="Email Xinxing Wu" class="header-email-link header-badge">Xinxing.Wu@kysu.edu</a>
+        </div>
+        <div class="top-header-right">
+          <div class="header-badge" id="realtimeclock"></div>
+        </div>
+      </div>
+      <div class="slides">
+
+  <div class="me">Xinxing Wu</div>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown id="cover"><textarea data-template>
+<p class='titlep'>&nbsp;</p>
+
+# Week 4: Number Theory
+
+
+<hr>
+
+Xinxing Wu
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline
+
+[<p class="hover-underline-animation">Introduction</p>](#/ch1)
+
+[<p class="hover-underline-animation">Basic knowledge</p>](#/ch2)
+
+[<p class="hover-underline-animation">Basic examples</p>](#/ch3)
+
+[<p class="hover-underline-animation">Basic real-world applications</p>](#/ch4)
+
+</textarea></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline (Cont.)
+
+[<p class="hover-underline-animation">Advanced knowledge</p>](#/ch5)
+
+[<p class="hover-underline-animation">Advanced examples</p>](#/ch6)
+
+[<p class="hover-underline-animation">Advanced real-world applications</p>](#/ch7)
+
+[<p class="hover-underline-animation">Task</p>](#/ch8)
+
+</textarea></section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline (Cont.)
+
+[<p class="hover-underline-animation">Summary</p>](#/ch9)
+
+</textarea></section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch1" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Introduction</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Learning Goals</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Use divisibility, quotient, remainder, and congruence notation.
+- Compute gcd values using the Euclidean algorithm.
+- Solve simple modular arithmetic problems.
+- Connect modular arithmetic to clocks, calendars, and identifiers.
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch2" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Basic knowledge</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">A Note</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Divisibility asks whether a number can be written as a multiple of another.
+
+- Modular arithmetic focuses on remainders: $a ≡ b$ (mod m) means $a$ and $b$ have the same remainder when divided by m.
+
+- The greatest common divisor gcd(a,b) is the largest positive integer dividing both $a$ and $b$.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Key Ideas</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Identify the objects in the problem.
+- Choose notation that makes relationships clear.
+- Work on a small example before solving the general case.
+- Explain the answer in plain English after the calculation.
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch3" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Basic examples</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Example 1: Clock arithmetic</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- **Problem.** If it is 9 o’clock now, what time is it in 20 hours?
+
+- **Step-by-step solution.** Compute 9+20=29. On a 12-hour clock, 29 ≡ 5 (mod 12).
+
+- **Check.** The answer is 5 o’clock.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Example 2: Euclidean algorithm</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- **Problem.** Find gcd(84,30).
+
+- **Step-by-step solution.** 84=2·30+24, 30=1·24+6, 24=4·6+0. The last nonzero remainder is 6.
+
+- **Check.** So gcd(84,30)=6.
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch4" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Basic real-world applications</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Application 1: Check digits</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Student IDs, product codes, and ISBN-like systems use remainders to detect common typing errors.
+
+- **Discussion prompt:** What data or assumptions would we need to use this model responsibly?
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Application 2: Scheduling cycles</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Weekly calendars, rotating shifts, and repeating events are natural modular arithmetic systems.
+
+- **Discussion prompt:** What data or assumptions would we need to use this model responsibly?
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch5" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Advanced knowledge</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">A Note</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Bezout coefficients express gcd(a,b) as ax+by for some integers x and y. The extended Euclidean algorithm finds x and y.
+
+- A modular inverse of a mod m is a number $a^{-1}$ such that $aa^{-1} ≡ 1 ({\rm{mod}}\quad m)$. It exists when gcd(a,m)=1.
+
+- Linear congruences ax ≡ b (mod m) can be solved using inverses or gcd conditions.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">How to Think</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Ask what structure is hidden in the problem.
+- Look for an invariant, equivalence, ordering, recurrence, or optimization goal.
+- Use the simplest representation that preserves the important information.
+- Check whether the method scales when the input becomes large.
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch6" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Advanced examples</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Example 1: Modular inverse</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- **Problem.** Find the inverse of 3 modulo 7.
+
+- **Step-by-step solution.** Try multiples: $3\cdot 5=15 ≡ 1$ (mod 7). So $3^{-1}$ (mod 7).
+
+- **Why it matters.** This means dividing by 3 modulo 7 is the same as multiplying by 5.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Example 2: Solve a congruence</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- **Problem.** Solve 3x ≡ 6 (mod 7).
+
+- **Step-by-step solution.** Multiply both sides by $3^{-1}=5: x ≡ 30 ≡ 2$ (mod 7).
+
+- **Why it matters.** Check: $3\cdot 2=6$, so it works.
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch7" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Advanced real-world applications</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Application 1: Hash tables</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Remainders help assign keys to buckets in a hash table.
+
+- **Extension question:** How would the model change with more realistic constraints?
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Application 2: Error detection and correction</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Modular arithmetic supports parity checks, checksums, and coding methods used in data transmission.
+
+- **Extension question:** How would the model change with more realistic constraints?
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch8" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Task</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Task</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- **Task.** Create a check-digit rule for a 5-digit student code. Test whether your rule catches three simulated mistakes, then explain one mistake it may miss.
+
+- **Deliverable.** One clear model, one worked example, and a short explanation of the result.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Model</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- A student code contains five digits:
+
+$$
+d_1d_2d_3d_4c
+$$
+
+where:
+
+- $d_1,d_2,d_3,d_4$ are the student-identification digits.
+- $c$ is the check digit.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Model (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Define the check digit by
+
+$$
+c=(d_1+d_2+d_3+d_4)\quad\bmod\quad 10.
+$$
+
+- A code is valid when its fifth digit equals the remainder obtained by adding the first four digits and dividing by $10$.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Pseudocode</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+```
+PROCEDURE IsValidStudentCode(code)
+
+    IF code does not contain exactly 5 digits THEN
+        RETURN False
+    END IF
+
+    d1 ← first digit
+    d2 ← second digit
+    d3 ← third digit
+    d4 ← fourth digit
+    c  ← fifth digit
+
+    expectedCheckDigit ← (d1 + d2 + d3 + d4) MOD 10
+
+    IF c = expectedCheckDigit THEN
+        RETURN True
+    ELSE
+        RETURN False
+    END IF
+
+END PROCEDURE
+```
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Worked Example</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Suppose the first four digits of a student code are
+
+$$2748.$$
+
+- Add the four digits:
+
+$$2+7+4+8=21.$$
+
+- Compute the remainder after division by 10:
+
+$$21\quad \bmod\quad 10=1.$$
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Worked Example (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Therefore, the check digit is
+
+$$c=1.$$
+
+- The complete student code is
+
+$$27481.$$
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Worked Example (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- To verify the code, calculate
+
+$$(2+7+4+8)\quad \bmod\quad 10=1.$$
+
+- Because the calculated check digit equals the final digit, the code is valid.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Testing Three Simulated Mistakes</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- The original valid code is
+
+$$27481.$$
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Mistake 1: A Data Digit Is Changed</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Suppose the digit 8 is accidentally changed to 9:
+
+$$27491.$$
+
+- Calculate the expected check digit:
+
+$$(2+7+4+9)\quad \bmod\quad 10=22\quad \bmod\quad 10=2.$$
+
+- The code contains the check digit 1, but the expected check digit is 2.
+
+$$1\neq 2.$$
+
+- Result: The mistake is caught.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Mistake 2: The Check Digit Is Changed</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Suppose the check digit 1 is accidentally changed to 6:
+
+$$27486.$$
+
+- The expected check digit is still
+
+$$(2+7+4+8)\quad \bmod\quad 10=1.$$
+
+- However, the code contains 6.
+
+$$6\neq 1.$$
+
+- Result: The mistake is caught.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Mistake 3: Another Data Digit Is Changed</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Suppose the digit 7 is accidentally changed to 6:
+
+$$26481.$$
+
+- Calculate the expected check digit:
+
+$$(2+6+4+8)\quad \bmod\quad 10=20\quad \bmod\quad10=0.$$
+
+- The code contains the check digit 1, but the expected check digit is 0.
+
+$$1\neq 0.$$
+
+- Result: The mistake is caught.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Test Summary</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+|   Code  | Simulated mistake   | Expected check digit | Stored check digit | Result |
+| :-----: | :------------------ | :------------------: | :----------------: | :----: |
+| `27481` | No mistake          |           1          |          1         |  Valid |
+| `27491` | (8) changed to (9)  |           2          |          1         | Caught |
+| `27486` | Check digit changed |           1          |          6         | Caught |
+| `26481` | (7) changed to (6)  |           0          |          1         | Caught |
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">A Mistake the Rule May Miss</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- This rule may fail to detect a transposition, where two digits exchange positions.
+
+- For example, swap the first two digits of the valid code:
+
+$$27481\rightarrow 72481.$$
+
+- For the original code,
+
+$$2+7+4+8=21.$$
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">A Mistake the Rule May Miss (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- For the changed code,
+
+$$7+2+4+8=21.$$
+
+- Both codes produce the same check digit:
+
+$$21\quad \rm{mod}\quad 10=1.$$
+
+- Therefore, the incorrect code 72481 is still accepted.
+
+- Result: The rule does not detect this transposition.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Explanation of the Result</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- The check-digit rule successfully detects the three simulated single-digit mistakes because changing one digit changes the sum of the first four digits. The stored check digit then differs from the expected check digit.
+
+- However, the rule only uses the sum of the digits. Changing the order of the digits does not change their sum, so some transposition mistakes may remain undetected.
+
+- The rule is simple and useful for detecting common typing errors, but a weighted check-digit system would provide stronger error detection.
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch9" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Summary</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Common Mistakes</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Using notation without defining it.
+- Solving one example but claiming a general proof.
+- Forgetting assumptions or constraints.
+- Skipping the final interpretation in words.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Summary</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Number theory studies divisibility and integer patterns.
+- Modular arithmetic turns infinite integers into repeating cycles.
+- The Euclidean algorithm efficiently finds gcd values.
+- Inverses and congruences prepare us for cryptography.
+
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+</div>
+	
+
+<script>
+(function () {
+  function initVisibleBubbles() {
+    if (window.__visibleCanvasBubblesStarted) return;
+    window.__visibleCanvasBubblesStarted = true;
+
+    const layer = document.getElementById('bubbleLayer');
+    if (!layer) return;
+
+    let canvas = document.getElementById('bubbleCanvas');
+    if (!canvas) {
+      canvas = document.createElement('canvas');
+      canvas.id = 'bubbleCanvas';
+      layer.appendChild(canvas);
+    }
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const colors = [
+      'rgba(255,255,255,0.38)',
+      'rgba(187,247,208,0.34)',
+      'rgba(191,219,254,0.34)',
+      'rgba(254,240,138,0.30)',
+      'rgba(252,231,243,0.32)',
+      'rgba(221,214,254,0.32)'
+    ];
+
+    let bubbles = [];
+
+    function resizeCanvas() {
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.ceil(window.innerWidth * dpr);
+      canvas.height = Math.ceil(window.innerHeight * dpr);
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function makeBubble(now, delay) {
+      const radius = 5 + Math.random() * 11;
+      return {
+        start: now + delay,
+        duration: 30000 + Math.random() * 15000,
+        x: Math.random() * window.innerWidth,
+        y: window.innerHeight + radius + Math.random() * 35,
+        radius: radius,
+        drift: -90 + Math.random() * 180,
+        wobble: 8 + Math.random() * 22,
+        color: colors[Math.floor(Math.random() * colors.length)]
+      };
+    }
+
+    function burst() {
+      const now = performance.now();
+      const count = 28 + Math.floor(Math.random() * 12);
+      for (let i = 0; i < count; i++) {
+        bubbles.push(makeBubble(now, i * 110));
+      }
+    }
+
+    function draw(now) {
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+      bubbles = bubbles.filter(function (b) {
+        const t = (now - b.start) / b.duration;
+        if (t < 0) return true;
+        if (t > 1) return false;
+
+        const ease = 1 - Math.pow(1 - t, 1.8);
+        const x = b.x + b.drift * ease + Math.sin(t * Math.PI * 4) * b.wobble;
+        const y = b.y - (window.innerHeight + 120) * ease;
+        const alpha = Math.sin(Math.PI * t);
+
+        ctx.globalAlpha = 0.55 * alpha;
+        ctx.beginPath();
+        ctx.arc(x, y, b.radius, 0, Math.PI * 2);
+        ctx.fillStyle = b.color;
+        ctx.fill();
+
+        ctx.globalAlpha = 0.45 * alpha;
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = 'rgba(255,255,255,0.42)';
+        ctx.stroke();
+
+        return true;
+      });
+
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(draw);
+    }
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    // Show once when opened, then every 3 minutes.
+    burst();
+    setInterval(burst, 180000);
+    requestAnimationFrame(draw);
+  }
+
+  window.startBubbleAnimation = initVisibleBubbles;
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initVisibleBubbles);
+  } else {
+    initVisibleBubbles();
+  }
+})();
+</script>
+
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/settings.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/effects.js"></script>
+<script src="../js/no-copy.js"></script>
+<!--<script src="settings.js"></script>-->
+<!--<script src="effects.js"></script>-->
+</body>
+</html>

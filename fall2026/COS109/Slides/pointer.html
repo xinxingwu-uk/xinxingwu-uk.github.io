@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Struct Member Access Notes</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 30px;
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      color: #222;
+      line-height: 1.6;
+    }
+
+    .page-title {
+      text-align: center;
+      font-size: 2.2em;
+      font-weight: bold;
+      margin-bottom: 30px;
+      color: #1f3c88;
+    }
+
+    .definition-container {
+      max-width: 1000px;
+      margin: 0 auto 25px auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+    }
+
+    .definition-title {
+      background: #1f3c88;
+      color: white;
+      padding: 14px 20px;
+      font-size: 1.3em;
+      font-weight: bold;
+    }
+
+    .definition-shadebox {
+      background: #f9fbff;
+      padding: 20px 24px;
+      font-size: 1.15em;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 25px;
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    pre {
+      background: #1e1e1e;
+      color: #f1f1f1;
+      padding: 18px;
+      border-radius: 10px;
+      overflow-x: auto;
+      font-size: 1em;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    code {
+      font-family: Consolas, Monaco, monospace;
+    }
+
+    .note-text {
+      font-size: 1.2em;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-title">Struct and Class Member Access</div>
+
+  <div class="definition-container">
+    <div class="definition-title">Note on how you access members</div>
+    <div class="definition-shadebox">
+      <ul>
+        <li>use <b>.</b> when you have a normal struct variable</li>
+        <li>use <b>-></b> when you have a pointer to a struct</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="definition-container">
+    <div class="definition-title">Note - Struct variable: use .</div>
+    <div class="definition-shadebox">
+      <pre><code>#include &lt;iostream&gt;
+using namespace std;
+
+struct Student {
+    string name;
+    int age;
+};
+
+int main() {
+    Student s1;       // normal struct variable
+
+    s1.name = "Tom";  // use .
+    s1.age = 20;      // use .
+
+    cout &lt;&lt; s1.name &lt;&lt; endl;
+    cout &lt;&lt; s1.age &lt;&lt; endl;
+
+    return 0;
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="definition-container">
+    <div class="definition-title">Note</div>
+    <div class="definition-shadebox">
+      <div class="note-text">Here <b>s1</b> is a real <b>Student</b> object in memory.</div>
+    </div>
+  </div>
+
+  <div class="definition-container">
+    <div class="definition-title">Note - Struct pointer: use -></div>
+    <div class="definition-shadebox">
+      <pre><code>#include &lt;iostream&gt;
+using namespace std;
+
+struct Student {
+    string name;
+    int age;
+};
+
+int main() {
+    Student s1;
+    s1.name = "Tom";
+    s1.age = 20;
+
+    Student* p = &amp;s1;   // p points to s1
+
+    cout &lt;&lt; p-&gt;name &lt;&lt; endl;   // use -&gt;
+    cout &lt;&lt; p-&gt;age &lt;&lt; endl;    // use -&gt;
+
+    return 0;
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="definition-container">
+    <div class="definition-title">Note</div>
+    <div class="definition-shadebox">
+      <div class="note-text">
+        Here <b>p</b> is not a <b>Student</b> itself. It is a pointer that stores the address of <b>s1</b>.
+      </div>
+    </div>
+  </div>
+
+  <div class="definition-container">
+    <div class="definition-title">Note</div>
+    <div class="definition-shadebox">
+      <pre><code>#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+class Student {
+public:
+    string name;
+    int age;
+};
+
+int main() {
+    Student s1;
+    s1.name = "Tom";
+    s1.age = 20;
+
+    Student* p = &amp;s1;
+
+    cout &lt;&lt; s1.name &lt;&lt; endl;   // direct access
+    cout &lt;&lt; s1.age &lt;&lt; endl;
+
+    cout &lt;&lt; p-&gt;name &lt;&lt; endl;   // pointer access
+    cout &lt;&lt; p-&gt;age &lt;&lt; endl;
+
+    return 0;
+}</code></pre>
+    </div>
+  </div>
+
+</body>
+</html>

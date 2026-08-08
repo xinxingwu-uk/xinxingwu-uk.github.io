@@ -1,0 +1,607 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Presentation and Final Exam</title>
+    <meta name="description" content="A set of slides for Machine Learning">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/effectsGreen.css">
+	<!--<link rel="stylesheet" href="./css/style.css">-->
+	<!--<link rel="stylesheet" href="./css/effects.css">-->
+	
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+	</script>
+
+	<style>
+	    pre {
+            background-color: black;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+        }
+        code {
+            font-family: "Courier New", monospace;
+            color: #d63384; /* Python-style color */
+        }
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }	
+	</style>
+
+  </head>
+
+  <body onload="startTime()">
+    <div class="reveal" >
+	  <p><img src="images/midwaylogo.png"  align="left" height="6%" width="6%" style="vertical-align:left;margin:-15px 5px"><img src="images/mueagle.png"  color="white" align="left" height="4%" width="4%" style="vertical-align:center;margin:-1% 45%">
+		<div style="color:white;font-size: 20px; vertical-align:left;margin:-1% 0%" align="right" id="realtimeclock"></div></p>
+      <div class="slides">
+
+  <div class="me">Xinxing Wu</div>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown id="cover"><textarea data-template>
+<p class='titlep'>&nbsp;</p>
+
+# Presentation and Final Exam
+
+<hr>
+
+<br>
+
+Xinxing Wu
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline
+
+[<p class="hover-underline-animation">Presentation</p>](#/ch1)
+
+[<p class="hover-underline-animation">Exam Structure</p>](#/ch2)
+
+[<p class="hover-underline-animation">Outline</p>](#/ch3)
+
+[<p class="hover-underline-animation">Final Exam Example</p>](#/ch4)
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch1" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Presentation</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Presentation</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Pick up one project from Project 1-2 or design one by yourself
+- Extend/develop It
+- Make slides and prepare 10-15 minutes Presentation
+- Team work: get team work points; 2-4 people for each group
+</div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch2" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Exam Structure</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Exam Structure</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Part A: 10 True/False
+
+- Part B: 10 Fill-in-the-Blank
+
+- Part C: 2 Code Tracing Questions (predict output, follow variables/flow)
+
+- Part D: 2 Debugging Questions (find and fix common mistakes)
+
+- Part E: 2 Coding Questions (write short programs using Week 9–12 skills)
+</div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch3" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Outline</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div id="rainbow-type"> Outline </div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Memory Basics</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">References as aliases (&); Pointers store addresses and use * to access values; Dynamic memory with new / delete
+  - Correct use of new[] with delete[] and avoiding memory leaks</p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Object-Oriented Programming</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Purpose of OOP; Class structure (data members, methods, constructors); Encapsulation using public vs private; Composition as a “has-a” relationship; Friend functions as controlled access to private data</p>
+</div>
+</div>
+
+
+
+<div id="rainbow-type"> Outline (Cont.) </div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Advanced OOP & C++ Features</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Inheritance: base vs derived classes; Polymorphism and the role of virtual; Function behavior with base-class pointers; *Templates for generic programming (typename T); *Basic file input/output using ofstream and ifstream</p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Test common syntax and terminology</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Reference declaration; Pointer creation and dereferencing; Correct use of delete vs delete[]; virtual keyword meaning; *Template syntax; *File stream usage</p>
+</div>
+
+</div>
+
+
+
+
+<div id="rainbow-type"> Outline (Cont.) </div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Common mistakes to fix</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Memory errors (delete vs delete[]); Missing virtual causing wrong function call</p>
+</div>
+</div>
+
+</textarea></section>
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch4" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Final Exam Example</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+
+<p class='titlep'>&nbsp;</p>
+<p class='titlep'>&nbsp;</p>
+
+## 10 True/False
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">True/False</div>
+  <div class="definition-com-shadebox">
+
+Forgetting to delete memory created with new can cause a memory leak. <button type="button" class="reveal-btn" data-answer="answer-q1">Show Answer</button>
+<div id="answer-q1" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+new[] and delete[] are used for dynamic arrays, while new and delete are used for single variables. <button type="button" class="reveal-btn" data-answer="answer-q2">Show Answer</button>
+<div id="answer-q2" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+A pointer stores the value of a variable (like 35), not its address. <button type="button" class="reveal-btn" data-answer="answer-q3">Show Answer</button>
+<div id="answer-q3" class="answer-box">
+<b>Answer:</b>False
+</div>
+
+   </div>
+</div>
+
+
+
+
+<p class='titlep'>&nbsp;</p>
+<p class='titlep'>&nbsp;</p>
+
+## 10 Fill-in-the-Blank
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Fill-in-the-Blank</div>
+  <div class="definition-com-shadebox">
+
+Forgetting to release dynamic memory can cause a __________. <button type="button" class="reveal-btn" data-answer="answer-q11">Show Answer</button>
+<div id="answer-q11" class="answer-box">
+<b>Answer:</b>memory leak
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+new int creates memory space for one __________. <button type="button" class="reveal-btn" data-answer="answer-q12">Show Answer</button>
+<div id="answer-q12" class="answer-box">
+<b>Answer:</b>integer
+</div>
+
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+ptr stores the __________ of that memory space. <button type="button" class="reveal-btn" data-answer="answer-q13">Show Answer</button>
+<div id="answer-q13" class="answer-box">
+<b>Answer:</b>address
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Fill-in-the-Blank</div>
+  <div class="definition-com-shadebox">
+
+*ptr = 35; stores the number 35 by __________ the pointer. <button type="button" class="reveal-btn" data-answer="answer-q14">Show Answer</button>
+<div id="answer-q14" class="answer-box">
+<b>Answer:</b>dereferencing
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+For dynamic arrays, use new[] and __________. <button type="button" class="reveal-btn" data-answer="answer-q15">Show Answer</button>
+<div id="answer-q15" class="answer-box">
+<b>Answer:</b>delete[]
+</div>
+
+</div>
+</div>
+
+
+
+<p class='titlep'>&nbsp;</p>
+<p class='titlep'>&nbsp;</p>
+
+## 2 Code Tracing Questions
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Code Tracing Questions</div>
+  <div class="definition-com-shadebox">
+
+-  Predict the output (no virtual)
+
+```
+#include <iostream>
+using namespace std;
+
+class Animal {
+public:
+  void sound() { cout << "Animal sound\n"; }
+};
+
+class Dog : public Animal {
+public:
+  void sound() { cout << "Dog barks\n"; }
+};
+
+int main() {
+  Animal* a;
+  Dog d;
+  a = &d;
+  a->sound();
+  return 0;
+}
+
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Code Tracing Questions</div>
+  <div class="definition-com-shadebox">
+
+- Predict the output (no virtual) <button type="button" class="reveal-btn" data-answer="answer-q21">Show Answer</button>
+<div id="answer-q21" class="answer-box">
+<b>Answer:</b>Animal sound. sound() is not virtual, so the call is chosen by the pointer type (Animal*).
+</div>
+
+   </div>
+</div>
+
+
+
+<p class='titlep'>&nbsp;</p>
+<p class='titlep'>&nbsp;</p>
+
+## 2 Code Debugging Questions
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Code Debugging Questions</div>
+  <div class="definition-com-shadebox">
+
+- Fix the memory bug (wrong delete).  Buggy code:
+
+```
+int n = 3;
+string* names = new string[n];
+names[0] = "A";
+names[1] = "B";
+names[2] = "C";
+
+delete names;   // BUG
+
+```
+
+   </div>
+</div>
+
+- What’s wrong: Dynamic array must be freed with delete[].
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Code Debugging Questions</div>
+  <div class="definition-com-shadebox">
+
+- Fix the memory bug (wrong delete).  <button type="button" class="reveal-btn" data-answer="answer-q23">Show Answer</button>
+<div id="answer-q23" class="answer-box">
+<b>Answer:</b>Fixed code: delete[] names;</div>
+
+   </div>
+</div>
+
+
+
+<p class='titlep'>&nbsp;</p>
+<p class='titlep'>&nbsp;</p>
+
+## 2 Coding Questions
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Coding</div>
+  <div class="definition-com-shadebox">
+
+- Short program: Save + Load employee records with files (and avoid leaks)
+- Task: Create 2 employees, save them to employees.txt (one per line), delete them, then load them back and print.
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### An answer
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+using namespace std;
+
+class Employee {
+protected:
+  string name;
+  int salary;
+public:
+  Employee(string n, int s) : name(n), salary(s) {}
+  virtual string toFileLine() = 0;
+  virtual void printInfo() = 0;
+  virtual ~Employee() {}
+};
+
+class Programmer : public Employee {
+  int bonus;
+public:
+  Programmer(string n, int s, int b) : Employee(n, s), bonus(b) {}
+  string toFileLine() override {
+    return "P," + name + "," + to_string(salary) + "," + to_string(bonus);
+  }
+  void printInfo() override {
+    cout << "Programmer: " << name << ", Salary: " << salary
+         << ", Bonus: " << bonus << "\n";
+  }
+};
+
+class Manager : public Employee {
+  int allowance;
+public:
+  Manager(string n, int s, int a) : Employee(n, s), allowance(a) {}
+  string toFileLine() override {
+    return "M," + name + "," + to_string(salary) + "," + to_string(allowance);
+  }
+  void printInfo() override {
+    cout << "Manager: " << name << ", Salary: " << salary
+         << ", Allowance: " << allowance << "\n";
+  }
+};
+
+void saveToFile(const vector<Employee*>& staff, const string& filename) {
+  ofstream outFile(filename);
+  for (Employee* e : staff) outFile << e->toFileLine() << "\n";
+  outFile.close();
+}
+
+vector<Employee*> loadFromFile(const string& filename) {
+  vector<Employee*> staff;
+  ifstream inFile(filename);
+
+  string type, name, salaryStr, extraStr;
+  while (getline(inFile, type, ',')) {
+    getline(inFile, name, ',');
+    getline(inFile, salaryStr, ',');
+    getline(inFile, extraStr);
+
+    int salary = stoi(salaryStr);
+    int extra  = stoi(extraStr);
+
+    if (type == "P") staff.push_back(new Programmer(name, salary, extra));
+    else if (type == "M") staff.push_back(new Manager(name, salary, extra));
+  }
+
+  inFile.close();
+  return staff;
+}
+
+int main() {
+  vector<Employee*> staff;
+  staff.push_back(new Programmer("Alice", 50000, 12000));
+  staff.push_back(new Manager("Bob", 60000, 8000));
+
+  saveToFile(staff, "employees.txt");
+
+  for (Employee* e : staff) delete e;
+  staff.clear();
+
+  staff = loadFromFile("employees.txt");
+
+  for (Employee* e : staff) e->printInfo();
+  for (Employee* e : staff) delete e;
+
+  return 0;
+}
+
+```
+
+</div>
+
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+</div>
+	
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/settings.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/effects.js"></script>
+<!--<script src="settings.js"></script>-->
+<!--<script src="effects.js"></script>-->
+</body>
+</html>

@@ -1,0 +1,1370 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Records/Structs</title>
+    <meta name="description" content="A set of slides for Machine Learning">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/effectsGreen.css">
+	<!--<link rel="stylesheet" href="./css/style.css">-->
+	<!--<link rel="stylesheet" href="./css/effects.css">-->
+	
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+	</script>
+
+	<style>
+	    pre {
+            background-color: black;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+        }
+        code {
+            font-family: "Courier New", monospace;
+            color: #d63384; /* Python-style color */
+        }
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }	
+	</style>
+
+  </head>
+
+  <body onload="startTime()">
+    <div class="reveal" >
+	  <p><img src="images/midwaylogo.png"  align="left" height="6%" width="6%" style="vertical-align:left;margin:-15px 5px"><img src="images/mueagle.png"  color="white" align="left" height="4%" width="4%" style="vertical-align:center;margin:-1% 45%">
+		<div style="color:white;font-size: 20px; vertical-align:left;margin:-1% 0%" align="right" id="realtimeclock"></div></p>
+      <div class="slides">
+
+  <div class="me">Xinxing Wu</div>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown id="cover"><textarea data-template>
+<p class='titlep'>&nbsp;</p>
+
+# Records/Structs
+
+<hr>
+
+<br>
+
+Xinxing Wu
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline
+
+[<p class="hover-underline-animation">Motivation</p>](#/ch1)
+
+[<p class="hover-underline-animation">Definition and Syntax</p>](#/ch2)
+
+[<p class="hover-underline-animation">Application</p>](#/ch3)
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline (Cont.)
+
+[<p class="hover-underline-animation">Summary</p>](#/ch4)
+
+[<p class="hover-underline-animation">Mini Case Study</p>](#/ch5)
+
+</textarea></section>
+
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+
+## Goal
+
+<div id="shadebox-neon" class="shadebox neon">
+
+Learn how to define and use struct to group related data into one custom type, create and manage multiple records (arrays/vectors of structs), access fields using the dot operator (.), and use structs to organize real-world program data clearly and safely.
+</div>
+
+</textarea></section>
+
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch1" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Motivation</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Why use Records / struct in C++?</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+When you write real programs, you often need to store many related pieces of data that belong together (like one student, one book, one order). Basic variables and arrays become messy.
+
+<hr style="border:0;height:6px;border-radius:999px;background:linear-gradient(90deg,#ff3b3b,#ffb13b,#fff23b,#3bff8f,#3bc8ff,#8a3bff,#ff3b3b);background-size:300% 100%;animation:rainbowLine 4s linear infinite;"><style>@keyframes rainbowLine{0%{background-position:0% 50%}100%{background-position:300% 50%}}</style>
+
+A struct lets you bundle those related values into one meaningful type.
+</div>
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Too many separate variables gets confusing</div>
+  <div class="question-shadebox">
+<div style="width: 800px;"></div>
+
+- If you store one student using separate variables, you end up managing “parallel” data manually:
+
+<hr style="border: none; border-top: 2px dashed green;">
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+int id1 = 1001;
+string name1 = "Alice";
+double gpa1 = 3.75;
+
+int id2 = 1002;
+string name2 = "Bob";
+double gpa2 = 3.10;
+```
+</div>
+</div>
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Note</div>
+  <div class="question-shadebox">
+<div style="width: 800px;"></div>
+
+<div id="roundbox">
+
+"Readable programming" refers to the practice of writing source code that is easy for humans to understand, interpret, and maintain, not just for computers to execute.
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Problems</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+- Hard to scale (what if you have 50 students?)
+
+- Easy to mix up (id2 with name1, etc.)
+
+- Hard to pass as one unit to functions
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Arrays don’t work well for “mixed” data types</div>
+  <div class="question-shadebox">
+<div style="width: 800px;"></div>
+
+Arrays are great when all items have the same type, but real objects usually have mixed types:
+
+- id is int
+
+- name is string
+
+- gpa is double
+
+You can’t put those in one simple array cleanly.
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">struct groups related fields into one “record”</div>
+  <div class="question-shadebox">
+<div style="width: 800px;"></div>
+
+- You can model a real-world entity directly:
+
+<hr style="border: none; border-top: 2px dashed green;">
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Student {
+    int id;
+    string name;
+    double gpa;
+};
+
+int main() {
+    Student s1 = {1001, "Alice", 3.75};
+
+    cout << s1.id << "\n";
+    cout << s1.name << "\n";
+    cout << s1.gpa << "\n";
+    return 0;
+}
+```
+
+</div>
+</div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Benefits</div>
+  <div class="definition-shadebox">
+
+- One variable s1 <spanBYMix>holds</spanBYMix> everything about that student
+
+- Clear meaning: Student is a <spanBYMix>real type</spanBYMix> in your program
+
+- Less chance of mixing up data
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Makes arrays/vectors of real objects easy</div>
+  <div class="question-shadebox">
+<div style="width: 800px;"></div>
+
+- Now you can store many students cleanly:
+
+<hr style="border: none; border-top: 2px dashed green;">
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+Student students[2] = {
+    {1001, "Alice", 3.75},
+    {1002, "Bob",   3.10}
+};
+
+cout << students[1].name; // Bob
+```
+
+</div>
+</div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Easier to pass data to functions</div>
+  <div class="question-shadebox">
+<div style="width: 800px;"></div>
+
+- Instead of passing 3–10 separate parameters, pass one struct:
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+
+```
+
+void printStudent(Student s) {
+    cout << s.id << " " << s.name << " " << s.gpa << "\n";
+}
+```
+
+</div>
+
+- Cleaner, safer, and easier to update later.
+
+</div>
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">struct (records)</div>
+  <div class="question-shadebox">
+
+We use struct (records) because real-world data comes in “groups,” and <spanBYMix>struct lets us store, manage, and pass those groups as one meaningful unit</spanBYMix>.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">struct</div>
+  <div class="definition-shadebox">
+
+- In C++, the <spanBYMix>struct</spanBYMix> keyword is used to create structures (often called "records" in general programming terminology), which are essentially the same as classes, with the only distinction being the default member access specifier. 
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">struct vs. class</div>
+  <div class="definition-shadebox">
+
+- struct: Members (data and functions) are public by default. This makes them useful for simple data containers where all fields are meant to be openly accessible, similar to structures in C.
+- class: Members are private by default. This is the standard choice for implementing object-oriented programming principles like data hiding and encapsulation. 
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Exercise</div>
+  <div class="definition-shadebox">
+
+- Create a struct named Product with these fields:
+
+	- int id;
+
+	- string name;
+
+	- double price;
+
+	- int quantity;
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Exercise (cont.)</div>
+  <div class="definition-shadebox">
+
+- Create an array products with at least 4 items, initialized like:
+
+```
+Product products[4] = {
+    {2001, "Mouse", 19.99, 12},
+    {2002, "Keyboard", 39.50, 7},
+    {2003, "USB Cable", 7.25, 30},
+    {2004, "Headset", 49.99, 5}
+};
+```
+
+- Print the first product’s fields (one per line).
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">An answer</div>
+  <div class="definition-pro-Y-shadebox">
+  
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Product {
+    int sku;
+    string name;
+    double price;
+    int quantity;
+};
+
+void printProduct(const Product& p) {
+    // TODO
+}
+
+void printAll(const Product arr[], int n) {
+    // TODO
+}
+
+int findIndexBySku(const Product arr[], int n, int targetSku) {
+    // TODO
+    return -1;
+}
+
+double totalInventoryValue(const Product arr[], int n) {
+    // TODO
+    return 0.0;
+}
+
+int indexOfMostExpensive(const Product arr[], int n) {
+    // TODO
+    return 0;
+}
+
+int main() {
+    Product products[4] = {
+        {2001, "Mouse", 19.99, 12},
+        {2002, "Keyboard", 39.50, 7},
+        {2003, "USB Cable", 7.25, 30},
+        {2004, "Headset", 49.99, 5}
+    };
+
+    int n = 4;
+
+    // Part B: print first record (one per line)
+    cout << products[0].sku << "\n";
+    cout << products[0].name << "\n";
+    cout << products[0].price << "\n";
+    cout << products[0].quantity << "\n\n";
+
+    // Part D
+    printAll(products, n);
+
+    int targetSku;
+    cout << "\nEnter SKU to search: ";
+    cin >> targetSku;
+
+    int idx = findIndexBySku(products, n, targetSku);
+    if (idx == -1) {
+        cout << "Not found\n";
+    } else {
+        cout << "Found:\n";
+        printProduct(products[idx]);
+    }
+
+    cout << "\nTotal inventory value = " << totalInventoryValue(products, n) << "\n";
+
+    int mostIdx = indexOfMostExpensive(products, n);
+    cout << "Most expensive product:\n";
+    printProduct(products[mostIdx]);
+
+    return 0;
+}
+```
+
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch2" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Definition and Syntax</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Structures</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Structures (also called structs) are <spanGREEN>a way to group</spanGREEN> several related variables into one place.
+
+- <spanGREEN>Each variable</spanGREEN>  in the structure is known as a member of the structure.
+
+- Unlike an array, a structure can contain many <spanRED>different data types</spanRED>: int, string, bool, etc.
+</div>
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Create a Structure</div>
+  <div class="question-shadebox">
+
+- To create a structure, use the struct keyword and declare each of its members inside curly braces.
+
+- After the declaration, specify the name of the structure variable (myStructure in the example below):
+
+<hr style="border: none; border-top: 2px dashed green;">
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+struct {             // Structure declaration
+  int myNum;         // Member (int variable)
+  string myString;   // Member (string variable)
+} myStructure;       // Structure variable
+```
+
+</div>
+</div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Question</div>
+  <div class="question-shadebox">
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+struct myStructure {
+    int myNum;
+    string myString;
+};
+```
+
+</div>
+
+vs.
+
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+struct {
+    int myNum;
+    string myString;
+} myStructure;
+```
+
+</div>
+</div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Question</div>
+  <div class="question-shadebox">
+
+- Named struct type (you can make many variables)
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Book {
+    int id;
+    string title;
+};
+
+int main() {
+    Book b1{1, "C++ Basics"};
+    Book b2{2, "Data Structures"};
+
+    cout << b1.id << " " << b1.title << "\n";
+    cout << b2.id << " " << b2.title << "\n";
+}
+```
+
+</div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Question</div>
+  <div class="question-shadebox">
+
+- Anonymous struct + one variable (only this one variable)
+
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    struct {
+        int id;
+        string title;
+    } onlyOneBook;
+
+    onlyOneBook.id = 1;
+    onlyOneBook.title = "C++ Basics";
+
+    cout << onlyOneBook.id << " " << onlyOneBook.title << "\n";
+
+    // Book b2;   // ❌ not possible — there is NO type name "Book"
+}
+```
+</div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Note</div>
+  <div class="question-shadebox">
+
+> onlyOneBook is just <spanBYMix>one variable</spanBYMix>. You <spanRED>can’t</spanRED> later do TypeName x; because there is no type name.
+
+</div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Access Structure Members</div>
+  <div class="question-shadebox">
+<div style="width: 800px;"></div>
+
+- Assign data to members of a structure and print it:
+
+<hr style="border: none; border-top: 2px dashed green;">
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+  struct {
+    int myNum;
+    string myString;
+  } myStructure;
+
+  myStructure.myNum = 1;
+  myStructure.myString = "Hello World!";
+
+  cout << myStructure.myNum << "\n";
+  cout << myStructure.myString << "\n";
+  return 0;
+}
+```
+
+</div>
+</div>
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">One Structure in Multiple Variables</div>
+  <div class="question-shadebox">
+<div style="width: 800px;"></div>
+
+- You can use a comma (,) to use one structure in many variables:
+
+<hr style="border: none; border-top: 2px dashed green;">
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+struct {
+  int myNum;
+  string myString;
+} myStruct1, myStruct2, myStruct3; // Multiple structure variables separated with commas
+```
+
+</div>
+</div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+  struct {
+    string brand;
+    string model;
+    int year;
+  } myCar1, myCar2; // We can add variables by separating them with a comma here
+
+  // Put data into the first structure
+  myCar1.brand = "BMW";
+  myCar1.model = "X5";
+  myCar1.year = 1999;
+
+  // Put data into the second structure
+  myCar2.brand = "Ford";
+  myCar2.model = "Mustang";
+  myCar2.year = 1969;
+
+  // Print the structure members
+  cout << myCar1.brand << " " << myCar1.model << " " << myCar1.year << "\n";
+  cout << myCar2.brand << " " << myCar2.model << " " << myCar2.year << "\n";
+  return 0;
+}
+
+```
+
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Named Structures</div>
+  <div class="question-shadebox">
+
+- By giving a name to the structure, you can treat it as a data type. This means that you can create variables with this structure anywhere in the program at any time.
+
+- To create a named structure, put the name of the structure right after the struct keyword:
+
+<hr style="border: none; border-top: 2px dashed green;">
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+struct car {  // This structure is now named "car"
+  string brand;
+  string model;
+  int year;
+};
+```
+
+</div>
+</div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Named Structures</div>
+  <div class="question-shadebox">
+
+- To declare a variable that uses the structure, use the name of the structure as the data type of the variable:
+
+<hr style="border: none; border-top: 2px dashed green;">
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+car myCar1;
+```
+
+</div>
+</div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+// Declare a structure named "car"
+struct car {
+  string brand;
+  string model;
+  int year;
+};
+
+int main() {
+  // Create a car structure and store it in myCar1;
+  car myCar1;
+  myCar1.brand = "BMW";
+  myCar1.model = "X5";
+  myCar1.year = 1999;
+
+  // Create another car structure and store it in myCar2;
+  car myCar2;
+  myCar2.brand = "Ford";
+  myCar2.model = "Mustang";
+  myCar2.year = 1969;
+ 
+  // Print the structure members
+  cout << myCar1.brand << " " << myCar1.model << " " << myCar1.year << "\n";
+  cout << myCar2.brand << " " << myCar2.model << " " << myCar2.year << "\n";
+ 
+  return 0;
+}
+```
+
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch3" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Application</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Example 1</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Student Records (gradebook / advising list)
+
+<div id="shadebox-glass" class="shadebox glass">
+
+Use a struct to keep all student info together, then store many students in a list and do simple operations (print, average GPA, find top student).
+
+</div>
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Student {
+    int id;
+    string name;
+    double gpa;
+};
+
+int main() {
+    Student students[3] = {
+        {1001, "Alice", 3.75},
+        {1002, "Bob",   3.10},
+        {1003, "Cathy", 3.95}
+    };
+
+    // Print all students
+    for (int i = 0; i < 3; i++) {
+        cout << students[i].id << " | " << students[i].name
+             << " | GPA: " << students[i].gpa << "\n";
+    }
+
+    // Find highest GPA
+    int bestIndex = 0;
+    for (int i = 1; i < 3; i++) {
+        if (students[i].gpa > students[bestIndex].gpa) {
+            bestIndex = i;
+        }
+    }
+    cout << "\nTop student: " << students[bestIndex].name << "\n";
+    return 0;
+}
+
+```
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Example 2</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Shopping Cart / Receipt (store items and compute total)
+
+<div id="shadebox-glass" class="shadebox glass">
+
+Use a struct to represent one item on a receipt, then compute subtotal and total.
+
+</div>
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Item {
+    string name;
+    double price;
+    int qty;
+};
+
+int main() {
+    Item cart[3] = {
+        {"Milk",   3.49, 2},
+        {"Bread",  2.25, 1},
+        {"Apples", 0.99, 6}
+    };
+
+    double total = 0.0;
+
+    cout << "Receipt:\n";
+    for (int i = 0; i < 3; i++) {
+        double line = cart[i].price * cart[i].qty;
+        total += line;
+
+        cout << cart[i].name << "  $"
+             << cart[i].price << " x " << cart[i].qty
+             << " = $" << line << "\n";
+    }
+
+    cout << "\nTotal: $" << total << "\n";
+    return 0;
+}
+```
+
+</div>
+
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch4" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Summary</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div id="rainbow-type"> Summary </div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Group related data together</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">A struct lets you store multiple fields (like id, name, gpa) as one meaningful unit.</p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Model real-world objects</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">You can represent things like students, items, players, or orders directly in your program.</p>
+</div>
+
+<div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Manage many records easily</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">You can create arrays/vectors of structs to handle lists (class roster, shopping cart) cleanly.</p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Cleaner code and safer handling</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Passing one struct to functions is simpler than passing many separate variables, and it reduces mix-ups.</p>
+</div>
+
+</div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">True / False</div>
+  <div class="definition-com-shadebox">
+
+A struct in C++ is used to group related variables into one custom data type. <button type="button" class="reveal-btn" data-answer="answer-q1">Show Answer</button>
+<div id="answer-q1" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+Arrays are ideal for storing mixed data types such as int, string, and double together. <button type="button" class="reveal-btn" data-answer="answer-q2">Show Answer</button>
+<div id="answer-q2" class="answer-box">
+<b>Answer:</b>False
+</div>
+
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+Using many separate variables to represent one real-world object can make code harder to manage. <button type="button" class="reveal-btn" data-answer="answer-q3">Show Answer</button>
+<div id="answer-q3" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">True / False</div>
+  <div class="definition-com-shadebox">
+
+In C++, members of a struct are private by default. <button type="button" class="reveal-btn" data-answer="answer-q4">Show Answer</button>
+<div id="answer-q4" class="answer-box">
+<b>Answer:</b>False
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+The dot operator (.) is used to access members of a structure variable. <button type="button" class="reveal-btn" data-answer="answer-q5">Show Answer</button>
+<div id="answer-q5" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">True / False</div>
+  <div class="definition-com-shadebox">
+
+A struct can contain only one data type, similar to an array. <button type="button" class="reveal-btn" data-answer="answer-q6">Show Answer</button>
+<div id="answer-q6" class="answer-box">
+<b>Answer:</b>False
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+Declaring a named structure allows it to be reused as a data type throughout the program. <button type="button" class="reveal-btn" data-answer="answer-q7">Show Answer</button>
+<div id="answer-q7" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+You cannot create multiple variables from the same anonymous structure definition. <button type="button" class="reveal-btn" data-answer="answer-q8">Show Answer</button>
+<div id="answer-q8" class="answer-box">
+<b>Answer:</b>False
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">True / False</div>
+  <div class="definition-com-shadebox">
+
+Passing a struct to a function is often cleaner than passing many individual parameters.  <button type="button" class="reveal-btn" data-answer="answer-q9">Show Answer</button>
+<div id="answer-q9" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+In C++, the only difference between struct and class is their default access level. <button type="button" class="reveal-btn" data-answer="answer-q10">Show Answer</button>
+<div id="answer-q10" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Fill in the Blanks</div>
+  <div class="definition-com-shadebox">
+
+A structure groups several related variables into one __________ unit. <button type="button" class="reveal-btn" data-answer="answer-q11">Show Answer</button>
+<div id="answer-q11" class="answer-box">
+<b>Answer:</b>meaningful
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+Each variable inside a structure is called a __________ of the structure. <button type="button" class="reveal-btn" data-answer="answer-q12">Show Answer</button>
+<div id="answer-q12" class="answer-box">
+<b>Answer:</b>member
+</div>
+
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+The keyword used to define a structure in C++ is __________. <button type="button" class="reveal-btn" data-answer="answer-q13">Show Answer</button>
+<div id="answer-q13" class="answer-box">
+<b>Answer:</b>struct
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Fill in the Blanks</div>
+  <div class="definition-com-shadebox">
+
+The operator used to access structure members is the __________ operator.  <button type="button" class="reveal-btn" data-answer="answer-q14">Show Answer</button>
+<div id="answer-q14" class="answer-box">
+<b>Answer:</b>dot (.)
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+A named structure can be treated as a custom __________ type. <button type="button" class="reveal-btn" data-answer="answer-q15">Show Answer</button>
+<div id="answer-q15" class="answer-box">
+<b>Answer:</b>data
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Fill in the Blanks</div>
+  <div class="definition-com-shadebox">
+
+In a struct, members are __________ by default. <button type="button" class="reveal-btn" data-answer="answer-q16">Show Answer</button>
+<div id="answer-q16" class="answer-box">
+<b>Answer:</b>public
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+Using structs helps prevent mixing up __________ data that belongs together. <button type="button" class="reveal-btn" data-answer="answer-q17">Show Answer</button>
+<div id="answer-q17" class="answer-box">
+<b>Answer:</b>related
+</div>
+
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+An array of Student structs allows you to store multiple __________ records. <button type="button" class="reveal-btn" data-answer="answer-q18">Show Answer</button>
+<div id="answer-q18" class="answer-box">
+<b>Answer:</b>student
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Fill in the Blanks</div>
+  <div class="definition-com-shadebox">
+
+Structures are especially useful when modeling __________-world objects like students or shopping items. <button type="button" class="reveal-btn" data-answer="answer-q19">Show Answer</button>
+<div id="answer-q19" class="answer-box">
+<b>Answer:</b>real
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+Compared to arrays, structs are better suited for storing __________ data types together. <button type="button" class="reveal-btn" data-answer="answer-q20">Show Answer</button>
+<div id="answer-q20" class="answer-box">
+<b>Answer:</b>mixed
+</div>
+
+   </div>
+</div>
+
+</textarea></section>
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch5" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Mini Case Study</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Lab</div>
+  <div class="definition-com-shadebox">
+
+Create a structure to represent a student. It should have the following members:
+
+- name (string)
+- age (int)
+- grade (char)
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+Then
+
+- Create one variable of the structure.
+- Assign values to its members.
+- Print the values to the screen.
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Expected Output</div>
+  <div class="definition-pro-Y-shadebox">
+  
+```
+Name: Liam
+Age: 35
+Grade: A
+```
+
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### An answer
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct student {
+  string name;
+  int age;
+  char grade;
+};
+
+int main() {
+  student s1;
+
+  s1.name = "John";
+  s1.age = 35;
+  s1.grade = 'A';
+
+  cout << "Name: " << s1.name << "\n";
+  cout << "Age: " << s1.age << "\n";
+  cout << "Grade: " << s1.grade << "\n";
+
+  return 0;
+}
+
+```
+
+</div>
+
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+</div>
+	
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/settings.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/effects.js"></script>
+<!--<script src="settings.js"></script>-->
+<!--<script src="effects.js"></script>-->
+</body>
+</html>

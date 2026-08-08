@@ -1,0 +1,1182 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Week 3: Algorithms</title>
+    <meta name="description" content="A set of slides for Machine Learning">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/effectsGreen.css">
+	<!--<link rel="stylesheet" href="./css/style.css">-->
+	<!--<link rel="stylesheet" href="./css/effects.css">-->
+	<link rel="stylesheet" href="../css/no-copy.css">
+
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+
+		function startCountdown() {
+			const countdownBox = document.getElementById('classCountdown');
+			if (!countdownBox) return;
+
+			// Target: Last day of classes, Saturday, December 5, 2026.
+			const targetDate = new Date(2026, 11, 5, 0, 0, 0).getTime();
+
+			function updateCountdown() {
+				const now = new Date().getTime();
+				const distance = targetDate - now;
+
+				if (distance <= 0) {
+					const today = new Date();
+					if (today.getFullYear() === 2026 && today.getMonth() === 11 && today.getDate() === 5) {
+						countdownBox.innerHTML = '<span class="count-label">Last day of classes</span><span class="count-time">Today — Dec. 5, 2026</span>';
+					} else {
+						countdownBox.innerHTML = '<span class="count-label">Last day of classes</span><span class="count-time">Completed — Dec. 5, 2026</span>';
+					}
+					return;
+				}
+
+				const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+				const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+				const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+				const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+				countdownBox.innerHTML = '<span class="count-label">Last day of classes: Dec. 5, 2026</span>' +
+					'<span class="count-time">' + days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's</span>';
+			}
+
+			updateCountdown();
+			setInterval(updateCountdown, 1000);
+		}
+
+		function startBubbleAnimation() {
+			const bubbleLayer = document.getElementById('bubbleLayer');
+			if (!bubbleLayer) return;
+
+			function createBubble() {
+				const bubble = document.createElement('span');
+				const size = Math.floor(8 + Math.random() * 22);
+				const left = Math.random() * 100;
+				const duration = Math.floor(28 + Math.random() * 22);
+				const drift = Math.floor(-120 + Math.random() * 240);
+
+				bubble.className = 'floating-bubble';
+				bubble.style.width = size + 'px';
+				bubble.style.height = size + 'px';
+				bubble.style.left = left + 'vw';
+				bubble.style.animationDuration = duration + 's';
+				bubble.style.setProperty('--bubble-drift', drift + 'px');
+
+				bubbleLayer.appendChild(bubble);
+				setTimeout(function () {
+					bubble.remove();
+				}, duration * 1000 + 500);
+			}
+
+			function createBubbleBurst() {
+				const bubbleCount = 18 + Math.floor(Math.random() * 12);
+				for (let i = 0; i < bubbleCount; i++) {
+					setTimeout(createBubble, i * 260);
+				}
+			}
+
+			// Show one soft burst shortly after loading, then repeat every 3 minutes.
+			setTimeout(createBubbleBurst, 2500);
+			setInterval(createBubbleBurst, 180000);
+		}
+	</script>
+
+	<style>
+	    pre {
+            background-color: black;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+        }
+        code {
+            font-family: "Courier New", monospace;
+            color: #d63384; /* Python-style color */
+        }
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }
+        .top-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 8px 4px 0 4px;
+            gap: 12px;
+        }
+        .top-header-left,
+        .top-header-center,
+        .top-header-right {
+            flex: 1 1 0;
+            display: flex;
+            align-items: flex-start;
+        }
+        .top-header-left {
+            justify-content: flex-start;
+        }
+        .top-header-center {
+            justify-content: center;
+        }
+        .top-header-right {
+            justify-content: flex-end;
+        }
+        .header-badge {
+            color: #ffffff;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+            background: rgba(22, 163, 74, 0.38);
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(0,0,0,.22);
+            padding: 6px 12px;
+            line-height: 1.05;
+            white-space: nowrap;
+        }
+        #classCountdown {
+            display: inline-flex;
+            align-items: center;
+            min-width: 360px;
+            text-align: left;
+            letter-spacing: .2px;
+        }
+        #classCountdown .count-label {
+            display: inline-block;
+            font-size: 15px;
+            font-weight: 800;
+            margin-bottom: 0;
+            margin-right: 8px;
+        }
+        #classCountdown .count-time {
+            display: inline-block;
+            font-size: 15px;
+            font-weight: 800;
+        }
+        .header-email-link {
+            display: inline-block;
+            color: #ffffff !important;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+            font-size: 15px;
+            font-weight: 800;
+            line-height: 1;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .header-email-link:hover {
+            text-decoration: underline;
+        }
+        #realtimeclock {
+            display: inline-block;
+            font-size: 15px;
+            font-weight: 800;
+        }
+        #bubbleLayer {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 9999;
+            background: transparent !important;
+        }
+        #bubbleCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: transparent !important;
+        }
+        .floating-bubble {
+            position: absolute;
+            bottom: -60px;
+            display: block;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.10);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.14);
+            animation-name: floatBubbleUp;
+            animation-timing-function: linear;
+            animation-fill-mode: forwards;
+            opacity: 0;
+        }
+        @keyframes floatBubbleUp {
+            0% {
+                transform: translate3d(0, 0, 0) scale(.85);
+                opacity: 0;
+            }
+            12% {
+                opacity: .30;
+            }
+            88% {
+                opacity: .18;
+            }
+            100% {
+                transform: translate3d(var(--bubble-drift), -112vh, 0) scale(1.2);
+                opacity: 0;
+            }
+        }
+        .reveal {
+            position: relative;
+            z-index: 1;
+        }
+        .reveal .slides {
+            margin-top: 54px !important;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .floating-bubble {
+                animation: none;
+                display: none;
+            }
+        }	
+	</style>
+
+  </head>
+
+  <body onload="startTime(); startCountdown(); startBubbleAnimation();">
+    <div id="bubbleLayer" aria-hidden="true"><canvas id="bubbleCanvas"></canvas></div>
+    <div class="reveal" >
+      <div class="top-header">
+        <div class="top-header-left">
+          <span id="classCountdown" class="header-badge"><span class="count-label">Last day of classes: Dec. 5, 2026</span><span class="count-time">Loading...</span></span>
+        </div>
+        <div class="top-header-center">
+          <a href="mailto:Xinxing.Wu@kysu.edu" title="Email Xinxing Wu" class="header-email-link header-badge">Xinxing.Wu@kysu.edu</a>
+        </div>
+        <div class="top-header-right">
+          <div class="header-badge" id="realtimeclock"></div>
+        </div>
+      </div>
+      <div class="slides">
+
+  <div class="me">Xinxing Wu</div>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown id="cover"><textarea data-template>
+<p class='titlep'>&nbsp;</p>
+
+# Week 3: Algorithms
+
+
+<hr>
+
+Xinxing Wu
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline
+
+[<p class="hover-underline-animation">Introduction</p>](#/ch1)
+
+[<p class="hover-underline-animation">Basic knowledge</p>](#/ch2)
+
+[<p class="hover-underline-animation">Basic examples</p>](#/ch3)
+
+[<p class="hover-underline-animation">Basic real-world applications</p>](#/ch4)
+
+</textarea></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline (Cont.)
+
+[<p class="hover-underline-animation">Advanced knowledge</p>](#/ch5)
+
+[<p class="hover-underline-animation">Advanced examples</p>](#/ch6)
+
+[<p class="hover-underline-animation">Advanced real-world applications</p>](#/ch7)
+
+[<p class="hover-underline-animation">Task</p>](#/ch8)
+
+</textarea></section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline (Cont.)
+
+[<p class="hover-underline-animation">Summary</p>](#/ch9)
+
+</textarea></section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch1" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Introduction</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Learning Goals</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- State an algorithm clearly in English and pseudocode.
+- Trace an algorithm on a small input.
+- Compare growth rates such as $\log n$, $n$, $n \log n$, $n^2$, and $2^n$.
+- Explain best, worst, and average-case thinking.
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch2" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Basic knowledge</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">A Note</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- An algorithm is a finite sequence of precise steps that solves a class of problems.
+
+- Correctness asks whether the algorithm always gives the right answer. Complexity asks how much time or memory it uses as input grows.
+
+- Pseudocode allows us to focus on logic without details of one programming language.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Key Ideas</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Identify the objects in the problem.
+- Choose notation that makes relationships clear.
+- Work on a small example before solving the general case.
+- Explain the answer in plain English after the calculation.
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch3" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Basic examples</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Example 1: Linear search</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- **Problem.** Find 42 in [7, 12, 42, 50].
+
+- **Step-by-step solution.** Check 7, then 12, then 42. Stop when found. Worst case checks every element, so time is O(n).
+
+- **Check.** Linear search is simple and works even when data is not sorted.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Example 2: Binary search</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- **Problem.** Find 42 in a sorted list [3, 8, 12, 25, 42, 60, 91].
+
+- **Step-by-step solution.** Check the middle 25. Since 42 is larger, search right half. Check 60, then search left. Find 42.
+
+- **Check.** Each step halves the search space, so time is O(log n).
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch4" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Basic real-world applications</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Application 1: Search boxes</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Search algorithms help find names, keywords, files, and records.
+
+- **Discussion prompt:** What data or assumptions would we need to use this model responsibly?
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Application 2: Everyday planning</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- A recipe, campus route, or registration workflow can be evaluated as an algorithm with inputs, steps, and outputs.
+
+- **Discussion prompt:** What data or assumptions would we need to use this model responsibly?
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch5" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Advanced knowledge</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">A Note</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Algorithm analysis ignores small machine-dependent details and focuses on growth. A slow-growing algorithm may scale better even if it is not fastest for tiny inputs.
+
+- Loop invariants help prove correctness: a statement remains true before and after each loop iteration.
+
+- Divide-and-conquer solves a problem by splitting it into smaller subproblems.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">How to Think</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Ask what structure is hidden in the problem.
+- Look for an invariant, equivalence, ordering, recurrence, or optimization goal.
+- Use the simplest representation that preserves the important information.
+- Check whether the method scales when the input becomes large.
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch6" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Advanced examples</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Example 1: Loop invariant for maximum</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- **Problem.** Algorithm scans a list and stores current_max.
+
+- **Step-by-step solution.** Invariant: after checking the first k values, current_max equals the largest of those k values. It is true initially, remains true after each comparison, and proves correctness at the end.
+
+- **Why it matters.** The invariant explains why the algorithm works.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Example 2: Growth comparison</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- **Problem.** Compare $n^2$ and $n\log_2 n$ for $n=1,000$.
+
+- **Step-by-step solution.** $n^2=1,000,000$ while $n\log_2 n$ is about 9,966. For large $n$, $n \log n$ is dramatically smaller.
+
+- **Why it matters.** Asymptotic thinking predicts scalability.
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch7" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Advanced real-world applications</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Application 1: Cybersecurity scanning</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Malware detection, password checking, and log analysis require algorithms that scale to huge data.
+
+- **Extension question:** How would the model change with more realistic constraints?
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Application 2: Computational biology</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- String matching supports DNA sequence comparison, mutation detection, and pattern search.
+
+- **Extension question:** How would the model change with more realistic constraints?
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch8" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Task</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Task</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- **Task.** Write pseudocode for finding duplicate student IDs. Trace it on a list of eight IDs, then compare a nested-loop version with a set-based version.
+
+- **Deliverable.** One clear model, one worked example, and a short explanation of the result.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Finding Duplicate Student IDs</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Problem Model
+
+Suppose a college stores student IDs in a list:
+
+```
+IDs = [1042, 1057, 1099, 1042, 1130, 1057, 1188, 1201]
+```
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Finding Duplicate Student IDs (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+A duplicate occurs when the same student ID appears more than once.
+
+For this dataset:
+
+1042 appears twice.
+1057 appears twice.
+
+Therefore, the duplicate IDs are:
+
+[1042, 1057]
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Method 1: Nested-Loop Algorithm</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+The nested-loop method compares each student ID with every ID that appears after it.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Method 1: Nested-Loop Algorithm (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+Pseudocode
+
+```
+PROCEDURE FindDuplicatesNested(IDs)
+
+    duplicates ← empty list
+
+    FOR i ← 0 TO length(IDs) - 2
+
+        FOR j ← i + 1 TO length(IDs) - 1
+
+            IF IDs[i] = IDs[j] AND IDs[i] is not in duplicates THEN
+
+                ADD IDs[i] to duplicates
+
+            END IF
+
+        END FOR
+
+    END FOR
+
+    RETURN duplicates
+
+END PROCEDURE
+```
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">How the Nested-Loop Method Works</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+For every position $i$:
+
+Select the student ID at position $i$.
+Compare it with all IDs after position $i$.
+When two IDs match, add the ID to the duplicate list.
+Do not add the same duplicate more than once.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Worked Example: Nested-Loop Trace</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Use the following list:
+
+| Position | Student ID |
+| :------: | :--------: |
+|     0    |    1042    |
+|     1    |    1057    |
+|     2    |    1099    |
+|     3    |    1042    |
+|     4    |    1130    |
+|     5    |    1057    |
+|     6    |    1188    |
+|     7    |    1201    |
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Worked Example: Nested-Loop Trace (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+Trace
+
+
+<div style="font-size: 18px;">
+
+| Selected ID | IDs Compared With                        |  Match Found?  | Duplicate List |
+| :---------: | :--------------------------------------- | :------------: | :------------- |
+|     1042    | 1057, 1099, 1042, 1130, 1057, 1188, 1201 | Yes, with 1042 | `[1042]`       |
+|     1057    | 1099, 1042, 1130, 1057, 1188, 1201       | Yes, with 1057 | `[1042, 1057]` |
+|     1099    | 1042, 1130, 1057, 1188, 1201             |       No       | `[1042, 1057]` |
+|     1042    | 1130, 1057, 1188, 1201                   |  No new match  | `[1042, 1057]` |
+|     1130    | 1057, 1188, 1201                         |       No       | `[1042, 1057]` |
+|     1057    | 1188, 1201                               |  No new match  | `[1042, 1057]` |
+|     1188    | 1201                                     |       No       | `[1042, 1057]` |
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Worked Example: Nested-Loop Trace (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Result
+
+	- Duplicates = [1042, 1057]
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Method 2: Set-Based Algorithm</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- A set-based method keeps track of IDs that have already been seen.
+
+- It uses two sets:
+
+	- seen: IDs encountered for the first time.
+	- duplicates: IDs encountered more than once.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Method 2: Set-Based Algorithm (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+Pseudocode
+
+```
+PROCEDURE FindDuplicatesWithSet(IDs)
+
+    seen ← empty set
+    duplicates ← empty set
+
+    FOR each studentID in IDs
+
+        IF studentID is in seen THEN
+
+            ADD studentID to duplicates
+
+        ELSE
+
+            ADD studentID to seen
+
+        END IF
+
+    END FOR
+
+    RETURN duplicates
+
+END PROCEDURE
+```
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Worked Example: Set-Based Trace</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Initial state:
+
+```
+seen = empty
+duplicates = empty
+```
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Worked Example: Set-Based Trace (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+<div style="font-size: 22px;">
+
+| Step | Current ID | Is It in `seen`? | Updated `seen`                         | Updated `duplicates` |
+| :--: | :--------: | :--------------: | :------------------------------------- | :------------------- |
+|   1  |    1042    |        No        | `{1042}`                               | `{}`                 |
+|   2  |    1057    |        No        | `{1042, 1057}`                         | `{}`                 |
+|   3  |    1099    |        No        | `{1042, 1057, 1099}`                   | `{}`                 |
+|   4  |    1042    |        Yes       | `{1042, 1057, 1099}`                   | `{1042}`             |
+|   5  |    1130    |        No        | `{1042, 1057, 1099, 1130}`             | `{1042}`             |
+|   6  |    1057    |        Yes       | `{1042, 1057, 1099, 1130}`             | `{1042, 1057}`       |
+|   7  |    1188    |        No        | `{1042, 1057, 1099, 1130, 1188}`       | `{1042, 1057}`       |
+|   8  |    1201    |        No        | `{1042, 1057, 1099, 1130, 1188, 1201}` | `{1042, 1057}`       |
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Worked Example: Set-Based Trace (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Result
+	- Duplicates = {1042, 1057}
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Comparison of the Two Methods</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+<div style="font-size: 22px;">
+
+| Feature                   | Nested-Loop Method        | Set-Based Method          |
+| :------------------------ | :------------------------ | :------------------------ |
+| Main idea                 | Compare every pair of IDs | Remember IDs already seen |
+| Time complexity           | $\mathcal{O}(n^2)$        | $\mathcal{O}(n)$ on average|
+| Extra memory              | $\mathcal{O}(1)$, excluding results | $\mathcal{O}(n)$                   |
+| Easy to understand        | Yes                       | Yes                       |
+| Efficient for large lists | No                        | Yes                       |
+| Requires a set structure  | No                        | Yes                       |
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Why Is the Nested-Loop Method Slower?</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+For a list containing n IDs, the nested-loop algorithm may perform approximately
+
+$$
+\frac{n(n-1)}{2}
+$$
+
+comparisons.
+
+For eight IDs:
+
+$$
+\frac{8(8-1)}{2}=\frac{8\cdot}{7}=28.
+$$
+
+Therefore, the nested-loop method may perform as many as 28 pairwise comparisons.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Why Is the Set-Based Method Faster?</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- The set-based method processes each student ID once.
+
+- For eight IDs, it performs eight main iterations:
+
+$$n=8.$$
+
+- Checking whether an item belongs to a set usually takes constant time on average. Therefore, the total average running time is
+
+$$\mathcal{O}(n)$$
+
+- The set-based method is usually much faster when the student-ID list is large.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Explanation of the Result</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Both algorithms correctly identify the duplicate student IDs: 1042 and 1057
+- The nested-loop method is simple and does not require much additional memory, but it becomes slow as the dataset grows because it repeatedly compares pairs of IDs.
+- The set-based method uses additional memory to store previously seen IDs, but it is more efficient because each ID is processed only once. For a real college database containing hundreds or thousands of student IDs, the set-based method would generally be the better choice.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Summary</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- A duplicate student ID appears more than once.
+- The nested-loop method compares pairs of IDs.
+- The set-based method remembers previously seen IDs.
+- Both methods find 1042 and 1057.
+- The nested-loop method has time complexity $\mathcal{O}(n^2)$.
+- The set-based method has average time complexity $\mathcal{O}(n)$.
+- The set-based method is usually preferable for large datasets.
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch9" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Summary</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Common Mistakes</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Using notation without defining it.
+- Solving one example but claiming a general proof.
+- Forgetting assumptions or constraints.
+- Skipping the final interpretation in words.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Summary</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Algorithms are precise problem-solving procedures.
+- Tracing builds understanding; invariants build proof.
+- Complexity predicts performance as data grows.
+- Better algorithms often matter more than faster hardware.
+
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+</div>
+	
+
+<script>
+(function () {
+  function initVisibleBubbles() {
+    if (window.__visibleCanvasBubblesStarted) return;
+    window.__visibleCanvasBubblesStarted = true;
+
+    const layer = document.getElementById('bubbleLayer');
+    if (!layer) return;
+
+    let canvas = document.getElementById('bubbleCanvas');
+    if (!canvas) {
+      canvas = document.createElement('canvas');
+      canvas.id = 'bubbleCanvas';
+      layer.appendChild(canvas);
+    }
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const colors = [
+      'rgba(255,255,255,0.38)',
+      'rgba(187,247,208,0.34)',
+      'rgba(191,219,254,0.34)',
+      'rgba(254,240,138,0.30)',
+      'rgba(252,231,243,0.32)',
+      'rgba(221,214,254,0.32)'
+    ];
+
+    let bubbles = [];
+
+    function resizeCanvas() {
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.ceil(window.innerWidth * dpr);
+      canvas.height = Math.ceil(window.innerHeight * dpr);
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function makeBubble(now, delay) {
+      const radius = 5 + Math.random() * 11;
+      return {
+        start: now + delay,
+        duration: 30000 + Math.random() * 15000,
+        x: Math.random() * window.innerWidth,
+        y: window.innerHeight + radius + Math.random() * 35,
+        radius: radius,
+        drift: -90 + Math.random() * 180,
+        wobble: 8 + Math.random() * 22,
+        color: colors[Math.floor(Math.random() * colors.length)]
+      };
+    }
+
+    function burst() {
+      const now = performance.now();
+      const count = 28 + Math.floor(Math.random() * 12);
+      for (let i = 0; i < count; i++) {
+        bubbles.push(makeBubble(now, i * 110));
+      }
+    }
+
+    function draw(now) {
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+      bubbles = bubbles.filter(function (b) {
+        const t = (now - b.start) / b.duration;
+        if (t < 0) return true;
+        if (t > 1) return false;
+
+        const ease = 1 - Math.pow(1 - t, 1.8);
+        const x = b.x + b.drift * ease + Math.sin(t * Math.PI * 4) * b.wobble;
+        const y = b.y - (window.innerHeight + 120) * ease;
+        const alpha = Math.sin(Math.PI * t);
+
+        ctx.globalAlpha = 0.55 * alpha;
+        ctx.beginPath();
+        ctx.arc(x, y, b.radius, 0, Math.PI * 2);
+        ctx.fillStyle = b.color;
+        ctx.fill();
+
+        ctx.globalAlpha = 0.45 * alpha;
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = 'rgba(255,255,255,0.42)';
+        ctx.stroke();
+
+        return true;
+      });
+
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(draw);
+    }
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    // Show once when opened, then every 3 minutes.
+    burst();
+    setInterval(burst, 180000);
+    requestAnimationFrame(draw);
+  }
+
+  window.startBubbleAnimation = initVisibleBubbles;
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initVisibleBubbles);
+  } else {
+    initVisibleBubbles();
+  }
+})();
+</script>
+
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/settings.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/effects.js"></script>
+<script src="../js/no-copy.js"></script>
+<!--<script src="settings.js"></script>-->
+<!--<script src="effects.js"></script>-->
+</body>
+</html>

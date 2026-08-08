@@ -1,0 +1,1276 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Week 10: Counting</title>
+    <meta name="description" content="A set of slides for Machine Learning">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/effectsGreen.css">
+	<!--<link rel="stylesheet" href="./css/style.css">-->
+	<!--<link rel="stylesheet" href="./css/effects.css">-->
+	<link rel="stylesheet" href="../css/no-copy.css">
+
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+
+		function startCountdown() {
+			const countdownBox = document.getElementById('classCountdown');
+			if (!countdownBox) return;
+
+			// Target: Last day of classes, Saturday, December 5, 2026.
+			const targetDate = new Date(2026, 11, 5, 0, 0, 0).getTime();
+
+			function updateCountdown() {
+				const now = new Date().getTime();
+				const distance = targetDate - now;
+
+				if (distance <= 0) {
+					const today = new Date();
+					if (today.getFullYear() === 2026 && today.getMonth() === 11 && today.getDate() === 5) {
+						countdownBox.innerHTML = '<span class="count-label">Last day of classes</span><span class="count-time">Today — Dec. 5, 2026</span>';
+					} else {
+						countdownBox.innerHTML = '<span class="count-label">Last day of classes</span><span class="count-time">Completed — Dec. 5, 2026</span>';
+					}
+					return;
+				}
+
+				const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+				const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+				const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+				const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+				countdownBox.innerHTML = '<span class="count-label">Last day of classes: Dec. 5, 2026</span>' +
+					'<span class="count-time">' + days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's</span>';
+			}
+
+			updateCountdown();
+			setInterval(updateCountdown, 1000);
+		}
+
+		function startBubbleAnimation() {
+			const bubbleLayer = document.getElementById('bubbleLayer');
+			if (!bubbleLayer) return;
+
+			function createBubble() {
+				const bubble = document.createElement('span');
+				const size = Math.floor(8 + Math.random() * 22);
+				const left = Math.random() * 100;
+				const duration = Math.floor(28 + Math.random() * 22);
+				const drift = Math.floor(-120 + Math.random() * 240);
+
+				bubble.className = 'floating-bubble';
+				bubble.style.width = size + 'px';
+				bubble.style.height = size + 'px';
+				bubble.style.left = left + 'vw';
+				bubble.style.animationDuration = duration + 's';
+				bubble.style.setProperty('--bubble-drift', drift + 'px');
+
+				bubbleLayer.appendChild(bubble);
+				setTimeout(function () {
+					bubble.remove();
+				}, duration * 1000 + 500);
+			}
+
+			function createBubbleBurst() {
+				const bubbleCount = 18 + Math.floor(Math.random() * 12);
+				for (let i = 0; i < bubbleCount; i++) {
+					setTimeout(createBubble, i * 260);
+				}
+			}
+
+			// Show one soft burst shortly after loading, then repeat every 3 minutes.
+			setTimeout(createBubbleBurst, 2500);
+			setInterval(createBubbleBurst, 180000);
+		}
+	</script>
+
+	<style>
+	    pre {
+            background-color: black;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+        }
+        code {
+            font-family: "Courier New", monospace;
+            color: #d63384; /* Python-style color */
+        }
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }
+        .top-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 8px 4px 0 4px;
+            gap: 12px;
+        }
+        .top-header-left,
+        .top-header-center,
+        .top-header-right {
+            flex: 1 1 0;
+            display: flex;
+            align-items: flex-start;
+        }
+        .top-header-left {
+            justify-content: flex-start;
+        }
+        .top-header-center {
+            justify-content: center;
+        }
+        .top-header-right {
+            justify-content: flex-end;
+        }
+        .header-badge {
+            color: #ffffff;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+            background: rgba(22, 163, 74, 0.38);
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(0,0,0,.22);
+            padding: 6px 12px;
+            line-height: 1.05;
+            white-space: nowrap;
+        }
+        #classCountdown {
+            display: inline-flex;
+            align-items: center;
+            min-width: 360px;
+            text-align: left;
+            letter-spacing: .2px;
+        }
+        #classCountdown .count-label {
+            display: inline-block;
+            font-size: 15px;
+            font-weight: 800;
+            margin-bottom: 0;
+            margin-right: 8px;
+        }
+        #classCountdown .count-time {
+            display: inline-block;
+            font-size: 15px;
+            font-weight: 800;
+        }
+        .header-email-link {
+            display: inline-block;
+            color: #ffffff !important;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+            font-size: 15px;
+            font-weight: 800;
+            line-height: 1;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .header-email-link:hover {
+            text-decoration: underline;
+        }
+        #realtimeclock {
+            display: inline-block;
+            font-size: 15px;
+            font-weight: 800;
+        }
+        #bubbleLayer {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 9999;
+            background: transparent !important;
+        }
+        #bubbleCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: transparent !important;
+        }
+        .floating-bubble {
+            position: absolute;
+            bottom: -60px;
+            display: block;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.10);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.14);
+            animation-name: floatBubbleUp;
+            animation-timing-function: linear;
+            animation-fill-mode: forwards;
+            opacity: 0;
+        }
+        @keyframes floatBubbleUp {
+            0% {
+                transform: translate3d(0, 0, 0) scale(.85);
+                opacity: 0;
+            }
+            12% {
+                opacity: .30;
+            }
+            88% {
+                opacity: .18;
+            }
+            100% {
+                transform: translate3d(var(--bubble-drift), -112vh, 0) scale(1.2);
+                opacity: 0;
+            }
+        }
+        .reveal {
+            position: relative;
+            z-index: 1;
+        }
+        .reveal .slides {
+            margin-top: 54px !important;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .floating-bubble {
+                animation: none;
+                display: none;
+            }
+        }	
+	</style>
+
+  </head>
+
+  <body onload="startTime(); startCountdown(); startBubbleAnimation();">
+    <div id="bubbleLayer" aria-hidden="true"><canvas id="bubbleCanvas"></canvas></div>
+    <div class="reveal" >
+      <div class="top-header">
+        <div class="top-header-left">
+          <span id="classCountdown" class="header-badge"><span class="count-label">Last day of classes: Dec. 5, 2026</span><span class="count-time">Loading...</span></span>
+        </div>
+        <div class="top-header-center">
+          <a href="mailto:Xinxing.Wu@kysu.edu" title="Email Xinxing Wu" class="header-email-link header-badge">Xinxing.Wu@kysu.edu</a>
+        </div>
+        <div class="top-header-right">
+          <div class="header-badge" id="realtimeclock"></div>
+        </div>
+      </div>
+      <div class="slides">
+
+  <div class="me">Xinxing Wu</div>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown id="cover"><textarea data-template>
+
+<p class='titlep'>&nbsp;</p>
+
+# Week 10: Counting
+
+
+<hr>
+
+<br>
+
+Xinxing Wu
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline
+
+[<p class="hover-underline-animation">Introduction</p>](#/ch1)
+
+[<p class="hover-underline-animation">Basic knowledge</p>](#/ch2)
+
+[<p class="hover-underline-animation">Basic examples</p>](#/ch3)
+
+[<p class="hover-underline-animation">Basic real-world applications</p>](#/ch4)
+
+</textarea></section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline (Cont.)
+
+[<p class="hover-underline-animation">Advanced knowledge</p>](#/ch5)
+
+[<p class="hover-underline-animation">Advanced examples</p>](#/ch6)
+
+[<p class="hover-underline-animation">Advanced real-world applications</p>](#/ch7)
+
+[<p class="hover-underline-animation">Task</p>](#/ch8)
+
+</textarea></section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline (Cont.)
+
+[<p class="hover-underline-animation">Summary</p>](#/ch9)
+
+</textarea></section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch1" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Introduction</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Learning Goals</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Use sum and product rules.
+- Apply permutations and combinations.
+- Recognize when order matters and when it does not.
+- Use pigeonhole reasoning and inclusion-exclusion ideas.
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch2" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Basic knowledge</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">A Note</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Counting is about structured enumeration. The goal is to count efficiently and correctly.
+
+- The product rule applies when a task has stages. The sum rule applies when choices come from disjoint cases.
+
+- Permutations count ordered arrangements; combinations count unordered selections.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Key Ideas</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Identify the objects in the problem.
+- Choose notation that makes relationships clear.
+- Work on a small example before solving the general case.
+- Explain the answer in plain English after the calculation.
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch3" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Basic examples</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Example 1: Password patterns</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- **Problem.** How many 4-digit PINs are possible if repetition is allowed?
+
+- **Step-by-step solution.** Each digit has 10 choices, so $10\cdot 10\cdot 10\cdot 10=10,000$.
+
+- **Check.** This is the product rule.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Example 2: Committee selection</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- **Problem.** Choose 3 students from 10 for a committee.
+
+- **Step-by-step solution.** Order does not matter, so use $C(10,3)=10!/(3!7!)=120$.
+
+- **Check.** If roles were president, secretary, treasurer, order would matter.
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch4" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Basic real-world applications</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Application 1: Security estimates</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Counting helps estimate how hard it is to guess passwords, PINs, and keys.
+
+- **Discussion prompt:** What data or assumptions would we need to use this model responsibly?
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Application 2: Experiment design</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Counting possible schedules or treatment assignments helps plan studies and avoid missing cases.
+
+- **Discussion prompt:** What data or assumptions would we need to use this model responsibly?
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch5" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Advanced knowledge</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">A Note</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- The pigeonhole principle says if more objects than boxes are placed into boxes, at least one box contains multiple objects.
+
+- Inclusion-exclusion corrects overcounting when categories overlap.
+
+- Generating permutations and combinations systematically is important for exhaustive search and testing.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">How to Think</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Ask what structure is hidden in the problem.
+- Look for an invariant, equivalence, ordering, recurrence, or optimization goal.
+- Use the simplest representation that preserves the important information.
+- Check whether the method scales when the input becomes large.
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch6" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Advanced examples</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Example 1: Pigeonhole birthday version</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- **Problem.** In a group of 13 people, prove at least two were born in the same month.
+
+- **Step-by-step solution.** There are 12 months as boxes and 13 people as objects. Since 13>12, one month has at least two birthdays.
+
+- **Why it matters.** This proof gives existence without identifying the people.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Example 2: Inclusion-exclusion</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- **Problem.** In a class, 18 like Python, 12 like Java, and 7 like both. How many like at least one?
+
+- **Step-by-step solution.** Use $|P∪J|=|P|+|J|−|P∩J|=18+12−7=23$.
+
+- **Why it matters.** Subtract the overlap because it was counted twice.
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch7" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Advanced real-world applications</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Application 1: Testing software configurations</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Counting combinations helps decide whether exhaustive testing is possible or sampling is needed.
+
+- **Extension question:** How would the model change with more realistic constraints?
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Application 2: Data privacy</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Counting possible re-identifications helps reason about anonymity risks.
+
+- **Extension question:** How would the model change with more realistic constraints?
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch8" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Task</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Task</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- **Task.** Design a small conference schedule problem. Count the number of ways to assign speakers to slots under two different constraints, and explain which rule you used.
+
+- **Deliverable.** One clear model, one worked example, and a short explanation of the result.
+   </div>
+</div>
+
+
+
+> Conference Speaker Schedule
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Problem Model</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- A small conference has four speakers:
+
+	- Ana
+	- Ben
+	- Cara
+	- Diego
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Problem Model (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- There are four different presentation slots:
+
+| Slot | Time |
+|:---:|:---:|
+| 1 | 9:00 a.m. |
+| 2 | 10:00 a.m. |
+| 3 | 11:00 a.m. |
+| 4 | 1:00 p.m. |
+
+- Each speaker must be assigned to exactly one slot.
+
+- Because the slots have different times, the order of the speakers matters.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Constraint 1: Each Speaker Presents Exactly Once</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 900px;"></div>
+
+- Under the first constraint:
+
+	- All four speakers must present.
+	- No speaker may appear more than once.
+	- There are no other restrictions.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Constraint 1: Each Speaker Presents Exactly Once (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 1000px;"></div>
+
+- For Slot 1, there are four possible speakers.
+
+- For Slot 2, there are three remaining speakers.
+
+- For Slot 3, there are two remaining speakers.
+
+- For Slot 4, there is one remaining speaker.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Constraint 1: Each Speaker Presents Exactly Once (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 1000px;"></div>
+
+- Using the multiplication rule,
+
+$$
+4 \cdot 3 \cdot 2 \cdot 1 = 24.
+$$
+
+- Equivalently,
+
+$$
+4! = 24.
+$$
+
+- Therefore, the number of possible schedules is
+
+$$
+\boxed{24}.
+$$
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Worked Example for Constraint 1</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- One possible schedule is:
+
+| Time | Speaker |
+|:---:|:---:|
+| 9:00 a.m. | Cara |
+| 10:00 a.m. | Ana |
+| 11:00 a.m. | Diego |
+| 1:00 p.m. | Ben |
+
+- This is one of the 24 possible schedules because every speaker appears exactly once.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Worked Example for Constraint 1 (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Another schedule with the same speakers in a different order is counted separately:
+
+| Time | Speaker |
+|:---:|:---:|
+| 9:00 a.m. | Ana |
+| 10:00 a.m. | Cara |
+| 11:00 a.m. | Ben |
+| 1:00 p.m. | Diego |
+
+- The two schedules are different because the speakers have different presentation times.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Rule Used for Constraint 1</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- This problem uses the **multiplication rule**.
+
+- If one task can be completed in  $n_1$ ways and a second task can then be completed in $n_2$ ways, the two tasks can be completed together in
+
+$$
+n_1n_2
+$$
+
+ways.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Rule Used for Constraint 1 (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Here, the choices are
+
+$$
+4,\ 3,\ 2,\text{ and }1.
+$$
+
+- Therefore,
+
+$$
+4 \cdot 3 \cdot 2 \cdot 1 = 24.
+$$
+
+- This is also a permutation of four distinct speakers:
+
+$$
+P(4,4)=4!=24.
+$$
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Constraint 2: Ana Must Present Before Ben</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Now add another scheduling requirement:
+
+> Ana must present earlier than Ben.
+
+- Cara and Diego may appear anywhere in the schedule.
+
+- Start with the total number of unrestricted schedules:
+
+$$
+4! = 24.
+$$
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Constraint 2: Ana Must Present Before Ben (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 900px;"></div>
+
+- For every schedule in which Ana appears before Ben, there is a corresponding schedule in which Ben appears before Ana.
+
+	- For example:
+
+| Valid: Ana Before Ben | Invalid: Ben Before Ana |
+|:---|:---|
+| Ana, Cara, Ben, Diego | Ben, Cara, Ana, Diego |
+| Diego, Ana, Cara, Ben | Diego, Ben, Cara, Ana |
+| Cara, Ana, Diego, Ben | Cara, Ben, Diego, Ana |
+
+- Exactly half of the 24 schedules place Ana before Ben.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Constraint 2: Ana Must Present Before Ben (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 900px;"></div>
+
+- Therefore,
+
+$$
+\frac{24}{2}=12.
+$$
+
+- The number of schedules satisfying the second constraint is
+
+$$
+\boxed{12}.
+$$
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Worked Example for Constraint 2</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Consider the following schedule:
+
+| Time | Speaker |
+|:---:|:---:|
+| 9:00 a.m. | Cara |
+| 10:00 a.m. | Ana |
+| 11:00 a.m. | Diego |
+| 1:00 p.m. | Ben |
+
+Ana presents at 10:00 a.m., while Ben presents at 1:00 p.m.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Worked Example for Constraint 2 (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Therefore,
+
+$$
+\text{Ana's slot} < \text{Ben's slot}.
+$$
+
+- This schedule satisfies the constraint.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Worked Example for Constraint 2 (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Now consider:
+
+| Time | Speaker |
+|:---:|:---:|
+| 9:00 a.m. | Cara |
+| 10:00 a.m. | Ben |
+| 11:00 a.m. | Diego |
+| 1:00 p.m. | Ana |
+
+- This schedule does not satisfy the constraint because Ben presents before Ana.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Rule Used for Constraint 2</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- This problem uses a **symmetry argument** together with the division rule.
+
+- The 24 schedules can be divided into two equally sized groups:
+
+	- Ana presents before Ben.
+	- Ben presents before Ana.
+
+- Because the two groups have the same size,
+
+$$
+\frac{4!}{2}=\frac{24}{2}=12.
+$$
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Rule Used for Constraint 2 (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+Therefore,
+
+$$
+\boxed{12}
+$$
+
+schedules place Ana before Ben.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Comparison of the Two Constraints</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+| Scheduling condition | Calculation | Number of schedules |
+|:---|:---:|---:|
+| Every speaker presents exactly once | $4!$ | 24 |
+| Every speaker presents once and Ana is before Ben | $\dfrac{4!}{2}$ | 12 |
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Comparison of the Two Constraints (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Adding the second constraint reduces the number of valid schedules from 24 to 12.
+
+- The percentage of schedules that satisfy the second constraint is
+
+$$
+\frac{12}{24}\cdot 100\%=50\%.
+$$
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Explanation of the Result</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- The first model counts every possible ordering of four different speakers. Because each speaker is used exactly once and the presentation slots are different, the permutation rule gives
+
+$$
+4!=24.
+$$
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Explanation of the Result (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- The second model requires Ana to present before Ben. Half of all schedules place Ana before Ben, while the other half place Ben before Ana. Therefore, only
+
+$$
+12
+$$
+
+schedules satisfy the additional condition.
+
+- This demonstrates an important principle:
+
+> Adding scheduling restrictions usually reduces the number of valid arrangements.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Summary</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- The conference has four speakers and four presentation slots.
+
+- Under the first constraint,
+
+$$
+\boxed{4!=24}
+$$
+
+different schedules are possible.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container no-copy">
+  <div class="definition-com-title">Summary (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Under the second constraint, Ana must present before Ben:
+
+$$
+\boxed{\frac{4!}{2}=12}.
+$$
+
+- The multiplication rule is used to count all arrangements, and a symmetry argument is used to count the schedules in which Ana appears before Ben.
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch9" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Summary</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Common Mistakes</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Using notation without defining it.
+- Solving one example but claiming a general proof.
+- Forgetting assumptions or constraints.
+- Skipping the final interpretation in words.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Summary</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Counting avoids brute-force listing.
+- Product and sum rules organize choices.
+- Permutations care about order; combinations do not.
+- Pigeonhole and inclusion-exclusion reveal hidden structure.
+
+   </div>
+</div>
+</textarea></section>
+
+</section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+</div>
+	
+
+<script>
+(function () {
+  function initVisibleBubbles() {
+    if (window.__visibleCanvasBubblesStarted) return;
+    window.__visibleCanvasBubblesStarted = true;
+
+    const layer = document.getElementById('bubbleLayer');
+    if (!layer) return;
+
+    let canvas = document.getElementById('bubbleCanvas');
+    if (!canvas) {
+      canvas = document.createElement('canvas');
+      canvas.id = 'bubbleCanvas';
+      layer.appendChild(canvas);
+    }
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const colors = [
+      'rgba(255,255,255,0.38)',
+      'rgba(187,247,208,0.34)',
+      'rgba(191,219,254,0.34)',
+      'rgba(254,240,138,0.30)',
+      'rgba(252,231,243,0.32)',
+      'rgba(221,214,254,0.32)'
+    ];
+
+    let bubbles = [];
+
+    function resizeCanvas() {
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.ceil(window.innerWidth * dpr);
+      canvas.height = Math.ceil(window.innerHeight * dpr);
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function makeBubble(now, delay) {
+      const radius = 5 + Math.random() * 11;
+      return {
+        start: now + delay,
+        duration: 30000 + Math.random() * 15000,
+        x: Math.random() * window.innerWidth,
+        y: window.innerHeight + radius + Math.random() * 35,
+        radius: radius,
+        drift: -90 + Math.random() * 180,
+        wobble: 8 + Math.random() * 22,
+        color: colors[Math.floor(Math.random() * colors.length)]
+      };
+    }
+
+    function burst() {
+      const now = performance.now();
+      const count = 28 + Math.floor(Math.random() * 12);
+      for (let i = 0; i < count; i++) {
+        bubbles.push(makeBubble(now, i * 110));
+      }
+    }
+
+    function draw(now) {
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+      bubbles = bubbles.filter(function (b) {
+        const t = (now - b.start) / b.duration;
+        if (t < 0) return true;
+        if (t > 1) return false;
+
+        const ease = 1 - Math.pow(1 - t, 1.8);
+        const x = b.x + b.drift * ease + Math.sin(t * Math.PI * 4) * b.wobble;
+        const y = b.y - (window.innerHeight + 120) * ease;
+        const alpha = Math.sin(Math.PI * t);
+
+        ctx.globalAlpha = 0.55 * alpha;
+        ctx.beginPath();
+        ctx.arc(x, y, b.radius, 0, Math.PI * 2);
+        ctx.fillStyle = b.color;
+        ctx.fill();
+
+        ctx.globalAlpha = 0.45 * alpha;
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = 'rgba(255,255,255,0.42)';
+        ctx.stroke();
+
+        return true;
+      });
+
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(draw);
+    }
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    // Show once when opened, then every 3 minutes.
+    burst();
+    setInterval(burst, 180000);
+    requestAnimationFrame(draw);
+  }
+
+  window.startBubbleAnimation = initVisibleBubbles;
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initVisibleBubbles);
+  } else {
+    initVisibleBubbles();
+  }
+})();
+</script>
+
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/settings.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/effects.js"></script>
+<script src="../js/no-copy.js"></script>
+<!--<script src="settings.js"></script>-->
+<!--<script src="effects.js"></script>-->
+</body>
+</html>

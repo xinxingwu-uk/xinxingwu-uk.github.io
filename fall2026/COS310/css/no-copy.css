@@ -1,0 +1,23 @@
+/* no-copy.css
+   Add class="no-copy" to the container you want to protect.
+*/
+
+.no-copy,
+.no-copy * {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+
+  -webkit-touch-callout: none !important;
+}
+
+.no-copy pre,
+.no-copy code {
+  cursor: default !important;
+}
+
+/* Keep touch-screen scrolling available. */
+.no-copy {
+  touch-action: pan-x pan-y;
+}

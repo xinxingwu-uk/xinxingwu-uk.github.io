@@ -1,0 +1,1656 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Inheritance + Polymorphism</title>
+    <meta name="description" content="A set of slides for Machine Learning">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/effectsGreen.css">
+	<!--<link rel="stylesheet" href="./css/style.css">-->
+	<!--<link rel="stylesheet" href="./css/effects.css">-->
+	
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+	</script>
+
+	<style>
+	    pre {
+            background-color: black;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+        }
+        code {
+            font-family: "Courier New", monospace;
+            color: #d63384; /* Python-style color */
+        }
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }	
+	</style>
+
+  </head>
+
+  <body onload="startTime()">
+    <div class="reveal" >
+	  <p><img src="images/midwaylogo.png"  align="left" height="6%" width="6%" style="vertical-align:left;margin:-15px 5px"><img src="images/mueagle.png"  color="white" align="left" height="4%" width="4%" style="vertical-align:center;margin:-1% 45%">
+		<div style="color:white;font-size: 20px; vertical-align:left;margin:-1% 0%" align="right" id="realtimeclock"></div></p>
+      <div class="slides">
+
+  <div class="me">Xinxing Wu</div>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown id="cover"><textarea data-template>
+<p class='titlep'>&nbsp;</p>
+
+# Inheritance + Polymorphism
+
+<hr>
+
+<br>
+
+Xinxing Wu
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline
+
+[<p class="hover-underline-animation">Inheritance</p>](#/ch1)
+
+[<p class="hover-underline-animation">Polymorphism</p>](#/ch2)
+
+[<p class="hover-underline-animation">*Templates</p>](#/ch3)
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline (Cont.)
+
+[<p class="hover-underline-animation">*Files</p>](#/ch4)
+
+[<p class="hover-underline-animation">Summary</p>](#/ch5)
+
+[<p class="hover-underline-animation">Mini Case Study</p>](#/ch6)
+
+</textarea></section>
+
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+
+## Goal
+
+<div id="shadebox-neon" class="shadebox neon">
+
+Design and implement C++ programs using <spanGREEN>inheritance and polymorphism</spanGREEN>, including single/multilevel/multiple inheritance, correctly apply public/private/protected access (especially protected for inherited members), use virtual and override to achieve runtime polymorphism
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+* Build reusable generic code with templates while also reading from and writing to files using ofstream, ifstream, and fstream.
+
+</div>
+
+</textarea></section>
+
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch1" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Inheritance</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Inheritance</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Inheritance allows one class to <spanGREEN>reuse</spanGREEN> attributes and methods from another class. It helps you write cleaner, more efficient code by avoiding duplication.
+
+- We group the "inheritance concept" into two categories:
+
+	- derived class (child) - the class that inherits from another class
+	- base class (parent) - the class being inherited from
+- To inherit from a class, use the <spanGREEN>:</spanGREEN> symbol.
+
+</div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+-  The Car class (child) inherits the attributes and methods from the Vehicle class (parent):
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+// Base class
+class Vehicle {
+  public: 
+    string brand = "Ford";
+    void honk() {
+      cout << "Tuut, tuut! \n" ;
+    }
+};
+
+// Derived class
+class Car: public Vehicle {
+  public: 
+    string model = "Mustang";
+};
+
+int main() {
+  Car myCar;
+  myCar.honk();
+  cout << myCar.brand + " " + myCar.model;
+  return 0;
+}
+```
+
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Why And When To Use "Inheritance"?</div>
+  <div class="question-shadebox">
+<div style="width: 800px;"></div>
+
+It is useful for code reusability: reuse attributes and methods of an existing class when you create a new class.
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Multilevel Inheritance</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+- A class can also be derived from one class, which is already derived from another class.
+
+- In the following example, MyGrandChild is derived from class MyChild (which is derived from MyClass).
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+using namespace std;
+
+// Parent class
+class MyClass {
+  public: 
+    void myFunction() {
+      cout << "Some content in parent class." ;
+    }
+};
+
+// Child class
+class MyChild: public MyClass {
+};
+
+// Grandchild class 
+class MyGrandChild: public MyChild {
+};
+
+int main() {
+  MyGrandChild myObj;
+  myObj.myFunction();
+  return 0;
+}
+
+```
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Multiple Inheritance</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+```
+#include <iostream>
+using namespace std;
+
+// Base class
+class MyClass {
+  public:
+    void myFunction() {
+      cout << "Some content in parent class.\n" ;
+    }
+};
+
+// Another base class
+class MyOtherClass {
+  public:
+    void myOtherFunction() {
+      cout << "Some content in another class.\n" ;
+    }
+};
+
+// Derived class
+class MyChildClass: public MyClass, public MyOtherClass {
+};
+
+int main() {
+  MyChildClass myObj;
+  myObj.myFunction();
+  myObj.myOtherFunction();
+  return 0;
+}
+
+```
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Access Specifiers</div>
+  <div class="definition-shadebox">
+<div style="width: 800px;"></div>
+
+- You learned from the Access Specifiers chapter that there are three specifiers available in C++.
+
+- Until now, we have only used <spanBYMix>public</spanBYMix> (members of a class are accessible from outside the class) and <spanRED>private</spanRED> (members can only be accessed within the class).
+
+- The third specifier, protected, is similar to private, but it can also <spanGREEN>be accessed in the inherited class</spanGREEN>.
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+using namespace std;
+
+// Base class
+class Employee  {
+  protected:  // Protected access specifier
+    int salary;
+};
+
+// Derived class
+class Programmer: public Employee {
+  public:
+    int bonus;
+    void setSalary(int s) {
+      salary = s;
+    }
+    int getSalary() {
+      return salary;
+    }
+};
+
+int main() {
+  Programmer myObj;
+  myObj.setSalary(50000);
+  myObj.bonus = 15000;
+  cout << "Salary: " << myObj.getSalary() << "\n";
+  cout << "Bonus: " << myObj.bonus << "\n";
+  return 0;
+}
+```
+</div>
+
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch2" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Polymorphism</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Polymorphism</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Polymorphism means "<spanGREEN>many</spanGREEN> forms", and it occurs when <spanBYMix>we have many classes that are related to each other by inheritance</spanBYMix>.
+
+- Inheritance lets us <spanGREEN>inherit attributes and methods from another class</spanGREEN>. Polymorphism uses those methods to perform different tasks. This allows us to <spanBYMix>perform a single action in different ways</spanBYMix>.
+
+</div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Polymorphism</div>
+  <div class="question-shadebox">
+
+For example, imagine a base class Animal with a method called makeSound(). Derived classes of Animals could be Pigs, Cats, Dogs, Birds, etc. Every animal can "make a sound", but each one sounds different:
+
+- Pig: wee wee
+- Dog: bow wow
+- Bird: tweet tweet
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+- This is polymorphism - the same action (making a sound) behaves differently for each animal:
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+// Base class
+class Animal {
+  public:
+    void animalSound() {
+      cout << "The animal makes a sound \n";
+    }
+};
+
+// Derived class
+class Pig : public Animal {
+  public:
+    void animalSound() {
+      cout << "The pig says: wee wee \n";
+    }
+};
+
+// Derived class
+class Dog : public Animal {
+  public:
+    void animalSound() {
+      cout << "The dog says: bow wow \n";
+    }
+};
+```
+
+</div>
+
+
+
+
+<div id="shadebox">
+
+### Example code
+
+- Now we can create Pig and Dog objects and override the animalSound() method:
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+// Base class
+class Animal {
+  public:
+    void animalSound() {
+      cout << "The animal makes a sound \n";
+    }
+};
+
+// Derived class
+class Pig : public Animal {
+  public:
+    void animalSound() {
+      cout << "The pig says: wee wee \n";
+    }
+};
+
+// Derived class
+class Dog : public Animal {
+  public:
+    void animalSound() {
+      cout << "The dog says: bow wow \n";
+    }
+};
+
+int main() {
+  Animal myAnimal;
+  Pig myPig;
+  Dog myDog;
+
+  myAnimal.animalSound();
+  myPig.animalSound();
+  myDog.animalSound();
+  return 0;
+}
+```
+
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Why And When</div>
+  <div class="definition-com-shadebox">
+
+- Why And When To Use "Inheritance" and "Polymorphism": It is useful for <spanBYMix>code reusability</spanBYMix>: reuse attributes and methods of an existing class when you create a new class.
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Virtual Functions</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- A virtual function is a member function in the base class that can be <spanBYMix>overridden</spanBYMix> in derived classes.
+
+- Virtual functions are a key part of polymorphism in C++. They let different objects respond differently to the same function call.
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Why Use Virtual Functions?</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Without virtual, C++ decides which function to call based on the pointer type, not the actual object type.
+
+- With virtual, it checks the actual object the pointer is pointing to.
+
+- Or to put it even more simply:
+
+	- Without virtual: the base function runs, even if the object is from a child class.
+	- With virtual: the child's version runs, like you expect.
+
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Without Virtual Function</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+<div  style="font-size: 1.6em; line-height: 1.5;">
+  
+```
+#include <iostream>
+using namespace std;
+
+class Animal {
+  public:
+    void sound() {
+      cout << "Animal sound\n";
+    }
+};
+
+class Dog : public Animal {
+  public:
+    void sound() {
+      cout << "Dog barks\n";
+    }
+};
+
+int main() {
+  Animal* a;  // Declare a pointer to the base class (Animal)
+  Dog d;  // Create an object of the derived class (Dog)
+  a = &d;  // Point the base class pointer to the Dog object
+  a->sound(); 
+  // Call the sound() function using the pointer. 
+  //Since sound() is not virtual, this calls Animal's version
+  return 0;
+}
+
+```
+
+</div>
+</div>
+</div>
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+<div id="roundbox">
+
+Even though a points to a Dog, it still calls Animal::sound() because the function is not virtual.
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">With Virtual Function</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+<div  style="font-size: 1.6em; line-height: 1.5;">
+  
+```
+#include <iostream>
+using namespace std;
+
+class Animal {
+  public:
+    virtual void sound() {
+      cout << "Animal sound\n";
+    }
+};
+
+class Dog : public Animal {
+  public:
+    void sound() override {
+      cout << "Dog barks\n";
+    }
+};
+
+int main() {
+  Animal* a;
+  Dog d;
+  a = &d;
+  a->sound(); // Outputs: Dog barks
+  return 0;
+}
+```
+
+</div>
+</div>
+</div>
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+<div id="roundbox">
+
+Because <spanGREEN>sound() is virtual, the call uses the actual object's function and not just the pointer type</spanGREEN>.
+
+- Use <spanBYMix>virtual</spanBYMix> only in the <spanBYMix>base</spanBYMix> class
+
+<br>
+<br>
+
+- Use <spanGREEN>override</spanGREEN> (optional, but recommended) in the <spanGREEN>derived</spanGREEN> class for clarity
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">True/False</div>
+  <div class="definition-com-shadebox">
+
+A class in C++ is a blueprint used to create objects. <button type="button" class="reveal-btn" data-answer="answer-q1">Show Answer</button>
+<div id="answer-q1" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+An object can exist without being created from a class. <button type="button" class="reveal-btn" data-answer="answer-q2">Show Answer</button>
+<div id="answer-q2" class="answer-box">
+<b>Answer:</b>False
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+Encapsulation recommends keeping class data members private and accessing them through public methods. <button type="button" class="reveal-btn" data-answer="answer-q3">Show Answer</button>
+<div id="answer-q3" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+</div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">True/False</div>
+  <div class="definition-com-shadebox">
+
+Composition represents a “has-a” relationship between classes. <button type="button" class="reveal-btn" data-answer="answer-q4">Show Answer</button>
+<div id="answer-q4" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+Inheritance allows a derived class to reuse attributes and methods from a base class. <button type="button" class="reveal-btn" data-answer="answer-q5">Show Answer</button>
+<div id="answer-q5" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+</div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">True/False</div>
+  <div class="definition-com-shadebox">
+
+Multiple inheritance means a class can inherit from more than one base class. <button type="button" class="reveal-btn" data-answer="answer-q6">Show Answer</button>
+<div id="answer-q6" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+Protected members of a class cannot be accessed by derived classes. <button type="button" class="reveal-btn" data-answer="answer-q7">Show Answer</button>
+<div id="answer-q7" class="answer-box">
+<b>Answer:</b>False
+</div>
+
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+Polymorphism allows the same function name to behave differently for different objects. <button type="button" class="reveal-btn" data-answer="answer-q8">Show Answer</button>
+<div id="answer-q8" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">True/False</div>
+  <div class="definition-com-shadebox">
+
+Without virtual functions, C++ always chooses the function based on the actual object type. <button type="button" class="reveal-btn" data-answer="answer-q9">Show Answer</button>
+<div id="answer-q9" class="answer-box">
+<b>Answer:</b>False
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+A pointer stores the memory address of another variable. <button type="button" class="reveal-btn" data-answer="answer-q10">Show Answer</button>
+<div id="answer-q10" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+</div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Fill-in-the-Blank</div>
+  <div class="definition-com-shadebox">
+
+A __________ is created from a class and represents a real instance in a program. <button type="button" class="reveal-btn" data-answer="answer-q11">Show Answer</button>
+<div id="answer-q11" class="answer-box">
+<b>Answer:</b>object
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+The keyword used to define a class in C++ is __________. <button type="button" class="reveal-btn" data-answer="answer-q12">Show Answer</button>
+<div id="answer-q12" class="answer-box">
+<b>Answer:</b>class
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+Keeping data members private and exposing safe public methods is called __________. <button type="button" class="reveal-btn" data-answer="answer-q13">Show Answer</button>
+<div id="answer-q13" class="answer-box">
+<b>Answer:</b>encapsulation
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Fill-in-the-Blank</div>
+  <div class="definition-com-shadebox">
+
+In composition, a class __________ another object as a member. <button type="button" class="reveal-btn" data-answer="answer-q14">Show Answer</button>
+<div id="answer-q14" class="answer-box">
+<b>Answer:</b>has
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+A class that inherits from another class is called a __________ class. <button type="button" class="reveal-btn" data-answer="answer-q15">Show Answer</button>
+<div id="answer-q15" class="answer-box">
+<b>Answer:</b>derived (child)
+</div>
+
+</div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Fill-in-the-Blank</div>
+  <div class="definition-com-shadebox">
+
+The symbol used to inherit from a base class in C++ is __________. <button type="button" class="reveal-btn" data-answer="answer-q16">Show Answer</button>
+<div id="answer-q16" class="answer-box">
+<b>Answer:</b>:
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+A function declared with the keyword __________ supports runtime polymorphism. <button type="button" class="reveal-btn" data-answer="answer-q17">Show Answer</button>
+<div id="answer-q17" class="answer-box">
+<b>Answer:</b>virtual
+</div>
+
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+The __________ keyword is used in a derived class to clearly indicate a function override. <button type="button" class="reveal-btn" data-answer="answer-q18">Show Answer</button>
+<div id="answer-q18" class="answer-box">
+<b>Answer:</b>override
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Fill-in-the-Blank</div>
+  <div class="definition-com-shadebox">
+
+A __________ is an alias for an existing variable. <button type="button" class="reveal-btn" data-answer="answer-q19">Show Answer</button>
+<div id="answer-q19" class="answer-box">
+<b>Answer:</b>reference
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+Memory created using the __________ keyword must be released using delete. <button type="button" class="reveal-btn" data-answer="answer-q20">Show Answer</button>
+<div id="answer-q20" class="answer-box">
+<b>Answer:</b>new
+</div>
+
+</div>
+</div>
+
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch3" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">*Templates</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Function Templates</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+- <spanGREEN>Templates</spanGREEN> let you write a function or class that works with <spanGREEN>different data types</spanGREEN>.
+
+<br>
+
+- They help <spanGREEN>avoid repeating</spanGREEN> code and make programs more flexible.
+
+- You can create a function template by using the <spanGREEN>template</spanGREEN> keyword:
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+template <typename T>
+return_type function_name(T parameter) {
+  // code
+} 
+```
+</div>
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Function Templates</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+- <spanGREEN>T</spanGREEN> is a placeholder for a data type (like int, float, etc.).
+
+<br>
+<br>
+
+- You can use any name instead of T, but <spanGREEN>T is common</spanGREEN>.
+
+</div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+- add<int>(5, 3) tells the compiler to use int for T, while add<double>(2.5, 1.5) tells it to use double.
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+using namespace std;
+
+template <typename T>
+T add(T a, T b) {
+  return a + b;
+}
+
+int main() {
+  cout << add<int>(5, 3) << "\n";
+  cout << add<double>(2.5, 1.5) << "\n";
+  return 0;
+}
+```
+
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Class Templates</div>
+  <div class="question-shadebox">
+
+- You can also use templates to make classes that work with any data type:
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+template <typename T>
+class ClassName {
+  // members and methods using T
+}; 
+```
+</div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+
+- The example below defines a template class Box that can store and display a value of any data type, and then creates one box for an int and one for a string:
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+using namespace std;
+
+template <typename T>
+class Box {
+  public:
+    T value;
+    Box(T v) {
+      value = v;
+    }
+    void show() {
+      cout << "Value: " << value << "\n";
+    }
+};
+
+int main() {
+  Box<int> intBox(50);
+  Box<string> strBox("Hello");
+
+  intBox.show();
+  strBox.show();
+  return 0;
+}
+
+```
+
+</div>
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+
+- This example defines a template class Pair that stores two values of different types and displays them, then creates one pair for a person's name and age, and another for an ID and score:
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+using namespace std;
+
+template <typename T1, typename T2>
+class Pair {
+  public:
+    T1 first;
+    T2 second;
+
+    Pair(T1 a, T2 b) {
+      first = a;
+      second = b;
+    }
+
+    void display() {
+      cout << "First: " << first << ", Second: " << second << "\n";
+    }
+};
+
+int main() {
+  Pair<string, int> person("John", 30);
+  Pair<int, double> score(51, 9.5);
+
+  person.display(); 
+  score.display(); 
+
+  return 0;
+}
+```
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Why Use Templates?</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+- Avoid repeating <spanRED>the same logic</spanRED> for <spanRED>different</spanRED> types
+
+<br>
+<br>
+
+- Write <spanBYMix>cleaner, reusable</spanBYMix> code
+
+<br>
+<br>
+
+- Support <spanGREEN>generic</spanGREEN> programming
+</div>
+</div>
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+<div id="roundbox">
+Templates must be defined in the same file where they are used (usually in the .h file).
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch4" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">*Files</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Files</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+- The fstream library allows us to work with files. To use the fstream library, include both the standard <iostream> AND the <fstream> header file:
+
+<div id="shadebox-glass" class="shadebox glass">
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+#include <fstream>
+```
+
+</div>
+</div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Files</div>
+  <div class="question-shadebox">
+
+- There are three classes included in the fstream library, which are used to create, write or read files:
+
+<hr style="border: none; border-top: 2px dashed green;">
+
+<table style="border-collapse: collapse; width: 700px; font-size: 26px; font-family: Arial, sans-serif;">
+  <tr>
+    <th style="border: 1px solid #ccc; padding: 10px; text-align: left;">Class</th>
+    <th style="border: 1px solid #ccc; padding: 10px; text-align: left;">Description</th>
+  </tr>
+  <tr>
+    <td style="border: 1px solid #ccc; padding: 10px;">ofstream</td>
+    <td style="border: 1px solid #ccc; padding: 10px;"><spanGREEN>Creates and writes</spanGREEN> to files</td>
+  </tr>
+  <tr>
+    <td style="border: 1px solid #ccc; padding: 10px;">ifstream</td>
+    <td style="border: 1px solid #ccc; padding: 10px;"><spanBYMix>Reads</spanBYMix> from files</td>
+  </tr>
+  <tr>
+    <td style="border: 1px solid #ccc; padding: 10px;">fstream</td>
+    <td style="border: 1px solid #ccc; padding: 10px;">A combination of ofstream and ifstream: <spanRED>creates, reads, and writes</spanRED> to files</td>
+  </tr>
+</table>
+
+</div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+- Create and Write To a File
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+int main() {
+  // Create and open a text file
+  ofstream MyFile("filename.txt");
+
+  // Write to the file
+  MyFile << "Files can be tricky, but it is fun enough!";
+
+  // Close the file
+  MyFile.close();
+}
+
+```
+
+</div>
+
+
+
+
+<div id="shadebox">
+
+### Example code
+
+- Read a File
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <fstream>
+#include <string>
+using namespace std;
+
+int main () {
+  // Create a text file
+  ofstream MyWriteFile("filename.txt");
+
+  // Write to the file
+  MyWriteFile << "Files can be tricky, but it is fun enough!";
+ 
+  // Close the file
+  MyWriteFile.close();
+
+  // Create a text string, which is used to output the text file
+  string myText;
+
+  // Read from the text file
+  ifstream MyReadFile("filename.txt");
+
+  // Use a while loop together with the getline() function to read the file line by line
+  while (getline (MyReadFile, myText)) {
+    // Output the text from the file
+    cout << myText;
+  }
+
+  // Close the file
+  MyReadFile.close();
+}
+
+```
+
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch5" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Summary</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div id="rainbow-type"> Summary </div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Inheritance enables code reuse and clear class relationships</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">By allowing a derived (child) class to inherit data and functions from a base (parent) class, inheritance reduces duplication, organizes code logically, and supports hierarchical designs such as single, multilevel, and multiple inheritance.</p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Polymorphism allows one interface to behave in different ways</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Through inheritance, different derived classes can provide their own implementations of the same function, enabling the same action to produce different behaviors depending on the object type.</p>
+</div>
+
+</div>
+
+
+
+
+<div id="rainbow-type"> Summary (Cont.)</div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap; margin-bottom:-32px;">
+
+<div class="liquid-glass">
+
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Virtual functions are essential for true runtime polymorphism</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Declaring functions as virtual in base classes ensures that function calls made through base-class pointers or references execute the derived-class version, matching real-world expectations and improving program flexibility.</p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Templates and file handling increase generality and persistence</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Templates support generic programming by allowing functions and classes to work with multiple data types, while file streams (ofstream, ifstream, fstream) enable programs to store and retrieve data from files, making applications more reusable and practical.</p>
+</div>
+
+</div>
+</textarea></section>
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch6" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Mini Case Study</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Lab: Company People Manager</div>
+  <div class="definition-com-shadebox">
+
+- Project Assignment: “Company People Manager” (Inheritance + Polymorphism + Templates + Files): Create a small C++ console program that:
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+- Uses inheritance (base class + derived classes)
+
+- Uses polymorphism with a virtual function
+
+- Uses protected members correctly
+
+- Uses a template (generic function)
+
+- Uses files to save and load data
+
+</div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task</div>
+  <div class="definition-pro-Y-shadebox">
+
+Part A — Classes (Inheritance + Protected)
+
+- Requirement 1: Create a base class Employee with:
+
+	- protected data: string name; int salary;
+
+	- constructor to set name and salary
+
+	- a virtual function printInfo() that prints basic employee info
+
+	- a virtual function getPay() that returns salary
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Part A — Classes (Inheritance + Protected)
+
+- Requirement 2: Create two derived classes:
+
+	- Programmer adds int bonus
+
+	- Manager adds int allowance
+
+	- Both override printInfo() and getPay() so total pay includes extra money.
+   </div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Part B — Polymorphism
+
+- Store different employees in a container of base-class pointers:
+vector<Employee*> staff;
+
+-   Call printInfo() for each employee using polymorphism.
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Part C — Template
+
+- Write a template function myMax(T a, T b) that returns the larger value.
+Use it to print the max pay between two employees.
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Part D — Files
+
+- Save all employees to a file named employees.txt in this format (one per line):
+
+	- P,name,salary,bonus
+
+	- M,name,salary,allowance
+
+- Then read the file back and rebuild the staff list.
+
+   </div>
+</div>
+
+
+
+
+<div id="shadebox">
+
+### An answer
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+using namespace std;
+
+// Template function
+template <typename T>
+T myMax(T a, T b) {
+    return (a > b) ? a : b;
+}
+
+// Base class
+class Employee {
+protected:
+    string name;
+    int salary;
+
+public:
+    Employee(string n, int s) {
+        name = n;
+        salary = s;
+    }
+
+    virtual int getPay() {
+        return salary;
+    }
+
+    virtual void printInfo() {
+        cout << "Employee: " << name << ", Salary: " << salary << "\n";
+    }
+
+    virtual string getType() {
+        return "E";
+    }
+
+    virtual string toFileLine() {
+        // For base employee (not used here, but kept complete)
+        return "E," + name + "," + to_string(salary);
+    }
+
+    virtual ~Employee() {}
+};
+
+// Derived class: Programmer
+class Programmer : public Employee {
+    int bonus;
+
+public:
+    Programmer(string n, int s, int b) : Employee(n, s) {
+        bonus = b;
+    }
+
+    int getPay() override {
+        return salary + bonus;   // salary is protected, accessible here
+    }
+
+    void printInfo() override {
+        cout << "Programmer: " << name
+             << ", Salary: " << salary
+             << ", Bonus: " << bonus
+             << ", Total Pay: " << getPay() << "\n";
+    }
+
+    string getType() override {
+        return "P";
+    }
+
+    string toFileLine() override {
+        return "P," + name + "," + to_string(salary) + "," + to_string(bonus);
+    }
+};
+
+// Derived class: Manager
+class Manager : public Employee {
+    int allowance;
+
+public:
+    Manager(string n, int s, int a) : Employee(n, s) {
+        allowance = a;
+    }
+
+    int getPay() override {
+        return salary + allowance;
+    }
+
+    void printInfo() override {
+        cout << "Manager: " << name
+             << ", Salary: " << salary
+             << ", Allowance: " << allowance
+             << ", Total Pay: " << getPay() << "\n";
+    }
+
+    string getType() override {
+        return "M";
+    }
+
+    string toFileLine() override {
+        return "M," + name + "," + to_string(salary) + "," + to_string(allowance);
+    }
+};
+
+// Save to file
+void saveToFile(const vector<Employee*>& staff, const string& filename) {
+    ofstream outFile(filename);
+    for (Employee* e : staff) {
+        outFile << e->toFileLine() << "\n";
+    }
+    outFile.close();
+}
+
+// Load from file
+vector<Employee*> loadFromFile(const string& filename) {
+    vector<Employee*> staff;
+    ifstream inFile(filename);
+
+    string type, name, salaryStr, extraStr;
+
+    while (getline(inFile, type, ',')) {
+        getline(inFile, name, ',');
+        getline(inFile, salaryStr, ',');
+        getline(inFile, extraStr);  // rest of line
+
+        int salary = stoi(salaryStr);
+        int extra = stoi(extraStr);
+
+        if (type == "P") {
+            staff.push_back(new Programmer(name, salary, extra));
+        } else if (type == "M") {
+            staff.push_back(new Manager(name, salary, extra));
+        }
+    }
+
+    inFile.close();
+    return staff;
+}
+
+int main() {
+    vector<Employee*> staff;
+
+    // Create objects (inheritance)
+    staff.push_back(new Programmer("Alice", 50000, 12000));
+    staff.push_back(new Manager("Bob", 60000, 8000));
+    staff.push_back(new Programmer("Charlie", 45000, 15000));
+
+    cout << "=== Original Staff (Polymorphism) ===\n";
+    for (Employee* e : staff) {
+        e->printInfo(); // polymorphism with virtual
+    }
+
+    // Template usage
+    int pay1 = staff[0]->getPay();
+    int pay2 = staff[1]->getPay();
+    cout << "\nMax pay between first two employees: " << myMax(pay1, pay2) << "\n";
+
+    // Save to file
+    saveToFile(staff, "employees.txt");
+    cout << "\nSaved to employees.txt\n";
+
+    // Free memory before re-loading
+    for (Employee* e : staff) delete e;
+    staff.clear();
+
+    // Load from file
+    staff = loadFromFile("employees.txt");
+
+    cout << "\n=== Loaded Staff From File ===\n";
+    for (Employee* e : staff) {
+        e->printInfo();
+    }
+
+    // Cleanup
+    for (Employee* e : staff) delete e;
+
+    return 0;
+}
+
+```
+
+</div>
+
+
+
+<div id="shadebox">
+
+### Expected Output
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+=== Original Staff (Polymorphism) ===
+Programmer: Alice, Salary: 50000, Bonus: 12000, Total Pay: 62000
+Manager: Bob, Salary: 60000, Allowance: 8000, Total Pay: 68000
+Programmer: Charlie, Salary: 45000, Bonus: 15000, Total Pay: 60000
+
+Max pay between first two employees: 68000
+
+Saved to employees.txt
+
+=== Loaded Staff From File ===
+Programmer: Alice, Salary: 50000, Bonus: 12000, Total Pay: 62000
+Manager: Bob, Salary: 60000, Allowance: 8000, Total Pay: 68000
+Programmer: Charlie, Salary: 45000, Bonus: 15000, Total Pay: 60000
+
+```
+</div>
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+</div>
+	
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/settings.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/effects.js"></script>
+<!--<script src="settings.js"></script>-->
+<!--<script src="effects.js"></script>-->
+</body>
+</html>

@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weeks 1–7 Review Quiz with Answers</title>
+  <style>
+    :root {
+      --navy: #17324d;
+      --blue: #245b87;
+      --light-blue: #eaf4fb;
+      --green: #226b45;
+      --light-green: #eaf7ef;
+      --gold: #9a6a00;
+      --light-gold: #fff8df;
+      --red: #a33434;
+      --ink: #20252b;
+      --muted: #5e6872;
+      --line: #d8e0e7;
+      --paper: #ffffff;
+      --page: #f4f7fa;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: var(--page);
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.55;
+    }
+
+    .page {
+      width: min(1100px, calc(100% - 32px));
+      margin: 28px auto;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: 0 10px 34px rgba(23, 50, 77, 0.10);
+      overflow: hidden;
+    }
+
+    header {
+      padding: 38px 44px 30px;
+      color: white;
+      background: linear-gradient(135deg, var(--navy), var(--blue));
+    }
+
+    header h1 {
+      margin: 0 0 10px;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.15;
+    }
+
+    header p {
+      margin: 6px 0;
+      max-width: 900px;
+      font-size: 17px;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .pill {
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.30);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 18px 44px;
+      border-bottom: 1px solid var(--line);
+      background: #fbfcfd;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+
+    button, .jump-link {
+      appearance: none;
+      border: 1px solid var(--blue);
+      border-radius: 8px;
+      background: white;
+      color: var(--blue);
+      padding: 9px 13px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    button:hover, .jump-link:hover {
+      background: var(--light-blue);
+    }
+
+    main {
+      padding: 10px 44px 44px;
+    }
+
+    section {
+      scroll-margin-top: 90px;
+      margin-top: 34px;
+    }
+
+    .section-title {
+      margin: 0 0 8px;
+      color: var(--navy);
+      font-size: 27px;
+    }
+
+    .instructions {
+      margin: 0 0 22px;
+      color: var(--muted);
+    }
+
+    .question {
+      margin: 18px 0;
+      padding: 20px 22px;
+      border: 1px solid var(--line);
+      border-left: 6px solid var(--blue);
+      border-radius: 10px;
+      background: #fff;
+      break-inside: avoid;
+    }
+
+    .question.tf { border-left-color: var(--green); }
+    .question.single { border-left-color: var(--blue); }
+    .question.multi { border-left-color: var(--gold); }
+
+    .q-head {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .q-number {
+      flex: 0 0 auto;
+      min-width: 42px;
+      height: 32px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 7px;
+      color: white;
+      background: var(--navy);
+      font-weight: 800;
+    }
+
+    .question.tf .q-number { background: var(--green); }
+    .question.multi .q-number { background: var(--gold); }
+
+    .q-text {
+      margin: 2px 0 0;
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .options {
+      margin: 12px 0 0 54px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .options li {
+      margin: 7px 0;
+      padding: 7px 10px;
+      border-radius: 6px;
+      background: #f8fafc;
+    }
+
+    .choice {
+      display: inline-block;
+      min-width: 28px;
+      font-weight: 800;
+      color: var(--navy);
+    }
+
+    details {
+      margin: 14px 0 0 54px;
+      border-radius: 8px;
+      background: var(--light-green);
+      border: 1px solid #b9ddc9;
+    }
+
+    summary {
+      padding: 10px 13px;
+      color: var(--green);
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    .answer-content {
+      padding: 0 13px 13px;
+    }
+
+    .answer-content strong {
+      color: var(--green);
+    }
+
+    .answer-key {
+      margin-top: 42px;
+      padding: 26px;
+      border: 2px solid var(--navy);
+      border-radius: 12px;
+      background: #f8fbfe;
+    }
+
+    .key-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .key-card {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: white;
+    }
+
+    .key-card h3 {
+      margin-top: 0;
+      color: var(--navy);
+    }
+
+    .key-card ol {
+      margin-bottom: 0;
+      padding-left: 24px;
+    }
+
+    .key-card li { margin: 5px 0; }
+
+    footer {
+      padding: 22px 44px 28px;
+      color: var(--muted);
+      background: #f8fafc;
+      border-top: 1px solid var(--line);
+      font-size: 14px;
+    }
+
+    code, .math {
+      font-family: "Courier New", Courier, monospace;
+      font-weight: 700;
+    }
+
+    @media (max-width: 700px) {
+      .page { width: 100%; margin: 0; border-radius: 0; }
+      header, main, footer { padding-left: 20px; padding-right: 20px; }
+      .toolbar { padding: 14px 20px; position: static; }
+      .options, details { margin-left: 0; }
+      .q-head { display: block; }
+      .q-number { margin-bottom: 9px; }
+    }
+
+    @media print {
+      body { background: white; }
+      .page {
+        width: 100%;
+        margin: 0;
+        border: 0;
+        box-shadow: none;
+      }
+      .toolbar { display: none; }
+      header {
+        color: black;
+        background: white;
+        border-bottom: 2px solid black;
+        padding: 20px 0;
+      }
+      main, footer { padding-left: 0; padding-right: 0; }
+      .question { box-shadow: none; }
+      details { display: none; }
+      .answer-key { break-before: page; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <h1>Weeks 1–7 Review Quiz</h1>
+      <p><strong>Topics:</strong> Logic and Proofs; Basic Structures; Algorithms; Number Theory; Cryptography; Recursion I (Mathematical Induction); and Recursion II (Recursive Definitions and Algorithms).</p>
+      <p>Each question includes an expandable explanation. A complete answer key is also provided at the end.</p>
+      <div class="meta">
+        <span class="pill">10 True/False</span>
+        <span class="pill">10 Single-Answer Multiple Choice</span>
+        <span class="pill">10 Multiple-Answer Questions</span>
+        <span class="pill">30 Questions Total</span>
+      </div>
+    </header>
+
+    <nav class="toolbar" aria-label="Quiz navigation">
+      <a class="jump-link" href="#true-false">True/False</a>
+      <a class="jump-link" href="#single-answer">Single Answer</a>
+      <a class="jump-link" href="#multiple-answer">Multiple Answer</a>
+      <a class="jump-link" href="#answer-key">Answer Key</a>
+      <button type="button" onclick="setAnswers(true)">Show All Explanations</button>
+      <button type="button" onclick="setAnswers(false)">Hide All Explanations</button>
+      <button type="button" onclick="window.print()">Print</button>
+    </nav>
+
+    <main>
+      <section id="true-false">
+        <h2 class="section-title">Part I. True/False Questions</h2>
+        <p class="instructions">Decide whether each statement is true or false.</p>
+
+        <article class="question tf">
+          <div class="q-head"><span class="q-number">1</span><p class="q-text">A proposition is a statement that is either true or false.</p></div>
+          <details><summary>View answer</summary><div class="answer-content"><strong>Answer: True.</strong> The slides define a proposition as a statement with a truth value of true or false.</div></details>
+        </article>
+
+        <article class="question tf">
+          <div class="q-head"><span class="q-number">2</span><p class="q-text">The symbol <span class="math">p → q</span> represents a biconditional statement.</p></div>
+          <details><summary>View answer</summary><div class="answer-content"><strong>Answer: False.</strong> <span class="math">p → q</span> is an implication. A biconditional is written <span class="math">p ↔ q</span>.</div></details>
+        </article>
+
+        <article class="question tf">
+          <div class="q-head"><span class="q-number">3</span><p class="q-text">A function maps every element of its domain to exactly one element of its codomain.</p></div>
+          <details><summary>View answer</summary><div class="answer-content"><strong>Answer: True.</strong> This “exactly one output” requirement is part of the definition of a function.</div></details>
+        </article>
+
+        <article class="question tf">
+          <div class="q-head"><span class="q-number">4</span><p class="q-text">Function composition is usually commutative, so <span class="math">g(f(x)) = f(g(x))</span> for all functions.</p></div>
+          <details><summary>View answer</summary><div class="answer-content"><strong>Answer: False.</strong> The slides emphasize that order matters in composition. In the example, <span class="math">g(f(3)) = 49</span>, while <span class="math">f(g(3)) = 19</span>.</div></details>
+        </article>
+
+        <article class="question tf">
+          <div class="q-head"><span class="q-number">5</span><p class="q-text">Linear search requires the input list to be sorted.</p></div>
+          <details><summary>View answer</summary><div class="answer-content"><strong>Answer: False.</strong> Linear search works even when the data is not sorted.</div></details>
+        </article>
+
+        <article class="question tf">
+          <div class="q-head"><span class="q-number">6</span><p class="q-text">Binary search repeatedly halves a sorted search space and has time complexity <span class="math">O(log n)</span>.</p></div>
+          <details><summary>View answer</summary><div class="answer-content"><strong>Answer: True.</strong> Each comparison eliminates approximately half of the remaining sorted list.</div></details>
+        </article>
+
+        <article class="question tf">
+          <div class="q-head"><span class="q-number">7</span><p class="q-text">A modular inverse of <span class="math">a</span> modulo <span class="math">m</span> exists when <span class="math">gcd(a,m)=1</span>.</p></div>
+          <details><summary>View answer</summary><div class="answer-content"><strong>Answer: True.</strong> Relatively prime values satisfy the condition required for a modular inverse.</div></details>
+        </article>
+
+        <article class="question tf">
+          <div class="q-head"><span class="q-number">8</span><p class="q-text">Using a Caesar shift of 3, the plaintext <code>HELLO</code> becomes <code>KHOOR</code>.</p></div>
+          <details><summary>View answer</summary><div class="answer-content"><strong>Answer: True.</strong> Each letter is moved three positions forward: H→K, E→H, L→O, L→O, and O→R.</div></details>
+        </article>
+
+        <article class="question tf">
+          <div class="q-head"><span class="q-number">9</span><p class="q-text">A proof by mathematical induction can omit the base case as long as the inductive step is correct.</p></div>
+          <details><summary>View answer</summary><div class="answer-content"><strong>Answer: False.</strong> Induction requires a base case and an inductive step. Without the base case, the argument never establishes a starting point.</div></details>
+        </article>
+
+        <article class="question tf">
+          <div class="q-head"><span class="q-number">10</span><p class="q-text">A recursive algorithm that does not move toward a base case may never terminate.</p></div>
+          <details><summary>View answer</summary><div class="answer-content"><strong>Answer: True.</strong> A sound recursive solution must make progress toward a stopping condition.</div></details>
+        </article>
+      </section>
+
+      <section id="single-answer">
+        <h2 class="section-title">Part II. Single-Answer Multiple-Choice Questions</h2>
+        <p class="instructions">Choose the one best answer for each question.</p>
+
+        <article class="question single">
+          <div class="q-head"><span class="q-number">1</span><p class="q-text">Which logical connective means “and”?</p></div>
+          <ul class="options">
+            <li><span class="choice">A.</span> <span class="math">¬</span></li>
+            <li><span class="choice">B.</span> <span class="math">∧</span></li>
+            <li><span class="choice">C.</span> <span class="math">∨</span></li>
+            <li><span class="choice">D.</span> <span class="math">→</span></li>
+          </ul>
+          <details><summary>View answer</summary><div class="answer-content"><strong>Answer: B.</strong> The conjunction symbol <span class="math">∧</span> is pronounced “and.”</div></details>
+        </article>
+
+        <article class="question single">
+          <div class="q-head"><span class="q-number">2</span><p class="q-text">If <span class="math">A</span> is the set of students in AI and <span class="math">B</span> is the set of students in Discrete Math, what does <span class="math">A ∩ B</span> represent?</p></div>
+          <ul class="options">
+            <li><span class="choice">A.</span> Students taking neither course</li>
+            <li><span class="choice">B.</span> Students taking at least one of the courses</li>
+            <li><span class="choice">C.</span> Students taking both courses</li>
+            <li><span class="choice">D.</span> Students taking AI but not Discrete Math</li>
+          </ul>
+          <details><summary>View answer</summary><div class="answer-content"><strong>Answer: C.</strong> Intersection contains the elements shared by both sets.</div></details>
+        </article>
+
+        <article class="question single">
+          <div class="q-head"><span class="q-number">3</span><p class="q-text">Let <span class="math">f(x)=2x+1</span> and <span class="math">g(x)=x²</span>. What is <span class="math">g(f(3))</span>?</p></div>
+          <ul class="options">
+            <li><span class="choice">A.</span> 19</li>
+            <li><span class="choice">B.</span> 36</li>
+            <li><span class="choice">C.</span> 49</li>
+            <li><span class="choice">D.</span> 81</li>
+          </ul>
+          <details><summary>View answer</summary><div class="answer-content"><strong>Answer: C.</strong> First, <span class="math">f(3)=7</span>. Then <span class="math">g(7)=7²=49</span>.</div></details>
+        </article>
+
+        <article class="question single">
+          <div class="q-head"><span class="q-number">4</span><p class="q-text">What is the worst-case time complexity of linear search?</p></div>
+          <ul class="options">
+            <li><span class="choice">A.</span> <span class="math">O(1)</span></li>
+            <li><span class="choice">B.</span> <span class="math">O(log n)</span></li>
+            <li><span class="choice">C.</span> <span class="math">O(n)</span></li>
+            <li><span class="choice">D.</span> <span class="math">O(n²)</span></li>
+          </ul>
+          <details><summary>View answer</summary><div class="answer-content"><strong>Answer: C.</strong> In the worst case, linear search checks every element.</div></details>
+        </article>
+
+        <article class="question single">
+          <div class="q-head"><span class="q-number">5</span><p class="q-text">What is <span class="math">gcd(84,30)</span>?</p></div>
+          <ul class="options">
+            <li><span class="choice">A.</span> 2</li>
+            <li><span class="choice">B.</span> 3</li>
+            <li><span class="choice">C.</span> 6</li>
+            <li><span class="choice">D.</span> 12</li>
+          </ul>
+          <details><summary>View answer</summary><div class="answer-content"><strong>Answer: C.</strong> The Euclidean algorithm gives remainders 24, 6, and 0; the last nonzero remainder is 6.</div></details>
+        </article>
+
+        <article class="question single">
+          <div class="q-head"><span class="q-number">6</span><p class="q-text">What is the multiplicative inverse of 3 modulo 7?</p></div>
+          <ul class="options">
+            <li><span class="choice">A.</span> 2</li>
+            <li><span class="choice">B.</span> 3</li>
+            <li><span class="choice">C.</span> 5</li>
+            <li><span class="choice">D.</span> 6</li>
+          </ul>
+          <details><summary>View answer</summary><div class="answer-content"><strong>Answer: C.</strong> Since <span class="math">3 × 5 = 15 ≡ 1 (mod 7)</span>, the inverse is 5.</div></details>
+        </article>
+
+        <article class="question single">
+          <div class="q-head"><span class="q-number">7</span><p class="q-text">In cryptography, what is readable information called before encryption?</p></div>
+          <ul class="options">
+            <li><span class="choice">A.</span> Ciphertext</li>
+            <li><span class="choice">B.</span> Plaintext</li>
+            <li><span class="choice">C.</span> Checksum</li>
+            <li><span class="choice">D.</span> Modulus</li>
+          </ul>
+          <details><summary>View answer</summary><div class="answer-content"><strong>Answer: B.</strong> Encryption transforms readable plaintext into ciphertext.</div></details>
+        </article>
+
+        <article class="question single">
+          <div class="q-head"><span class="q-number">8</span><p class="q-text">In the slides’ tiny RSA-style example, <span class="math">φ(n)=40</span> and <span class="math">e=3</span>. Which value of <span class="math">d</span> satisfies <span class="math">3d ≡ 1 (mod 40)</span>?</p></div>
+          <ul class="options">
+            <li><span class="choice">A.</span> 7</li>
+            <li><span class="choice">B.</span> 13</li>
+            <li><span class="choice">C.</span> 21</li>
+            <li><span class="choice">D.</span> 27</li>
+          </ul>
+          <details><summary>View answer</summary><div class="answer-content"><strong>Answer: D.</strong> <span class="math">3 × 27 = 81 ≡ 1 (mod 40)</span>.</div></details>
+        </article>
+
+        <article class="question single">
+          <div class="q-head"><span class="q-number">9</span><p class="q-text">Which induction method assumes several earlier statements, such as <span class="math">P(a), P(a+1), …, P(k)</span>, to prove <span class="math">P(k+1)</span>?</p></div>
+          <ul class="options">
+            <li><span class="choice">A.</span> Direct proof</li>
+            <li><span class="choice">B.</span> Proof by contradiction</li>
+            <li><span class="choice">C.</span> Strong induction</li>
+            <li><span class="choice">D.</span> Modus tollens</li>
+          </ul>
+          <details><summary>View answer</summary><div class="answer-content"><strong>Answer: C.</strong> Strong induction may use all established earlier cases.</div></details>
+        </article>
+
+        <article class="question single">
+          <div class="q-head"><span class="q-number">10</span><p class="q-text">A recursive binary search has recurrence <span class="math">T(n)=T(n/2)+1</span>. What running time does this describe?</p></div>
+          <ul class="options">
+            <li><span class="choice">A.</span> <span class="math">O(1)</span></li>
+            <li><span class="choice">B.</span> <span class="math">O(log n)</span></li>
+            <li><span class="choice">C.</span> <span class="math">O(n)</span></li>
+            <li><span class="choice">D.</span> <span class="math">O(2ⁿ)</span></li>
+          </ul>
+          <details><summary>View answer</summary><div class="answer-content"><strong>Answer: B.</strong> Repeatedly dividing the problem size by 2 produces approximately <span class="math">log₂ n</span> recursive levels.</div></details>
+        </article>
+      </section>
+
+      <section id="multiple-answer">
+        <h2 class="section-title">Part III. Multiple-Answer Questions</h2>
+        <p class="instructions">Select all answers that apply. Each question has two or more correct choices.</p>
+
+        <article class="question multi">
+          <div class="q-head"><span class="q-number">1</span><p class="q-text">Which symbols are logical connectives presented in the slides? Select all that apply.</p></div>
+          <ul class="options">
+            <li><span class="choice">A.</span> <span class="math">¬</span></li>
+            <li><span class="choice">B.</span> <span class="math">∧</span></li>
+            <li><span class="choice">C.</span> <span class="math">∨</span></li>
+            <li><span class="choice">D.</span> <span class="math">→</span></li>
+            <li><span class="choice">E.</span> <span class="math">↔</span></li>
+            <li><span class="choice">F.</span> <span class="math">∈</span></li>
+          </ul>
+          <details><summary>View answer</summary><div class="answer-content"><strong>Answers: A, B, C, D, and E.</strong> They represent negation, conjunction, disjunction, implication, and biconditional. The symbol <span class="math">∈</span> means “is an element of.”</div></details>
+        </article>
+
+        <article class="question multi">
+          <div class="q-head"><span class="q-number">2</span><p class="q-text">Which proof strategies are discussed in the Logic and Proofs slides? Select all that apply.</p></div>
+          <ul class="options">
+            <li><span class="choice">A.</span> Direct proof</li>
+            <li><span class="choice">B.</span> Proof by contraposition</li>
+            <li><span class="choice">C.</span> Proof by contradiction</li>
+            <li><span class="choice">D.</span> Checking one example and declaring a general proof</li>
+            <li><span class="choice">E.</span> Modus ponens as a rule of inference</li>
+          </ul>
+          <details><summary>View answer</summary><div class="answer-content"><strong>Answers: A, B, C, and E.</strong> One example alone does not prove a general claim.</div></details>
+        </article>
+
+        <article class="question multi">
+          <div class="q-head"><span class="q-number">3</span><p class="q-text">Which interpretations of set operations are correct? Select all that apply.</p></div>
+          <ul class="options">
+            <li><span class="choice">A.</span> <span class="math">A ∩ B</span> contains elements in both <span class="math">A</span> and <span class="math">B</span>.</li>
+            <li><span class="choice">B.</span> <span class="math">A ∪ B</span> contains elements in at least one of the two sets.</li>
+            <li><span class="choice">C.</span> <span class="math">A − B</span> contains elements in <span class="math">A</span> but not in <span class="math">B</span>.</li>
+            <li><span class="choice">D.</span> <span class="math">A ∩ B</span> always contains every element in the universal set.</li>
+            <li><span class="choice">E.</span> Set intersection can model an SQL “AND” condition.</li>
+          </ul>
+          <details><summary>View answer</summary><div class="answer-content"><strong>Answers: A, B, C, and E.</strong> Intersection identifies shared members; it does not automatically contain the entire universal set.</div></details>
+        </article>
+
+        <article class="question multi">
+          <div class="q-head"><span class="q-number">4</span><p class="q-text">According to the slides, matrices can be used to represent which items? Select all that apply.</p></div>
+          <ul class="options">
+            <li><span class="choice">A.</span> Relations and networks</li>
+            <li><span class="choice">B.</span> Image pixels</li>
+            <li><span class="choice">C.</span> Transformations such as scaling and rotation</li>
+            <li><span class="choice">D.</span> A 0–1 student-course enrollment relationship</li>
+            <li><span class="choice">E.</span> A guarantee that every represented relation is a one-to-one function</li>
+          </ul>
+          <details><summary>View answer</summary><div class="answer-content"><strong>Answers: A, B, C, and D.</strong> A matrix can represent many structures, but it does not by itself guarantee that the relationship is a one-to-one function.</div></details>
+        </article>
+
+        <article class="question multi">
+          <div class="q-head"><span class="q-number">5</span><p class="q-text">Which growth rates grow more slowly than <span class="math">n²</span> for sufficiently large <span class="math">n</span>? Select all that apply.</p></div>
+          <ul class="options">
+            <li><span class="choice">A.</span> <span class="math">log n</span></li>
+            <li><span class="choice">B.</span> <span class="math">n</span></li>
+            <li><span class="choice">C.</span> <span class="math">n log n</span></li>
+            <li><span class="choice">D.</span> <span class="math">2ⁿ</span></li>
+            <li><span class="choice">E.</span> <span class="math">n³</span></li>
+          </ul>
+          <details><summary>View answer</summary><div class="answer-content"><strong>Answers: A, B, and C.</strong> Logarithmic, linear, and linearithmic growth are asymptotically slower than quadratic growth.</div></details>
+        </article>
+
+        <article class="question multi">
+          <div class="q-head"><span class="q-number">6</span><p class="q-text">Which applications of modular arithmetic or remainders are identified in the Number Theory slides? Select all that apply.</p></div>
+          <ul class="options">
+            <li><span class="choice">A.</span> Clock and calendar calculations</li>
+            <li><span class="choice">B.</span> Check digits</li>
+            <li><span class="choice">C.</span> Hash-table bucket assignment</li>
+            <li><span class="choice">D.</span> Checksums and error detection</li>
+            <li><span class="choice">E.</span> Eliminating the need for cryptographic keys</li>
+          </ul>
+          <details><summary>View answer</summary><div class="answer-content"><strong>Answers: A, B, C, and D.</strong> The slides connect remainders with repeating cycles, identifiers, hashing, and data-transmission checks.</div></details>
+        </article>
+
+        <article class="question multi">
+          <div class="q-head"><span class="q-number">7</span><p class="q-text">Which statements about cryptography are supported by the slides? Select all that apply.</p></div>
+          <ul class="options">
+            <li><span class="choice">A.</span> A key controls the transformation between plaintext and ciphertext.</li>
+            <li><span class="choice">B.</span> Public-key cryptography can use different keys for encryption and decryption.</li>
+            <li><span class="choice">C.</span> For the affine rule <span class="math">E(x)=5x+8 mod 26</span>, decryption requires an inverse of 5 modulo 26.</li>
+            <li><span class="choice">D.</span> Homomorphic encryption allows some computation on encrypted data.</li>
+            <li><span class="choice">E.</span> Toy Caesar ciphers provide sufficient security for modern sensitive systems.</li>
+          </ul>
+          <details><summary>View answer</summary><div class="answer-content"><strong>Answers: A, B, C, and D.</strong> The slides explicitly warn that classical toy ciphers are educational and not sufficient for modern security.</div></details>
+        </article>
+
+        <article class="question multi">
+          <div class="q-head"><span class="q-number">8</span><p class="q-text">Which components belong in a standard mathematical-induction proof? Select all that apply.</p></div>
+          <ul class="options">
+            <li><span class="choice">A.</span> A base case</li>
+            <li><span class="choice">B.</span> An inductive hypothesis</li>
+            <li><span class="choice">C.</span> An inductive step proving <span class="math">P(k+1)</span></li>
+            <li><span class="choice">D.</span> A final conclusion stating the range for which the claim holds</li>
+            <li><span class="choice">E.</span> Assuming <span class="math">P(k+1)</span> without deriving it</li>
+          </ul>
+          <details><summary>View answer</summary><div class="answer-content"><strong>Answers: A, B, C, and D.</strong> The inductive step must derive the next case from the hypothesis; it cannot simply assume the next case.</div></details>
+        </article>
+
+        <article class="question multi">
+          <div class="q-head"><span class="q-number">9</span><p class="q-text">Which statements describe recursive definitions or algorithms correctly? Select all that apply.</p></div>
+          <ul class="options">
+            <li><span class="choice">A.</span> They include one or more base cases.</li>
+            <li><span class="choice">B.</span> They build or solve larger cases using smaller cases.</li>
+            <li><span class="choice">C.</span> Memoization stores results of solved subproblems.</li>
+            <li><span class="choice">D.</span> Naive Fibonacci recursion may recompute the same subproblem many times.</li>
+            <li><span class="choice">E.</span> Every recursive call must use exactly the same input as the previous call.</li>
+          </ul>
+          <details><summary>View answer</summary><div class="answer-content"><strong>Answers: A, B, C, and D.</strong> A recursive call normally uses a smaller or simpler input so that the process moves toward a base case.</div></details>
+        </article>
+
+        <article class="question multi">
+          <div class="q-head"><span class="q-number">10</span><p class="q-text">Which real-world or computing applications of recursion are listed in the slides? Select all that apply.</p></div>
+          <ul class="options">
+            <li><span class="choice">A.</span> Traversing folders and subfolders</li>
+            <li><span class="choice">B.</span> Generating fractals and repeated graphics</li>
+            <li><span class="choice">C.</span> Parsing expressions containing smaller expressions</li>
+            <li><span class="choice">D.</span> Exploring game moves and countermoves in AI search trees</li>
+            <li><span class="choice">E.</span> Requiring every dataset to be sorted before it can be processed</li>
+          </ul>
+          <details><summary>View answer</summary><div class="answer-content"><strong>Answers: A, B, C, and D.</strong> These are direct examples from the Recursion II slides.</div></details>
+        </article>
+      </section>
+
+      <section id="answer-key" class="answer-key">
+        <h2 class="section-title">Complete Answer Key</h2>
+        <div class="key-grid">
+          <div class="key-card">
+            <h3>True/False</h3>
+            <ol>
+              <li>True</li>
+              <li>False</li>
+              <li>True</li>
+              <li>False</li>
+              <li>False</li>
+              <li>True</li>
+              <li>True</li>
+              <li>True</li>
+              <li>False</li>
+              <li>True</li>
+            </ol>
+          </div>
+          <div class="key-card">
+            <h3>Single-Answer Multiple Choice</h3>
+            <ol>
+              <li>B</li>
+              <li>C</li>
+              <li>C</li>
+              <li>C</li>
+              <li>C</li>
+              <li>C</li>
+              <li>B</li>
+              <li>D</li>
+              <li>C</li>
+              <li>B</li>
+            </ol>
+          </div>
+          <div class="key-card">
+            <h3>Multiple-Answer Questions</h3>
+            <ol>
+              <li>A, B, C, D, E</li>
+              <li>A, B, C, E</li>
+              <li>A, B, C, E</li>
+              <li>A, B, C, D</li>
+              <li>A, B, C</li>
+              <li>A, B, C, D</li>
+              <li>A, B, C, D</li>
+              <li>A, B, C, D</li>
+              <li>A, B, C, D</li>
+              <li>A, B, C, D</li>
+            </ol>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      Prepared from the uploaded Week 1–Week 7 course slides. The questions follow the examples, terminology, and learning goals presented in those materials.
+    </footer>
+  </div>
+
+  <script>
+    function setAnswers(openState) {
+      document.querySelectorAll("details").forEach(function (item) {
+        item.open = openState;
+      });
+    }
+  </script>
+</body>
+</html>

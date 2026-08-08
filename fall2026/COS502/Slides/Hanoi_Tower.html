@@ -1,0 +1,663 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tower of Hanoi (Drag & Drop)</title>
+  <style>
+    :root{
+      --bg1:#eaf6ff;
+      --bg2:#dff1ff;
+      --ink:#0b2a3a;
+      --accent:#2b74ff;
+
+      --peg:#d94b3d;
+      --peg-dark:#b7372b;
+
+      --shadow: 0 10px 30px rgba(0,0,0,.12);
+      --radius: 14px;
+
+      --rodW: 10px;
+      --rodH: 200px;
+      --baseH: 14px;
+      --pegAreaH: 260px;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--ink);
+      background: radial-gradient(1200px 600px at 20% 0%, var(--bg1), var(--bg2));
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      padding:24px;
+    }
+
+    .app{
+      width:min(980px, 96vw);
+      background: linear-gradient(#f9fdff, #eaf7ff);
+      border: 2px solid rgba(10,30,50,.12);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      padding:14px 16px;
+      background: rgba(255,255,255,.55);
+      border-bottom: 1px solid rgba(10,30,50,.10);
+      flex-wrap:wrap;
+    }
+
+    .control{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.7);
+      border: 1px solid rgba(10,30,50,.10);
+    }
+
+    .label{font-weight:800}
+    select{
+      padding:6px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(10,30,50,.18);
+      background:#fff;
+      font-weight:700;
+      outline:none;
+    }
+
+    .spin{display:flex; gap:6px}
+    .miniBtn{
+      width:34px; height:30px;
+      border-radius: 10px;
+      border:1px solid rgba(10,30,50,.18);
+      background:#fff;
+      cursor:pointer;
+      font-weight:900;
+      color:#1b4bd6;
+    }
+    .miniBtn:active{transform:translateY(1px)}
+    .miniBtn:disabled{opacity:.5; cursor:not-allowed}
+
+    .moves{
+      font-weight:900;
+      color:#1c50ff;
+      font-size: 20px;
+      margin-left:6px;
+      margin-right:4px;
+    }
+
+    .btn{
+      padding:8px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(43,116,255,.35);
+      background: rgba(43,116,255,.10);
+      color:#1540b6;
+      font-weight:800;
+      cursor:pointer;
+      transition: .15s ease;
+    }
+    .btn:hover{background: rgba(43,116,255,.16)}
+    .btn:active{transform:translateY(1px)}
+
+    .hint{
+      margin-left:auto;
+      font-weight:800;
+      color: rgba(11,42,58,.70);
+    }
+
+    .boardWrap{padding: 18px 16px 12px}
+    .board{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      align-items:stretch;
+    }
+
+    .peg{
+      position:relative;
+      height: var(--pegAreaH);
+      border-radius: 14px;
+      background: rgba(255,255,255,.35);
+      border: 1px solid rgba(10,30,50,.10);
+      overflow:hidden;
+      transition: .12s ease;
+    }
+
+    .rod{
+      position:absolute;
+      left:50%;
+      bottom: var(--baseH);
+      width: var(--rodW);
+      height: var(--rodH);
+      transform: translateX(-50%);
+      background: linear-gradient(var(--peg), var(--peg-dark));
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(200,60,40,.25);
+      pointer-events:none;
+    }
+
+    .base{
+      position:absolute;
+      left:10%;
+      right:10%;
+      bottom: 0;
+      height: var(--baseH);
+      background: linear-gradient(var(--peg), var(--peg-dark));
+      border-radius: 999px;
+      box-shadow: 0 6px 16px rgba(200,60,40,.25);
+      pointer-events:none;
+    }
+
+    .stack{
+      position:absolute;
+      left:0; right:0;
+      bottom: var(--baseH);
+      top: 10px;
+      display:flex;
+      flex-direction: column-reverse;
+      align-items:center;
+      gap:8px;
+      padding-bottom: 6px;
+    }
+
+    .disk{
+      height: 22px;
+      border-radius: 999px;
+      border: 2px solid rgba(0,0,0,.10);
+      box-shadow: 0 8px 18px rgba(0,0,0,.08);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size: 12px;
+      font-weight: 900;
+      color: rgba(0,0,0,.55);
+      user-select:none;
+      touch-action:none; /* important for pointer dragging */
+    }
+
+    .disk.draggable{
+      cursor: grab;
+    }
+    .disk.draggable:active{
+      cursor: grabbing;
+    }
+
+    /* Peg drop hints while dragging */
+    .peg.drop-ok{
+      box-shadow: 0 0 0 4px rgba(43,116,255,.18) inset;
+      border-color: rgba(43,116,255,.35);
+    }
+    .peg.drop-no{
+      box-shadow: 0 0 0 4px rgba(255,80,80,.14) inset;
+      border-color: rgba(255,80,80,.28);
+    }
+
+    /* Floating drag ghost */
+    .ghost{
+      position: fixed;
+      z-index: 9999;
+      pointer-events:none;
+      opacity:.95;
+      transform: translateZ(0);
+    }
+
+    .footer{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding: 10px 16px 14px;
+      border-top: 1px solid rgba(10,30,50,.10);
+      background: rgba(255,255,255,.45);
+      gap: 12px;
+      flex-wrap:wrap;
+    }
+
+    .minMoves{
+      font-weight:900;
+      color: rgba(11,42,58,.75);
+      font-size: 18px;
+    }
+    .status{
+      font-weight:800;
+      color: rgba(11,42,58,.70);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="control">
+        <span class="label">Disks:</span>
+        <select id="diskSelect" aria-label="Number of disks"></select>
+        <div class="spin">
+          <button class="miniBtn" id="downBtn" title="Decrease disks">▼</button>
+          <button class="miniBtn" id="upBtn" title="Increase disks">▲</button>
+        </div>
+      </div>
+
+      <div class="control">
+        <span class="label">Moves:</span>
+        <span class="moves" id="movesText">0</span>
+      </div>
+
+      <button class="btn" id="restartBtn">Restart</button>
+
+      <div class="hint" id="hintText">Drag the TOP disk to another tower.</div>
+    </div>
+
+    <div class="boardWrap">
+      <div class="board">
+        <div class="peg" data-peg="0" aria-label="Tower 1">
+          <div class="rod"></div><div class="base"></div>
+          <div class="stack" id="stack0"></div>
+        </div>
+        <div class="peg" data-peg="1" aria-label="Tower 2">
+          <div class="rod"></div><div class="base"></div>
+          <div class="stack" id="stack1"></div>
+        </div>
+        <div class="peg" data-peg="2" aria-label="Tower 3">
+          <div class="rod"></div><div class="base"></div>
+          <div class="stack" id="stack2"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="minMoves" id="minMovesText">Minimum Moves: 7</div>
+      <div class="status" id="statusText">Ready.</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // ----------------------------
+      // State
+      // ----------------------------
+      var pegs = [[], [], []];     // each peg: array of disk sizes (1 smallest)
+      var diskCount = 3;
+      var moves = 0;
+
+      var drag = {
+        active: false,
+        size: 0,
+        fromPeg: -1,
+        originalEl: null,
+        ghostEl: null,
+        offsetX: 0,
+        offsetY: 0
+      };
+
+      // ----------------------------
+      // Elements
+      // ----------------------------
+      var diskSelect = document.getElementById("diskSelect");
+      var movesText = document.getElementById("movesText");
+      var restartBtn = document.getElementById("restartBtn");
+      var minMovesText = document.getElementById("minMovesText");
+      var statusText = document.getElementById("statusText");
+      var hintText = document.getElementById("hintText");
+
+      var upBtn = document.getElementById("upBtn");
+      var downBtn = document.getElementById("downBtn");
+
+      var pegEls = Array.prototype.slice.call(document.querySelectorAll(".peg"));
+      var stacks = [
+        document.getElementById("stack0"),
+        document.getElementById("stack1"),
+        document.getElementById("stack2")
+      ];
+
+      // ----------------------------
+      // Helpers
+      // ----------------------------
+      function topDisk(pegIndex) {
+        var arr = pegs[pegIndex];
+        if (!arr.length) return null;
+        return arr[arr.length - 1];
+      }
+
+      function canPlace(size, toPeg) {
+        var t = topDisk(toPeg);
+        if (t === null) return true;
+        return size < t;
+      }
+
+      function isSolved() {
+        return pegs[2].length === diskCount;
+      }
+
+      function setStatus(text) {
+        statusText.textContent = text;
+      }
+
+      function setHint(text) {
+        hintText.textContent = text;
+      }
+
+      function setMoves(m) {
+        moves = m;
+        movesText.textContent = String(moves);
+      }
+
+      function updateMinMoves() {
+        var min = Math.pow(2, diskCount) - 1;
+        minMovesText.textContent = "Minimum Moves: " + String(min);
+      }
+
+      function diskWidth(size) {
+        var minW = 60;
+        var maxW = 220;
+        if (diskCount <= 1) return maxW;
+
+        var t = (size - 1) / (diskCount - 1); // 0..1
+        return Math.round(minW + (maxW - minW) * t);
+      }
+
+      function diskColor(size) {
+        var hue = 135 + (size * 18);
+        return "hsl(" + hue + " 85% 70%)";
+      }
+
+      function clearDropHints() {
+        var i;
+        for (i = 0; i < pegEls.length; i += 1) {
+          pegEls[i].classList.remove("drop-ok");
+          pegEls[i].classList.remove("drop-no");
+        }
+      }
+
+      function showDropHints(size) {
+        var i;
+        for (i = 0; i < 3; i += 1) {
+          if (canPlace(size, i)) pegEls[i].classList.add("drop-ok");
+          else pegEls[i].classList.add("drop-no");
+        }
+      }
+
+      // ----------------------------
+      // Game setup / reset
+      // ----------------------------
+      function resetGame() {
+        pegs = [[], [], []];
+        var s;
+        for (s = diskCount; s >= 1; s -= 1) {
+          pegs[0].push(s);
+        }
+        setMoves(0);
+        setStatus("Ready.");
+        setHint("Drag the TOP disk to another tower.");
+        clearDropHints();
+        render();
+      }
+
+      function fillDiskSelect() {
+        diskSelect.innerHTML = "";
+        var i;
+        for (i = 1; i <= 10; i += 1) {
+          var opt = document.createElement("option");
+          opt.value = String(i);
+          opt.textContent = String(i);
+          diskSelect.appendChild(opt);
+        }
+      }
+
+      function setDiskCount(n) {
+        diskCount = n;
+        diskSelect.value = String(diskCount);
+        updateMinMoves();
+        updateSpinButtons();
+        resetGame();
+      }
+
+      function updateSpinButtons() {
+        upBtn.disabled = (diskCount >= 10);
+        downBtn.disabled = (diskCount <= 1);
+      }
+
+      // ----------------------------
+      // Render
+      // ----------------------------
+      function render() {
+        var p;
+        for (p = 0; p < 3; p += 1) {
+          stacks[p].innerHTML = "";
+
+          var top = topDisk(p);
+          var i;
+          for (i = 0; i < pegs[p].length; i += 1) {
+            var size = pegs[p][i];
+
+            var el = document.createElement("div");
+            el.className = "disk";
+            el.style.width = diskWidth(size) + "px";
+            el.style.background = diskColor(size);
+            el.textContent = String(size);
+
+            el.setAttribute("data-size", String(size));
+            el.setAttribute("data-peg", String(p));
+
+            // Only top disk can be dragged
+            if (size === top) {
+              el.classList.add("draggable");
+              el.addEventListener("pointerdown", onDiskPointerDown);
+            }
+
+            stacks[p].appendChild(el);
+          }
+        }
+
+        if (isSolved()) {
+          setStatus("Solved in " + moves + " moves! 🎉");
+          setHint("Nice! Restart or change the disk count.");
+        }
+      }
+
+      // ----------------------------
+      // Move (model)
+      // ----------------------------
+      function doMove(fromPeg, toPeg) {
+        if (fromPeg === toPeg) return false;
+
+        var size = topDisk(fromPeg);
+        if (size === null) return false;
+        if (!canPlace(size, toPeg)) return false;
+
+        pegs[fromPeg].pop();
+        pegs[toPeg].push(size);
+        setMoves(moves + 1);
+        return true;
+      }
+
+      // ----------------------------
+      // Drag & Drop (custom pointer drag)
+      // ----------------------------
+      function onDiskPointerDown(evt) {
+        if (drag.active) return;
+
+        var el = evt.currentTarget;
+        var fromPeg = parseInt(el.getAttribute("data-peg"), 10);
+        var size = parseInt(el.getAttribute("data-size"), 10);
+
+        // Safety: only allow if it is still top disk
+        if (topDisk(fromPeg) !== size) {
+          setStatus("Only the TOP disk can be moved.");
+          return;
+        }
+
+        evt.preventDefault();
+
+        drag.active = true;
+        drag.size = size;
+        drag.fromPeg = fromPeg;
+        drag.originalEl = el;
+
+        // Create a floating "ghost" disk
+        var rect = el.getBoundingClientRect();
+        var ghost = el.cloneNode(true);
+        ghost.classList.add("ghost");
+        ghost.style.left = rect.left + "px";
+        ghost.style.top = rect.top + "px";
+        ghost.style.width = rect.width + "px";
+        ghost.style.height = rect.height + "px";
+        document.body.appendChild(ghost);
+        drag.ghostEl = ghost;
+
+        // Hide the original while dragging (keeps layout)
+        el.style.visibility = "hidden";
+
+        // Pointer offset inside the disk (so it follows smoothly)
+        drag.offsetX = evt.clientX - rect.left;
+        drag.offsetY = evt.clientY - rect.top;
+
+        showDropHints(size);
+        setStatus("Dragging disk " + size + "...");
+        setHint("Drop onto a tower (blue = valid, red = invalid).");
+
+        document.addEventListener("pointermove", onPointerMove);
+        document.addEventListener("pointerup", onPointerUp);
+        document.addEventListener("pointercancel", onPointerCancel);
+      }
+
+      function onPointerMove(evt) {
+        if (!drag.active) return;
+
+        // Move ghost with pointer
+        var x = evt.clientX - drag.offsetX;
+        var y = evt.clientY - drag.offsetY;
+        drag.ghostEl.style.left = x + "px";
+        drag.ghostEl.style.top = y + "px";
+      }
+
+      function findPegUnderPointer(clientX, clientY) {
+        var el = document.elementFromPoint(clientX, clientY);
+        if (!el) return null;
+
+        // climb up to .peg
+        while (el && el !== document.body) {
+          if (el.classList && el.classList.contains("peg")) return el;
+          el = el.parentNode;
+        }
+        return null;
+      }
+
+      function finishDrag(cleanStatus) {
+        if (!drag.active) return;
+
+        // Restore original
+        if (drag.originalEl) drag.originalEl.style.visibility = "";
+
+        // Remove ghost
+        if (drag.ghostEl && drag.ghostEl.parentNode) {
+          drag.ghostEl.parentNode.removeChild(drag.ghostEl);
+        }
+
+        drag.active = false;
+        drag.size = 0;
+        drag.fromPeg = -1;
+        drag.originalEl = null;
+        drag.ghostEl = null;
+        drag.offsetX = 0;
+        drag.offsetY = 0;
+
+        clearDropHints();
+
+        document.removeEventListener("pointermove", onPointerMove);
+        document.removeEventListener("pointerup", onPointerUp);
+        document.removeEventListener("pointercancel", onPointerCancel);
+
+        if (cleanStatus) {
+          setHint("Drag the TOP disk to another tower.");
+        }
+      }
+
+      function onPointerUp(evt) {
+        if (!drag.active) return;
+
+        var pegEl = findPegUnderPointer(evt.clientX, evt.clientY);
+        var toPeg = null;
+
+        if (pegEl) {
+          toPeg = parseInt(pegEl.getAttribute("data-peg"), 10);
+        }
+
+        // If dropped on a valid peg, attempt move
+        if (toPeg !== null) {
+          if (toPeg === drag.fromPeg) {
+            setStatus("Drop canceled.");
+            finishDrag(true);
+            render();
+            return;
+          }
+
+          if (!canPlace(drag.size, toPeg)) {
+            setStatus("Invalid move: cannot place a larger disk on a smaller disk.");
+            finishDrag(true);
+            render();
+            return;
+          }
+
+          var ok = doMove(drag.fromPeg, toPeg);
+          if (ok) {
+            setStatus("Moved disk " + drag.size + " to Tower " + (toPeg + 1) + ".");
+          } else {
+            setStatus("Move failed.");
+          }
+          finishDrag(true);
+          render();
+          return;
+        }
+
+        // Dropped outside: cancel
+        setStatus("Drop canceled (not on a tower).");
+        finishDrag(true);
+        render();
+      }
+
+      function onPointerCancel() {
+        if (!drag.active) return;
+        setStatus("Drag canceled.");
+        finishDrag(true);
+        render();
+      }
+
+      // ----------------------------
+      // UI events
+      // ----------------------------
+      restartBtn.addEventListener("click", function () {
+        resetGame();
+      });
+
+      diskSelect.addEventListener("change", function () {
+        var n = parseInt(diskSelect.value, 10);
+        if (!Number.isNaN(n) && n >= 1 && n <= 10) {
+          setDiskCount(n);
+        }
+      });
+
+      upBtn.addEventListener("click", function () {
+        if (diskCount < 10) setDiskCount(diskCount + 1);
+      });
+
+      downBtn.addEventListener("click", function () {
+        if (diskCount > 1) setDiskCount(diskCount - 1);
+      });
+
+      // ----------------------------
+      // Boot
+      // ----------------------------
+      fillDiskSelect();
+      setDiskCount(3);
+    })();
+  </script>
+</body>
+</html>

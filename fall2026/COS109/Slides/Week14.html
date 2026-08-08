@@ -1,0 +1,1524 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Project 2: Shooting Monster</title>
+    <meta name="description" content="A set of slides for Machine Learning">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/effectsGreen.css">
+	<!--<link rel="stylesheet" href="./css/style.css">-->
+	<!--<link rel="stylesheet" href="./css/effects.css">-->
+	
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+	</script>
+
+	<style>
+	    pre {
+            background-color: black;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+        }
+        code {
+            font-family: "Courier New", monospace;
+            color: #d63384; /* Python-style color */
+        }
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }	
+	</style>
+
+  </head>
+
+  <body onload="startTime()">
+    <div class="reveal" >
+	  <p><img src="images/midwaylogo.png"  align="left" height="6%" width="6%" style="vertical-align:left;margin:-15px 5px"><img src="images/mueagle.png"  color="white" align="left" height="4%" width="4%" style="vertical-align:center;margin:-1% 45%">
+		<div style="color:white;font-size: 20px; vertical-align:left;margin:-1% 0%" align="right" id="realtimeclock"></div></p>
+      <div class="slides">
+
+  <div class="me">Xinxing Wu</div>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown id="cover"><textarea data-template>
+<p class='titlep'>&nbsp;</p>
+
+# Project 2: Shooting Monster
+
+<hr>
+
+<br>
+
+Xinxing Wu
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline
+
+[<p class="hover-underline-animation">Goal</p>](#/ch1)
+
+[<p class="hover-underline-animation">Steps</p>](#/ch2)
+
+[<p class="hover-underline-animation">Prior knowledge</p>](#/ch3)
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline (Cont.)
+
+[<p class="hover-underline-animation">Code</p>](#/ch4)
+
+[<p class="hover-underline-animation">Ideas for Improving</p>](#/ch5)
+
+[<p class="hover-underline-animation">Testing \& Submissions</p>](#/ch6)
+</textarea></section>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+
+## Goal
+
+<div id="shadebox-neon" class="shadebox neon">
+
+Use Week 2-3, Week 5-6, Week 9–12 to build a real-time game
+
+</div>
+
+</textarea></section>
+
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch1" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Goal</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Goal</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+- keyboard input without cin
+
+- game loop with objects
+
+- inheritance for shared entity data
+
+- buffered drawing using strings
+
+</div>
+   </div>
+</div>
+
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch2" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Steps</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Steps</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+- Step 1: Introduce the “repeat data” problem (Week 6 idea)
+
+<div id="shadebox-glass" class="shadebox glass">
+
+- Player, enemy, bullet all have x/y and a symbol
+
+- That is why we make a base class
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Steps</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+- Step 2: Create base class Entity (Week 10 + Week 12)
+
+<div id="shadebox-glass" class="shadebox glass">
+
+- stores: x, y, icon
+
+- derived classes <spanGREEN>reuse</spanGREEN> them
+
+</div>
+   </div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Steps</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+- Step 3: Derived classes (Week 12 inheritance)
+
+<div id="shadebox-glass" class="shadebox glass">
+
+- Player : Entity has move methods
+
+- Enemy : Entity has fall/reset
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Steps</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+- Step 4: Objects (Week 10)
+
+<div id="shadebox-glass" class="shadebox glass">
+
+- Player player(...)
+
+- Enemy enemy;
+
+- show what “object holds state” means
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Steps</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+- Step 5: Bullet as object with state (Week 3 state concept + Week 10 OOP)
+
+<div id="shadebox-glass" class="shadebox glass">
+
+- bool on means bullet active
+
+- fireFromPlayer sets x/y and turns on
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Steps</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+- Step 6: Collision detection (Week 2 logic)
+
+<div id="shadebox-glass" class="shadebox glass">
+
+- bullet hits enemy when x/y match
+
+- game over when enemy reaches player
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Steps</div>
+  <div class="definition-pro-Y-shadebox">
+<div style="width: 800px;"></div>
+  
+- Step 7: Double-buffer draw with string (Week 5)
+
+<div id="shadebox-glass" class="shadebox glass">
+
+- build screen into string screen
+
+- print once per frame → less flicker
+</div>
+   </div>
+</div>
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch3" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Prior knowledge</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div id="rainbow-type">Prior knowledge</div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Week 2</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">logic</p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Week 3</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">state concept</p>
+</div>
+
+
+<div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Week 5</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Strings</p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Week 6</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Records/Structs </p>
+</div>
+
+</div>
+
+
+<div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Week 9</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">windows.h (In C++, <windows.h> is the master header file for the Windows API (Win32). It provides the declarations for all the functions, macros, and data types required to interact directly with the Windows operating system. ), console behavior, real-time input concept</p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Week 10</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">class syntax, methods</p>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+
+
+<div id="rainbow-type">Prior knowledge (cont.)</div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Week 11</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;"> encapsulation, public Entity</p>
+</div>
+
+</div>
+
+</div>
+
+
+
+<div id="rainbow-type"> Prior knowledge (Cont.)</div>
+
+<div class="enum-bigidea-wrapper">
+  <style>
+    .enum-bigidea-wrapper .big-idea-callout{
+      margin: 16px 0;
+      padding: 12px 14px;
+      border-radius: 12px;
+
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.12);
+
+      color: #eaf3ff;
+      line-height: 1.55;
+      font-size: 25px;
+
+      border-left: 5px solid rgba(132, 255, 170, 0.85);
+      box-shadow: 0 0 0 1px rgba(132, 255, 170, 0.08);
+
+      /* ✅ align left */
+      text-align: left;
+    }
+
+    .enum-bigidea-wrapper .big-idea-callout b{
+      font-weight: 700;
+    }
+
+    .enum-bigidea-wrapper .big-idea-callout code{
+      font-family: Consolas, Monaco, monospace;
+      font-size: 0.95em;
+      padding: 2px 6px;
+      border-radius: 8px;
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+  </style>
+
+  <div class="big-idea-callout">
+    <b>Questions:</b> Draw a simple inheritance diagram
+
+  </div>
+
+</div>
+
+</textarea></section>
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch4" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Code</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+
+<div id="shadebox">
+
+### An answer - Simple Version
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <windows.h>
+#include <ctime>
+#include <string>
+using namespace std;
+
+const int W = 30;
+const int H = 20;
+
+void enableANSI() {
+    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    DWORD mode = 0;
+    GetConsoleMode(hOut, &mode);
+    mode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+    SetConsoleMode(hOut, mode);
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    enableANSI();
+    srand((unsigned)time(nullptr));
+
+    int playerX = W / 2;
+
+    bool bulletOn = false;
+    int bulletX = -1, bulletY = -1;
+
+    int enemyX = rand() % W, enemyY = 0;
+    int score = 0;
+
+    bool gameOver = false;
+
+    cout << "\x1b[?25l"; // hide cursor
+    cout << "\x1b[2J";   // clear once
+
+    int enemyTick = 0;          // controls enemy fall speed
+    const int enemyDelay = 5;   // bigger = slower enemy (2 means move every 2 frames)
+    const int frameMs = 50;     // 20 FPS (smooth enough)
+
+    bool lastSpaceDown = false; // to make space fire once per press
+
+    while (!gameOver) {
+        // ----- INPUT (smooth hold) -----
+        bool aDown = (GetAsyncKeyState('A') & 0x8000) || (GetAsyncKeyState(VK_LEFT) & 0x8000);
+        bool dDown = (GetAsyncKeyState('D') & 0x8000) || (GetAsyncKeyState(VK_RIGHT) & 0x8000);
+        bool qDown = (GetAsyncKeyState('Q') & 0x8000);
+
+        bool spaceDown = (GetAsyncKeyState(VK_SPACE) & 0x8000);
+
+        if (aDown && playerX > 0) playerX--;
+        if (dDown && playerX < W - 1) playerX++;
+
+        // fire only once per press (not machine-gun when holding)
+        if (spaceDown && !lastSpaceDown && !bulletOn) {
+            bulletOn = true;
+            bulletX = playerX;
+            bulletY = H - 2;
+        }
+        lastSpaceDown = spaceDown;
+
+        if (qDown) gameOver = true;
+
+        // ----- LOGIC -----
+        if (bulletOn) {
+            bulletY--;
+            if (bulletY < 0) bulletOn = false;
+        }
+
+        // enemy falls slower than frame rate
+        enemyTick++;
+        if (enemyTick >= enemyDelay) {
+            enemyTick = 0;
+            enemyY++;
+        }
+
+        // bullet hits enemy
+        if (bulletOn && bulletX == enemyX && bulletY == enemyY) {
+            score++;
+            bulletOn = false;
+            enemyX = rand() % W;
+            enemyY = 0;
+        }
+
+        // enemy reaches bottom
+        if (enemyY >= H - 1) {
+            if (enemyX == playerX) gameOver = true;
+            enemyX = rand() % W;
+            enemyY = 0;
+        }
+
+        // ----- DRAW (double-buffer) -----
+        string screen;
+        screen.reserve((W + 3) * (H + 4));
+
+        screen += "\x1b[H"; // cursor to top-left
+
+        for (int i = 0; i < W + 2; i++) screen += "#";
+        screen += "\n";
+
+        for (int y = 0; y < H; y++) {
+            screen += "#";
+            for (int x = 0; x < W; x++) {
+                char c = ' ';
+                if (x == enemyX && y == enemyY) c = 'W';
+                if (bulletOn && x == bulletX && y == bulletY) c = '|';
+                if (y == H - 1 && x == playerX) c = 'A';
+                screen += c;
+            }
+            screen += "#\n";
+        }
+
+        for (int i = 0; i < W + 2; i++) screen += "#";
+        screen += "\nScore: " + to_string(score) + " (A/D or arrows move, Space shoot, Q quit)\n";
+
+        cout << screen << flush;
+
+        Sleep(frameMs);
+    }
+
+    cout << "\x1b[?25h"; // show cursor
+    cout << "\nGAME OVER! Final Score: " << score << "\n";
+    return 0;
+}
+
+```
+
+</div>
+
+
+
+
+<div id="shadebox">
+
+### An answer - OOP + Inheritance
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <windows.h>
+#include <ctime>
+#include <string>
+using namespace std;
+
+const int W = 30;
+const int H = 20;
+
+void enableANSI() {
+    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    DWORD mode = 0;
+    GetConsoleMode(hOut, &mode);
+    mode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+    SetConsoleMode(hOut, mode);
+}
+
+class Entity {
+public:
+    int x;
+    int y;
+    char icon;
+
+    Entity(int startX, int startY, char ch) {
+        x = startX;
+        y = startY;
+        icon = ch;
+    }
+
+    virtual ~Entity() { }
+};
+
+class Player : public Entity {
+public:
+    Player(int startX, int startY) : Entity(startX, startY, 'A') { }
+
+    void moveLeft() {
+        if (x > 0) x--;
+    }
+
+    void moveRight() {
+        if (x < W - 1) x++;
+    }
+};
+
+class Bullet : public Entity {
+public:
+    bool on;
+
+    Bullet() : Entity(-1, -1, '|') {
+        on = false;
+    }
+
+    void fireFromPlayer(const Player& p) {
+        on = true;
+        x = p.x;
+        y = H - 2;
+    }
+
+    void update() {
+        if (!on) return;
+        y--;
+        if (y < 0) on = false;
+    }
+};
+
+class Enemy : public Entity {
+public:
+    Enemy() : Entity(0, 0, 'W') {
+        reset();
+    }
+
+    void reset() {
+        x = rand() % W;
+        y = 0;
+    }
+
+    void fallStep() {
+        y++;
+    }
+};
+
+bool keyDown(int vk) {
+    return (GetAsyncKeyState(vk) & 0x8000) != 0;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    enableANSI();
+    srand((unsigned)time(nullptr));
+
+    Player player(W / 2, H - 1);
+    Bullet bullet;
+    Enemy enemy;
+
+    int score = 0;
+    bool gameOver = false;
+
+    cout << "\x1b[?25l";
+    cout << "\x1b[2J";
+
+    int enemyTick = 0;
+    const int enemyDelay = 5;
+    const int frameMs = 50;
+
+    bool lastSpaceDown = false;
+
+    while (!gameOver) {
+        bool aDown = keyDown('A') || keyDown(VK_LEFT);
+        bool dDown = keyDown('D') || keyDown(VK_RIGHT);
+        bool qDown = keyDown('Q');
+        bool spaceDown = keyDown(VK_SPACE);
+
+        if (aDown) player.moveLeft();
+        if (dDown) player.moveRight();
+
+        if (spaceDown && !lastSpaceDown && !bullet.on) {
+            bullet.fireFromPlayer(player);
+        }
+        lastSpaceDown = spaceDown;
+
+        if (qDown) gameOver = true;
+
+        bullet.update();
+
+        enemyTick++;
+        if (enemyTick >= enemyDelay) {
+            enemyTick = 0;
+            enemy.fallStep();
+        }
+
+        if (bullet.on && bullet.x == enemy.x && bullet.y == enemy.y) {
+            score++;
+            bullet.on = false;
+            enemy.reset();
+        }
+
+        if (enemy.y >= H - 1) {
+            if (enemy.x == player.x) gameOver = true;
+            enemy.reset();
+        }
+
+        string screen;
+        screen.reserve((W + 3) * (H + 4));
+
+        screen += "\x1b[H";
+
+        for (int i = 0; i < W + 2; i++) screen += "#";
+        screen += "\n";
+
+        for (int y = 0; y < H; y++) {
+            screen += "#";
+            for (int x = 0; x < W; x++) {
+                char c = ' ';
+
+                if (x == enemy.x && y == enemy.y) c = enemy.icon;
+                if (bullet.on && x == bullet.x && y == bullet.y) c = bullet.icon;
+                if (x == player.x && y == player.y) c = player.icon;
+
+                screen += c;
+            }
+            screen += "#\n";
+        }
+
+        for (int i = 0; i < W + 2; i++) screen += "#";
+        screen += "\nScore: " + to_string(score) + " (A/D or arrows move, Space shoot, Q quit)\n";
+
+        cout << screen << flush;
+        Sleep(frameMs);
+    }
+
+    cout << "\x1b[?25h";
+    cout << "\nGAME OVER! Final Score: " << score << "\n";
+    return 0;
+}
+
+```
+
+</div>
+
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch5" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Ideas for Improving</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Ideas for Improving</div>
+  <div class="definition-pro-Y-shadebox">
+
+- Robust “press to quit / play again” flow
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+<div id="shadebox-glass" class="shadebox glass">
+
+After game over, ask Play again (y/n) and reset variables instead of exiting.
+</div>
+
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Robust “press to quit / play again” flow
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+/* =========================================================
+   STEP 1) Play again (restart without exiting)
+   =========================================================
+   UPDATE: Wrap your whole game state + while(!gameOver) inside a do/while.
+
+   1) ADD near the top of main() (after srand):
+*/
+char again = 'y';
+
+/*
+   2) ADD this do { ... } while (...) wrapper around your current game state
+      (put ALL your state variables + while loop inside):
+*/
+do {
+    // (move your current game-state variables here)
+    // int playerX = ...
+    // bool bulletOn = ...
+    // int enemyX = ...
+    // int score = ...
+    // bool gameOver = false;
+    // enemyTick...
+    // lastSpaceDown...
+    // while(!gameOver) { ... }
+
+    cout << "\x1b[?25h";
+    cout << "\nGAME OVER! Final Score: " << score << "\n";
+    cout << "Play again? (y/n): ";
+    cin >> again;
+
+} while (again == 'y' || again == 'Y');
+
+/*
+   3) REMOVE the old final prints at the bottom (since inside loop now).
+*/
+
+```
+
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Ideas for Improving (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+
+- Multiple enemies (start with 2–3)
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+<div id="shadebox-glass" class="shadebox glass">
+
+Store enemies in arrays (or a simple struct Enemy {int x,y;};) so students practice arrays/structs.
+</div>
+
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Multiple enemies (start with 2–3)
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+/* =========================================================
+   STEP 2) Multiple enemies (simple arrays)
+   =========================================================
+   UPDATE: Replace single enemy with 2 enemies.
+
+   1) REPLACE:
+      int enemyX = rand() % W, enemyY = 0;
+   WITH:
+*/
+const int EN = 2;
+int enemyX[EN], enemyY[EN];
+for (int i = 0; i < EN; i++) { enemyX[i] = rand() % W; enemyY[i] = 0; }
+
+/*
+   2) REPLACE enemy falling update:
+      enemyY++;
+   WITH:
+*/
+for (int i = 0; i < EN; i++) enemyY[i]++;
+
+/*
+   3) REPLACE bullet hit check:
+      if (bulletOn && bulletX == enemyX && bulletY == enemyY) { ... }
+   WITH:
+*/
+for (int i = 0; i < EN; i++) {
+    if (bulletOn && bulletX == enemyX[i] && bulletY == enemyY[i]) {
+        score++;
+        bulletOn = false;
+        enemyX[i] = rand() % W;
+        enemyY[i] = 0;
+    }
+}
+
+/*
+   4) REPLACE enemy bottom logic:
+      if (enemyY >= H - 1) { ... }
+   WITH:
+*/
+for (int i = 0; i < EN; i++) {
+    if (enemyY[i] >= H - 1) {
+        if (enemyX[i] == playerX) gameOver = true;
+        enemyX[i] = rand() % W;
+        enemyY[i] = 0;
+    }
+}
+
+/*
+   5) REPLACE draw enemy:
+      if (x == enemyX && y == enemyY) c = 'W';
+   WITH:
+*/
+for (int i = 0; i < EN; i++) {
+    if (x == enemyX[i] && y == enemyY[i]) c = 'W';
+}
+
+
+```
+
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Ideas for Improving (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+
+- Add lives / health instead of instant game over
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+<div id="shadebox-glass" class="shadebox glass">
+
+Give the player 3 lives; lose one if an enemy reaches the bottom at your X.
+</div>
+
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Add lives / health instead of instant game over
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+/* =========================================================
+   STEP 3) Lives instead of instant game over
+   =========================================================
+   UPDATE:
+   1) ADD near score:
+*/
+int lives = 3;
+
+/*
+   2) REPLACE in bottom-reach logic (single enemy version):
+      if (enemyX == playerX) gameOver = true;
+   WITH:
+*/
+if (enemyX == playerX) {
+    lives--;
+    if (lives <= 0) gameOver = true;
+}
+
+/*
+   3) UPDATE score line to include lives:
+   REPLACE:
+      screen += "\nScore: " + to_string(score) + ...
+   WITH:
+*/
+screen += "\nScore: " + to_string(score) + "  Lives: " + to_string(lives) +
+          " (A/D or arrows move, Space shoot, Q quit)\n";
+
+
+```
+
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Ideas for Improving (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+
+- Difficulty scaling
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+<div id="shadebox-glass" class="shadebox glass">
+
+Increase speed gradually: decrease enemyDelay or slightly lower frameMs as score increases.
+</div>
+
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Difficulty scaling
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+/* =========================================================
+   STEP 4) Difficulty scaling
+   =========================================================
+   UPDATE: Make enemyDelay change with score (keep it simple).
+
+   1) REPLACE:
+      const int enemyDelay = 5;
+   WITH:
+*/
+int enemyDelay = 5; // will shrink as score grows
+
+/*
+   2) ADD inside the loop after score updates or each frame:
+*/
+enemyDelay = 5 - (score / 5);
+if (enemyDelay < 1) enemyDelay = 1;
+
+```
+
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Ideas for Improving (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+
+- Better collision logic
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+<div id="shadebox-glass" class="shadebox glass">
+
+Right now enemy resets even if it hits bottom not on player; consider: if enemy reaches bottom anywhere, reduce life or spawn a new enemy with penalty.
+</div>
+
+   </div>
+</div>
+
+
+
+
+<div id="shadebox">
+
+### Better collision logic
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+/* =========================================================
+   STEP 5) Better “bottom reach” consequence
+   =========================================================
+   UPDATE: Penalize even if enemy misses player (optional).
+
+   Inside bottom reach block, ADD:
+*/
+if (enemyY >= H - 1) {
+    // if it reaches bottom anywhere, small penalty
+    if (score > 0) score--;
+
+    if (enemyX == playerX) gameOver = true;
+    enemyX = rand() % W;
+    enemyY = 0;
+}
+
+
+```
+
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Ideas for Improving (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+
+- Add reload / cooldown
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+<div id="shadebox-glass" class="shadebox glass">
+
+Even with “one bullet at a time,” add a short cooldown timer (like 5–10 frames) to teach timing variables.
+</div>
+
+   </div>
+</div>
+
+
+
+
+<div id="shadebox">
+
+### Add reload / cooldown
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+/* =========================================================
+   STEP 6) Cooldown (reload time)
+   =========================================================
+   UPDATE:
+   1) ADD near bullet vars:
+*/
+int fireCooldown = 0;          // frames until can shoot again
+const int fireCooldownMax = 6; // adjust
+
+/*
+   2) Each frame, ADD:
+*/
+if (fireCooldown > 0) fireCooldown--;
+
+/*
+   3) REPLACE fire condition:
+      if (spaceDown && !lastSpaceDown && !bulletOn) { ... }
+   WITH:
+*/
+if (spaceDown && !lastSpaceDown && !bulletOn && fireCooldown == 0) {
+    bulletOn = true;
+    bulletX = playerX;
+    bulletY = H - 2;
+    fireCooldown = fireCooldownMax;
+}
+
+```
+
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Ideas for Improving (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+
+- Improve visuals with ANSI colors
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+<div id="shadebox-glass" class="shadebox glass">
+
+Use color codes for player, enemy, bullet, borders, and maybe flash on hit (simple but fun).
+</div>
+
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Improve visuals with ANSI colors
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+/* =========================================================
+   STEP 7) ANSI colors (simple)
+   =========================================================
+   UPDATE: Add color codes around characters.
+
+   1) ADD near top (after constants):
+*/
+const string CLR_RESET = "\x1b[0m";
+const string CLR_PLAYER = "\x1b[32m"; // green
+const string CLR_ENEMY  = "\x1b[31m"; // red
+const string CLR_BULLET = "\x1b[33m"; // yellow
+
+/*
+   2) In draw loop, REPLACE character append:
+      screen += c;
+   WITH:
+*/
+if (c == 'A') screen += (CLR_PLAYER + string(1, c) + CLR_RESET);
+else if (c == 'W') screen += (CLR_ENEMY  + string(1, c) + CLR_RESET);
+else if (c == '|') screen += (CLR_BULLET + string(1, c) + CLR_RESET);
+else screen += c;
+
+
+```
+
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Ideas for Improving (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+
+- Clean separation into functions (and later a class)
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+<div id="shadebox-glass" class="shadebox glass">
+
+Make handleInput(), updateBullet(), updateEnemy(), checkCollisions(), draw() to make main() easier to read.
+</div>
+
+   </div>
+</div>
+
+
+
+
+<div id="shadebox">
+
+### Clean separation into functions (and later a class)
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+/* =========================================================
+   STEP 8) Separate into functions (minimal patch style)
+   =========================================================
+   UPDATE: Add these function stubs above main() and move code later.
+
+   ADD:
+*/
+void handleInput(int &playerX, bool &bulletOn, int &bulletX, int &bulletY,
+                 bool &gameOver, bool &lastSpaceDown, int &fireCooldown) {
+    bool aDown = (GetAsyncKeyState('A') & 0x8000) || (GetAsyncKeyState(VK_LEFT) & 0x8000);
+    bool dDown = (GetAsyncKeyState('D') & 0x8000) || (GetAsyncKeyState(VK_RIGHT) & 0x8000);
+    bool qDown = (GetAsyncKeyState('Q') & 0x8000);
+    bool spaceDown = (GetAsyncKeyState(VK_SPACE) & 0x8000);
+
+    if (aDown && playerX > 0) playerX--;
+    if (dDown && playerX < W - 1) playerX++;
+
+    if (spaceDown && !lastSpaceDown && !bulletOn && fireCooldown == 0) {
+        bulletOn = true; bulletX = playerX; bulletY = H - 2;
+        fireCooldown = 6;
+    }
+    lastSpaceDown = spaceDown;
+
+    if (qDown) gameOver = true;
+}
+/*
+   Then in your loop, REPLACE the whole INPUT block with:
+*/
+handleInput(playerX, bulletOn, bulletX, bulletY, gameOver, lastSpaceDown, fireCooldown);
+
+```
+
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Ideas for Improving (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+
+- Prevent “enemy spawns on player” unfairness
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+<div id="shadebox-glass" class="shadebox glass">
+
+When respawning enemy, ensure enemyX != playerX at spawn time (or spawn higher and give grace frames).
+</div>
+
+   </div>
+</div>
+
+
+
+
+<div id="shadebox">
+
+### Prevent “enemy spawns on player” unfairness
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+/* =========================================================
+   STEP 9) Fair respawn (don’t spawn on player)
+   =========================================================
+   UPDATE: When respawning enemy, REPLACE:
+      enemyX = rand() % W;
+   WITH:
+*/
+do { enemyX = rand() % W; } while (enemyX == playerX);
+
+/*
+   Apply the same for multiple enemies:
+*/
+do { enemyX[i] = rand() % W; } while (enemyX[i] == playerX);
+
+```
+
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Ideas for Improving (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+
+- Add power-ups / score items
+
+<hr style="border: none; border-top: 2px dashed red;">
+
+<div id="shadebox-glass" class="shadebox glass">
+
+Simple: sometimes spawn * falling; if player catches it, temporarily allow rapid fire or double score for a few seconds.
+
+</div>
+
+   </div>
+</div>
+
+
+
+
+
+<div id="shadebox">
+
+### Add power-ups / score items
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+/* =========================================================
+   STEP 10) Power-up (simple falling star)
+   =========================================================
+   UPDATE: Add a falling '*' that gives temporary rapid fire.
+
+   1) ADD near enemy/bullet vars:
+*/
+bool powerOn = false;
+int powerX = rand() % W, powerY = -1;
+int powerTimer = 0;          // frames remaining for power
+const int powerTimerMax = 200; // about 10 seconds at 50ms
+
+/*
+   2) In logic each frame, ADD spawning + falling:
+*/
+if (!powerOn) {
+    // small chance to spawn
+    if ((rand() % 200) == 0) { // tweak frequency
+        powerOn = true;
+        powerX = rand() % W;
+        powerY = 0;
+    }
+} else {
+    // fall slower (like enemy)
+    if (enemyTick == 0) powerY++;
+
+    // player catches it
+    if (powerY >= H - 1 && powerX == playerX) {
+        powerOn = false;
+        powerY = -1;
+        powerTimer = powerTimerMax;
+    }
+
+    // off-screen
+    if (powerY >= H) { powerOn = false; powerY = -1; }
+}
+
+/*
+   3) Use power to reduce cooldown:
+   REPLACE fireCooldownMax usage by:
+*/
+int currentCooldownMax = (powerTimer > 0) ? 2 : 6;
+
+/*
+   Each frame after decrementing fireCooldown, ADD:
+*/
+if (powerTimer > 0) powerTimer--;
+
+/*
+   4) In handleInput (or your fire code), replace setting cooldown:
+      fireCooldown = fireCooldownMax;
+   WITH:
+*/
+fireCooldown = currentCooldownMax;
+
+/*
+   5) In draw, ADD star:
+   inside cell selection before screen += ...:
+*/
+if (powerOn && x == powerX && y == powerY) c = '*';
+
+/*
+   6) Update HUD line (optional):
+*/
+screen += "Power: " + string((powerTimer > 0) ? "ON" : "off") + "\n";
+
+```
+
+</div>
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch6" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Testing & Submissions</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+
+<div class="definition-container">
+  <div class="definition-title">Diagram</div>
+  <div class="definition-shadebox">
+  
+- Draw a simple inheritance diagram
+
+   </div>
+</div>
+
+
+
+<img src="images/project2.gif">
+
+
+
+<div class="question-container">
+  <div class="question-title">Submissions</div>
+  <div class="question-shadebox">
+
+- Projet
+
+- Draw a simple inheritance diagram
+
+- README.md
+   </div>
+</div>
+
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+</div>
+	
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/settings.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/effects.js"></script>
+<!--<script src="settings.js"></script>-->
+<!--<script src="effects.js"></script>-->
+</body>
+</html>

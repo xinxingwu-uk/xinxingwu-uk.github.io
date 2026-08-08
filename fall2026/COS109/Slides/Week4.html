@@ -1,0 +1,1725 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Array</title>
+    <meta name="description" content="A set of slides for Machine Learning">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/effectsGreen.css">
+	<!--<link rel="stylesheet" href="./css/style.css">-->
+	<!--<link rel="stylesheet" href="./css/effects.css">-->
+	
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+	</script>
+
+	<style>
+	    pre {
+            background-color: black;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+        }
+        code {
+            font-family: "Courier New", monospace;
+            color: #d63384; /* Python-style color */
+        }
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }	
+	</style>
+
+  </head>
+
+  <body onload="startTime()">
+    <div class="reveal" >
+	  <p><img src="images/midwaylogo.png"  align="left" height="6%" width="6%" style="vertical-align:left;margin:-15px 5px"><img src="images/mueagle.png"  color="white" align="left" height="4%" width="4%" style="vertical-align:center;margin:-1% 45%">
+		<div style="color:white;font-size: 20px; vertical-align:left;margin:-1% 0%" align="right" id="realtimeclock"></div></p>
+      <div class="slides">
+
+  <div class="me">Xinxing Wu</div>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown id="cover"><textarea data-template>
+<p class='titlep'>&nbsp;</p>
+
+# Array
+
+<hr>
+
+<br>
+
+Xinxing Wu
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline
+
+[<p class="hover-underline-animation">Motivation</p>](#/ch1)
+
+[<p class="hover-underline-animation">Definition and Syntax</p>](#/ch2)
+
+[<p class="hover-underline-animation">Application</p>](#/ch3)
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline (Cont.)
+
+[<p class="hover-underline-animation">Common Mistakes and Best Practices</p>](#/ch4)
+
+[<p class="hover-underline-animation">Summary</p>](#/ch5)
+
+[<p class="hover-underline-animation">Mini Case Study</p>](#/ch6)
+
+</textarea></section>
+
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+
+## Goal
+
+<div id="shadebox-neon" class="shadebox neon">
+
+Store multiple related values in one array, access values by index, and use loops to process the data (such as sum, average, max/min, counting) safely and efficiently, avoiding common mistakes like <spanRED>out-of-bounds</spanRED> and hard-coded sizes.
+</div>
+
+</textarea></section>
+
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch1" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Motivation</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Motivation</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- One variable = one value
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+int score = 95;
+```
+</div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Question 1</div>
+  <div class="question-shadebox">
+
+> Having 10 scores, how to do?
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+int score1 = 90;
+int score2 = 78;
+int score3 = 85;
+// ...
+
+
+```
+
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Motivation</div>
+  <div class="definition-pro-Y-shadebox">
+  
+If you want the sum of 5 scores without arrays, you usually write: 
+
+```
+int sum = score1 + score2 + score3 + score4 + score5;
+
+```
+</div>
+</div>
+
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Question 2</div>
+  <div class="question-shadebox">
+
+> If you change from 5 students to <spanRED>50</spanRED> students, how to do?
+   </div>
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Question 2</div>
+  <div class="question-shadebox">
+
+> Can we use <spanBYMix>loop</spanBYMix>?
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Question 3</div>
+  <div class="question-shadebox">
+
+Hard to loop through related values
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+Loops are powerful, but a loop needs a <spanGREEN>pattern</spanGREEN> like scores[i].
+With separate variables (score1, score2, …), a loop <spanRED>cannot</spanRED> easily access them.
+
+So you can’t do something clean like:
+
+```
+for (int i = 0; i < 5; i++) { /* use score i */ }
+```
+   </div>
+</div>
+
+- score1, score2... are <spanRED>not</spanRED> “indexed.”
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Question 4</div>
+  <div class="question-shadebox">
+
+Hard to find max/min, average, count, etc.
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+int maxScore = score1;
+if (score2 > maxScore) maxScore = score2;
+if (score3 > maxScore) maxScore = score3;
+// ...
+
+```
+</div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Limitations</div>
+  <div class="definition-shadebox">
+
+- It becomes messy and hard to manage.
+
+- Limitations of using basic data types (int, double, char, etc.)
+
+- <spanBYMix>Arrays are used to store multiple values in a single variable</spanBYMix>, instead of declaring separate variables for each value.
+
+</div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px dashed red;">
+
+
+An array stores many related values of the <spanGREEN>same type</spanGREEN> under <spanBYMix>one</spanBYMix> name, using indexes.
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+int scores[5] = {90, 78, 85, 100, 67};
+
+```
+
+</div>
+
+
+
+
+<div id="shadebox">
+
+### Example code
+
+Compute sum and average (clean and scalable)
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+using namespace std;
+
+int main() {
+    int scores[5] = {90, 78, 85, 100, 67};
+
+    int sum = 0;
+    for (int i = 0; i < 5; i++) {
+        sum += scores[i];
+    }
+
+    double avg = (double)sum / 5;
+    cout << "Sum = " << sum << "\n";
+    cout << "Average = " << avg << "\n";
+    return 0;
+}
+```
+
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Why this is better</div>
+  <div class="definition-shadebox">
+
+- If you change from 5 to 50 values, you mainly change the array size (and maybe input).
+
+- The loop logic stays the same.
+
+- Code is shorter, clearer, and less error-prone.
+
+</div>
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch2" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Definition and Syntax</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Declare an array</div>
+  <div class="definition-pro-Y-shadebox">
+  
+To <spanGREEN>declare</spanGREEN> an array, <spanRED>define</spanRED> the variable type, <spanRED>specify</spanRED> the name of the array followed by <spanRED>square brackets</spanRED> and <spanRED>specify</spanRED> the <spanRED>number</spanRED> of elements it should store:
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+string cars[4];
+```
+</div>
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Declare an array</div>
+  <div class="definition-pro-Y-shadebox">
+  
+We have now declared a variable that holds an array of four strings. To insert values to it, we can use an array literal - place the values in a <spanGREEN>comma</spanGREEN>-separated list, inside <spanGREEN>curly braces</spanGREEN>:
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+string cars[4] = {"Volvo", "BMW", "Ford", "Mazda"};
+```
+
+```
+int myNum[3] = {10, 20, 30};
+```
+
+</div>
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Access</div>
+  <div class="definition-pro-Y-shadebox">
+  
+You access an array element by <spanGREEN>referring to the index number</spanGREEN> inside square brackets [].
+
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+string cars[4] = {"Volvo", "BMW", "Ford", "Mazda"};
+cout << cars[0];
+// Outputs Volvo
+```
+
+</div>
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Change an Array Element</div>
+  <div class="definition-pro-Y-shadebox">
+  
+To <spanRED>change</spanRED> the value of a specific element, refer to the index number:
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+string cars[4] = {"Volvo", "BMW", "Ford", "Mazda"};
+cars[0] = "Opel";
+cout << cars[0];
+```
+
+</div>
+</div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Loop Through an Array</div>
+  <div class="definition-pro-Y-shadebox">
+  
+You can loop through the array elements with the for loop. The following example outputs all elements in the cars array:
+
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+// Create an array of strings
+string cars[5] = {"Volvo", "BMW", "Ford", "Mazda", "Tesla"};
+
+// Loop through strings
+for (int i = 0; i < 5; i++) {
+  cout << cars[i] << "\n";
+}
+```
+
+</div>
+</div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">foreach Loop</div>
+  <div class="definition-pro-Y-shadebox">
+  
+There is also a "for-each loop" (introduced in C++ version 11 (2011)), which is used exclusively to loop through elements in an array
+
+
+<div id="shadebox">
+
+### Syntax
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+for (type variableName : arrayName) {
+  // code block to be executed
+}
+```
+
+</div>
+
+</div>
+</div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example Code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+
+```
+// Create an array of integers
+int myNumbers[5] = {10, 20, 30, 40, 50};
+
+// Loop through integers
+for (int num : myNumbers) {
+  cout << num << "\n";
+}
+```
+
+
+```
+string cars[5] = {"Volvo", "BMW", "Ford", "Mazda", "Tesla"};
+
+for (int i = 0; i < 5; i++) {
+  cout << cars[i] << "\n";
+}
+```
+
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Omit Array Size</div>
+  <div class="definition-pro-Y-shadebox">
+
+In C++, you <spanGREEN>don't</spanGREEN> have to specify the size of the array. The compiler is smart enough to determine the size of the array based on the number of inserted values:
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+string cars[] = {"Volvo", "BMW", "Ford"}; // Three array elements
+```
+
+is equal to:
+
+```
+string cars[3] = {"Volvo", "BMW", "Ford"}; // Also three array elements
+
+```
+
+</div>
+</div>
+</div>
+
+
+
+> The last approach is considered as "good practice", because it will <spanRED>reduce the chance of errors</spanRED> in your program.
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Omit Elements on Declaration</div>
+  <div class="definition-pro-Y-shadebox">
+  
+It is also possible to declare an array <spanRED>without</spanRED> specifying the elements on declaration, and add them later:
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+string cars[5];
+cars[0] = "Volvo";
+cars[1] = "BMW";
+cars[2] = "Ford";
+cars[3] = "Mazda";
+cars[4] = "Tesla";
+```
+
+</div>
+</div>
+</div>
+
+
+-  The example above only works when you have specified the size of the array.
+
+
+
+<div class="definition-shakeflash-container">
+  <div class="definition-shakeflash-title">Error</div>
+  <div class="definition-shakeflash-shadebox">
+
+- If you don't specify the array size, an error occurs:
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+string cars[];  // Array size is not specified
+cars[0] = "Volvo";
+cars[1] = "BMW";
+cars[2] = "Ford";
+cars[3] = "Mazda";
+cars[4] = "Tesla";
+
+// error: array size missing in 'cars'
+```
+
+</div>
+</div>
+</div>
+
+
+
+<div class="definition-shakeflash-container">
+  <div class="definition-shakeflash-title">Error</div>
+  <div class="definition-shakeflash-shadebox">
+
+- The size of an array in C++ is fixed, meaning you cannot add or remove elements after it is created.
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+// An array with 3 elements
+string cars[3] = {"Volvo", "BMW", "Ford"};
+
+// Trying to add another element (a fourth element) 
+// to the cars array will result in an error
+cars[3] = "Tesla";
+
+```
+
+</div>
+</div>
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Question</div>
+  <div class="question-shadebox">
+
+> In array, <spanRED>adding and removing</spanRED> array elements, can we?
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Vectors</div>
+  <div class="definition-pro-Y-shadebox">
+
+- For operations that require adding and removing array elements, <spanGREEN>C++ provides vectors</spanGREEN>, which are resizable arrays.
+
+- The size of a vector is <spanGREEN>dynamic</spanGREEN>, meaning it can grow and shrink as needed.
+
+- Vectors are found in the <vector> library, and they come with many useful functions to <spanGREEN>add</spanGREEN>, <spanGREEN>remove</spanGREEN> and <spanGREEN>modify</spanGREEN> elements:
+
+</div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+#include <vector> // Including the vector library
+using namespace std;
+
+int main() {
+  // A vector with 3 elements
+  vector<string> cars = {"Volvo", "BMW", "Ford"};
+  
+  // Adding another element to the vector
+  cars.push_back("Tesla");
+  
+  for (string car : cars) {
+    cout << car << "\n";
+  }
+  return 0;
+}
+```
+
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Get the Size of an Array</div>
+  <div class="definition-pro-Y-shadebox">
+  
+To get the size of an array, you can use the sizeof() operator:
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+#include <iostream>
+using namespace std;
+
+int main() {
+  int myNumbers[5] = {10, 20, 30, 40, 50};
+  cout << sizeof(myNumbers);
+  return 0;
+}
+
+```
+
+</div>
+</div>
+</div>
+
+
+
+<p class='titlep'>&nbsp;</p>
+
+<div id="roundbox">
+
+Why did the result show 20 instead of 5, when the array contains 5 elements?
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Size of an Array</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- It is because the sizeof() operator returns the size of a type in bytes.
+
+- You learned from the Data Types Topic that an int type is usually 4 bytes, so from the example above, 4 x 5 (4 bytes x 5 elements) = 20 bytes.
+
+- <spanGREEN>To find out how many elements an array has, you have to divide the size of the array by the size of the first element in the array</spanGREEN>
+
+</div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+using namespace std;
+
+int main() {
+  int myNumbers[5] = {10, 20, 30, 40, 50};
+  int getArrayLength = sizeof(myNumbers) / sizeof(myNumbers[0]);
+  cout << getArrayLength;
+  return 0;
+}
+
+```
+
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Loop Through an Array with sizeof()</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- We wrote the size of the array in the loop condition (<spanRED>i < 5</spanRED>). This is not ideal, since it will only work for arrays of a specified size.
+
+- However, <spanGREEN>by using the sizeof() approach from the example above, we can now make loops that work for arrays of any size, which is more sustainable</spanGREEN>
+
+</div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Loop Through an Array with sizeof()</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Instead of writing:
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+int myNumbers[5] = {10, 20, 30, 40, 50};
+for (int i = 0; i < 5; i++) {
+  cout << myNumbers[i] << "\n";
+}
+
+```
+
+It is <spanRED>better</spanRED> to write:
+
+```
+int myNumbers[5] = {10, 20, 30, 40, 50};
+for (int i = 0; i < sizeof(myNumbers) / sizeof(myNumbers[0]); i++) {
+  cout << myNumbers[i] << "\n";
+}
+```
+
+</div>
+</div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">for-each loop</div>
+  <div class="definition-pro-Y-shadebox">
+  
+In C++ version 11 (2011), you can also <spanRED>use the "for-each" loop</spanRED>
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+int myNumbers[5] = {10, 20, 30, 40, 50};
+for (int num : myNumbers) {
+  cout << num << "\n";
+}
+
+```
+</div>
+</div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Multi-Dimensional Arrays</div>
+  <div class="question-shadebox">
+
+- A multi-dimensional array is an array of arrays.
+
+- To declare a multi-dimensional array, define the variable type, specify the name of the array followed by square brackets which specify how many elements the main array has, followed by another set of square brackets which indicates how many elements the sub-arrays have:
+
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+string letters[2][4];
+```
+
+</div>
+</div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Multi-Dimensional Arrays</div>
+  <div class="definition-shadebox">
+
+As with ordinary arrays, you can insert values with an array literal - a comma-separated list inside curly braces. In a multi-dimensional array, each element in an array literal is another array literal.
+
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+string letters[2][4] = {
+  { "A", "B", "C", "D" },
+  { "E", "F", "G", "H" }
+};
+```
+
+</div>
+</div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Multi-Dimensional Arrays</div>
+  <div class="definition-shadebox">
+
+- Each set of square brackets in an array declaration adds another dimension to an array. An array like the one above is said to have two dimensions.
+
+- Arrays can have any number of dimensions. The more dimensions an array has, the more complex the code becomes. The following array has three dimensions:
+
+
+</div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Multi-Dimensional Arrays</div>
+  <div class="definition-shadebox">
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+string letters[2][2][2] = {
+  {
+    { "A", "B" },
+    { "C", "D" }
+  },
+  {
+    { "E", "F" },
+    { "G", "H" }
+  }
+};
+```
+
+</div>
+</div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Multi-Dimensional Arrays</div>
+  <div class="definition-shadebox">
+
+- To access an element of a multi-dimensional array, specify an index number in each of the array's dimensions.
+
+- This statement accesses the value of the element in the first row (0) and third column (2) of the letters array.
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+string letters[2][4] = {
+  { "A", "B", "C", "D" },
+  { "E", "F", "G", "H" }
+};
+
+cout << letters[0][2];  // Outputs "C"
+```
+
+</div>
+</div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Change Elements</div>
+  <div class="definition-shadebox">
+
+- To change the value of an element, refer to the index number of the element in each of the dimensions:
+
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+string letters[2][4] = {
+  { "A", "B", "C", "D" },
+  { "E", "F", "G", "H" }
+};
+letters[0][0] = "Z";
+
+cout << letters[0][0];  // Now outputs "Z" instead of "A"
+
+```
+
+</div>
+</div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">An interesting example</div>
+  <div class="definition-pro-Y-shadebox">
+
+```
+#include <iostream>
+#include <chrono>
+#include <thread>
+using namespace std;
+
+const int FRAMES = 4;
+const int H = 12;
+const int W = 28;
+
+// 1 = cat pixel, 0 = background
+// Four frames: legs swap + tail wiggle
+int cat[FRAMES][H][W] = {
+    // ---------------- Frame 0 ----------------
+    {
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0}, // ears
+        {0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0}, // head
+        {0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0}, // head/neck
+        {0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0}, // body start
+        {0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0}, // body
+        {0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0}, // body
+        {0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0}, // body end
+        {0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,0,0,0,0}, // tail up
+        {0,0,0,0,0,0,0,0,0,1,1,0,0,1,1,0,0,1,1,0,0,0,1,0,1,0,0,0}, // legs pose A
+        {0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0}, // paws
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    },
+
+    // ---------------- Frame 1 ----------------
+    {
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0},
+        {0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,0,0,0}, // tail down
+        {0,0,0,0,0,0,0,0,0,1,1,0,1,1,0,1,1,0,1,1,0,0,0,1,0,0,0,0}, // legs pose B
+        {0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,1,0,0,0,0,1,0,0,0,0}, // paws
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    },
+
+    // ---------------- Frame 2 ----------------
+    {
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0},
+        {0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,0,0,0,0}, // tail up
+        {0,0,0,0,0,0,0,0,0,1,0,1,1,0,1,1,0,1,1,0,1,0,0,1,0,0,0,0}, // legs pose C
+        {0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,0,0}, // paws
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    },
+
+    // ---------------- Frame 3 ----------------
+    {
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0},
+        {0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,0,0,0}, // tail down
+        {0,0,0,0,0,0,0,0,0,1,1,0,1,1,0,1,1,0,1,1,0,0,0,1,0,0,0,0}, // legs pose B again
+        {0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,1,0,0,0,0,1,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    }
+};
+
+void clearScreen() {
+    cout << "\x1B[2J\x1B[H";
+}
+
+void printFrame(int f, int xShift) {
+    cout << "🐈‍⬛ running cat (0/1)  frame " << f << "\n\n";
+    for (int y = 0; y < H; y++) {
+        for (int x = 0; x < W; x++) {
+            int sx = x - xShift;
+            int bit = 0;
+            if (sx >= 0 && sx < W) bit = cat[f][y][sx];
+            cout << bit;
+        }
+        cout << "\n";
+    }
+}
+
+int main() {
+    for (int t = 0; t < 160; t++) {
+        clearScreen();
+        int f = t % FRAMES;
+        int xShift = (t % 14) - 7; // small left-right motion
+        printFrame(f, xShift);
+        this_thread::sleep_for(chrono::milliseconds(120));
+    }
+    return 0;
+}
+
+
+```
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch3" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Application</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Application 1</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Idea: Store many students’ scores in one array, then loop to compute stats.
+
+```
+#include <iostream>
+using namespace std;
+
+int main() {
+    int scores[] = {90, 78, 85, 100, 67, 88, 92};  // can be 5 or 50
+    int n = sizeof(scores) / sizeof(scores[0]);
+
+    int sum = 0;
+    int maxScore = scores[0];
+    int minScore = scores[0];
+
+    for (int i = 0; i < n; i++) {
+        sum += scores[i];
+        if (scores[i] > maxScore) maxScore = scores[i];
+        if (scores[i] < minScore) minScore = scores[i];
+    }
+
+    double avg = (double)sum / n;
+
+    cout << "Sum = " << sum << "\n";
+    cout << "Average = " << avg << "\n";
+    cout << "Max = " << maxScore << "\n";
+    cout << "Min = " << minScore << "\n";
+    return 0;
+}
+
+```
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+Why arrays help here: one name (scores) + indexing (scores[i]) makes looping and scaling clean.
+
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Application 2: Inventory / Menu List</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Idea: Store a list of items (cars/products/menu items) and update an element by index.
+
+```
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string items[] = {"Pencil", "Notebook", "Eraser", "Marker"};
+    int n = sizeof(items) / sizeof(items[0]);
+
+    // Show all items
+    cout << "Item list:\n";
+    for (int i = 0; i < n; i++) {
+        cout << i << ") " << items[i] << "\n";
+    }
+
+    // Update one item by index (like correcting inventory)
+    items[2] = "Big Eraser";
+
+    cout << "\nAfter update:\n";
+    for (int i = 0; i < n; i++) {
+        cout << i << ") " << items[i] << "\n";
+    }
+
+    return 0;
+}
+
+```
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+Why arrays help here: you can <spanBYMix>store many related strings</spanBYMix>, <spanBYMix>loop them</spanBYMix>, and <spanBYMix>change one element</spanBYMix> easily using items[index].
+
+</div>
+
+</textarea></section>
+
+</section>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch4" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Common Mistakes and Best Practices</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-shakeflash-container">
+  <div class="definition-shakeflash-title">Out-of-bounds index</div>
+  <div class="definition-shakeflash-shadebox">
+<div style="width: 800px;"></div>
+
+- most common bug
+
+```
+int a[5] = {1,2,3,4,5};
+cout << a[5];   // WRONG: valid indexes are 0..4
+```
+
+   </div>
+</div>
+
+- Fix: always keep indexes within 0 to size-1.
+
+
+
+<div class="definition-shakeflash-container">
+  <div class="definition-shakeflash-title">Off-by-one in loops</div>
+  <div class="definition-shakeflash-shadebox">
+<div style="width: 800px;"></div>
+
+```
+for (int i = 0; i <= 5; i++) {  // WRONG for size 5
+    cout << a[i];
+}
+```
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+```
+for (int i = 0; i < 5; i++) {
+    cout << a[i];
+}
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-shakeflash-container">
+  <div class="definition-shakeflash-title">Hard-coding the size everywhere</div>
+  <div class="definition-shakeflash-shadebox">
+<div style="width: 800px;"></div>
+
+- If you change from 5 to 50, you must edit many places → easy to break.
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+```
+int scores[5] = {90, 80, 70, 60, 50};
+for (int i = 0; i < 5; i++) { ... }
+```
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+- Fix: compute length once.
+
+```
+int n = sizeof(scores) / sizeof(scores[0]);
+for (int i = 0; i < n; i++) { ... }
+```
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-shakeflash-container">
+  <div class="definition-shakeflash-title">Using an uninitialized array</div>
+  <div class="definition-shakeflash-shadebox">
+<div style="width: 800px;"></div>
+
+```
+int nums[5];
+cout << nums[0];  // garbage value
+```
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+- Fix:
+
+```
+int nums[5] = {0}; // all elements become 0
+```
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-shakeflash-container">
+  <div class="definition-shakeflash-title">Forgetting arrays are fixed-size</div>
+  <div class="definition-shakeflash-shadebox">
+<div style="width: 800px;"></div>
+
+```
+string cars[3] = {"A", "B", "C"};
+cars[3] = "D"; // WRONG: no space for element 4
+
+```
+
+- Fix: use vector if you need to grow/shrink.
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-shakeflash-container">
+  <div class="definition-shakeflash-title">“bytes” vs “elements”</div>
+  <div class="definition-shakeflash-shadebox">
+<div style="width: 800px;"></div>
+
+- Mixing up “bytes” vs “elements” with sizeof
+
+```
+int a[5];
+cout << sizeof(a); // prints bytes (likely 20), not element count
+```
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+Fix:
+
+```
+int n = sizeof(a) / sizeof(a[0]);
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-shakeflash-container">
+  <div class="definition-shakeflash-title">Passing arrays and losing size</div>
+  <div class="definition-shakeflash-shadebox">
+<div style="width: 800px;"></div>
+
+- When passed to a function, the array becomes a pointer (size info is lost).
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+```
+void print(int a[]) {
+    cout << sizeof(a); // NOT the array size
+}
+```
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+- Fix: pass the size too.
+
+```
+void print(int a[], int n) { ... }
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Always use a length variable</div>
+  <div class="definition-pro-Y-shadebox">
+  <div style="width: 800px;"></div>
+
+- Always use a length variable (don’t repeat magic numbers)
+
+<div id="shadebox-glass" class="shadebox glass">
+
+```
+int n = sizeof(scores) / sizeof(scores[0]);
+for (int i = 0; i < n; i++) { ... }
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Prefer for-each loop</div>
+  <div class="definition-pro-Y-shadebox">
+  <div style="width: 800px;"></div>
+
+- Prefer for-each loop when you don’t need indexes
+
+<div id="shadebox-glass" class="shadebox glass">
+
+```
+for (int x : scores) {
+    cout << x << "\n";
+}
+```
+</div>
+   </div>
+</div>
+
+- Use this when you’re just reading values.
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Initialize arrays clearly</div>
+  <div class="definition-pro-Y-shadebox">
+  <div style="width: 800px;"></div>
+
+```
+int a[] = {10, 20, 30}; // compiler sets size = 3
+```
+
+or
+
+```
+int a[5] = {0}; // all zeros
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Keep indexes meaningful and safe</div>
+  <div class="definition-pro-Y-shadebox">
+  <div style="width: 800px;"></div>
+<div style="width: 800px;"></div>
+
+- scores[i] where i is controlled by a correct loop
+
+- Avoid random indexes unless validated
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">array vs. vector</div>
+  <div class="definition-pro-Y-shadebox">
+  <div style="width: 800px;"></div>
+
+<spanGREEN>Use arrays for fixed-size data</spanGREEN>, <spanRED>use vector for dynamic data</spanRED>
+
+<div id="shadebox-glass" class="shadebox glass">
+
+- Fixed-size (exactly 7 days, 12 months): array is fine
+
+- Add/remove elements: use vector
+</div>
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch5" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Summary</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div id="rainbow-type"> Summary </div>
+
+<div style="display:flex; gap:16px;  justify-content:center; flex-wrap:wrap; margin-bottom:-32px;">
+
+<div class="liquid-glass">
+
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Why Arrays?</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Arrays solve the problem of having many related values (like scores) by putting them under one name (e.g., scores[i]), so loops work and code scales from 5 to 50.</p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Basic Use</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">You can declare arrays, access by index, update elements, and loop through values using for or for-each.</p>
+</div>
+
+
+<div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Real Applications</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Arrays are used to: compute stats (sum/avg/max/min) on many numbers (scores); store lists (inventory/menu/cars) and update items by index</p>
+</div>
+
+<div class="liquid-glass">
+  <h2 style="margin:0 0 10px; font-size:30px; line-height:1.1; letter-spacing:0.2px;">Write Safe Code</h2>
+  <hr style="border:0;height:3px;border-radius:999px;background:linear-gradient(90deg,#ff004c,#ffb300,#00e5ff,#7c4dff,#ff004c);background-size:300% 100%;animation:hrflow 3.5s linear infinite;box-shadow:0 0 12px rgba(0,0,0,.25);">
+<style>@keyframes hrflow{0%{background-position:0% 50%}100%{background-position:100% 50%}}</style>
+  <p style="margin:0; font-size:22px; line-height:1.55; opacity:0.92;">Watch out for out-of-bounds and off-by-one errors, don’t hard-code sizes, initialize properly, use sizeof to get length, pass size when sending arrays to functions, and choose vector if size must change.</p>
+</div>
+
+</div>
+</div>
+
+</textarea></section>
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch6" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Mini Case Study</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Lab： Age Statistics Analyzer (Arrays + Loops)</div>
+  <div class="definition-com-shadebox">
+
+Goal - Use an array and loops to compute basic statistics about ages: average age and lowest age (minimum).
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task</div>
+  <div class="definition-pro-Y-shadebox">
+  
+You are given this age list:
+
+```
+int ages[8] = {20, 22, 18, 35, 48, 26, 87, 70};
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+  
+Write a C++ program that does ALL of the following:
+
+- Requirement 1: Compute and print the average age
+
+	- Use a loop to add all ages into sum
+
+	- Use sizeof to get the array length
+
+	- Average = sum / length
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Requirement 2: Find and print the lowest age
+
+	- Start lowestAge as the first element (ages[0])
+
+	- Loop through the array and update lowestAge if you find a smaller value
+   </div>
+</div>
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Task (Cont.)</div>
+  <div class="definition-pro-Y-shadebox">
+  
+- Requirement 3: Print results in this format
+
+```
+The average age is: ...
+The lowest age is: ...
+```
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### An answer
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+using namespace std;
+
+int main() {
+    // An array storing different ages
+    int ages[8] = {20, 22, 18, 35, 48, 26, 87, 70};
+
+    // Get the length of the array
+    int length = sizeof(ages) / sizeof(ages[0]);
+
+    // Part 1: Average
+    float sum = 0;
+    for (int age : ages) {
+        sum += age;
+    }
+    float avg = sum / length;
+
+    // Part 2: Lowest age
+    int lowestAge = ages[0];
+    for (int age : ages) {
+        if (age < lowestAge) {
+            lowestAge = age;
+        }
+    }
+
+    // Print results
+    cout << "The average age is: " << avg << "\n";
+    cout << "The lowest age is: " << lowestAge << "\n";
+
+    return 0;
+}
+```
+
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Expected Output</div>
+  <div class="definition-shadebox">
+ 
+```
+Sum = 20 + 22 + 18 + 35 + 48 + 26 + 87 + 70 = 326
+
+Average = 326 / 8 = 40.75
+
+Lowest = 18
+```
+
+or
+
+```
+The average age is: 40.75
+The lowest age is: 18
+```
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+</div>
+	
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/settings.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/effects.js"></script>
+<!--<script src="settings.js"></script>-->
+<!--<script src="effects.js"></script>-->
+</body>
+</html>

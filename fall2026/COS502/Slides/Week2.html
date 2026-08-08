@@ -1,0 +1,1537 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><base target="_blank">
+    <title>Foundations of C++ (II)</title>
+    <meta name="description" content="A set of slides for Machine Learning">
+    <meta name="author" content="Xinxing Wu">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="./ics.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/style.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/css/effectsGreen.css">
+	<!--<link rel="stylesheet" href="./css/style.css">-->
+	<!--<link rel="stylesheet" href="./css/effects.css">-->
+
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="./reveal.js/plugin/highlight/zenburn.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+	<script src="./reveal.js/lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<script>
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			center: false,
+			hash: true,
+			width: 1000,
+			margin: 0,
+			padding: 0,
+			disableLayout: true,
+			slideNumber: 'c/t',
+			plugins: [ RevealNotes, RevealSearch, RevealHighlight, RevealMarkdown ]
+		});
+
+		function startTime() {
+			const today = new Date();
+			let h = today.getHours();
+			let m = today.getMinutes();
+			let s = today.getSeconds();
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('realtimeclock').innerHTML =  h + ":" + m + ":" + s;
+			setTimeout(startTime, 1000);
+		}
+
+		function checkTime(i) {
+			if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+			return i;
+		}
+	</script>
+
+	<style>
+	    pre {
+            background-color: black;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 16px;
+        }
+        code {
+            font-family: "Courier New", monospace;
+            color: #d63384; /* Python-style color */
+        }
+       spanGREEN {
+            display: inline;
+            background-color: green;
+            color: white;
+            padding: 10px;
+        }
+		spanYELLOW {
+            display: inline;
+            background-color: yellow;
+            color: white;
+            padding: 10px;
+        }
+		spanRED {
+            display: inline;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+		spanBYMix {
+            display: inline;
+            background-color: blue;
+            color: yellow;
+            padding: 10px;
+        }	
+	</style>
+
+  </head>
+
+  <body onload="startTime()">
+    <div class="reveal" >
+	  <p><img src="images/midwaylogo.png"  align="left" height="6%" width="6%" style="vertical-align:left;margin:-15px 5px"><img src="images/mueagle.png"  color="white" align="left" height="4%" width="4%" style="vertical-align:center;margin:-1% 45%">
+		<div style="color:white;font-size: 20px; vertical-align:left;margin:-1% 0%" align="right" id="realtimeclock"></div></p>
+      <div class="slides">
+
+  <div class="me">Xinxing Wu</div>
+  
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown id="cover"><textarea data-template>
+<p class='titlep'>&nbsp;</p>
+
+# Foundations of C++ (II)
+
+> Review
+
+<hr>
+
+<br>
+
+Xinxing Wu
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+# Outline
+
+[<p class="hover-underline-animation">Control Statements</p>](#/ch1)
+
+[<p class="hover-underline-animation">Break/Continue</p>](#/ch2)
+
+[<p class="hover-underline-animation">Functions</p>](#/ch3)
+
+[<p class="hover-underline-animation">Mini Case Study</p>](#/ch4)
+
+</textarea></section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section data-markdown><textarea data-template>
+
+## Goal
+
+<div id="shadebox-neon" class="shadebox neon">
+
+Review control statements to <spanGREEN>make decisions</spanGREEN> and <spanGREEN>repeat actions</spanGREEN>, apply break and continue to <spanGREEN>manage</spanGREEN> loop behavior, and write and call functions to organize code into <spanBYMix>reusable</spanBYMix>, <spanBYMix>easy-to-read</spanBYMix> parts.
+</div>
+
+</textarea></section>
+
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch1" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Control Statements</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">The if Statement</div>
+  <div class="definition-com-shadebox">
+
+Use the if statement to specify a block of C++ code to be executed if a condition is true.
+
+```
+if (condition) {
+  // block of code to be executed if the condition is true
+}
+```
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+Example
+
+```
+int x = 20;
+int y = 18;
+if (x > y) {
+  cout << "x is greater than y";
+}
+```
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">The else if Statement</div>
+  <div class="definition-com-shadebox">
+
+```
+if (condition1) {
+  // block of code to be executed if condition1 is true
+} else if (condition2) {
+  // block of code to be executed if the condition1 is false and condition2 is true
+} else {
+  // block of code to be executed if the condition1 is false and condition2 is false
+}
+
+```
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+Example
+
+```
+int time = 22;
+if (time < 10) {
+  cout << "Good morning.";
+} else if (time < 20) {
+  cout << "Good day.";
+} else {
+  cout << "Good evening.";
+}
+```
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Ternary Operator</div>
+  <div class="definition-com-shadebox">
+
+It can be used to replace <spanBYMix>multiple lines of code with a single line</spanBYMix>, and is often used to replace simple <spanGREEN>if...else</spanGREEN> statements:
+
+```
+variable = (condition) ? expressionTrue : expressionFalse;
+```
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Ternary Operator</div>
+  <div class="definition-com-shadebox">
+
+Example
+
+```
+int time = 20;
+if (time < 18) {
+  cout << "Good day.";
+} else {
+  cout << "Good evening.";
+}
+```
+
+=>
+
+```
+int time = 20;
+string result = (time < 18) ? "Good day." : "Good evening.";
+cout << result;
+```
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Ternary Operator</div>
+  <div class="definition-com-shadebox">
+
+You can also use the ternary operator directly <spanGREEN>inside</spanGREEN> the cout statement:
+
+```
+int time = 20;
+cout << ((time < 18) ? "Good day." : "Good evening.");
+```
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Nested If</div>
+  <div class="definition-com-shadebox">
+
+```
+if (condition1) {
+  // code to run if condition1 is true
+  if (condition2) {
+    // code to run if both condition1 and condition2 are true
+  }
+}
+```
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+```
+int x = 15;
+int y = 25;
+
+if (x > 10) {
+  cout << "x is greater than 10\n";
+
+  // Nested if
+  if (y > 20) {
+    cout << "y is also greater than 20\n";
+  }
+}
+```
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Nested If</div>
+  <div class="definition-com-shadebox">
+
+- Please use ternary operator to rewrite the following program.
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+```
+int x = 15;
+int y = 25;
+
+if (x > 10) {
+  cout << "x is greater than 10\n";
+
+  // Nested if
+  if (y > 20) {
+    cout << "y is also greater than 20\n";
+  }
+}
+```
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Logical Operators</div>
+  <div class="definition-com-shadebox">
+
+- && (AND) - all conditions must be true
+- || (OR) - at least one condition must be true
+- ! (NOT) - reverses a condition (true → false, false → true)
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Logical Operators</div>
+  <div class="definition-com-shadebox">
+
+Example
+
+```
+int a = 200;
+int b = 33;
+int c = 500;
+
+if (a > b && c > a) {
+  cout << "Both conditions are true";
+}
+```
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Switch</div>
+  <div class="definition-com-shadebox">
+
+```
+switch(expression) {
+  case x:
+    // code block
+    break;
+  case y:
+    // code block
+    break;
+  default:
+    // code block
+}
+```
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Switch</div>
+  <div class="definition-com-shadebox">
+
+- The switch expression is evaluated once
+- The value of the expression is <spanBYMix>compared</spanBYMix> with the values of each case
+- If there is a match, the associated block of code is executed
+- The break and default keywords are optional
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Switch</div>
+  <div class="definition-com-shadebox">
+
+```
+int day = 4;
+switch (day) {
+  case 1:
+    cout << "Monday";
+    break;
+  case 2:
+    cout << "Tuesday";
+    break;
+  case 3:
+    cout << "Wednesday";
+    break;
+  case 4:
+    cout << "Thursday";
+    break;
+  case 5:
+    cout << "Friday";
+    break;
+  case 6:
+    cout << "Saturday";
+    break;
+  case 7:
+    cout << "Sunday";
+    break;
+}
+```
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Switch - <spanRED>Debugging</spanRED></div>
+  <div class="definition-com-shadebox">
+
+```
+#include <iostream>
+using namespace std;
+
+int main()
+{
+    int day = 4;
+    switch (day) {
+    case 1:
+        cout << "Monday";
+        break;
+    case 2:
+        cout << "Tuesday";
+        break;
+    case 3:
+        cout << "Wednesday";
+        break;
+    case 4:
+        cout << "Thursday";
+    case 5:
+        cout << "Friday";
+        break;
+    case 6:
+        cout << "Saturday";
+        break;
+    case 7:
+        cout << "Sunday";
+        break;
+    }
+}
+```
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">While</div>
+  <div class="definition-com-shadebox">
+
+```
+while (condition) {
+  // code block to be executed
+}
+```
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+```
+int i = 0;
+while (i < 5) {
+  cout << i << "\n";
+  i++;
+}
+```
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Do/While</div>
+  <div class="definition-com-shadebox">
+
+```
+do {
+  // code block to be executed
+}
+while (condition);
+```
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+```
+int i = 0;
+do {
+  cout << i << "\n";
+  i++;
+}
+while (i < 5);
+```
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">For</div>
+  <div class="definition-com-shadebox">
+
+```
+for (statement 1; statement 2; statement 3) {
+  // code block to be executed
+}
+```
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+- Statement 1 is executed (one time) before the execution of the code block.
+
+- Statement 2 defines the condition for executing the code block.
+
+- Statement 3 is executed (every time) after the code block has been executed.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">For</div>
+  <div class="definition-com-shadebox" style="font-size: 1.3em; line-height: 1.5;">
+
+```
+for (int i = 0; i < 5; i++) {
+  cout << i << "\n";
+}
+```
+   </div>
+
+<br>
+
+<div style="font-size: 0.6em; line-height: 1.5;">
+
+- <spanBYMix>Statement 1</spanBYMix> sets a variable before the loop starts: int i = 0
+- <spanGREEN>Statement 2</spanGREEN> defines the condition for the loop to run: i < 5. If the condition is true, the loop will start over again, if it is false, the loop will end.
+- <spanRED>Statement 3</spanRED> increases a value each time the code block in the loop has been executed: i++
+
+</div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Nested Loops</div>
+  <div class="definition-com-shadebox">
+
+It is also possible to place a loop inside another loop. This is called a nested loop. The "inner loop" will be executed one time for each iteration of the "outer loop":
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+
+  <div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+// Outer loop
+for (int i = 1; i <= 2; ++i) {
+  cout << "Outer: " << i << "\n"; // Executes 2 times
+
+  // Inner loop
+  for (int j = 1; j <= 3; ++j) {
+    cout << " Inner: " << j << "\n"; // Executes 6 times (2 * 3)
+  }
+}
+```
+ </div>
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Task</div>
+  <div class="question-shadebox">
+
+Print a simple multiplication table (1 to 3)
+
+</div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+for (int i = 1; i <= 3; i++) {
+  for (int j = 1; j <= 3; j++) {
+    cout << i * j << " ";
+  }
+  cout << "\n";
+}
+```
+</div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">foreach</div>
+  <div class="definition-com-shadebox">
+
+There is also a "for-each loop" (also known as ranged-based for loop), which is used to loop through elements in an array (or other data structures)
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+```
+for (type variableName : arrayName) {
+  // code block to be executed
+}
+```
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">foreach</div>
+  <div class="definition-com-shadebox">
+
+```
+int myNumbers[5] = {10, 20, 30, 40, 50};
+for (int num : myNumbers) {
+  cout << num << "\n";
+}
+```
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+```
+string word = "Hello";
+for (char c : word) {
+  cout << c << "\n";
+}
+```
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch2" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Break/Continue</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Break</div>
+  <div class="definition-com-shadebox">
+
+You have already seen the break statement used in an earlier chapter of this tutorial. It was used to "jump out" of a switch statement. The break statement can also be used to jump out of a loop.
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+for (int i = 0; i < 10; i++) {
+  if (i == 4) {
+    break;
+  }
+  cout << i << "\n";
+}
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Continue</div>
+  <div class="definition-com-shadebox">
+
+The continue statement breaks one iteration (in the loop), if a specified condition occurs, and continues with the next iteration in the loop.
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+<div  style="font-size: 1.6em; line-height: 1.5;">
+
+```
+for (int i = 0; i < 10; i++) {
+  if (i == 4) {
+    continue;
+  }
+  cout << i << "\n";
+}
+```
+
+</div>
+   </div>
+</div>
+
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch3" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Functions</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Function</div>
+  <div class="definition-com-shadebox">
+
+- A function is a block of code which only runs when it is called.
+
+- You can pass data, known as parameters, into a function.
+
+- Functions are used to perform certain actions, and they are important for reusing code: Define the code once, and use it many times.
+
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+  
+C++ provides some pre-defined functions, such as main(), which is used to execute code. But you can also create your own functions to perform certain actions.
+
+<div id="shadebox-glass" class="shadebox glass">
+
+```
+void myFunction() {
+  // code to be executed
+}
+```
+</div>
+   </div>
+</div>
+
+
+
+
+<div class="definition-pro-Y-container">
+  <div class="definition-pro-Y-title">Note</div>
+  <div class="definition-pro-Y-shadebox">
+  
+```
+void myFunction() {
+  // code to be executed
+}
+```
+
+<div id="shadebox-glass" class="shadebox glass">
+
+- myFunction() is the name of the function
+- void means that the function does not have a return value. You will learn more about return values later in the next chapter
+- inside the function (the body), add code that defines what the function should do
+</div>
+   </div>
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Call a Function</div>
+  <div class="question-shadebox">
+
+Declared functions are not executed immediately. They are "saved for later use", and will be executed later, when they are called.
+
+<hr style="border: none; border-top: 2px dashed green;">
+
+```
+// Create a function
+void myFunction() {
+  cout << "I just got executed!";
+}
+
+int main() {
+  myFunction(); // call the function
+  return 0;
+}
+
+// Outputs "I just got executed!"
+```
+</div>
+
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Call a Function</div>
+  <div class="question-shadebox">
+
+A function can be called multiple times:
+
+<hr style="border: none; border-top: 2px dashed green;">
+
+```
+void myFunction() {
+  cout << "I just got executed!\n";
+}
+
+int main() {
+  myFunction();
+  myFunction();
+  myFunction();
+  return 0;
+}
+```
+</div>
+
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Declaration & Definition</div>
+  <div class="question-shadebox">
+
+- A C++ function consist of two parts:
+
+	- Declaration: the return type, the name of the function, and parameters (if any)
+	- Definition: the body of the function (code to be executed)
+
+<hr style="border: none; border-top: 2px dashed green;">
+
+```
+void myFunction() { // declaration
+  // the body of the function (definition)
+}
+```
+</div>
+
+</div>
+
+
+
+<div class="definition-shakeflash-container">
+  <div class="definition-shakeflash-title">Error</div>
+  <div class="definition-shakeflash-shadebox">
+
+If a user-defined function, such as myFunction() is declared after the main() function, an error will occur
+
+```
+int main() {
+  myFunction();
+  return 0;
+}
+
+void myFunction() {
+  cout << "I just got executed!";
+}
+```
+
+
+   </div>
+</div>
+
+
+
+<div class="definition-shakeflash-container">
+  <div class="definition-shakeflash-title">Error</div>
+  <div class="definition-shakeflash-shadebox">
+
+```
+#include <iostream>
+using namespace std;
+
+int main() {
+  myFunction();
+  return 0;
+}
+
+void myFunction() {
+  cout << "I just got executed!";
+}
+```
+   </div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Notes</div>
+  <div class="question-shadebox">
+
+It is possible to separate the declaration and the definition of the function - for code optimization.
+
+You will often see C++ programs that have function declaration above main(), and function definition below main(). This will make the code better organized and easier to read:
+</div>
+
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Notes</div>
+  <div class="question-shadebox">
+
+```
+// Function declaration
+void myFunction();
+
+// The main method
+int main() {
+  myFunction();  // call the function
+  return 0;
+}
+
+// Function definition
+void myFunction() {
+  cout << "I just got executed!";
+}
+```
+</div>
+
+</div>
+
+
+
+
+<div class="question-container">
+  <div class="question-title">Parameters and Arguments</div>
+  <div class="question-shadebox">
+
+```
+void functionName(parameter1, parameter2, parameter3) {
+  // code to be executed
+}
+```
+
+<hr style="border: none; border-top: 2px dashed green;">
+
+```
+void myFunction(string fname) {
+  cout << fname << " Refsnes\n";
+}
+
+int main() {
+  myFunction("Liam");
+  myFunction("Jenny");
+  myFunction("Anja");
+  return 0;
+}
+```
+</div>
+
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Default Parameter Value</div>
+  <div class="question-shadebox">
+
+```
+void myFunction(string country = "Norway") {
+  cout << country << "\n";
+}
+
+int main() {
+  myFunction("Sweden");
+  myFunction("India");
+  myFunction();
+  myFunction("USA");
+  return 0;
+}
+```
+</div>
+
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Multiple Parameters</div>
+  <div class="question-shadebox">
+
+```
+void myFunction(string fname, int age) {
+  cout << fname << " Refsnes. " << age << " years old. \n";
+}
+
+int main() {
+  myFunction("Liam", 3);
+  myFunction("Jenny", 14);
+  myFunction("Anja", 30);
+  return 0;
+}
+```
+</div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Return Values</div>
+  <div class="question-shadebox">
+
+The void keyword, used in the previous examples, indicates that the function should not return a value. If you want the function to return a value, you can use a data type (such as int, string, etc.) instead of void, and use the return keyword inside the function:
+
+<hr style="border: none; border-top: 2px dashed green;">
+
+```
+int myFunction(int x) {
+  return 5 + x;
+}
+
+int main() {
+  cout << myFunction(3);
+  return 0;
+}
+```
+</div>
+</div>
+
+
+
+<div class="question-container">
+  <div class="question-title">Return Values</div>
+  <div class="question-shadebox">
+
+Example
+
+<hr style="border: none; border-top: 2px dashed green;">
+
+```
+int doubleGame(int x) {
+  return x * 2;
+}
+
+int main() {
+  for (int i = 1; i <= 5; i++) {
+    cout << "Double of " << i << " is " << doubleGame(i) << endl;
+  }
+  return 0;
+}
+```
+</div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">True / False</div>
+  <div class="definition-com-shadebox">
+
+An if statement runs its code block only when its condition is true.  <button type="button" class="reveal-btn" data-answer="answer-q1">Show Answer</button>
+<div id="answer-q1" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+In an if ... else if ... else chain, multiple branches can run in the same execution. <button type="button" class="reveal-btn" data-answer="answer-q2">Show Answer</button>
+<div id="answer-q2" class="answer-box">
+<b>Answer:</b>False
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+The ternary operator has the form: (condition) ? valueIfTrue : valueIfFalse. <button type="button" class="reveal-btn" data-answer="answer-q3">Show Answer</button>
+<div id="answer-q3" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">True / False</div>
+  <div class="definition-com-shadebox">
+
+A nested if means an if statement is placed inside another if block. <button type="button" class="reveal-btn" data-answer="answer-q4">Show Answer</button>
+<div id="answer-q4" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+With && (AND), at least one condition must be true for the whole expression to be true. <button type="button" class="reveal-btn" data-answer="answer-q5">Show Answer</button>
+<div id="answer-q5" class="answer-box">
+<b>Answer:</b>False
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">True / False</div>
+  <div class="definition-com-shadebox">
+
+In a switch, the expression is evaluated once, then compared with each case. <button type="button" class="reveal-btn" data-answer="answer-q6">Show Answer</button>
+<div id="answer-q6" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+break is required in every switch case, otherwise the program will not compile. <button type="button" class="reveal-btn" data-answer="answer-q7">Show Answer</button>
+<div id="answer-q7" class="answer-box">
+<b>Answer:</b>False
+</div>
+
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+A do...while loop always runs its body at least one time. <button type="button" class="reveal-btn" data-answer="answer-q8">Show Answer</button>
+<div id="answer-q8" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">True / False</div>
+  <div class="definition-com-shadebox">
+
+continue immediately ends the entire loop (like break).  <button type="button" class="reveal-btn" data-answer="answer-q9">Show Answer</button>
+<div id="answer-q9" class="answer-box">
+<b>Answer:</b>False
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+A function is executed only when it is called (invoked). <button type="button" class="reveal-btn" data-answer="answer-q10">Show Answer</button>
+<div id="answer-q10" class="answer-box">
+<b>Answer:</b>True
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Fill-in-the-Blank</div>
+  <div class="definition-com-shadebox">
+
+The if statement executes a block when the condition is _____. <button type="button" class="reveal-btn" data-answer="answer-q11">Show Answer</button>
+<div id="answer-q11" class="answer-box">
+<b>Answer:</b>true
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+The keyword used after an if block to handle the “otherwise” case is _____. <button type="button" class="reveal-btn" data-answer="answer-q12">Show Answer</button>
+<div id="answer-q12" class="answer-box">
+<b>Answer:</b>else
+</div>
+
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+The ternary operator uses the symbols _____ and _____ to separate parts. <button type="button" class="reveal-btn" data-answer="answer-q13">Show Answer</button>
+<div id="answer-q13" class="answer-box">
+<b>Answer:</b>? and :
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Fill-in-the-Blank</div>
+  <div class="definition-com-shadebox">
+
+The logical operator for AND is _____. <button type="button" class="reveal-btn" data-answer="answer-q14">Show Answer</button>
+<div id="answer-q14" class="answer-box">
+<b>Answer:</b>&&
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+The logical operator for OR is _____. <button type="button" class="reveal-btn" data-answer="answer-q15">Show Answer</button>
+<div id="answer-q15" class="answer-box">
+<b>Answer:</b>||
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Fill-in-the-Blank</div>
+  <div class="definition-com-shadebox">
+
+The logical operator that reverses a condition is _____. <button type="button" class="reveal-btn" data-answer="answer-q16">Show Answer</button>
+<div id="answer-q16" class="answer-box">
+<b>Answer:</b>!
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+In a switch statement, the optional branch that runs when no case matches is _____.<button type="button" class="reveal-btn" data-answer="answer-q17">Show Answer</button>
+<div id="answer-q17" class="answer-box">
+<b>Answer:</b>default
+</div>
+
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+A while loop repeats as long as its condition is _____. <button type="button" class="reveal-btn" data-answer="answer-q18">Show Answer</button>
+<div id="answer-q18" class="answer-box">
+<b>Answer:</b>true
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Fill-in-the-Blank</div>
+  <div class="definition-com-shadebox">
+
+The statement that skips the rest of the current loop iteration and moves to the next one is _____. <button type="button" class="reveal-btn" data-answer="answer-q19">Show Answer</button>
+<div id="answer-q19" class="answer-box">
+<b>Answer:</b>continue
+</div>
+
+<hr style="border: none; border-top: 2px dashed orange;">
+
+A function that does not return a value commonly uses the return type _____. <button type="button" class="reveal-btn" data-answer="answer-q20">Show Answer</button>
+<div id="answer-q20" class="answer-box">
+<b>Answer:</b>void
+</div>
+
+   </div>
+</div>
+
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+<section>
+<section data-markdown id="ch4" class="center"><textarea data-template>
+
+<p class="definition-rainbow-title">Mini Case Study</p>
+
+</textarea></section>
+
+<section data-markdown data-separator="^\n\n\n"><textarea data-template>
+
+<div class="definition-pro-X-container">
+  <div class="definition-pro-X-title">Lab: Student Study Tracker</div>
+  <div class="definition-pro-X-shadebox">
+
+Student Study Tracker (Console App) - Build a C++ console program that helps a student record study sessions and see a summary. Your program must use:
+ 
+<hr style="border: none; border-top: 2px dashed orange;">
+
+- Control statements (if / else if / else, logical operators, ternary optional)
+
+- Loops (while or do/while, plus a for loop somewhere)
+
+- switch menu
+
+- break and continue inside loops
+
+- Functions (at least 3)
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-X-container">
+  <div class="definition-pro-X-title">Task</div>
+  <div class="definition-pro-X-shadebox">
+  
+- Requirement 1: Show a menu repeatedly until the user quits
+
+	- Add study minutes
+
+	- Show summary
+
+	- Print mini multiplication table (1–3)
+
+	- Quit
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-X-container">
+  <div class="definition-pro-X-title">Task (Cont.)</div>
+  <div class="definition-pro-X-shadebox">
+  
+- Requirement 2: When adding minutes:
+
+	- Ask for minutes (integer).
+
+	- If minutes <= 0, print an error and continue back to the menu.
+
+	- If minutes > 300, ask “Too large, cap at 300? (y/n)”
+	
+		- If yes, store 300
+
+		- If no, continue back to the menu	
+
+   </div>
+</div>
+
+
+
+<div class="definition-pro-X-container">
+  <div class="definition-pro-X-title">Task (Cont.)</div>
+  <div class="definition-pro-X-shadebox">
+  
+- Requirement 3: Summary should show:
+
+	- Total sessions
+
+	- Total minutes
+
+	- Average minutes per session (avoid divide by zero)
+
+- Multiplication table option prints the 1–3 table using nested loops.
+   </div>
+</div>
+
+
+
+<div id="shadebox">
+
+### Example code
+
+<hr style="border: none; border-top: 1.5px solid cyan;">
+
+```
+#include <iostream>
+using namespace std;
+
+void showMenu() {
+    cout << "\n===== Study Tracker =====\n";
+    cout << "1) Add study minutes\n";
+    cout << "2) Show summary\n";
+    cout << "3) Print mini multiplication table (1-3)\n";
+    cout << "4) Quit\n";
+    cout << "Choose: ";
+}
+
+int readMinutes() {
+    int minutes;
+    cout << "Enter study minutes: ";
+    cin >> minutes;
+    return minutes;
+}
+
+void showSummary(int totalMinutes, int sessions) {
+    cout << "\n--- Summary ---\n";
+    cout << "Sessions: " << sessions << "\n";
+    cout << "Total minutes: " << totalMinutes << "\n";
+
+    if (sessions == 0) {
+        cout << "Average per session: 0\n";
+    } else {
+        double avg = (double)totalMinutes / sessions;
+        cout << "Average per session: " << avg << "\n";
+    }
+
+    // Extra example of logical operators (optional)
+    if (totalMinutes >= 120 && sessions >= 2) {
+        cout << "Nice work: 2+ sessions and 120+ minutes!\n";
+    }
+}
+
+void printMiniTable() {
+    cout << "\n--- Multiplication Table (1 to 3) ---\n";
+    for (int i = 1; i <= 3; i++) {
+        for (int j = 1; j <= 3; j++) {
+            cout << (i * j) << " ";
+        }
+        cout << "\n";
+    }
+}
+
+int main() {
+    int totalMinutes = 0;
+    int sessions = 0;
+
+    while (true) {
+        showMenu();
+
+        int choice;
+        cin >> choice;
+
+        switch (choice) {
+            case 1: {
+                int minutes = readMinutes();
+
+                // Use continue to skip bad input and go back to menu
+                if (minutes <= 0) {
+                    cout << "Minutes must be positive.\n";
+                    continue;
+                }
+
+                // Large value handling
+                if (minutes > 300) {
+                    char cap;
+                    cout << "Too large. Cap at 300? (y/n): ";
+                    cin >> cap;
+
+                    if (cap == 'y' || cap == 'Y') {
+                        minutes = 300;
+                    } else {
+                        cout << "Not saved.\n";
+                        continue; // go back to menu
+                    }
+                }
+
+                totalMinutes += minutes;
+                sessions++;
+                cout << "Saved: " << minutes << " minutes.\n";
+                break;
+            }
+
+            case 2:
+                showSummary(totalMinutes, sessions);
+                break;
+
+            case 3:
+                printMiniTable();
+                break;
+
+            case 4:
+                cout << "Goodbye!\n";
+                break; // breaks switch only
+            default:
+                cout << "Invalid option.\n";
+        }
+
+        // break the loop when user chooses 4
+        if (choice == 4) {
+            break; // breaks the while loop
+        }
+    }
+
+    return 0;
+}
+
+```
+
+</div>
+</textarea></section>
+
+</section>
+
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+</div>
+</div>
+	
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+<script src="./reveal.js/plugin/search/search.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/highlight/highlight.js"></script>
+<script src="./reveal.js/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/settings.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/xinxingwu-uk/xinxingwu-uk/slides/effects.js"></script>
+<!--<script src="settings.js"></script>-->
+<!--<script src="effects.js"></script>-->
+</body>
+</html>
