@@ -1,0 +1,1059 @@
+/******************************************
+/* CSS
+/*******************************************/
+
+/* Box Model Hack */
+* {
+  box-sizing: border-box;
+  font-family: 'helvetica neue', sans-serif;
+}
+body {
+  background-color: #000000;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+h1 {
+  color: white;
+  font-size: 3.5em;
+  font-weight: 400;
+  margin: 15px 5px 0 8px;
+}
+h2 {
+  color: white;
+  font-size: 2em;
+  font-weight: 400;
+  margin: 15px 5px 0 8px;
+}
+h4 {
+  color: white;
+  font-size: 1.1em;
+  font-weight: 400;
+  margin: 0 5px 5px 8px;
+}
+h5 {
+  color: white;
+  font-weight: 500;
+  margin: 15px 5px 0px 15px;
+}
+a {
+  text-decoration: none;
+  height: 0px;
+}
+
+/******************************************
+/* LAYOUT
+/*******************************************/
+
+/* Ipad Borders */
+.ipadBorderOuter {
+  border: 3px solid rgb(172, 172, 175);
+  background: black;
+  -webkit-box-shadow: -10px -5px 60px 0px #31b48b5e, -10px 5px 60px 0px #88b34f63,
+    10px 5px 60px 0px #09b9c563, 10px -5px 60px 0px #1a0dd462;
+  box-shadow: -10px -5px 60px 0px #31b48b5e, -10px 5px 60px 0px #88b34f63,
+    10px 5px 60px 0px #09b9c563, 10px -5px 60px 0px #1a0dd462;
+  border-radius: 35px;
+  height: 720px;
+  width: 1080px;
+  margin: 20px 10%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  order: 2;
+  flex-wrap: wrap;
+}
+.closed {
+  height: 0px !important;
+  background-image: black;
+}
+/* Login Display area */
+.ipadLoginDisplay {
+  height: 640px;
+  width: 1000px;
+  background-image: url('iPadOpen.gif');
+  background-size: 100%;
+  border-radius: 25px;
+  padding-top: 3rem;
+  padding-bottom: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  overflow: hidden;
+  transition-property: all;
+  transition-duration: 250ms;
+  transition-timing-function: ease-out;
+}
+.loginDisplayContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+}
+.dateTimeHead {
+  padding: 0;
+}
+.ipadLoginDisplay i {
+  font-size: 2rem;
+  color: white;
+}
+.dragBarDescriptor {
+  color: rgb(243, 241, 241);
+  font-size: 0.95rem;
+}
+
+/* dragbarContent animations */
+@keyframes scale {
+  100% {
+    transform: scale(1);
+  }
+}
+.dragBarText {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(4px);
+}
+.dragBarText:nth-child(1) {
+  animation: fade-in 0.8s 0.25s forwards cubic-bezier(0.11, 0, 0.5, 0);
+}
+@keyframes fade-in {
+  100% {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+.dragBarMain {
+  height: 4.5px;
+  width: 145px;
+  background-color: rgba(250, 249, 249, 0.623);
+  border-radius: 2px;
+  margin-top: 0.4rem;
+}
+
+.ipadBorderInner {
+  border: 2px solid black;
+  background-image: url('iPadBg.jpg');
+  background-size: 100%;
+  border-radius: 25px;
+  height: 640px;
+  width: 1000px;
+
+  display: flex;
+}
+
+/* Ipad Display & content */
+.ipadDisplay {
+  height: 640px;
+  width: 1000px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+/* Ipad Status Bar - Top display */
+.statusBar {
+  height: 25px;
+  width: 1000px;
+
+  display: flex;
+  justify-content: space-between;
+  /* border: 1px solid red; */
+}
+.statusListLeft,
+.statusListRight {
+  margin-top: 5px;
+  margin: 5px 8px 15px 8px;
+  padding: 0;
+  display: inline;
+}
+.statusListLeft {
+  padding-left: 8px;
+}
+.statusListRight {
+  padding-right: 8px;
+}
+ul li {
+  display: inline;
+  color: white;
+  font-size: 12px;
+  margin-right: 2px;
+}
+
+/* Ipad display content area - Middle display */
+.ipadContentArea {
+  height: 490px;
+  width: 1000px;
+  padding-top: 15px;
+
+  display: flex;
+  /* border: 1px solid red; */
+}
+.notificationCenterArea {
+  width: 40%;
+
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  /* border: 1px solid red; */
+}
+.widgetSmall {
+  height: 135px;
+  width: 75%;
+  border-radius: 20px;
+  margin-left: 10%;
+  margin-bottom: 20px;
+
+  /* border: 1px solid red; */
+}
+.widgetSmall.widget2 {
+  background: hsla(201, 100%, 85%, 1);
+  background: linear-gradient(
+    315deg,
+    hsla(201, 100%, 85%, 1) 0%,
+    hsla(222, 68%, 59%) 81%
+  );
+  background: -moz-linear-gradient(
+    315deg,
+    hsla(201, 100%, 85%, 1) 0%,
+    hsla(222, 68%, 59%) 81%
+  );
+  background: -webkit-linear-gradient(
+    315deg,
+    hsla(201, 100%, 85%, 1) 0%,
+    hsla(222, 68%, 59%) 81%
+  );
+  filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#b2e4ff", endColorstr="#4F7ADE", GradientType=1 );
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+#location {
+  height: 10px;
+  width: 300px;
+  margin-bottom: 0px;
+}
+#temp {
+  height: 55px;
+  width: 100px;
+  display: inline-block;
+  margin-top: 0px;
+  margin-left: 15px;
+}
+#weather-icon {
+  height: 55px;
+  width: 55px;
+  display: inline-block;
+  margin: 0 5px 0 15px;
+  color: white;
+  font-size: 2.25em;
+}
+
+.widgetSmall.widget3 {
+  background-color: #FFFDF1;
+  backdrop-filter: blur(10px);
+  display: flex;
+}
+#currentSongContainer {
+  width: 135px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#currentSongImage {
+  width: 110px;
+  height: 110px;
+  border-radius: 16px;
+  box-shadow: 0px 4px 11px 5px rgba(0, 0, 0, 0.226);
+}
+#currentSongInfo {
+  width: 165px;
+  padding: 15px 15px;
+  text-align: center;
+}
+#appOpenBtn {
+  display: flex;
+  justify-content: flex-end;
+}
+#appOpenBtn > i {
+  color: rgba(231, 231, 231, 0.85);
+}
+#songTitleWidget {
+  margin: -5px 0 2.5px 0;
+  font-weight: 500;
+  font-size: 0.98rem;
+  color: rgb(247, 247, 247);
+
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 135px;
+}
+#songAuthorWidget {
+  margin: 0;
+  font-size: 0.8rem;
+  color: rgba(231, 231, 231, 0.85);
+
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 130px;
+}
+#songControllerWidget {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 16px 0 16px 0;
+}
+.songWidgetButtons {
+  font-size: 1.3rem;
+  color: rgb(247, 247, 247);
+}
+
+/* Ipad App area - Right */
+.appArea {
+  width: 60%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+/* App overlay */
+.app {
+  height: 500px;
+  width: 275px;
+  z-index: 1;
+  border-radius: 15px;
+  margin-right: 15px;
+  box-shadow: 0px 0px 18px 2px rgba(0, 0, 0, 0.29);
+}
+/* Safari App */
+#safari {
+  background-color: #fbfbfd;
+}
+#safariNav {
+  height: 70px;
+  background-color: rgb(83, 83, 83);
+  border-radius: 15px 15px 0 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0;
+}
+.dragBar {
+  height: 4px;
+  width: 30px;
+  background-color: rgb(112, 112, 112);
+  border-radius: 10px;
+}
+.searchBar {
+  height: 20px;
+  width: 92.5%;
+  padding: 0 5px;
+  background-color: rgb(112, 112, 112);
+  border-radius: 10px;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: bottom;
+  gap: 4px;
+  box-sizing: border-box;
+}
+.searchBar input {
+  min-width: 0;
+  flex: 1;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: white;
+  font-size: 12px;
+}
+.searchBar input::selection {
+  background-color: rgba(255, 255, 255, 0.35);
+}
+.searchBar input::placeholder {
+  color: rgba(255, 255, 255, 0.75);
+}
+#browserGo,
+#browserOpenOriginal {
+  height: 25px;
+  min-width: 28px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 7px;
+  background-color: rgba(255, 255, 255, 0.18);
+  color: white;
+  font-size: 11px;
+  line-height: 25px;
+  text-align: center;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+#browserOpenOriginal {
+  text-decoration: none;
+}
+#browserGo:hover,
+#browserOpenOriginal:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+#safariBody {
+  width: 275px;
+  height: 430px;
+  overflow: hidden;
+  background-color: #fbfbfd;
+  border-radius: 0 0 15px 15px;
+}
+#browserContent {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 12px;
+  border: 0;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  box-sizing: border-box;
+  background-color: #fbfbfd;
+  color: #333;
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  line-height: 1.45;
+}
+#browserFrame {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 0 0 15px 15px;
+  background-color: #fbfbfd;
+}
+/* Message app */
+#messenger {
+  background-color: rgb(255, 255, 255);
+}
+#messengerNav {
+  height: 80px;
+  padding: 0 15px 0 15px;
+  background-color: rgb(245, 245, 245);
+  border-bottom: 1px solid rgb(228, 228, 228);
+  border-radius: 15px 15px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#messengerNav i {
+  color: rgb(0, 122, 255);
+}
+.messageUser {
+  text-align: center;
+}
+.messageUser span {
+  font-size: 12px;
+}
+.headshot {
+  width: 40px;
+  border-radius: 50%;
+}
+#messageBody {
+  /* border: 1px solid red; */
+  height: 380px;
+  width: 275px;
+  text-align: left;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  overflow-y: auto;
+  overflow-x: hidden;
+  inline-size: 275px;
+  overflow-wrap: break-word;
+  word-break: break-all;
+}
+.userTextMsg {
+  font-size: 0.9rem;
+  background-color: rgb(0, 122, 255);
+  color: white;
+  text-align: right;
+  min-height: 25px;
+  min-width: 30px;
+  /* float: right; */
+  padding: 5px 10px 5px 10px;
+  margin: 8px 0 6px 0;
+  border-radius: 12px;
+}
+
+#textbox {
+  height: 35px;
+}
+#textbox {
+  padding: 0 10px 0 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#textbox i {
+  color: rgb(112, 112, 112);
+  font-size: 20px;
+}
+#textbox i + i {
+  color: rgb(0, 122, 255);
+}
+#textbox input {
+  font-size: 14px;
+  border: 1px solid rgb(165, 165, 165);
+  border-radius: 12.5px;
+  height: 25px;
+  width: 155px;
+  padding: 0 7.5px;
+}
+.messageSendBtn {
+  width: 25px;
+  height: 25px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background-color: rgb(0, 122, 255);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+#textbox .messageSendBtn i {
+  color: white;
+  font-size: 13px;
+}
+.scheduleReply {
+  align-self: flex-start;
+  max-width: 190px;
+  padding: 9px;
+  margin: 4px 0 8px 0;
+  border-radius: 14px;
+  background-color: rgb(229, 229, 234);
+  color: rgb(20, 20, 20);
+  text-align: center;
+  word-break: normal;
+}
+.scheduleReply p {
+  margin: 0 0 7px 0;
+  font-size: 0.82rem;
+  line-height: 1.25;
+}
+.scheduleReply img {
+  display: block;
+  width: 145px;
+  height: 145px;
+  margin: 0 auto 6px auto;
+  object-fit: contain;
+}
+.scheduleReply a {
+  color: rgb(0, 82, 204);
+  font-weight: 700;
+  text-decoration: none;
+}
+.scheduleReply a:hover,
+.scheduleReply a:focus {
+  text-decoration: underline;
+}
+.receivedReply {
+  align-self: flex-start;
+  max-width: 205px;
+  padding: 9px 11px;
+  margin: 4px 0 8px 0;
+  border-radius: 14px;
+  background-color: rgb(229, 229, 234);
+  color: rgb(20, 20, 20);
+  text-align: left;
+  word-break: normal;
+}
+.receivedReply p {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.3;
+}
+
+/* Music app */
+#music {
+  backdrop-filter: blur(45px) brightness(0.9);
+}
+#musicNav {
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* border: 1px solid red; */
+}
+#albumCoverContainer {
+  padding-top: 10px;
+  padding-bottom: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* border: 1px solid red; */
+}
+.albumCoverImg {
+  width: 210px;
+  height: 210px;
+  box-shadow: 0px 4px 11px 5px rgba(0, 0, 0, 0.34);
+}
+#songInfoContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* border: 1px solid red; */
+}
+.songTitle {
+  margin: 5px 0 2.5px 0;
+  font-weight: 700;
+  color: rgb(247, 247, 247);
+
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 205px;
+}
+.songAuthor {
+  margin: 0;
+  color: rgba(231, 231, 231, 0.85);
+}
+#moreInfoBtn {
+  color: rgb(247, 247, 247);
+  width: 20px;
+  height: 20px;
+  padding: 2.5px;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+}
+#songLength {
+  padding: 5px 0 5px 0;
+  /* border: 1px solid red; */
+}
+.songLengthSlider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 4px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.8;
+  transition: all 0.2s;
+}
+.songLengthSlider:hover {
+  opacity: 1; /* Fully shown on mouse-over */
+  /* transform: scale(1.01, 1.2); */
+  height: 7.5px;
+}
+.songLengthSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12.5px;
+  height: 12.5px;
+  border-radius: 50%;
+  background: rgb(247, 247, 247);
+  cursor: pointer;
+}
+#songlengthIndicators {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#currentTime,
+#remainingTime {
+  font-size: 12px;
+  padding-top: 2px;
+  color: rgba(231, 231, 231, 0.85);
+}
+#songController {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 22.5px 0 22.5px 0;
+  /* border: 1px solid red; */
+}
+.songControllerButtons {
+  font-size: 2.1rem;
+  color: rgb(247, 247, 247);
+}
+#volumeLength {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0 5px 0;
+  /* border: 1px solid red; */
+}
+#volSlider {
+  width: 80%;
+}
+.volumeIndicator {
+  font-size: 0.6rem;
+  color: rgb(247, 247, 247);
+}
+#extraBtnsContainer {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 10px 0 5px 0;
+}
+.extraBtn {
+  font-size: 0.9rem;
+  color: rgba(231, 231, 231, 0.85);
+}
+
+#songInfoContainer,
+#songLength,
+#volumeLength,
+#extraBtnsContainer {
+  padding-left: 17.5px;
+  padding-right: 17.5px;
+}
+
+/* Mail app */
+#mail {
+  background-color: rgb(255, 255, 255);
+  position: relative;
+  overflow: hidden;
+}
+.mailNav {
+  height: 50px;
+  padding: 0 12.5px 0 12.5px;
+  background-color: rgb(245, 245, 245);
+  border-bottom: 1px solid rgb(228, 228, 228);
+  border-radius: 15px 15px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.mailNavBtns {
+  font-size: 14px;
+}
+.blueBtn {
+  color: rgb(0, 122, 255);
+}
+#mailBoxContainer {
+  height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 50px;
+  box-sizing: border-box;
+}
+.mailItemContainer {
+  height: 60px;
+  width: 275px;
+  padding: 0 8.5px 0 8.5px;
+  border-top: 1px solid rgb(228, 228, 228);
+  background-color: rgb(255, 255, 255);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* Let the final policy note grow with its text instead of overlapping items above. */
+.mailItemContainer.policyNote {
+  height: auto;
+  min-height: 60px;
+  max-width: 100%;
+  box-sizing: border-box;
+  align-items: flex-start;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.mailItemContainer.policyNote p {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.2;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+.mailItemTags {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 5px;
+}
+.mailItemTags .unreadMailIcon {
+  font-size: 0.55rem;
+  color: rgb(0, 122, 255);
+  display: block;
+}
+.mailItemTags .replyIcon {
+  font-size: 0.55rem;
+  color: #cccbcb;
+}
+.mailItemDesc {
+  width: 240px;
+}
+.mailTopLine {
+  display: flex;
+  justify-content: space-between;
+}
+.mailSender {
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin: 0;
+
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 155px;
+}
+.mailSentInfo {
+  font-size: 0.75rem;
+  color: #999999;
+}
+.mailHeader {
+  font-size: 0.75rem;
+  margin: 1px 0;
+
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 240px;
+}
+.mailBodyPreview {
+  font-size: 0.75rem;
+  color: #999999;
+  margin: 0;
+
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 240px;
+}
+
+.mailNav.bottom {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  border-top: 1px solid rgb(228, 228, 228);
+  border-radius: 0 0 15px 15px;
+}
+#filterInfo,
+#filterSelection {
+  margin: 0;
+  font-size: 10px;
+}
+#filterInfo {
+  font-weight: 600;
+}
+#filterSelection {
+  color: rgb(0, 122, 255);
+}
+
+/* Settings app */
+#settings {
+  background-color: rgb(239, 239, 244);
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
+}
+#settingsNav {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+#settingsNav {
+  height: 50px;
+  padding: 0 12.5px 0 12.5px;
+  background-color: rgb(245, 245, 245);
+  border-bottom: 1px solid rgb(228, 228, 228);
+  border-radius: 15px 15px 0 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.bold {
+  font-weight: 500;
+}
+#aboutMeSection {
+  height: 65px;
+  padding: 0 12.5px 0 12.5px;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border-top: 1px solid rgb(228, 228, 228);
+  border-bottom: 1px solid rgb(228, 228, 228);
+  background-color: rgb(245, 245, 245);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#aboutMeTextArea > h3 {
+  font-size: 1.05rem;
+  font-weight: 400;
+  margin-top: 0;
+  margin-bottom: 0;
+  color: black;
+}
+#aboutMeTextArea > p {
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  margin-bottom: 0;
+  color: black;
+}
+#aboutMeSection .fa-angle-right,
+.settingsItem .fa-angle-right {
+  color: rgba(0, 0, 0, 0.301);
+  font-size: 0.75rem;
+}
+.settingIcon {
+  color: rgb(245, 245, 245);
+  background-color: rgb(25, 112, 226);
+  padding: 5px;
+  border-radius: 5px;
+}
+.settingsItem {
+  height: 37.75px;
+  padding: 0 12.5px 0 12.5px;
+  border-top: 1px solid rgb(228, 228, 228);
+  background-color: rgb(245, 245, 245);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.settingsItem.footer {
+  height: 45px;
+  margin-top: 165px;
+  border-radius: 0 0 15px 15px;
+  background-color: rgb(245, 245, 245);
+  justify-content: center;
+  text-align: center;
+}
+.settingsItem span {
+  font-size: 0.85rem;
+  color: black;
+  padding-left: 0.5rem;
+}
+.last {
+  border-bottom: 1px solid rgb(228, 228, 228);
+}
+
+/* Ipad dock area - Bottom display */
+.ipadDockArea {
+  height: 125px;
+  width: 1000px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* border: 1px solid red; */
+}
+.dock {
+  width: 40%;
+  height: 75px;
+  border-radius: 25px;
+  background-color: #383838a9;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12.5px;
+}
+.dock .appIcon {
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
+}
+
+footer {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+footer a {
+  color: black;
+
+  transition: all 0.15s linear;
+}
+footer a:hover {
+  color: rgba(236, 116, 17, 0.87);
+  text-decoration: underline;
+}
+.divider {
+  margin: 0 1rem 0 1rem;
+}
+
+/******************************************
+/* ADDITIONAL STYLES
+/*******************************************/
+/* Hover States */
+.iconHover:hover {
+  box-shadow: 0px 0px 18px 2px rgba(0, 0, 0, 0.29);
+  transform: scale(1.025) translateZ(0);
+}
+.iconHover {
+  transition: box-shadow 0.2s linear, transform 0.2s linear;
+}
+.appHover:hover {
+  transform: scale(1.1) translateZ(0);
+  box-shadow: 0px 0px 18px 2px rgba(0, 0, 0, 0.29);
+}
+.appHover {
+  transition: box-shadow 0.2s linear, transform 0.125s linear;
+}
+
+/* toggle hidden on off to show apps */
+.hidden {
+  display: none;
+}
+
+/* Ipad OS cursor test - Credits to Ralph J. Smit! https://ralphjsmit.com/animated-custom-cursor/*/
+.cursor {
+  width: 12px;
+  height: 12px;
+  position: fixed; /* Fixed position.. */
+  top: 0; /* at the top left.. */
+  left: 0;
+  z-index: 999999; /* above everything else. */
+  pointer-events: none; /* Cant't be clicked. */
+  transition: none; /* Cursor is always accurate */
+  opacity: 0; /* Hidden by default */
+}
+
+.cursorIcon {
+  /* Styling for the visible part */
+  width: 150%;
+  height: 150%;
+  border-radius: 100%; /* Circle */
+  background-color: rgba(123, 123, 123, 0.7); /* Backup value */
+}
+
+.cursor.cursorVisible {
+  opacity: 1;
+}
+.cursor.cursorHidden {
+  opacity: 0;
+}
+
+/* Display the cursors at the correct time */
+* {
+  cursor: none;
+}
+
+@media (pointer: none), (pointer: coarse) {
+  #cursor,
+  #cursor .cursorIcon {
+    display: none !important;
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  * {
+    cursor: auto !important;
+  }
+}
