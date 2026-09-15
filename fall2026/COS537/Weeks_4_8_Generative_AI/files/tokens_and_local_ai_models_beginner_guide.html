@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tokens and Local AI Models — A Beginner-Friendly Introduction</title>
+<style>
+:root{
+  --bg:#f4f8fb; --card:#ffffff; --ink:#17324d; --muted:#5f7285;
+  --accent:#176b87; --accent2:#4b9aaa; --soft:#e9f5f7;
+  --warn:#fff6df; --good:#eaf8ef; --border:#d9e5eb; --code:#152634;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
+header{background:linear-gradient(135deg,#123b59,#17728c);color:#fff;padding:56px 22px 44px}
+.header-inner{max-width:1050px;margin:auto}
+.kicker{display:inline-block;padding:5px 12px;border:1px solid rgba(255,255,255,.35);border-radius:999px;font-size:.88rem;letter-spacing:.03em;margin-bottom:14px}
+h1{font-size:clamp(2rem,5vw,3.4rem);line-height:1.08;margin:.1em 0 .25em}
+.subtitle{font-size:1.12rem;max-width:820px;color:#e9f7fb}
+nav{background:#fff;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:5;overflow:auto;white-space:nowrap}
+nav .nav-inner{max-width:1050px;margin:auto;padding:10px 12px}
+nav a{color:var(--accent);text-decoration:none;display:inline-block;padding:7px 11px;border-radius:8px;font-size:.92rem}
+nav a:hover{background:var(--soft)}
+main{max-width:1050px;margin:auto;padding:28px 18px 60px}
+section{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:26px;margin:20px 0;box-shadow:0 4px 16px rgba(20,55,75,.045)}
+h2{margin-top:0;font-size:1.7rem;color:#123f5d}
+h3{color:#176b87;margin-top:1.4em}
+.lead{font-size:1.08rem}
+.big-answer{background:var(--good);border-left:6px solid #3c9a64;padding:18px 20px;border-radius:12px;font-size:1.08rem}
+.note{background:var(--warn);border-left:5px solid #d9a62e;padding:14px 17px;border-radius:10px}
+.info{background:var(--soft);border-left:5px solid var(--accent2);padding:14px 17px;border-radius:10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.card{border:1px solid var(--border);border-radius:14px;padding:18px;background:#fbfdfe}
+.card h3{margin-top:0}
+.badge{display:inline-block;background:var(--soft);color:var(--accent);padding:3px 9px;border-radius:999px;font-size:.8rem;font-weight:700}
+table{border-collapse:collapse;width:100%;margin:14px 0}
+th,td{border:1px solid var(--border);padding:12px;text-align:left;vertical-align:top}
+th{background:#edf5f8;color:#153f57}
+tr:nth-child(even) td{background:#fcfdfe}
+code{background:#edf2f5;color:#8a2d53;padding:2px 5px;border-radius:5px}
+pre{background:var(--code);color:#f1f6f8;padding:16px;border-radius:12px;overflow:auto;line-height:1.5}
+pre code{background:transparent;color:inherit;padding:0}
+.flow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center;margin:20px 0}
+.flow .box{padding:12px 16px;background:#edf7f9;border:1px solid #bcdce2;border-radius:11px;text-align:center;min-width:135px}
+.arrow{font-size:1.4rem;color:var(--accent)}
+.example{border:1px solid var(--border);border-radius:12px;padding:16px;margin:12px 0}
+.example strong{color:#0f617d}
+.token-demo{padding:18px;background:#f8fbfc;border:1px dashed #9bbbc6;border-radius:12px}
+.token{display:inline-block;padding:3px 7px;margin:3px 1px;border-radius:7px;background:#dff1f5;border:1px solid #b5dbe2}
+.calculator{background:#f5fafb;border:1px solid #c9dfe5;border-radius:14px;padding:18px}
+.calculator label{font-weight:700}
+.calculator input{width:130px;padding:8px;border:1px solid #b9ced6;border-radius:8px;font-size:1rem}
+.result{margin-top:15px;padding:15px;background:#fff;border-radius:10px;border:1px solid var(--border)}
+.check{color:#22784a;font-weight:700}
+.cross{color:#b34242;font-weight:700}
+.small{font-size:.9rem;color:var(--muted)}
+details{border-top:1px solid var(--border);padding:12px 0}
+summary{cursor:pointer;font-weight:700;color:#185d78}
+footer{text-align:center;color:var(--muted);padding:15px 0 45px}
+@media(max-width:700px){section{padding:19px}table{font-size:.88rem}th,td{padding:8px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="kicker">Beginner-Friendly AI Guide</div>
+    <h1>What Is a Token?<br>And Why Do Local AI Models Still Need Tokens?</h1>
+    <p class="subtitle">A practical introduction to tokens, tokenization, context windows, output limits, local-vs-API costs, Qwen, Llama, Hugging Face, Ollama, and 4-bit quantization.</p>
+  </div>
+</header>
+
+<nav><div class="nav-inner">
+  <a href="#answer">Short Answer</a><a href="#token">Tokens</a><a href="#examples">Real-Life Examples</a>
+  <a href="#local">Local vs API</a><a href="#context">Context Window</a><a href="#models">Models & Tools</a>
+  <a href="#quantization">4-bit</a><a href="#paper">Paper Review</a><a href="#faq">FAQ</a>
+</div></nav>
+
+<main>
+<section id="answer">
+  <h2>1. The Short Answer</h2>
+  <div class="big-answer">If you download an AI model and run it locally on your computer or in a Colab GPU session, there is normally <strong>no per-token API fee</strong>. However, the model still has to convert text into <strong>tokens</strong> because tokens are the basic units the model reads and generates.</div>
+  <p class="lead">Think of tokens as the model's <strong>pieces of text</strong>. They are needed for computation even when nobody is charging you for them.</p>
+  <div class="note"><strong>Important:</strong> “Tokens are free locally” does not mean the computation is literally free. A Colab subscription, Colab compute units, a rented cloud GPU, electricity, and computer hardware may still cost money. The key point is that <strong>you are not paying an API provider a fee for every input/output token.</strong></div>
+</section>
+
+<section id="token">
+  <h2>2. What Exactly Is a Token?</h2>
+  <p>Humans normally think in <strong>words and sentences</strong>. A language model works with numbered pieces called <strong>tokens</strong>. Before the model reads your prompt, a <strong>tokenizer</strong> breaks the text into tokens and converts those tokens to numerical IDs.</p>
+  <div class="flow">
+    <div class="box"><strong>Your text</strong><br>Hello students!</div><div class="arrow">→</div>
+    <div class="box"><strong>Tokenizer</strong><br>split text</div><div class="arrow">→</div>
+    <div class="box"><strong>Token IDs</strong><br>numbers</div><div class="arrow">→</div>
+    <div class="box"><strong>AI model</strong><br>processes them</div>
+  </div>
+  <h3>Tokens are not exactly the same as words</h3>
+  <p>A word may be one token, several tokens, or part of another token.</p>
+  <div class="token-demo">
+    <strong>Illustrative example:</strong><br><br>
+    <span class="token">Machine</span><span class="token"> learning</span><span class="token"> is</span><span class="token"> interesting</span><span class="token">.</span>
+    <p class="small">This is only an illustration. The exact split depends on the tokenizer used by the model.</p>
+  </div>
+  <p>Modern models frequently use <strong>subword tokenization</strong>. A less common or long word might be divided into smaller pieces. This helps a model handle a very large vocabulary without storing every possible word as a separate item.</p>
+</section>
+
+<section id="examples">
+  <h2>3. Real-Life Examples</h2>
+  <div class="grid">
+    <div class="card"><span class="badge">Analogy 1</span><h3>Restaurant Order</h3><p>Imagine that words are meals, but the kitchen prepares food using ingredients. <strong>Tokens are like the ingredients.</strong> You order a complete sentence, but the model internally processes smaller pieces.</p></div>
+    <div class="card"><span class="badge">Analogy 2</span><h3>LEGO Pieces</h3><p>A sentence is like a finished LEGO model. Tokens are the individual LEGO pieces. The AI takes pieces in, predicts the next useful piece, and gradually builds a response.</p></div>
+    <div class="card"><span class="badge">Analogy 3</span><h3>Elevator Capacity</h3><p>The <strong>context window</strong> is like the maximum number of people allowed in an elevator. Your prompt, document, conversation history, and generated answer all consume capacity.</p></div>
+  </div>
+
+  <h3>Example A: Asking one short question</h3>
+  <div class="example"><strong>Prompt:</strong> “Explain K-nearest neighbors to a beginner.”<br>The model converts the prompt into input tokens, performs computation, and then generates output tokens one after another until it finishes.</div>
+
+  <h3>Example B: Reviewing a research paper</h3>
+  <div class="example">Suppose a paper and your review instructions use about <strong>12,000 input tokens</strong>, and the model writes a <strong>2,000-token review</strong>. The run involves roughly 14,000 tokens of context usage. On a local model, that does <em>not</em> mean a 14,000-token API bill. It means the model must have enough context capacity, GPU memory, and computation to process the text.</div>
+
+  <h3>Example C: A long chatbot conversation</h3>
+  <div class="example">The first message may be tiny. But after 30 turns, the conversation history can become large. If the application sends the full history to the model each time, all of that history becomes part of the model's input context.</div>
+
+  <h3>Example D: Generating code</h3>
+  <div class="example">If you ask a local coding model to create a complete Python application, a setting such as <code>max_new_tokens=2000</code> gives it more room to finish the program than <code>max_new_tokens=100</code>. The larger limit does not purchase tokens; it simply permits a longer generation.</div>
+</section>
+
+<section id="local">
+  <h2>4. Local Model vs. API Model: Who Charges for Tokens?</h2>
+  <table>
+    <thead><tr><th>How you run the model</th><th>Tokens used internally?</th><th>Per-token API charge?</th><th>What may cost money?</th></tr></thead>
+    <tbody>
+      <tr><td>Downloaded model on your own PC/GPU</td><td class="check">✓ Yes</td><td class="cross">✗ Usually no</td><td>Hardware and electricity</td></tr>
+      <tr><td>Downloaded model in Google Colab</td><td class="check">✓ Yes</td><td class="cross">✗ Usually no</td><td>Colab plan / compute resources</td></tr>
+      <tr><td>Ollama on your own computer</td><td class="check">✓ Yes</td><td class="cross">✗ Usually no</td><td>Hardware and electricity</td></tr>
+      <tr><td>OpenAI / Anthropic / other hosted API</td><td class="check">✓ Yes</td><td>Often yes, depending on service/plan</td><td>Input/output token usage and/or service fees</td></tr>
+      <tr><td>Hosted inference endpoint</td><td class="check">✓ Yes</td><td>Depends on provider/pricing model</td><td>Hosted compute, time, tokens, or endpoint fees</td></tr>
+    </tbody>
+  </table>
+  <div class="info"><strong>Do not confuse “Hugging Face” with “local.”</strong> You can download a model from the Hugging Face Hub and run it locally, but Hugging Face also offers hosted services. The first situation can avoid per-token API charges; the second may have service costs.</div>
+</section>
+
+<section id="context">
+  <h2>5. Why Do We Need Token Limits?</h2>
+  <h3>A. Context window</h3>
+  <p>Every model has a limit on how much information it can process in one context. This is called the <strong>context window</strong>.</p>
+  <pre><code>Approximate context usage
+= instructions
++ user prompt
++ document/paper
++ conversation history
++ generated response</code></pre>
+
+  <p>For a simplified example:</p>
+  <pre><code>Review instructions:       1,000 tokens
+Research paper:           12,000 tokens
+Other prompt information:    500 tokens
+Generated review:          2,000 tokens
+---------------------------------------
+Approximate total:        15,500 tokens</code></pre>
+
+  <p>If your selected model/configuration supports enough context, this can fit. If not, you may need to shorten, chunk, summarize, or retrieve only the relevant sections.</p>
+
+  <h3>B. <code>max_new_tokens</code></h3>
+  <p>In Hugging Face Transformers, you will often see code such as:</p>
+  <pre><code>response = generate_response(
+    prompt,
+    max_new_tokens=800
+)</code></pre>
+  <p>Here, <code>800</code> means: <strong>“Allow the model to generate up to 800 new output tokens.”</strong> It is not a purchase.</p>
+
+  <table>
+    <thead><tr><th>Setting</th><th>Practical meaning</th></tr></thead>
+    <tbody>
+      <tr><td><code>max_new_tokens=100</code></td><td>Short answer</td></tr>
+      <tr><td><code>max_new_tokens=500</code></td><td>Moderate answer</td></tr>
+      <tr><td><code>max_new_tokens=1500</code></td><td>Long explanation/review</td></tr>
+      <tr><td><code>max_new_tokens=3000</code></td><td>Very long output; more time and compute</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Interactive capacity example</h3>
+  <div class="calculator">
+    <p>This calculator shows how input and output tokens combine. It does not estimate money because local inference normally has no per-token API bill.</p>
+    <label>Input tokens: <input id="inputTokens" type="number" value="12000" min="0"></label>&nbsp;&nbsp;
+    <label>Maximum output tokens: <input id="outputTokens" type="number" value="2000" min="0"></label>&nbsp;&nbsp;
+    <label>Context capacity: <input id="contextTokens" type="number" value="32768" min="1"></label>
+    <div class="result" id="calcResult"></div>
+  </div>
+</section>
+
+<section id="models">
+  <h2>6. What Are Qwen, Llama, Hugging Face, and Ollama?</h2>
+  <p>Beginners often place all of these names in the same category, but they are not exactly the same thing. <strong>Qwen and Llama are model families</strong>, while <strong>Hugging Face and Ollama are platforms/tools that help you obtain or run models.</strong></p>
+
+  <div class="grid">
+    <div class="card">
+      <span class="badge">Model Family</span><h3>Qwen</h3>
+      <p><strong>Qwen</strong> is a family of language and multimodal models developed by the Qwen team at Alibaba. The family includes general-purpose models and specialized models for tasks such as coding, mathematics, vision-language work, and other applications.</p>
+      <p>Qwen models come in multiple sizes. A smaller model can be practical for a local GPU, while a much larger model generally needs substantially more memory and compute.</p>
+      <p><strong>Useful for:</strong> chat, coding, reasoning, research prototypes, agents, and local experiments.</p>
+    </div>
+    <div class="card">
+      <span class="badge">Model Family</span><h3>Llama</h3>
+      <p><strong>Llama</strong> is Meta's family of large language models. It has been widely used in research and open-model ecosystems and can be obtained through Meta and model distribution partners.</p>
+      <p>Different Llama releases and sizes target different combinations of quality, speed, memory use, and multimodal capability.</p>
+      <p><strong>Useful for:</strong> local chatbots, research, fine-tuning, applications, and model experimentation.</p>
+    </div>
+    <div class="card">
+      <span class="badge">Model Hub + Libraries</span><h3>Hugging Face</h3>
+      <p><strong>Hugging Face</strong> is not one single AI model. Its ecosystem includes the Hugging Face Hub plus libraries such as <code>transformers</code> and <code>tokenizers</code>.</p>
+      <p>You can download model files and tokenizers, then use Python to run them on your own machine or in a Colab notebook.</p>
+      <p><strong>Think:</strong> a major library/model-sharing ecosystem for AI developers.</p>
+    </div>
+    <div class="card">
+      <span class="badge">Local Model Runner</span><h3>Ollama</h3>
+      <p><strong>Ollama</strong> is a convenient system for downloading and running supported models locally. It hides much of the low-level setup and gives developers a simple way to interact with local models.</p>
+      <p><strong>Think:</strong> “I want to run a model on my own computer with relatively simple commands.”</p>
+    </div>
+  </div>
+
+  <h3>A simple mental model</h3>
+  <div class="flow"><div class="box"><strong>Qwen / Llama</strong><br>the model family</div><div class="arrow">→</div><div class="box"><strong>Hugging Face</strong><br>find/download/use</div><div class="arrow">→</div><div class="box"><strong>Colab / local GPU</strong><br>compute hardware</div></div>
+  <div class="flow"><div class="box"><strong>Qwen / Llama</strong><br>the model family</div><div class="arrow">→</div><div class="box"><strong>Ollama</strong><br>local runner</div><div class="arrow">→</div><div class="box"><strong>Your computer</strong><br>CPU/GPU/RAM</div></div>
+
+  <div class="note">Model names and versions change quickly. Always check the model card/documentation for the exact context size, memory requirements, license, supported modalities, and recommended inference settings for the specific model you are using.</div>
+</section>
+
+<section id="quantization">
+  <h2>7. What Does “4-bit Model” Mean?</h2>
+  <p>A large language model contains a very large number of numerical <strong>parameters (weights)</strong>. Quantization stores or computes those weights with lower numerical precision so that the model can use less memory.</p>
+  <div class="big-answer"><strong>4-bit quantization reduces model-memory requirements.</strong><br>It does <em>not</em> mean “4-bit tokens,” and it does not reduce your token count by 4×.</div>
+
+  <h3>Simple suitcase analogy</h3>
+  <p>Imagine the original model as a large suitcase. Quantization is like packing the same trip into a smaller suitcase. You save space, but very aggressive compression can sometimes affect quality.</p>
+
+  <table>
+    <thead><tr><th>Concept</th><th>What it controls</th><th>Beginner interpretation</th></tr></thead>
+    <tbody>
+      <tr><td>Parameters</td><td>Model capacity/weights</td><td>How large the learned model is</td></tr>
+      <tr><td>4-bit quantization</td><td>Weight precision and memory use</td><td>Helps a larger model fit on limited hardware</td></tr>
+      <tr><td>Tokens</td><td>Text units</td><td>How the model reads and writes text</td></tr>
+      <tr><td>Context window</td><td>Maximum working text capacity</td><td>How much the model can consider at once</td></tr>
+      <tr><td><code>max_new_tokens</code></td><td>Maximum generated output length</td><td>How much room you allow for the answer</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Why 4-bit is useful in Colab</h3>
+  <p>GPU memory is often the limiting resource. Loading a model in 4-bit can make a model practical on a GPU where a higher-precision version would not fit. The exact memory savings vary because model weights are not the only memory users: the runtime also needs memory for caches, activations, framework overhead, and the input/context.</p>
+</section>
+
+<section id="paper">
+  <h2>8. Example: A Local AI Paper-Review System</h2>
+  <p>Imagine you download a Qwen-family instruction model and run a quantized version in Colab. You ask it to evaluate a machine-learning paper.</p>
+
+  <pre><code>paper_text = "...paper text..."
+
+prompt = f"""
+You are an expert machine learning reviewer.
+
+Review the following paper for:
+1. novelty
+2. technical soundness
+3. experiments
+4. clarity
+5. limitations
+
+Paper:
+{paper_text}
+"""
+
+response = generate_response(
+    prompt,
+    max_new_tokens=1800
+)</code></pre>
+
+  <h3>What happens internally?</h3>
+  <ol>
+    <li>The tokenizer converts your instructions and paper into input tokens.</li>
+    <li>The model processes those tokens on the GPU.</li>
+    <li>The model predicts the next output token.</li>
+    <li>It repeats the prediction process token by token.</li>
+    <li>Generation stops when the model reaches an end condition or your configured limit.</li>
+  </ol>
+
+  <h3>What do the statistics mean?</h3>
+  <pre><code>Input: 3,681 tokens
+Thinking: False
+Effort: OFF</code></pre>
+
+  <p><strong>Input: 3,681 tokens</strong> means the model received approximately that many token units after tokenization. If the model is being run locally, this normally describes <strong>workload and context usage—not an API charge.</strong></p>
+  <p><strong>Thinking: False / Effort: OFF</strong> are application/model-specific controls or status labels. They are separate from the fundamental idea of tokenization. Their exact meaning depends on the inference code and model being used.</p>
+
+  <div class="info"><strong>For research-paper reviewing:</strong> you usually care about token counts because long papers consume context, longer outputs require more generation time, and both can increase GPU-memory pressure. The goal is not simply to maximize tokens; it is to allocate enough context and output space for a complete, accurate review.</div>
+</section>
+
+<section>
+  <h2>9. Five Things Beginners Should Remember</h2>
+  <ol>
+    <li><strong>A token is a unit of text used by the model.</strong></li>
+    <li><strong>Local models still need tokens, but you normally do not pay per token.</strong></li>
+    <li><strong>More tokens require more computation and can require more memory.</strong></li>
+    <li><strong>The context window limits how much information the model can consider at one time.</strong></li>
+    <li><strong>4-bit quantization is about model-weight memory, not about making tokens “4-bit.”</strong></li>
+  </ol>
+</section>
+
+<section id="faq">
+  <h2>10. Beginner FAQ</h2>
+  <details open><summary>If local tokens are free, why not always set max_new_tokens=10,000?</summary><p>Because a very large output limit can make generation slower, use more compute, occupy more context capacity, and sometimes encourage unnecessarily long responses. Choose a reasonable limit for the task.</p></details>
+  <details><summary>Does one word equal one token?</summary><p>No. Some words may be one token; others may be split into multiple subword tokens. Punctuation, spaces, numbers, code, and different languages can also tokenize differently.</p></details>
+  <details><summary>Does downloading a model from Hugging Face automatically make inference free?</summary><p>If you actually run the downloaded files using your own/local compute, there is normally no per-token inference API charge. But hosted Hugging Face or other cloud services can have their own pricing.</p></details>
+  <details><summary>Is Ollama a model like Llama?</summary><p>No. Llama is a model family. Ollama is software that helps you run supported models locally.</p></details>
+  <details><summary>Is Qwen a chatbot?</summary><p>Qwen is better understood as a family/project of language and multimodal models. Applications and chat interfaces can be built on top of those models.</p></details>
+  <details><summary>Does 4-bit make the answer four times faster?</summary><p>Not necessarily. Quantization can substantially reduce memory requirements and may improve inference practicality or speed in some environments, but speed depends on the GPU, kernels, model architecture, context length, implementation, and other factors.</p></details>
+</section>
+
+<section>
+  <h2>11. Official References & Further Reading</h2>
+  <p class="small">These references are included for students who want to go beyond this introductory lesson. Product/model capabilities and version numbers evolve, so consult the documentation for the specific model you plan to run.</p>
+  <ul>
+    <li><a href="https://huggingface.co/docs/transformers/main_classes/tokenizer" target="_blank" rel="noopener">Hugging Face Transformers — Tokenizer documentation</a></li>
+    <li><a href="https://huggingface.co/docs/transformers/tokenizer_summary" target="_blank" rel="noopener">Hugging Face — Tokenization algorithms</a></li>
+    <li><a href="https://qwenlm.github.io/about/" target="_blank" rel="noopener">Qwen Team — About Qwen</a></li>
+    <li><a href="https://qwenlm.github.io/blog/qwen3/" target="_blank" rel="noopener">Qwen Team — Qwen3 introduction</a></li>
+    <li><a href="https://ai.meta.com/llama/get-started/" target="_blank" rel="noopener">Meta — Llama documentation / getting started</a></li>
+    <li><a href="https://ollama.com/" target="_blank" rel="noopener">Ollama — Local model runner</a></li>
+  </ul>
+</section>
+</main>
+
+<script>
+function updateCalculator(){
+  const input = Math.max(0, Number(document.getElementById('inputTokens').value || 0));
+  const output = Math.max(0, Number(document.getElementById('outputTokens').value || 0));
+  const context = Math.max(1, Number(document.getElementById('contextTokens').value || 1));
+  const total = input + output;
+  const remaining = context - total;
+  const pct = (total/context)*100;
+  let status = total <= context
+    ? `<span class="check">✓ Fits in this simplified context calculation.</span>`
+    : `<span class="cross">✗ Exceeds the selected context capacity by ${Math.abs(remaining).toLocaleString()} tokens.</span>`;
+  document.getElementById('calcResult').innerHTML =
+    `<strong>Total planned tokens:</strong> ${total.toLocaleString()}<br>` +
+    `<strong>Context capacity:</strong> ${context.toLocaleString()}<br>` +
+    `<strong>Capacity used:</strong> ${pct.toFixed(1)}%<br>` +
+    `${status}<br><span class="small">This is a teaching simplification. Real chat templates, system messages, special tokens, KV-cache behavior, and model-specific limits also matter.</span>`;
+}
+['inputTokens','outputTokens','contextTokens'].forEach(id=>{
+  document.getElementById(id).addEventListener('input',updateCalculator);
+});
+updateCalculator();
+</script>
+</body>
+</html>
