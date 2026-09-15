@@ -371,6 +371,46 @@ Xinxing Wu
 
 
 
+<div class="definition-container">
+  <div class="definition-title">Introduction</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+  
+<div id="shadebox">
+
+<h1>Tokens</h1>
+</div>
+   </div>
+</div>
+
+
+
+
+<iframe src="./files/tokens_and_local_ai_models_beginner_guide.html" title="Description of the content" width="900" height="600">
+  <p>Your browser does not support iframes.</p>
+</iframe>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Introduction</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Generative AI does <spanRED>not</spanRED> just copy or paste files from its memory. Instead, it studies thousands of examples to understand how things are built
+
+- Generative AI can create entirely <spanBYMix>new</spanBYMix> things that have never existed before by mathematically mixing patterns it has learned from data
+   </div>
+</div>
+
+
+
+<iframe src="./files/VAE_MNIST_50_beginner.html" title="Description of the content" width="900" height="600">
+  <p>Your browser does not support iframes.</p>
+</iframe>
+
+
+
 <div class="definition-com-container">
   <div class="definition-com-title">Introduction</div>
   <div class="definition-com-shadebox">
@@ -405,7 +445,7 @@ From Ian Goodfellow, Computer Scientist
   <div style="width: 800px;"></div>
 
 - It shows how generative models empower machines to surpass the limitations of their training data and generate truly novel content. 
-	- Generative models unlock exciting possibilities for content creation across various domains like text, images, audio, and video. 
+	- Generative models unlock exciting possibilities for content creation across <spanBYMix>various domains</spanBYMix> like text, images, audio, and video. 
 	- By training on large datasets, these models can generate entirely new pieces of content, assisting and augmenting human creativity in unprecedented ways. 
 - This capability opens up a world of possibilities for creative expression, with machines aiding and enhancing human creativity
    </div>
@@ -456,7 +496,7 @@ From Ian Goodfellow, Computer Scientist
 
 
 
-<img src="images/fig1.png"  align="left" height="400px" width="800px"/>
+<img src="images/fig1.png"  align="left" height="400px" width="900px"/>
 
 
 
@@ -467,7 +507,7 @@ From Ian Goodfellow, Computer Scientist
 
 - Size of state-of-the-art (SOTA) models are as large as:
 	- 474,000,000-page document
-	- 35 hours of 4K content
+	- 35 hours of 4K video content
 	- Codebase with 80,000,000,000 lines of code
 
 - Requires a lot of resources
@@ -483,12 +523,31 @@ From Ian Goodfellow, Computer Scientist
 
 
 
+>  The core AI models (like GPT-3 or GPT-4 variants) are estimated to range from 700 GB to over 1,000 GB (1 TB+) of on-disk storage when fully loaded with all parameters
+
+
+
+
 <div class="definition-com-container">
   <div class="definition-com-title">How big are foundation models? (Cont.)</div>
   <div class="definition-com-shadebox">
   <div style="width: 800px;"></div>
 
-- Foundation models, particularly large language models, have grown to an immense scale in recent years. These state-of-the-art models are trained on vast amounts of data, equivalent to millions of books, hours of video content, or billions of lines of code. Building such massive models requires significant computational resources, financial investment potentially exceeding $100 million, and the involvement of large teams of researchers and engineers. The sheer size of these models, some weighing over 700 GB, highlights the computational power and data required to train them. This scale enables these foundation models to develop a deep understanding of language and remarkable generalization capabilities, allowing them to adapt to various downstream tasks with minimal task-specific data.
+- Foundation models, particularly large language models, have grown to an immense scale in recent years. 
+	- These state-of-the-art models are trained on vast amounts of data, equivalent to millions of books, hours of video content, or billions of lines of code. Building such massive models requires significant computational resources, financial investment potentially exceeding $100 million, and the involvement of large teams of researchers and engineers. 
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">How big are foundation models? (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Foundation models, particularly large language models, have grown to an immense scale in recent years. 
+	- The sheer size of these models, some weighing over 700 GB, highlights the computational power and data required to train them. This scale enables these foundation models to develop a deep understanding of language and remarkable generalization capabilities, allowing them to adapt to various downstream tasks with minimal task-specific data.
    </div>
 </div>
 
@@ -504,10 +563,10 @@ From Ian Goodfellow, Computer Scientist
   <div style="width: 800px;"></div>
 
 - Consequences and impact of decisions in these areas. Examples of LLM applications in different domains:
-	- Healthcare: LLMs are used in healthcare to analyze medical records and patient data, automate clinical documentation, and support medical decision-making.
-	- Finance: LLMs are used in finance to analyze market trends, sentiment analysis, and automated trading.
-	- Education: LLMs are used in education to support language learning, automated grading, and educational chatbots.
-	- Law: LLMs are used in law to automate legal document analysis, e-discovery, and contract analysis.
+	- **Healthcare**: LLMs are used in healthcare to analyze medical records and patient data, automate clinical documentation, and support medical decision-making.
+	- **Finance**: LLMs are used in finance to analyze market trends, sentiment analysis, and automated trading.
+	- **Education**: LLMs are used in education to support language learning, automated grading, and educational chatbots.
+	- **Law**: LLMs are used in law to automate legal document analysis, e-discovery, and contract analysis.
    </div>
 </div>
 
@@ -519,8 +578,8 @@ From Ian Goodfellow, Computer Scientist
   <div style="width: 800px;"></div>
 
 - Consequences and impact of decisions in these areas. Examples of LLM applications in different domains:
-	- Customer service: LLMs are used in customer service to provide personalized recommendations, chatbots, and sentiment analysis of customer feedback.
-	- Marketing: LLMs are used in marketing to analyze customer feedback, social media, and provide personalized recommendations.
+	- **Customer service**: LLMs are used in customer service to provide personalized recommendations, chatbots, and sentiment analysis of customer feedback.
+	- **Marketing**: LLMs are used in marketing to analyze customer feedback, social media, and provide personalized recommendations.
 - Overall, LLMs have a wide range of applications in various domains, and it has the potential to significantly improve efficiency, accuracy, and customer satisfaction in many industries.
    </div>
 </div>
@@ -637,7 +696,9 @@ From Ian Goodfellow, Computer Scientist
   <div class="definition-com-shadebox">
   <div style="width: 800px;"></div>
 
-- Popular machine learning approaches involve training models on specific tasks using labeled data. Foundation models and large language models are powerful neural networks trained on vast amounts of unlabeled data, allowing them to acquire broad knowledge and capabilities. The Transformers architecture, with its self-attention mechanism, is a key innovation enabling the success of large language models. However, these models face challenges like lack of grounding, biases, and the need for efficient inference. 
+- Popular machine learning approaches involve training models on specific tasks using labeled data. 
+	- Foundation models and large language models are powerful neural networks trained on vast amounts of unlabeled data, allowing them to acquire broad knowledge and capabilities.
+	- The Transformers architecture, with its self-attention mechanism, is a key innovation enabling the success of large language models. However, these models face challenges like lack of grounding, biases, and the need for efficient inference. 
 - This section explores the evolution from traditional ML to foundation models, their underlying architecture, and the current limitations being addressed.
    </div>
 </div>
@@ -672,11 +733,15 @@ From Ian Goodfellow, Computer Scientist
 
 
 
-<img src="images/fig4.png"  align="left" height="600px" width="800px"/>
+<img src="images/fig4.png"  align="left" height="600px" width="900px"/>
 
 
 
 <img src="images/fig5.png"  align="left" height="600px" width="800px"/>
+
+
+
+<img src="images/fig6.png"  align="left" height="600px" width="800px"/>
 
 
 
@@ -697,14 +762,11 @@ From Ian Goodfellow, Computer Scientist
   <div class="definition-com-shadebox">
   <div style="width: 800px;"></div>
 
-- This rapid growth in parameter counts reflects the increasing complexity and capability of LLMs, enabling them to capture and model intricate language patterns and semantics more effectively. However, it's important to note that parameter count alone is not the sole determinant of an LLM's performance; factors such as model architecture, training data quality, and optimization techniques also play crucial roles.
+- This rapid growth in parameter counts reflects the increasing complexity and capability of LLMs, enabling them to capture and model intricate language patterns and semantics more effectively.
+- However, it's important to note that parameter count alone is <spanRED>not</spanRED> the sole determinant of an LLM's performance; factors such as <spanBYMix>model architecture</spanBYMix>, <spanBYMix>training data quality</spanBYMix>, and <spanBYMix>optimization techniques</spanBYMix> also play crucial roles.
 
    </div>
 </div>
-
-
-
-<img src="images/fig6.png"  align="left" height="600px" width="800px"/>
 
 
 
@@ -800,6 +862,10 @@ From Ian Goodfellow, Computer Scientist
 
 
 
+> Position information is data that tells a machine learning model where a word or token is located in a sequence. In natural language processing, it acts like an index or timestamp for text, ensuring the model knows which word comes first, second, or last.
+
+
+
 <div class="definition-com-container">
   <div class="definition-com-title">Attention Mechanism</div>
   <div class="definition-com-shadebox">
@@ -825,6 +891,419 @@ From Ian Goodfellow, Computer Scientist
 - Indicates which tokens are most relevant for the next prediction
 - Both the encoder and decoder use the attention mechanism
 	- Multi-headed attention module
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">A Note</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+```
+
+from transformers import pipeline
+
+generator = pipeline("text-generation", model="gpt2")
+print(generator("The most important concept in AI is", max_length=30))
+
+```
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">A Note</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+- In the code snippet, max_length=30 sets the maximum limit on the total number of tokens the model will output.
+
+- If your prompt "The most important concept in AI is" takes up 7 tokens, the model is only allowed to generate a maximum of 23 more tokens before it is forced to stop.
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">A Note</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+- In text generation, temperature controls the creativity or randomness of the model's output:
+
+	- Low temperature (e.g., 0.2): Makes the model highly predictable, logical, and repetitive. It always chooses the most likely next word.
+	- High temperature (e.g., 1.2): Makes the model highly creative, unpredictable, and adventurous, though it risks making typos or losing coherence.
+	- Default temperature: Usually 1.0.
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">A Note</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+- To make temperature work properly in the Hugging Face pipeline, you must also set do_sample=True. This tells the model to pick words based on probability rather than just blindly grabbing the single top result.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">A Note</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+- To make temperature work properly in the Hugging Face pipeline, you must also set do_sample=True. This tells the model to pick words based on probability rather than just blindly grabbing the single top result.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">A Note</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+```
+from transformers import pipeline
+
+# Load the generator
+generator = pipeline("text-generation", model="gpt2")
+prompt = "The most important concept in AI is"
+
+print("--- LOW TEMPERATURE (0.2) - Predictable & Safe ---")
+# Will likely give standard, generic definitions
+print(generator(prompt, max_new_tokens=100, do_sample=True, temperature=0.2)[0]['generated_text'])
+
+print("\n--- HIGH TEMPERATURE (1.2) - Creative & Wild ---")
+# Will give more unique, varied, or erratic responses
+print(generator(prompt, max_new_tokens=100, do_sample=True, temperature=1.2)[0]['generated_text'])
+```
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">A Note</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+GPT-2 became repetitive.
+
+That's an important lesson:
+
+> Low temperature does not mean "better."
+
+It just means the model is more strongly biased toward its highest-probability choices.
+
+Sometimes that produces clear text.
+
+Sometimes it gets stuck in a repetitive pattern.
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">A Note</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+```
+| Temperature | Typical behavior                      |
+| ----------- | ------------------------------------- |
+| `0.1–0.3`   | More predictable and conservative     |
+| `0.5–0.8`   | Balanced                              |
+| `0.9–1.2`   | More varied and creative              |
+| Very high   | Increasingly unpredictable/incoherent |
+
+```
+   </div>
+</div>
+
+
+
+- At higher temperature, lower-probability choices receive a greater chance.
+
+<hr>
+
+> Temperature does not change what the model knows. It changes how the model chooses among possible next tokens.
+
+
+
+<div class="definition-container">
+  <div class="definition-title">A Note</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+<div id="shadebox">
+
+Imagine AI is choosing ingredients for a pizza.
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">A Note</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+<div id="shadebox">
+
+```
+from transformers import pipeline
+
+generator = pipeline("text-generation", model="gpt2")
+
+prompt = "Tonight, the chef created a special pizza with"
+
+print("=== LOW TEMPERATURE: 0.2 ===")
+print(
+    generator(
+        prompt,
+        max_new_tokens=50,
+        do_sample=True,
+        temperature=0.2
+    )[0]["generated_text"]
+)
+
+print("\n=== HIGH TEMPERATURE: 1.5 ===")
+print(
+    generator(
+        prompt,
+        max_new_tokens=50,
+        do_sample=True,
+        temperature=1.5
+    )[0]["generated_text"]
+)
+```
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">A Note</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+- At temperature = 0.2, it tends to choose familiar ingredients:
+
+> cheese → tomato → pepperoni → mushrooms
+
+- At temperature = 1.5, it becomes more adventurous:
+
+> pineapple → chocolate → dragon fruit → something completely unexpected
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">A Note</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+- Low temperature → “Play it safe.”
+- High temperature → “Surprise me.”
+   </div>
+</div>
+
+
+
+> It does not mean high temperature makes the model smarter. It simply makes token selection more adventurous/unpredictable.
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">A Note</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+```
+from transformers import pipeline
+
+generator = pipeline("text-generation", model="gpt2")
+
+prompt = "The superhero opened the mysterious box and discovered"
+
+print("=== TOP-K = 5 ===")
+print(
+    generator(
+        prompt,
+        max_new_tokens=50,
+        do_sample=True,
+        temperature=1.0,
+        top_k=5
+    )[0]["generated_text"]
+)
+
+print("\n=== TOP-K = 100 ===")
+print(
+    generator(
+        prompt,
+        max_new_tokens=50,
+        do_sample=True,
+        temperature=1.0,
+        top_k=100
+    )[0]["generated_text"]
+)
+```
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">A Note</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+<table border="1" cellpadding="8" cellspacing="0">
+  <tr>
+    <th>Possible Next Token</th>
+    <th>Probability</th>
+  </tr>
+  <tr>
+    <td>a</td>
+    <td>25%</td>
+  </tr>
+  <tr>
+    <td>the</td>
+    <td>20%</td>
+  </tr>
+  <tr>
+    <td>gold</td>
+    <td>12%</td>
+  </tr>
+  <tr>
+    <td>something</td>
+    <td>10%</td>
+  </tr>
+  <tr>
+    <td>treasure</td>
+    <td>8%</td>
+  </tr>
+  <tr>
+    <td>robot</td>
+    <td>6%</td>
+  </tr>
+  <tr>
+    <td>dinosaur</td>
+    <td>3%</td>
+  </tr>
+  <tr>
+    <td>spaceship</td>
+    <td>2%</td>
+  </tr>
+  <tr>
+    <td>banana</td>
+    <td>1%</td>
+  </tr>
+  <tr>
+    <td>...</td>
+    <td>...</td>
+  </tr>
+</table>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">A Note</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+op_k=5
+
+the AI says:
+
+> “I will only consider the 5 most likely choices.”
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">A Note</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+- max_new_tokens: a robot sends a message from Mars
+
+	- Imagine we give the robot a limited amount of paper.
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">A Note</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+```
+from transformers import pipeline
+
+generator = pipeline("text-generation", model="gpt2")
+
+prompt = "A robot landed on Mars and sent this message back to Earth:"
+
+print("=== ONLY 10 NEW TOKENS ===")
+print(
+    generator(
+        prompt,
+        max_new_tokens=10,
+        do_sample=True,
+        temperature=0.7
+    )[0]["generated_text"]
+)
+
+print("\n=== UP TO 100 NEW TOKENS ===")
+print(
+    generator(
+        prompt,
+        max_new_tokens=100,
+        do_sample=True,
+        temperature=0.7
+    )[0]["generated_text"]
+)
+```
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">A Note</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+With:
+
+max_new_tokens=10
+
+> the robot only has a small piece of paper.
    </div>
 </div>
 
@@ -895,7 +1374,7 @@ From Ian Goodfellow, Computer Scientist
 
 
 
-<img src="images/fig13.png"  align="left" height="500px" width="800px"/>
+<img src="images/fig13.png"  align="left" height="500px" width="900px"/>
 
 
 
@@ -935,6 +1414,13 @@ From Ian Goodfellow, Computer Scientist
 	- For instance, Titan Premier had a limit of 30,000 tokens at the time of release
    </div>
 </div>
+
+
+
+<iframe src="./files/tokens_and_local_ai_models_beginner_guide.html" title="Description of the content" width="900" height="600">
+  <p>Your browser does not support iframes.</p>
+</iframe>
+
 
 
 
@@ -1159,6 +1645,8 @@ print("Model loaded successfully.")
   <div style="width: 800px;"></div>
 
 ```
+from IPython.display import display, Markdown
+
 MODEL_OPTIONS = [
     {
         "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
@@ -1208,6 +1696,10 @@ Generation parameters:
 - **`system_prompt`**: tells the model how it should behave.
    </div>
 </div>
+
+
+
+> You should set an LLM's temperature to 0 when you need maximum accuracy, consistency, and adherence to facts
 
 
 
@@ -1373,6 +1865,39 @@ display(Markdown(response_narrow))
 
 
 <div class="definition-com-container">
+  <div class="definition-com-title">Note</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- top_p controls how many likely next-token options the model is allowed to sample from.
+
+- With top_p=0.9, the model sorts possible next tokens by probability and keeps the smallest set whose cumulative probability reaches about 90%. It then samples only from that set.
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Note</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+Example: suppose the next-token probabilities are:
+
+- "Paris" → 0.50
+- "London" → 0.25
+- "Berlin" → 0.15
+- "Rome" → 0.06
+- others → 0.04
+
+With top_p=0.9, the model keeps: Paris + London + Berlin = 0.90 and samples only among those three. "Rome" and the lower-probability options are excluded.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
   <div class="definition-com-title">Lab a (Cont.)</div>
   <div class="definition-com-shadebox">
   <div style="width: 800px;"></div>
@@ -1415,6 +1940,74 @@ display(Markdown(my_response))
 ```
    </div>
 </div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Lab a (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+```
+my_prompt = "Explain the difference between machine learning and deep learning for a first-year student."
+
+my_response = send_prompt(
+    my_prompt,
+    temperature=0.9,
+    top_p=0.9,
+    max_new_tokens=10,
+    seed=123,
+)
+
+display(Markdown("### Your Prompt"))
+display(Markdown(my_prompt))
+display(Markdown("### Response"))
+display(Markdown(my_response))
+```
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">An example</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Your Prompt
+> Explain the difference between machine learning and deep learning for a first-year student.
+
+- Response
+> Machine Learning (ML) is a subset of artificial
+
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Note</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+> Machine Learning (ML) is a subset of artificial
+
+the exact number of tokens depends on the tokenizer used by your model.
+
+A typical tokenizer might split it roughly like this:
+
+> Machine | Learning | ( | ML | ) | is | a | subset | of | artificial
+
+So it would be approximately 10 tokens.
+   </div>
+</div>
+
+
+
+> Note that tokens are not the same as words. This phrase has 8 words, but punctuation and abbreviations such as (ML) may create additional tokens.
 
 
 
@@ -5874,7 +6467,122 @@ student_title = "Your new title"
   <div class="definition-com-shadebox">
   <div style="width: 800px;"></div>
 
-- Multimodal applications combine and process information from multiple modalities like text, images, audio, and video to enable more natural and intuitive interactions. These applications leverage multimodal models that can understand and generate data across different modalities simultaneously.
+- Multimodal applications combine and process information from multiple modalities like <spanBYMix>text</spanBYMix>, <spanGREEN>images</spanGREEN>, <spanBYMix>audio</spanBYMix>, and <spanGREEN>video</spanGREEN> to enable more natural and intuitive interactions.
+
+These applications leverage multimodal models that can understand and generate data across different modalities simultaneously.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Multimodal Examples</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+<div id="shadebox">
+
+Multimodal applications are systems that work with two or more types of information at the same time, such as text, images, audio, and video.
+
+</div>
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Multimodal Examples</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+<div style="font-size: 16px;">
+<table border="1" cellpadding="8" cellspacing="0">
+  <tr>
+    <th>Real-life Application</th>
+    <th>Modalities Used</th>
+    <th>How It Works</th>
+  </tr>
+  <tr>
+    <td><strong>Virtual assistants</strong></td>
+    <td>🎤 Audio + 📝 Text</td>
+    <td>Assistants can listen to spoken questions, convert speech to text, understand the request, and respond with text or speech.</td>
+  </tr>
+  <tr>
+    <td><strong>AI assistants analyzing photos</strong></td>
+    <td>🖼️ Image + 📝 Text</td>
+    <td>A user uploads a photo and asks, “What is wrong with this plant?” The AI examines the image and explains possible causes in text.</td>
+  </tr>
+  <tr>
+    <td><strong>Self-driving cars</strong></td>
+    <td>📷 Images/Video + 📡 Sensor data</td>
+    <td>Vehicles combine camera footage, radar, GPS, and other sensor information to recognize pedestrians, traffic lights, vehicles, and road conditions.</td>
+  </tr>
+  <tr>
+    <td><strong>Medical diagnosis support</strong></td>
+    <td>🖼️ Medical images + 📝 Patient records</td>
+    <td>AI can combine an X-ray or MRI with symptoms, medical history, and laboratory results to help clinicians identify possible conditions.</td>
+  </tr>
+  <tr>
+    <td><strong>Video conferencing</strong></td>
+    <td>🎥 Video + 🎤 Audio + 📝 Text</td>
+    <td>Applications can process a speaker's video and audio while generating captions, transcripts, translations, or meeting summaries.</td>
+  </tr>
+  <tr>
+    <td><strong>Security and surveillance</strong></td>
+    <td>🎥 Video + 🎤 Audio + 📝 Data</td>
+    <td>Security systems may analyze camera footage, sounds, timestamps, and access-control records to detect unusual activity.</td>
+  </tr>
+  <tr>
+    <td><strong>Online shopping</strong></td>
+    <td>🖼️ Images + 📝 Text</td>
+    <td>A shopper can upload a picture of shoes or furniture and ask the system to find similar products based on both the image and written description.</td>
+  </tr>
+</table>
+</div>
+   </div>
+</div>
+
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Multimodal Examples (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+<div style="font-size: 18px;">
+<table border="1" cellpadding="8" cellspacing="0">
+  <tr>
+    <th>Real-life Application</th>
+    <th>Modalities Used</th>
+    <th>How It Works</th>
+  </tr>
+  <tr>
+    <td><strong>Social media content moderation</strong></td>
+    <td>🖼️ Images + 🎥 Video + 🎤 Audio + 📝 Text</td>
+    <td>Platforms may analyze captions, comments, images, speech, and video together to detect potentially harmful or policy-violating content.</td>
+  </tr>
+  <tr>
+    <td><strong>Language learning apps</strong></td>
+    <td>🎤 Audio + 📝 Text + 🖼️ Images</td>
+    <td>Learners can see an object, read its name, hear its pronunciation, and practice speaking while AI evaluates their pronunciation.</td>
+  </tr>
+  <tr>
+    <td><strong>Smart customer service</strong></td>
+    <td>🎤 Audio + 📝 Text + 🖼️ Images</td>
+    <td>A customer might describe a broken appliance by voice and upload a photo. The AI uses both to help diagnose the problem.</td>
+  </tr>
+  <tr>
+    <td><strong>Accessibility tools</strong></td>
+    <td>🖼️ Image/Video + 🎤 Audio + 📝 Text</td>
+    <td>AI can describe images aloud for visually impaired users or convert spoken conversations into live captions for people with hearing impairments.</td>
+  </tr>
+  <tr>
+    <td><strong>Education and tutoring</strong></td>
+    <td>🖼️ Images + 📝 Text + 🎤 Audio</td>
+    <td>A student can photograph a math problem, ask a question by voice, and receive a step-by-step explanation in text or speech.</td>
+  </tr>
+</table>
+</div>
    </div>
 </div>
 
@@ -5885,7 +6593,1093 @@ student_title = "Your new title"
   <div class="definition-com-shadebox">
   <div style="width: 800px;"></div>
 
-- Let's begin by introducing multimodal applications, which combine and process information from various modalities like text, images, audio, and video. Next, we'll discuss multimodal language models (LLMs), which are models trained on data from multiple modalities, allowing them to process and generate content across different modalities coherently.  Finally, we'll cover prompting techniques for multimodal LLMs, which involve providing the model with appropriate inputs from multiple modalities to generate desired outputs, such as generating image captions from both text and visual inputs. Finally, we'll explore some common use cases where multimodal applications can be beneficial, highlighting real-world scenarios and potential applications.
+Imagine a student takes a photo of a geometry problem and says:
+
+<div id="shadebox">
+
+“Can you explain how to solve this?”
+</div>
+
+How modalities?
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">A Note</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+The application uses three modalities:
+
+- Image → reads the diagram and equations.
+- Audio → understands the student's spoken question.
+- Text → generates a step-by-step explanation.
+
+This is multimodal AI because the system is not limited to one type of input.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">A Note</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+<div id="shadebox">
+
+- An AI assistant where you upload an image and ask questions about it.
+
+- Instead of treating the image and question separately, a multimodal model can reason about the relationship between what it sees and what you ask, making the interaction much closer to how humans naturally communicate.
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+- Image + text → description
+- Same image + different questions → different answers
+- Photo of a simple worksheet/geometry problem → explanation
+- Image + spoken question → answer, using Whisper + SmolVLM
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+- Use SmolVLM-500M-Instruct from Hugging Face.
+
+	- It is an Apache-2.0 licensed, 500M-parameter vision-language model that accepts images + text and generates text, and Hugging Face reports that it can process one image with about 1.23 GB of GPU RAM.
+
+<div id="shadebox">
+
+Make it much more approachable than a large multimodal model
+</div>
+
+- SmolVLM-500M-Instruct on Hugging Face https://huggingface.co/HuggingFaceTB/SmolVLM-500M-Instruct
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+<div id="shadebox">
+
+What does “modality” mean?
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+A modality is a type of information.
+
+<table border="1" cellpadding="8" cellspacing="0">
+  <tr>
+    <th>Information</th>
+    <th>Modality</th>
+  </tr>
+  <tr>
+    <td>Photograph</td>
+    <td>🖼️ Image</td>
+  </tr>
+  <tr>
+    <td>Typed question</td>
+    <td>📝 Text</td>
+  </tr>
+  <tr>
+    <td>Spoken question</td>
+    <td>🎤 Audio</td>
+  </tr>
+  <tr>
+    <td>YouTube clip</td>
+    <td>🎥 Video</td>
+  </tr>
+</table>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+This application:
+
+<div id="shadebox">
+
+Photo + written question → written answer
+</div>
+
+has:
+
+- Input modality 1: Image
+- Input modality 2: Text
+- Output modality: Text
+
+It is already a multimodal application because the model needs to understand the relationship between the image and the text question.
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+<div id="shadebox">
+
+```
+
+🖼️ Image
+    +
+📝 "What is happening here?"
+    ↓
+Multimodal AI
+    ↓
+📝 "A dog is playing with a ball."
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+
+In Google Colab, first choose:
+
+- Runtime → Change runtime type → T4 GPU
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+Example 1
+
+
+<div id="shadebox">
+
+```
+!pip install -q "transformers==5.17.0" "Pillow==11.3.0" accelerate
+!apt-get -qq install -y ffmpeg
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+Testing
+
+<div id="shadebox">
+
+```
+import torch
+import PIL
+import transformers
+
+print("Pillow version:", PIL.__version__)
+print("Transformers version:", transformers.__version__)
+print("PyTorch version:", torch.__version__)
+print("CUDA available:", torch.cuda.is_available())
+
+if torch.cuda.is_available():
+    print("GPU:", torch.cuda.get_device_name(0))
+else:
+    print("No GPU detected. The notebook will use CPU.")
+```
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+<div id="shadebox">
+
+```
+import io
+import torch
+
+from PIL import Image
+from IPython.display import display
+from google.colab import files
+from transformers import pipeline
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+<div id="shadebox">
+
+```
+MODEL_ID = "HuggingFaceTB/SmolVLM-500M-Instruct"
+
+print("Loading SmolVLM...")
+
+vision_pipe = pipeline(
+    "image-text-to-text",
+    model=MODEL_ID,
+    device_map="auto",
+    dtype="auto"
+)
+
+print("SmolVLM loaded successfully!")
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+<div id="shadebox">
+
+```
+def ask_image(image, question, max_tokens=150):
+    """
+    Ask a text question about a PIL image.
+    """
+
+    messages = [
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "image",
+                    "image": image
+                },
+                {
+                    "type": "text",
+                    "text": question
+                }
+            ]
+        }
+    ]
+
+    result = vision_pipe(
+        text=messages,
+        max_new_tokens=max_tokens,
+        return_full_text=False
+    )
+
+    generated = result[0]["generated_text"]
+
+    # Usually this is already a string
+    if isinstance(generated, str):
+        return generated.strip()
+
+    # Extra handling in case the pipeline returns chat-style output
+    if isinstance(generated, list):
+
+        last_message = generated[-1]
+
+        if isinstance(last_message, dict):
+
+            content = last_message.get("content", "")
+
+            if isinstance(content, str):
+                return content.strip()
+
+            if isinstance(content, list):
+
+                text_parts = []
+
+                for item in content:
+
+                    if (
+                        isinstance(item, dict)
+                        and item.get("type") == "text"
+                    ):
+                        text_parts.append(
+                            item.get("text", "")
+                        )
+
+                return " ".join(text_parts).strip()
+
+    return str(generated)
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+<div id="shadebox">
+
+```
+uploaded = files.upload()
+
+image_name = next(iter(uploaded))
+
+image = Image.open(
+    io.BytesIO(uploaded[image_name])
+).convert("RGB")
+
+display(image)
+```
+</div>
+   </div>
+</div>
+
+- Testing <a href="./files/Test1.jpg">Example 1</a>
+- Testing <a href="./files/Test2.jpg">Example 2</a>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+<div id="shadebox">
+
+```
+question = "What do you see in this image? Describe it in one simple sentence."
+
+answer = ask_image(
+    image,
+    question
+)
+
+print("QUESTION:")
+print(question)
+
+print("\nAI ANSWER:")
+print(answer)
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+Example 2 - Image + Audio → Text
+
+<div id="shadebox">
+
+The audio is transcribed first (the audio is first converted to text with Whisper), then the spoken request is combined with the image and sent to SmolVLM.
+</div>
+
+Tool for audio - https://online-voice-recorder.com/
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+<div id="shadebox">
+
+```
+!pip install -q "transformers==5.17.0" "Pillow==11.3.0" accelerate soundfile
+!apt-get -qq install -y ffmpeg
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+<div id="shadebox">
+
+```
+import torch
+import PIL
+import transformers
+
+print("Pillow version:", PIL.__version__)
+print("Transformers version:", transformers.__version__)
+print("PyTorch version:", torch.__version__)
+print("CUDA available:", torch.cuda.is_available())
+
+if torch.cuda.is_available():
+    print("GPU:", torch.cuda.get_device_name(0))
+else:
+    print("No GPU detected. The notebook will use CPU.")
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+<div id="shadebox">
+
+```
+import io
+import os
+import torch
+
+from PIL import Image
+from IPython.display import display, Audio
+from google.colab import files
+from transformers import pipeline
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+<div id="shadebox">
+
+```
+VISION_MODEL_ID = "HuggingFaceTB/SmolVLM-500M-Instruct"
+AUDIO_MODEL_ID = "openai/whisper-tiny.en"
+
+print("Loading SmolVLM...")
+vision_pipe = pipeline(
+    "image-text-to-text",
+    model=VISION_MODEL_ID,
+    device_map="auto",
+    dtype="auto"
+)
+print("SmolVLM loaded successfully!")
+
+print("\nLoading Whisper...")
+speech_pipe = pipeline(
+    "automatic-speech-recognition",
+    model=AUDIO_MODEL_ID,
+    device=0 if torch.cuda.is_available() else -1
+)
+print("Whisper loaded successfully!")
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+<div id="shadebox">
+
+```
+def ask_image(image, question, max_tokens=150):
+    """
+    Ask a text question about a PIL image.
+    """
+
+    messages = [
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "image",
+                    "image": image
+                },
+                {
+                    "type": "text",
+                    "text": question
+                }
+            ]
+        }
+    ]
+
+    result = vision_pipe(
+        text=messages,
+        max_new_tokens=max_tokens,
+        return_full_text=False
+    )
+
+    generated = result[0]["generated_text"]
+
+    # Usually this is already a string
+    if isinstance(generated, str):
+        return generated.strip()
+
+    # Extra handling in case the pipeline returns chat-style output
+    if isinstance(generated, list):
+
+        last_message = generated[-1]
+
+        if isinstance(last_message, dict):
+
+            content = last_message.get("content", "")
+
+            if isinstance(content, str):
+                return content.strip()
+
+            if isinstance(content, list):
+
+                text_parts = []
+
+                for item in content:
+
+                    if (
+                        isinstance(item, dict)
+                        and item.get("type") == "text"
+                    ):
+                        text_parts.append(
+                            item.get("text", "")
+                        )
+
+                return " ".join(text_parts).strip()
+
+    return str(generated)
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+<div id="shadebox">
+
+```
+print("Upload ONE image file:")
+uploaded_image = files.upload()
+
+image_name = next(iter(uploaded_image))
+
+image = Image.open(
+    io.BytesIO(uploaded_image[image_name])
+).convert("RGB")
+
+print("Uploaded image:", image_name)
+display(image)
+```
+
+</div>
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+<div id="shadebox">
+
+```
+print("Upload ONE audio file (for example: .wav, .mp3, or .m4a):")
+uploaded_audio = files.upload()
+
+audio_name = next(iter(uploaded_audio))
+audio_path = os.path.join("/content", audio_name)
+
+with open(audio_path, "wb") as f:
+    f.write(uploaded_audio[audio_name])
+
+print("Uploaded audio:", audio_name)
+display(Audio(audio_path))
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+<div id="shadebox">
+
+```
+# AUDIO -> TEXT
+speech_result = speech_pipe(audio_path)
+spoken_text = speech_result["text"].strip()
+
+print("AUDIO TRANSCRIPT:")
+print(spoken_text)
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+<div id="shadebox">
+
+```
+# IMAGE + AUDIO -> TEXT
+# The spoken audio becomes the question/instruction for the image.
+
+prompt = f"""The user said this in the audio:
+{spoken_text}
+
+Look at the image and answer the user's spoken request in a simple, clear sentence."""
+
+answer = ask_image(
+    image,
+    prompt
+)
+
+print("SPOKEN REQUEST:")
+print(spoken_text)
+
+print("\nAI ANSWER:")
+print(answer)
+```
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+Example 3 - Image + Audio + Text → Text
+
+<div id="shadebox">
+
+- Combining the uploaded image, transcribed audio, and an additional typed question/instruction before generating the final answer.
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+<div id="shadebox">
+
+```
+!pip install -q "transformers==5.17.0" "Pillow==11.3.0" accelerate soundfile
+!apt-get -qq install -y ffmpeg
+```
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+<div id="shadebox">
+
+```
+import torch
+import PIL
+import transformers
+
+print("Pillow version:", PIL.__version__)
+print("Transformers version:", transformers.__version__)
+print("PyTorch version:", torch.__version__)
+print("CUDA available:", torch.cuda.is_available())
+
+if torch.cuda.is_available():
+    print("GPU:", torch.cuda.get_device_name(0))
+else:
+    print("No GPU detected. The notebook will use CPU.")
+```
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+<div id="shadebox">
+
+```
+import io
+import os
+import torch
+
+from PIL import Image
+from IPython.display import display, Audio
+from google.colab import files
+from transformers import pipeline
+
+```
+
+</div>
+   </div>
+</div>
+
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+<div id="shadebox">
+
+```
+VISION_MODEL_ID = "HuggingFaceTB/SmolVLM-500M-Instruct"
+AUDIO_MODEL_ID = "openai/whisper-tiny.en"
+
+print("Loading SmolVLM...")
+vision_pipe = pipeline(
+    "image-text-to-text",
+    model=VISION_MODEL_ID,
+    device_map="auto",
+    dtype="auto"
+)
+print("SmolVLM loaded successfully!")
+
+print("\nLoading Whisper...")
+speech_pipe = pipeline(
+    "automatic-speech-recognition",
+    model=AUDIO_MODEL_ID,
+    device=0 if torch.cuda.is_available() else -1
+)
+print("Whisper loaded successfully!")
+```
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+<div id="shadebox">
+
+```
+def ask_image(image, question, max_tokens=150):
+    """
+    Ask a text question about a PIL image.
+    """
+
+    messages = [
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "image",
+                    "image": image
+                },
+                {
+                    "type": "text",
+                    "text": question
+                }
+            ]
+        }
+    ]
+
+    result = vision_pipe(
+        text=messages,
+        max_new_tokens=max_tokens,
+        return_full_text=False
+    )
+
+    generated = result[0]["generated_text"]
+
+    # Usually this is already a string
+    if isinstance(generated, str):
+        return generated.strip()
+
+    # Extra handling in case the pipeline returns chat-style output
+    if isinstance(generated, list):
+
+        last_message = generated[-1]
+
+        if isinstance(last_message, dict):
+
+            content = last_message.get("content", "")
+
+            if isinstance(content, str):
+                return content.strip()
+
+            if isinstance(content, list):
+
+                text_parts = []
+
+                for item in content:
+
+                    if (
+                        isinstance(item, dict)
+                        and item.get("type") == "text"
+                    ):
+                        text_parts.append(
+                            item.get("text", "")
+                        )
+
+                return " ".join(text_parts).strip()
+
+    return str(generated)
+```
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+<div id="shadebox">
+
+```
+print("Upload ONE image file:")
+uploaded_image = files.upload()
+
+image_name = next(iter(uploaded_image))
+
+image = Image.open(
+    io.BytesIO(uploaded_image[image_name])
+).convert("RGB")
+
+print("Uploaded image:", image_name)
+display(image)
+
+```
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+<div id="shadebox">
+
+```
+print("Upload ONE audio file (for example: .wav, .mp3, or .m4a):")
+uploaded_audio = files.upload()
+
+audio_name = next(iter(uploaded_audio))
+audio_path = os.path.join("/content", audio_name)
+
+with open(audio_path, "wb") as f:
+    f.write(uploaded_audio[audio_name])
+
+print("Uploaded audio:", audio_name)
+display(Audio(audio_path))
+
+```
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+<div id="shadebox">
+
+```
+# AUDIO -> TEXT
+speech_result = speech_pipe(audio_path)
+spoken_text = speech_result["text"].strip()
+
+print("AUDIO TRANSCRIPT:")
+print(spoken_text)
+
+```
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+<div id="shadebox">
+
+```
+# Add a THIRD modality/input: typed text
+typed_text = input("Type an additional question or instruction: ")
+
+print("\nAUDIO TRANSCRIPT:")
+print(spoken_text)
+
+print("\nTYPED TEXT:")
+print(typed_text)
+```
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+<div id="shadebox">
+
+```
+# IMAGE + AUDIO + TEXT -> TEXT
+
+prompt = f"""The user provided two instructions:
+
+Spoken audio:
+{spoken_text}
+
+Typed text:
+{typed_text}
+
+Look at the image. Use the image, the spoken information, and the typed text together. Give one simple and clear answer."""
+
+answer = ask_image(
+    image,
+    prompt
+)
+
+print("AI ANSWER:")
+print(answer)
+```
+
+</div>
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">A Note</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Multimodal applications, which combine and process information from various modalities like text, images, audio, and video.
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">A Note</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Next, we'll discuss more about multimodal language models (LLMs), which are models trained on data from multiple modalities, allowing them to process and generate content across different modalities coherently.  Finally, we'll cover prompting techniques for multimodal LLMs, which involve providing the model with appropriate inputs from multiple modalities to generate desired outputs, such as generating image captions from both text and visual inputs. Finally, we'll explore some common use cases where multimodal applications can be beneficial, highlighting real-world scenarios and potential applications.
    </div>
 </div>
 
