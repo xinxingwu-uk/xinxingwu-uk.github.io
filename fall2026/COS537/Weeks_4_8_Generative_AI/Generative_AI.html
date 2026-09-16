@@ -6987,7 +6987,7 @@ display(image)
 
 - Testing <a href="./files/Test1.jpg">Example 1</a>
 - Testing <a href="./files/Test2.jpg">Example 2</a>
-
+- Testing <a href="./files/audio1.mp3">Examples 2 & 3</a>
 
 
 
@@ -7658,6 +7658,212 @@ print(answer)
 ```
 
 </div>
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">A Note</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+- Task: Upload image → type an editing instruction → AI modifies image → display/download edited image
+
+- In Google Colab, choose Runtime → Change runtime type → T4 GPU before running the model
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+It uses the open-source InstructPix2Pix model, which is specifically designed to edit an input image according to written instructions.
+
+Link https://huggingface.co/docs/diffusers/api/pipelines/pix2pix?utm_source=chatgpt.com
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+```
+!pip install -q -U diffusers==0.40.0 transformers accelerate safetensors
+!pip install -q --force-reinstall --no-deps Pillow==11.3.0
+
+print('Installation complete.')
+print('Next: Runtime -> Restart session, then continue with the next cell.')
+
+```
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+```
+import io
+import torch
+import PIL
+import diffusers
+
+from PIL import Image
+from IPython.display import display
+from google.colab import files
+from diffusers import StableDiffusionInstructPix2PixPipeline, EulerAncestralDiscreteScheduler
+
+print('PyTorch version:', torch.__version__)
+print('Pillow version:', PIL.__version__)
+print('Diffusers version:', diffusers.__version__)
+print('CUDA available:', torch.cuda.is_available())
+
+if torch.cuda.is_available():
+    print('GPU:', torch.cuda.get_device_name(0))
+else:
+    print('No GPU detected. Image editing on CPU can be very slow.')
+
+```
+
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+```
+MODEL_ID = "timbrooks/instruct-pix2pix"
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
+dtype = torch.float16 if device == "cuda" else torch.float32
+
+print("Loading InstructPix2Pix...")
+
+pipe = StableDiffusionInstructPix2PixPipeline.from_pretrained(
+    MODEL_ID,
+    torch_dtype=dtype
+)
+
+pipe.scheduler = EulerAncestralDiscreteScheduler.from_config(
+    pipe.scheduler.config
+)
+
+pipe = pipe.to(device)
+
+print("Model loaded successfully!")
+
+```
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+```
+uploaded = files.upload()
+
+image_name = next(iter(uploaded))
+
+original_image = Image.open(
+    io.BytesIO(uploaded[image_name])
+).convert("RGB")
+
+# Keep the image reasonably small for the model.
+original_image.thumbnail((512, 512))
+
+# Stable Diffusion works best when width and height are multiples of 8.
+new_width = max(8, original_image.width - original_image.width % 8)
+new_height = max(8, original_image.height - original_image.height % 8)
+original_image = original_image.resize((new_width, new_height))
+
+print("Uploaded image:", image_name)
+print("Image size:", original_image.size)
+display(original_image)
+
+```
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+- Tell the AI How to Modify the Image
+
+```
+instruction = input("How would you like to modify the image? ")
+
+print("\nEDITING INSTRUCTION:")
+print(instruction)
+```
+
+> Example 1: Change the sky to a colorful sunset.
+
+> Example 2: Change poodle to red.
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+```
+edited_image = pipe(
+    prompt=instruction,
+    image=original_image,
+    num_inference_steps=20,
+    guidance_scale=7.5,
+    image_guidance_scale=1.5
+).images[0]
+
+print("ORIGINAL IMAGE")
+display(original_image)
+
+print("EDITED IMAGE")
+display(edited_image)
+
+```
+   </div>
+</div>
+
+
+
+<div class="definition-container">
+  <div class="definition-title">Example</div>
+  <div class="definition-shadebox">
+  <div style="width: 800px;"></div>
+
+```
+output_name = "edited_image.png"
+edited_image.save(output_name)
+
+print("Saved as:", output_name)
+files.download(output_name)
+```
    </div>
 </div>
 
