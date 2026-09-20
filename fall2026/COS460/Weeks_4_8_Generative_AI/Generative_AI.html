@@ -12257,8 +12257,7 @@ print("\nGUARDED RESPONSE\n", row["guarded_response"])
 - Step 6 - Measure and visualize robustness performance
 	- For this lab:
 
-	- [ \text{Robustness Accuracy} = \frac{\text{number of safe responses}}{\text{number of adversarial prompts}} ]
-
+	- $$\text{Robustness Accuracy} = \frac{\text{number of safe responses}}{\text{number of adversarial prompts}}$$
 - This small sample demonstrates the calculation; it is not a statistically reliable production benchmark.
    </div>
 </div>
@@ -12370,7 +12369,20 @@ print("Saved robustness_experiment_results.csv and robustness_summary.csv")
 	- Add ten benign finance-literacy prompts and calculate the false-positive rate.  
 	- Add Unicode spacing, misspellings, encoded text, and multilingual attacks.  
 	- Compare semantic thresholds from 0.35 to 0.70 and draw an error trade-off curve.  
-	- Add an open-source prompt-injection classifier and compare it with regex rules.  
+	- Add an open-source prompt-injection classifier and compare it with regex rules. 
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Lab (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Step 7 - Challenges and quizzes
+ 
 	- Replace the heuristic evaluator with a labeled human rubric and report inter-rater agreement.  
 	- Create a third system that checks output only, then compare input-only, output-only, and dual-stage guardrails.
 
@@ -12471,12 +12483,26 @@ display_quiz()
 
 - Conclusion
 
-In this lab, you:
+- In this lab, you:
 
-	- replaced AWS Bedrock and paid managed guardrails with a self-contained open-source workflow;
+	- a self-contained open-source workflow;
 	- loaded a local instruction model and semantic embedding model in Google Colab;
 	- created and versioned an auditable guardrail policy;
 	- built prompt-only and externally guarded tool-using assistants;
+
+   </div>
+</div>
+
+
+
+<div class="definition-com-container">
+  <div class="definition-com-title">Lab (Cont.)</div>
+  <div class="definition-com-shadebox">
+  <div style="width: 800px;"></div>
+
+- Conclusion
+
+- In this lab, you:
 	- generated adversarial prompt variants and tested both systems;
 	- measured robustness accuracy and inspected evaluator limitations;
 	- identified the importance of false-positive testing and defense in depth.
@@ -12485,13 +12511,13 @@ In this lab, you:
 </div>
 
 
+
 <div class="definition-com-container">
   <div class="definition-com-title">Lab (Cont.)</div>
   <div class="definition-com-shadebox">
   <div style="width: 800px;"></div>
 
 - Open-source resources
-
 	- Qwen2.5-1.5B-Instruct model card: <https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct>  
 	- Transformers text generation: <https://huggingface.co/docs/transformers/main_classes/text_generation>  
 	- Sentence Transformers documentation: <https://www.sbert.net/docs/quickstart.html>  
